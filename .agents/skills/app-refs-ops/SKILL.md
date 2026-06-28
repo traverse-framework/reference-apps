@@ -21,85 +21,109 @@ The UI must not compute business fields (tags, note type, next action, status) �
 All tickets live in [Project 2](https://github.com/orgs/traverse-framework/projects/2) (`traverse-framework`, project number `2`).
 The target repo is `traverse-framework/App-References`.
 
-See `docs/traverse-starter-plan.md` for the full plan, architecture boundary, phase breakdown, and open questions.
+Read `docs/traverse-starter-plan.md` and `.specify/memory/constitution.md` before any implementation work.
 
 ## Workflow
 
-1. Read `docs/traverse-starter-plan.md` before any implementation work.
-2. Inspect current GitHub and Project 2 state.
-3. Prefer finishing existing open PRs before claiming new Ready work.
-4. If no active PR needs attention, pick one Ready Project 2 issue.
-5. Before work on an issue, run the pre-flight checks below.
-6. If pre-flight passes, claim the issue:
-   - Add label `agent:codex`
-   - Set Project 2 `Status` to `In Progress`
-7. Use a dedicated `codex/issue-NNN-*` branch.
-8. Keep work scoped to the claimed issue and the architecture boundary.
-9. Open a dedicated PR with validation evidence.
+1. Read `.specify/memory/constitution.md` before any implementation work.
+2. Read `AGENTS.md` and follow the agent coordination rules.
+3. Inspect current GitHub and Project 2 state.
+4. Prefer finishing existing open PRs before claiming new Ready work.
+5. If no active PR needs attention, pick one Ready Project 2 issue.
+6. Before work on an issue, run the pre-flight checks from `AGENTS.md`:
+   - issue must not have `agent:claude`
+   - no remote `claude/issue-NNN-*` branch may exist
+7. If pre-flight passes, claim the issue:
+   - add `agent:codex`
+   - set Project 2 `Agent` to `Codex`
+   - set Project 2 `Status` to `In Progress`
+8. Use a dedicated `codex/issue-NNN-*` branch.
+9. Keep work scoped to the claimed issue and the UI-only architecture boundary.
+10. Open a dedicated PR with the required sections (Summary, Definition of Done, Validation).
 
-## Pre-flight Checks
+## Project 2 IDs
 
-Before starting work on an issue, verify it is not already claimed:
+| Resource | ID |
+|---|---|
+| Project node ID | `PVT_kwDOEbiBt84BbzAz` |
+| Status field | `PVTSSF_lADOEbiBt84BbzAzzhWg5OQ` |
+| Status: Todo | `f75ad846` |
+| Status: In Progress | `47fc9ee4` |
+| Status: Done | `98236657` |
+| Status: Ready | `81742589` |
+| Status: Blocked | `559e1fec` |
+| Status: Future | `7130dc35` |
+| Agent field | `PVTSSF_lADOEbiBt84BbzAzzhWjEik` |
+| Agent: Unassigned | `8ebf043b` |
+| Agent: Codex | `e428b05e` |
+| Agent: Claude Code | `8f903ad6` |
+| Note field | `PVTF_lADOEbiBt84BbzAzzhWjEio` |
 
-### 1. Check for Claude Code claim
+## Claim Sequence
 
 ```bash
+# 1. Pre-flight: check for Claude Code claim
 gh issue view <NUMBER> --repo traverse-framework/App-References --json labels
-```
+# If agent:claude → STOP
 
-If labels include `agent:claude` → **STOP**. Report:
-> Issue #\<NUMBER\> is claimed by Claude Code. Choose a different ticket.
-
-### 2. Check for Claude Code branch
-
-```bash
+# 2. Pre-flight: check for Claude Code branch
 git ls-remote --heads origin | grep "issue-<NUMBER>-"
+# If claude/issue-<NUMBER>-* exists → STOP
+
+# 3. Claim
+gh issue edit <NUMBER> --repo traverse-framework/App-References --add-label "agent:codex"
+
+ITEM_ID=$(gh project item-list 2 --owner traverse-framework --format json --limit 300 \
+  --jq '.items[] | select(.content.number == <NUMBER>) | .id')
+
+gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz \
+  --id "$ITEM_ID" \
+  --field-id PVTSSF_lADOEbiBt84BbzAzzhWjEik \
+  --single-select-option-id e428b05e   # Codex
+
+gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz \
+  --id "$ITEM_ID" \
+  --field-id PVTSSF_lADOEbiBt84BbzAzzhWg5OQ \
+  --single-select-option-id 47fc9ee4   # In Progress
 ```
-
-If a `claude/issue-<NUMBER>-*` branch exists → **STOP**. Report:
-> A Claude Code branch exists for issue #\<NUMBER\>. Choose a different ticket.
-
-If both checks pass → proceed.
 
 ## Token Discipline
 
-- Prefer targeted GitHub queries over full board dumps. For Ready work, use:
+- Prefer targeted GitHub queries over full board dumps. For Ready work:
   ```bash
   gh project item-list 2 --owner traverse-framework --format json --limit 300 \
-    --jq '.items[] | {number: .content.number, title: .content.title, status: .status}'
+    --jq '.items[] | select(.status == "Ready") | {number: .content.number, title: .content.title}'
   ```
-  Return only issue number, title, status, and labels.
-- Do not paste full project item lists, test output, or CI logs. Summarize pass/fail and quote only the failing lines needed to fix the issue.
+- Do not paste full project lists, test output, or CI logs. Summarize pass/fail and quote only failing lines.
 - Use `git diff --stat` and focused file hunks before large diffs.
 - Keep progress updates short: current action, any blocker, next action.
-- After CI starts, poll with bounded output; report only changed status.
 
 ## Minimality Ladder
 
-Before adding code to this UI repo:
+Before adding code:
 
 1. Does this change need to exist for the active issue?
-2. Can existing component structure, config, or docs already satisfy it?
-3. Can the React/browser platform or an existing dependency do it?
-4. Can a config update, type, or doc change solve it without a new abstraction?
-5. Can one focused component, hook, or config field solve it?
-6. Only then add the minimum new structure needed.
+2. Does it belong in the UI layer at all, or in Traverse?
+3. Can existing components, hooks, or config already satisfy it?
+4. Can a type, config, or doc update solve it without a new abstraction?
+5. Can one focused component or hook solve it?
+6. Add only the minimum new structure needed.
 
 Minimality must never push business logic into the UI, import private Traverse internals, or fake runtime behavior.
 
 ## Architecture Guardrails
 
-- **Never** compute title, tags, note type, next action, or status in the UI.
-- **Never** import private Traverse internals.
-- **Never** fake workflow registration or runtime behavior.
-- **Always** drive UI state from runtime-provided events.
-- Phase 2 work (app validation/registration) is **blocked** until the Traverse public CLI surface exists. Do not unblock it prematurely.
+- **Never** compute title, tags, note type, next action, or status in the UI
+- **Never** import private Traverse internals
+- **Never** fake workflow registration or runtime behavior in application code
+- **Always** drive UI state from runtime-provided events
+- Phase 2 (app validation/registration) is **blocked** until Traverse public CLI surface exists
 
 ## Operating Lanes
 
 - **Ready-ticket worker**: claim one Ready Project 2 issue and implement it end to end.
 - **PR finisher**: inspect open PRs, fix CI/review issues, and merge when green.
-- **Backlog gardener**: audit Project 2 statuses, labels, blockers, and open questions in `docs/traverse-starter-plan.md`.
+- **Backlog gardener**: audit Project 2 statuses, labels, blockers, and notes.
 
 ## Guardrails
 
@@ -108,4 +132,5 @@ Minimality must never push business logic into the UI, import private Traverse i
 - Do not claim work already owned by Claude Code.
 - Do not broaden scope beyond the issue and the UI-only architecture boundary.
 - Create follow-up tickets for non-blocking improvements instead of expanding an active slice.
-- Do not introduce any Traverse runtime business logic into this repo.
+
+For the full operating model, see `docs/multi-thread-workflow.md`.

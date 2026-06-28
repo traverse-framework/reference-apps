@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Validates required repo structure and governance files.
+set -euo pipefail
+
+REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
+FAIL=0
+
+check() {
+  local path="$1"
+  local label="$2"
+  if [ ! -e "$REPO_ROOT/$path" ]; then
+    echo "MISSING: $label ($path)"
+    FAIL=1
+  else
+    echo "OK:      $label"
+  fi
+}
+
+echo "=== Repository checks ==="
+
+# Governance files
+check "CLAUDE.md"                               "CLAUDE.md"
+check "AGENTS.md"                               "AGENTS.md"
+check ".specify/memory/constitution.md"         "Constitution"
+check "docs/quality-standards.md"              "Quality standards"
+check "docs/ticket-standard.md"               "Ticket standard"
+check "docs/multi-thread-workflow.md"          "Multi-thread workflow"
+check "docs/traverse-starter-plan.md"          "traverse-starter plan"
+
+# CI scripts
+check "scripts/ci/repository_checks.sh"        "This script"
+check "scripts/ci/pr_body_check.sh"            "PR body check"
+check "scripts/ci/coverage_gate.sh"            "Coverage gate"
+check "scripts/ci/phase1_smoke.sh"             "Phase 1 smoke"
+
+# GitHub Actions
+check ".github/workflows/ci.yml"               "CI workflow"
+check ".github/workflows/nightly.yml"          "Nightly workflow"
+
+# Skill
+check ".agents/skills/app-refs-ops/SKILL.md"  "app-refs-ops skill"
+
+echo ""
+if [ "$FAIL" -eq 1 ]; then
+  echo "FAIL: one or more required files are missing."
+  exit 1
+else
+  echo "PASS: all required files present."
+fi

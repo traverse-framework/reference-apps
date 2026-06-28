@@ -1,0 +1,44 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # 06:00 UTC daily
+  workflow_dispatch:        # manual trigger
+
+jobs:
+  golden-path:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run repository checks
+        run: bash scripts/ci/repository_checks.sh
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Run Phase 1 smoke test
+        env:
+          TRAVERSE_RUNTIME_URL: ${{ vars.TRAVERSE_RUNTIME_URL || 'http://localhost:3000' }}
+        run: bash scripts/ci/phase1_smoke.sh
+        # Note: Phase 1 smoke requires a reachable Traverse runtime.
+        # Set the TRAVERSE_RUNTIME_URL repository variable to point at a
+        # persistent test runtime, or this step will be skipped when unreachable.
+        continue-on-error: true
