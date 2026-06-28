@@ -57,20 +57,31 @@ Read `docs/traverse-starter-plan.md` and `.specify/memory/constitution.md` befor
 | Agent: Unassigned | `8ebf043b` |
 | Agent: Codex | `e428b05e` |
 | Agent: Claude Code | `8f903ad6` |
+| Agent: Cursor | `a9811389` |
+| Agent: Antigravity | `77295899` |
 | Note field | `PVTF_lADOEbiBt84BbzAzzhWjEio` |
 
-## Claim Sequence
+## Pre-flight + Claim Sequence
+
+Multiple agents run in parallel. All three checks must pass before claiming.
 
 ```bash
-# 1. Pre-flight: check for Claude Code claim
-gh issue view <NUMBER> --repo traverse-framework/App-References --json labels
-# If agent:claude → STOP
+# Check 1 — any agent:* label already on this issue?
+gh issue view <NUMBER> --repo traverse-framework/App-References --json labels \
+  --jq '.labels[].name | select(startswith("agent:"))'
+# If anything is returned → STOP. Issue is already claimed.
 
-# 2. Pre-flight: check for Claude Code branch
-git ls-remote --heads origin | grep "issue-<NUMBER>-"
-# If claude/issue-<NUMBER>-* exists → STOP
+# Check 2 — any agent branch already exists?
+git ls-remote --heads origin | grep "/issue-<NUMBER>-"
+# If anything is returned → STOP. Another agent is already working this.
 
-# 3. Claim
+# Check 3 — status is Ready?
+gh project item-list 2 --owner traverse-framework --format json --limit 300 \
+  --jq '.items[] | select(.content.number == <NUMBER>) | .status'
+# If not "Ready" → STOP.
+
+# ── All three passed — now claim ──────────────────────────────────────────
+
 gh issue edit <NUMBER> --repo traverse-framework/App-References --add-label "agent:codex"
 
 ITEM_ID=$(gh project item-list 2 --owner traverse-framework --format json --limit 300 \

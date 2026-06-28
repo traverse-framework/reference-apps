@@ -79,6 +79,8 @@ Read `.specify/memory/constitution.md` before any implementation work. Key rules
 | Agent: Unassigned | `8ebf043b` |
 | Agent: Codex | `e428b05e` |
 | Agent: Claude Code | `8f903ad6` |
+| Agent: Cursor | `a9811389` |
+| Agent: Antigravity | `77295899` |
 | Note field | `PVTF_lADOEbiBt84BbzAzzhWjEio` |
 
 ## Development Workflow
