@@ -133,6 +133,7 @@ gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz \
 | Codex | `agent:codex` | `codex/issue-NNN-*` | `e428b05e` |
 | Cursor | `agent:cursor` | `cursor/issue-NNN-*` | `a9811389` |
 | Antigravity | `agent:antigravity` | `antigravity/issue-NNN-*` | `77295899` |
+| Continue | `agent:continue` | `continue/issue-NNN-*` | `156c534e` |
 
 To register a new tool: add its label (`gh label create`), add its Agent field option (update Project 2 via GraphQL), and add a row to this table.
 
