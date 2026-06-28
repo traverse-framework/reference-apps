@@ -83,6 +83,31 @@ Read `.specify/memory/constitution.md` before any implementation work. Key rules
 | Agent: Antigravity | `77295899` |
 | Note field | `PVTF_lADOEbiBt84BbzAzzhWjEio` |
 
+## Traverse Runtime
+
+| Detail | Value |
+|---|---|
+| Pinned version | `v0.3.0` |
+| Start runtime | `cargo run -p traverse-cli -- serve` |
+| Default address | `127.0.0.1:8787` |
+| Discovery file | `.traverse/server.json` |
+| Default workspace | `local-default` |
+| Governing API spec | `033-http-json-api` (approved v1.1.0) |
+
+Local setup:
+```bash
+git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
+cd /tmp/traverse && git checkout v0.3.0
+cargo run -p traverse-cli -- serve
+# Reads .traverse/server.json for base_url and workspace_default
+```
+
+Override for active framework development:
+```bash
+TRAVERSE_REPO=/path/to/Traverse
+cd $TRAVERSE_REPO && cargo run -p traverse-cli -- serve
+```
+
 ## Development Workflow
 
 1. Clarify whether the change belongs in the UI layer (if not, it belongs in Traverse)

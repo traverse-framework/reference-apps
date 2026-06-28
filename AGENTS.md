@@ -16,6 +16,25 @@ scripts/ci/              # CI gate scripts
 .github/workflows/       # GitHub Actions
 ```
 
+## Traverse Runtime
+
+Pinned version: **v0.3.0** | API spec: **033-http-json-api** (approved v1.1.0)
+
+```bash
+# Start local runtime
+git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
+cd /tmp/traverse && git checkout v0.3.0
+cargo run -p traverse-cli -- serve
+# Writes .traverse/server.json with base_url=http://127.0.0.1:8787, workspace_default=local-default
+```
+
+Discovery in code:
+```js
+const { base_url, workspace_default } = JSON.parse(fs.readFileSync('.traverse/server.json'))
+```
+
+Override: `TRAVERSE_REPO=/path/to/Traverse`
+
 ## Commands
 
 ```bash
