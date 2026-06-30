@@ -1,7 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import { createTraverseClient } from './client/traverseClient'
+import { useExecution } from './hooks/useExecution'
+
+const baseUrl =
+  import.meta.env.VITE_TRAVERSE_BASE_URL ??
+  import.meta.env.VITE_TRAVERSE_RUNTIME_URL ??
+  'http://127.0.0.1:8787'
+const workspaceId = import.meta.env.VITE_TRAVERSE_WORKSPACE ?? 'local-default'
+const capabilityId = import.meta.env.VITE_TRAVERSE_CAPABILITY_ID ?? 'traverse-starter'
 
 function App() {
-  const runtimeUrl = import.meta.env.VITE_TRAVERSE_RUNTIME_URL || 'http://localhost:3000'
+  const client = useMemo(() => createTraverseClient(baseUrl), [])
+  const { state: executionState, run } = useExecution(client, workspaceId)
   const [note, setNote] = useState('')
   const [status, setStatus] = useState<'checking' | 'online' | 'offline'>('checking')
 
@@ -9,7 +19,7 @@ function App() {
     let active = true
     const checkHealth = async () => {
       try {
-        const res = await fetch(`${runtimeUrl}/health`, { method: 'GET' })
+        const res = await fetch(`${baseUrl}/healthz`, { method: 'GET' })
         if (res.ok && active) {
           setStatus('online')
         } else if (active) {
@@ -29,26 +39,26 @@ function App() {
       active = false
       clearInterval(interval)
     }
-  }, [runtimeUrl])
+  }, [])
 
   const handleStartWorkflow = (e: React.FormEvent) => {
     e.preventDefault()
-    // Workflow start boundary will be integrated in Ticket 3
-    console.log('Start workflow with input:', { note })
+    run(capabilityId, { text: note })
   }
+
+  const isExecuting = executionState.phase === 'loading' || executionState.phase === 'polling'
 
   return (
     <div style={{ maxWidth: '800px', margin: '40px auto', padding: '0 20px' }}>
-      {/* Header */}
       <header style={{ marginBottom: '40px', textAlign: 'center' }}>
-        <h1 style={{ 
-          fontSize: '2.5rem', 
-          fontWeight: 700, 
+        <h1 style={{
+          fontSize: '2.5rem',
+          fontWeight: 700,
           letterSpacing: '-0.03em',
           background: 'linear-gradient(to right, #a78bfa, #06b6d4)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          marginBottom: '8px'
+          marginBottom: '8px',
         }}>
           Traverse Starter
         </h1>
@@ -57,10 +67,7 @@ function App() {
         </p>
       </header>
 
-      {/* Grid Layout */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        
-        {/* Status / Config Panel */}
         <section className="glass-panel" style={{ padding: '24px' }}>
           <h2 style={{ fontSize: '1.25rem', marginBottom: '16px', fontWeight: 600 }}>
             Runtime Environment
@@ -71,7 +78,7 @@ function App() {
                 Discovery Endpoint
               </div>
               <div style={{ fontSize: '1rem', color: 'var(--text-primary)', marginTop: '4px', wordBreak: 'break-all' }}>
-                {runtimeUrl}
+                {baseUrl}
               </div>
             </div>
             <div>
@@ -85,7 +92,7 @@ function App() {
                   height: '10px',
                   borderRadius: '50%',
                   backgroundColor: status === 'online' ? '#06b6d4' : status === 'offline' ? '#ef4444' : '#64748b',
-                  boxShadow: status === 'online' ? '0 0 10px rgba(6, 182, 212, 0.6)' : status === 'offline' ? '0 0 10px rgba(239, 68, 68, 0.6)' : 'none'
+                  boxShadow: status === 'online' ? '0 0 10px rgba(6, 182, 212, 0.6)' : status === 'offline' ? '0 0 10px rgba(239, 68, 68, 0.6)' : 'none',
                 }} />
                 <span style={{ fontSize: '1rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                   {status === 'online' ? 'Online' : status === 'offline' ? 'Offline' : 'Checking...'}
@@ -93,32 +100,32 @@ function App() {
               </div>
             </div>
           </div>
-          <div style={{ 
-            marginTop: '20px', 
-            paddingTop: '16px', 
+          <div style={{
+            marginTop: '20px',
+            paddingTop: '16px',
             borderTop: '1px solid rgba(255,255,255,0.05)',
-            fontSize: '0.85rem', 
-            color: 'var(--text-muted)' 
+            fontSize: '0.85rem',
+            color: 'var(--text-muted)',
           }}>
-            Configured to execute tasks using the pinned Traverse release. For active local framework testing, override using <code>TRAVERSE_REPO=/path/to/Traverse</code>.
+            Workspace: <code>{workspaceId}</code> · Capability: <code>{capabilityId}</code>.
+            For active local framework testing, override using <code>TRAVERSE_REPO=/path/to/Traverse</code>.
           </div>
         </section>
 
-        {/* Input / Control Panel */}
         <section className="glass-panel" style={{ padding: '24px' }}>
           <h2 style={{ fontSize: '1.25rem', marginBottom: '16px', fontWeight: 600 }}>
             Start Workflow
           </h2>
           <form onSubmit={handleStartWorkflow}>
             <div style={{ marginBottom: '20px' }}>
-              <label 
+              <label
                 htmlFor="note-input"
-                style={{ 
-                  display: 'block', 
-                  fontSize: '0.85rem', 
-                  color: 'var(--text-muted)', 
+                style={{
+                  display: 'block',
+                  fontSize: '0.85rem',
+                  color: 'var(--text-muted)',
                   marginBottom: '8px',
-                  fontWeight: 500
+                  fontWeight: 500,
                 }}
               >
                 Starter Input Note
@@ -140,47 +147,75 @@ function App() {
                   fontSize: '0.95rem',
                   resize: 'vertical',
                   outline: 'none',
-                  transition: 'var(--transition-smooth)'
+                  transition: 'var(--transition-smooth)',
                 }}
-                onFocus={(e) => e.target.style.borderColor = 'var(--color-accent)'}
-                onBlur={(e) => e.target.style.borderColor = 'var(--border-glow)'}
+                onFocus={(e) => { e.target.style.borderColor = 'var(--color-accent)' }}
+                onBlur={(e) => { e.target.style.borderColor = 'var(--border-glow)' }}
               />
             </div>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn-glow"
-              disabled={!note.trim() || status !== 'online'}
+              disabled={!note.trim() || status !== 'online' || isExecuting}
               style={{ width: '100%' }}
             >
-              Start Workflow
+              {isExecuting ? 'Running...' : 'Start Workflow'}
             </button>
           </form>
         </section>
 
-        {/* Output Panel Placeholder */}
-        <section className="glass-panel" style={{ padding: '24px', minHeight: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-          <div style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '380px' }}>
-            <p style={{ fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px' }}>
-              Event Subscription & Result Flow
+        <section className="glass-panel" style={{ padding: '24px', minHeight: '180px' }}>
+          <h2 style={{ fontSize: '1.25rem', marginBottom: '16px', fontWeight: 600 }}>
+            Event Subscription & Result Flow
+          </h2>
+
+          {executionState.phase === 'idle' && (
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
+              Submit a note to start a workflow. Runtime events and output will appear here.
             </p>
-            <p>
-              Once a workflow starts, the events and final output fields (Title, Tags, Note Type, Next Action, Status) will render here.
+          )}
+
+          {executionState.phase === 'loading' && (
+            <p role="status" style={{ color: 'var(--text-secondary)' }}>Starting workflow...</p>
+          )}
+
+          {executionState.phase === 'polling' && (
+            <p role="status" style={{ color: 'var(--text-secondary)' }}>
+              Polling execution <code>{executionState.executionId}</code>...
             </p>
-            <div style={{ 
-              marginTop: '16px', 
-              fontSize: '0.8rem', 
-              display: 'inline-block', 
-              padding: '4px 12px', 
-              background: 'rgba(139, 92, 246, 0.15)', 
-              color: 'var(--color-accent)', 
-              borderRadius: '20px',
-              fontWeight: 500
-            }}>
-              Pending connection in Ticket 3 & 4
+          )}
+
+          {executionState.phase === 'failed' && (
+            <p role="alert" style={{ color: '#ef4444' }}>{executionState.error}</p>
+          )}
+
+          {executionState.phase === 'succeeded' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <p role="status" style={{ color: '#06b6d4', fontWeight: 600 }}>Execution succeeded</p>
+              <pre style={{
+                background: 'rgba(0,0,0,0.3)',
+                padding: '12px',
+                borderRadius: '6px',
+                overflow: 'auto',
+                fontSize: '0.85rem',
+              }}>
+                {JSON.stringify(executionState.result.output, null, 2)}
+              </pre>
+              {executionState.trace.length > 0 && (
+                <div>
+                  <h3 style={{ fontSize: '1rem', marginBottom: '8px' }}>Trace Events</h3>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {executionState.trace.map((event, index) => (
+                      <li key={`${event.timestamp}-${index}`} style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                        <code>{event.event_type}</code> · {event.timestamp}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </section>
-        
       </div>
     </div>
   )
