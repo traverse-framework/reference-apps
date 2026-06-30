@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { createTraverseClient } from './client/traverseClient'
 import { useExecution } from './hooks/useExecution'
+import { parseOutput } from './client/traverseOutput'
 
 const BASE_URL = import.meta.env.VITE_TRAVERSE_BASE_URL ?? 'http://127.0.0.1:8787'
 const WORKSPACE = import.meta.env.VITE_TRAVERSE_WORKSPACE ?? 'local-default'
@@ -159,31 +160,48 @@ function App() {
             </div>
           )}
 
-          {state.phase === 'succeeded' && (
-            <div>
-              <div style={{ marginBottom: '12px', color: '#06b6d4', fontWeight: 600 }}>
-                Execution {state.result.execution_id} — succeeded
+          {state.phase === 'succeeded' && (() => {
+            const output = parseOutput(state.result.output)
+            return output ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <OutputField label="Title" value={output.title} />
+                <OutputField label="Note Type" value={output.noteType} />
+                <OutputField label="Status" value={output.status} />
+                <OutputField label="Suggested Next Action" value={output.suggestedNextAction} />
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Tags</div>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {output.tags.map(tag => (
+                      <span key={tag} style={{ padding: '2px 10px', background: 'rgba(139,92,246,0.15)', color: 'var(--color-accent)', borderRadius: '20px', fontSize: '0.85rem' }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                {state.trace.length > 0 && (
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    {state.trace.length} trace event{state.trace.length !== 1 ? 's' : ''}
+                  </div>
+                )}
               </div>
-              <pre style={{
-                background: 'rgba(0,0,0,0.4)',
-                padding: '16px',
-                borderRadius: '6px',
-                fontSize: '0.85rem',
-                color: 'var(--text-primary)',
-                overflow: 'auto',
-              }}>
+            ) : (
+              <pre style={{ background: 'rgba(0,0,0,0.4)', padding: '16px', borderRadius: '6px', fontSize: '0.85rem', color: 'var(--text-primary)', overflow: 'auto' }}>
                 {JSON.stringify(state.result.output, null, 2)}
               </pre>
-              {state.trace.length > 0 && (
-                <div style={{ marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                  {state.trace.length} trace event{state.trace.length !== 1 ? 's' : ''}
-                </div>
-              )}
-            </div>
-          )}
+            )
+          })()}
         </section>
 
       </div>
+    </div>
+  )
+}
+
+function OutputField({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{label}</div>
+      <div style={{ fontSize: '1rem', color: 'var(--text-primary)' }}>{value}</div>
     </div>
   )
 }
