@@ -7,8 +7,8 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: /youaskm3/i })).toBeInTheDocument()
   })
 
-  it('shows the default runtime URL', () => {
+  it('renders the run button', () => {
     render(<App />)
-    expect(screen.getByText(/localhost:3000/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /run/i })).toBeInTheDocument()
   })
 })
