@@ -30,15 +30,10 @@ elif [ -f "$SERVER_JSON" ]; then
   echo "Runtime URL (discovered): $BASE_URL"
   echo "Workspace: $WORKSPACE_ID"
 else
-  echo "FAIL: .traverse/server.json not found and TRAVERSE_RUNTIME_URL not set."
-  echo ""
-  echo "Start the Traverse runtime first:"
-  if [ -n "${TRAVERSE_REPO:-}" ]; then
-    echo "  cd \$TRAVERSE_REPO && cargo run -p traverse-cli -- serve"
-  else
-    echo "  cd <Traverse v0.3.0 checkout> && cargo run -p traverse-cli -- serve"
-  fi
-  exit 1
+  echo "SKIP: .traverse/server.json not found and TRAVERSE_RUNTIME_URL not set."
+  echo "      Set TRAVERSE_RUNTIME_URL or run 'cargo run -p traverse-cli -- serve' first."
+  echo "SKIP: Phase 1 smoke skipped — no runtime configured."
+  exit 0
 fi
 
 echo ""
