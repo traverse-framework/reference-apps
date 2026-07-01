@@ -1,0 +1,29 @@
+{
+  "kind": "app_manifest",
+  "schema_version": "1.0.0",
+  "app_id": "traverse-starter",
+  "version": "0.1.0",
+  "summary": "Minimal Traverse reference app demonstrating the Phase 1 HTTP integration and Phase 2 CLI registration path.",
+  "capabilities": [
+    {
+      "id": "traverse-starter.process",
+      "version": "1.0.0",
+      "contract_path": "contracts/examples/traverse-starter/capabilities/process/contract.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "traverse-starter.process",
+      "workflow_version": "1.0.0"
+    }
+  ],
+  "components": [
+    {
+      "ref": "./components/process-agent.manifest.json"
+    }
+  ],
+  "registration": {
+    "workspace": "local-default",
+    "discovery": ".traverse/server.json"
+  }
+}

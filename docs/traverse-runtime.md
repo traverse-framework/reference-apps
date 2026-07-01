@@ -4,7 +4,10 @@ This document is the canonical local setup reference for all apps in this repo.
 
 ## Pinned Version
 
-**Traverse v0.3.0** — source build required.
+| Phase | Minimum version | Adds |
+|---|---|---|
+| Phase 1 (HTTP integration) | **v0.3.0** | HTTP/JSON API, `/healthz`, execute, poll, trace |
+| Phase 2 (CLI app registration) | **v0.5.0** | `traverse-cli app validate/register`, workspace state |
 
 Requirements: Rust 1.94+
 
@@ -13,7 +16,7 @@ Requirements: Rust 1.94+
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
 cd /tmp/traverse
-git checkout v0.3.0
+git checkout v0.5.0   # minimum for Phase 2; use v0.3.0 for Phase 1 only
 cargo run -p traverse-cli -- serve
 ```
 
