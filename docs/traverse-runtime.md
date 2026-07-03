@@ -98,3 +98,11 @@ TRAVERSE_WORKSPACE_ID=local-default
 ```
 
 The `scripts/ci/phase1_smoke.sh` reads these env vars when `.traverse/server.json` is not present.
+
+Phase 2 validation and registration require a Traverse checkout:
+
+```bash
+export TRAVERSE_REPO=/path/to/Traverse   # main branch with traverse-starter example
+bash scripts/ci/phase2_link_traverse.sh  # symlink WASM/contracts into manifests/
+bash scripts/ci/phase2_smoke.sh          # validate → register → HTTP execute
+```
