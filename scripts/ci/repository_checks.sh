@@ -33,6 +33,8 @@ check "scripts/ci/repository_checks.sh"        "This script"
 check "scripts/ci/pr_body_check.sh"            "PR body check"
 check "scripts/ci/coverage_gate.sh"            "Coverage gate"
 check "scripts/ci/phase1_smoke.sh"             "Phase 1 smoke"
+check "scripts/ci/phase2_smoke.sh"             "Phase 2 smoke"
+check "scripts/ci/phase2_link_traverse.sh"     "Phase 2 Traverse link"
 
 # GitHub Actions
 check ".github/workflows/ci.yml"               "CI workflow"

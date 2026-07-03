@@ -78,18 +78,26 @@ VITE_TRAVERSE_WORKSPACE=local-default
 
 ## Phase 2 — App Registration
 
-**Status: blocked — waiting on Traverse #499**
+**Status: unblocked — Traverse #499 and #500 merged**
 
 **Governing specs:** `044-application-bundle-manifest`, `046-public-cli-app-registration`
 
 **Deliverables:**
 
-1. App manifest at `manifests/traverse-starter/app.manifest.json` (issue #24 — draft present, binary digest pending Traverse #499)
-2. `traverse-cli app validate --manifest manifests/traverse-starter/app.manifest.json --json` → exit 0
-3. `traverse-cli app register --manifest manifests/traverse-starter/app.manifest.json --workspace local-default --json`
-4. Phase 2 smoke test (issue #6)
+1. App manifest at `manifests/traverse-starter/app.manifest.json` (issue #24)
+2. Component manifest at `manifests/traverse-starter/components/process/component.manifest.json`
+3. `traverse-cli app validate --manifest manifests/traverse-starter/app.manifest.json --json` → exit 0
+4. `traverse-cli app register --manifest manifests/traverse-starter/app.manifest.json --workspace local-default --json`
+5. Phase 2 smoke test — `scripts/ci/phase2_smoke.sh` (issue #6)
 
-**Unblocked by:** Traverse [#499](https://github.com/traverse-framework/Traverse/issues/499) (capability contract + WASM agent) and [#500](https://github.com/traverse-framework/Traverse/issues/500) (v0.5.0 pin confirmation)
+**Setup:** manifests reference WASM/contracts/workflows in Traverse via symlink:
+
+```bash
+export TRAVERSE_REPO=/path/to/Traverse   # main branch, v0.5.0+
+bash scripts/ci/phase2_link_traverse.sh  # creates manifests/traverse-starter/_traverse
+cd $TRAVERSE_REPO && cargo run -p traverse-cli -- serve
+bash scripts/ci/phase2_smoke.sh
+```
 
 ## Ticket Index
 
@@ -100,8 +108,8 @@ VITE_TRAVERSE_WORKSPACE=local-default
 | 3 | Add runtime event client boundary | ✅ Done |
 | 4 | Add deterministic UI flow | ✅ Done |
 | 5 | Add Phase 1 smoke test | ✅ Done |
-| 24 | Author traverse-starter app manifest | 🔴 Blocked (Traverse #499) |
-| 6 | Phase 2 app registration | 🔴 Blocked (Traverse #499, #500) |
+| 24 | Author traverse-starter app manifest | ✅ Ready (Traverse #499 merged) |
+| 6 | Phase 2 app registration | ✅ Ready (Traverse #499, #500 merged) |
 
 ## Accepted Decisions
 
