@@ -1,14 +1,20 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { createTraverseClient } from './client/traverseClient'
 import { useExecution } from './hooks/useExecution'
 import { parseOutput } from './client/traverseOutput'
 
-const BASE_URL = import.meta.env.VITE_TRAVERSE_BASE_URL ?? 'http://127.0.0.1:8787'
+const BASE_URL =
+  import.meta.env.VITE_TRAVERSE_BASE_URL ??
+  import.meta.env.VITE_TRAVERSE_RUNTIME_URL ??
+  'http://127.0.0.1:8787'
 const WORKSPACE = import.meta.env.VITE_TRAVERSE_WORKSPACE ?? 'local-default'
+const CAPABILITY_ID = import.meta.env.VITE_TRAVERSE_CAPABILITY_ID ?? 'traverse-starter.process'
+const NOTE_MAX_LENGTH = 2000
 
 function App() {
   const [note, setNote] = useState('')
   const [runtimeStatus, setRuntimeStatus] = useState<'checking' | 'online' | 'offline'>('checking')
+  const formRef = useRef<HTMLFormElement>(null)
 
   const client = useMemo(() => createTraverseClient(BASE_URL), [])
   const { state, run } = useExecution(client, WORKSPACE)
@@ -28,9 +34,24 @@ function App() {
     return () => { active = false; clearInterval(interval) }
   }, [])
 
-  const handleStartWorkflow = (e: React.FormEvent) => {
-    e.preventDefault()
-    run('traverse-starter.process', { note })
+  const isRunning = state.phase === 'loading' || state.phase === 'polling'
+  const canSubmit = note.trim().length > 0 && runtimeStatus === 'online' && !isRunning
+
+  const handleStartWorkflow = useCallback((e?: React.FormEvent) => {
+    e?.preventDefault()
+    if (!canSubmit) return
+    run(CAPABILITY_ID, { note })
+  }, [canSubmit, run, note])
+
+  const handleNoteKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault()
+      handleStartWorkflow()
+    }
+  }
+
+  const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNote(e.target.value.slice(0, NOTE_MAX_LENGTH))
   }
 
   return (
@@ -54,7 +75,6 @@ function App() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
-        {/* Runtime status */}
         <section className="glass-panel" style={{ padding: '24px' }}>
           <h2 style={{ fontSize: '1.25rem', marginBottom: '16px', fontWeight: 600 }}>
             Runtime Environment
@@ -62,9 +82,9 @@ function App() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Base URL
+                Runtime URL
               </div>
-              <div style={{ fontSize: '1rem', color: 'var(--text-primary)', marginTop: '4px', wordBreak: 'break-all' }}>
+              <div className="runtime-url" style={{ color: 'var(--text-primary)', marginTop: '4px' }}>
                 {BASE_URL}
               </div>
             </div>
@@ -73,13 +93,16 @@ function App() {
                 Runtime Status
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                <span style={{
-                  display: 'inline-block',
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '50%',
-                  backgroundColor: runtimeStatus === 'online' ? '#06b6d4' : runtimeStatus === 'offline' ? '#ef4444' : '#64748b',
-                }} />
+                <span
+                  className={runtimeStatus === 'checking' ? 'status-dot-checking' : undefined}
+                  style={{
+                    display: 'inline-block',
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '50%',
+                    backgroundColor: runtimeStatus === 'online' ? '#06b6d4' : runtimeStatus === 'offline' ? '#ef4444' : '#64748b',
+                  }}
+                />
                 <span style={{ fontSize: '1rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                   {runtimeStatus === 'online' ? 'Online' : runtimeStatus === 'offline' ? 'Offline' : 'Checking...'}
                 </span>
@@ -87,28 +110,28 @@ function App() {
             </div>
           </div>
           <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Workspace: <strong>{WORKSPACE}</strong> · Override with <code>VITE_TRAVERSE_BASE_URL</code> / <code>VITE_TRAVERSE_WORKSPACE</code>
+            Workspace: <strong>{WORKSPACE}</strong> · Capability: <strong>{CAPABILITY_ID}</strong>
           </div>
         </section>
 
-        {/* Input */}
         <section className="glass-panel" style={{ padding: '24px' }}>
           <h2 style={{ fontSize: '1.25rem', marginBottom: '16px', fontWeight: 600 }}>
             Start Workflow
           </h2>
-          <form onSubmit={handleStartWorkflow}>
+          <form ref={formRef} onSubmit={handleStartWorkflow}>
             <div style={{ marginBottom: '20px' }}>
               <label htmlFor="note-input" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: 500 }}>
                 Starter Input Note
               </label>
               <textarea
                 id="note-input"
+                className="note-textarea"
                 value={note}
-                onChange={(e) => setNote(e.target.value)}
+                onChange={handleNoteChange}
+                onKeyDown={handleNoteKeyDown}
                 placeholder="Enter a note or starter input to trigger the Traverse workflow..."
                 style={{
                   width: '100%',
-                  minHeight: '100px',
                   padding: '12px',
                   backgroundColor: 'rgba(0, 0, 0, 0.3)',
                   border: '1px solid var(--border-glow)',
@@ -120,25 +143,40 @@ function App() {
                   outline: 'none',
                 }}
               />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                <span>{note.length} / {NOTE_MAX_LENGTH}</span>
+                <span>⌘/Ctrl + Enter to submit</span>
+              </div>
             </div>
             <button
               type="submit"
               className="btn-glow"
-              disabled={!note.trim() || runtimeStatus !== 'online' || state.phase === 'loading' || state.phase === 'polling'}
+              disabled={!canSubmit}
               style={{ width: '100%' }}
             >
-              {state.phase === 'loading' || state.phase === 'polling' ? 'Running…' : 'Start Workflow'}
+              {isRunning ? 'Running…' : 'Start Workflow'}
             </button>
+            {runtimeStatus === 'offline' && (
+              <p role="status" style={{ marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                The runtime is offline. Start it with{' '}
+                <code>cargo run -p traverse-cli -- serve</code> before submitting a workflow.
+              </p>
+            )}
           </form>
         </section>
 
-        {/* Execution output */}
         <section className="glass-panel" style={{ padding: '24px', minHeight: '180px' }}>
           <h2 style={{ fontSize: '1.25rem', marginBottom: '16px', fontWeight: 600 }}>
             Execution Output
           </h2>
 
-          {state.phase === 'idle' && (
+          {runtimeStatus === 'offline' && state.phase === 'idle' && (
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.95rem', textAlign: 'center', paddingTop: '32px' }}>
+              Connect to the Traverse runtime to see workflow output here.
+            </div>
+          )}
+
+          {runtimeStatus !== 'offline' && state.phase === 'idle' && (
             <div style={{ color: 'var(--text-muted)', fontSize: '0.95rem', textAlign: 'center', paddingTop: '32px' }}>
               Submit a note above to start a workflow.
             </div>
@@ -179,8 +217,22 @@ function App() {
                   </div>
                 </div>
                 {state.trace.length > 0 && (
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    {state.trace.length} trace event{state.trace.length !== 1 ? 's' : ''}
+                  <div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+                      Trace Events ({state.trace.length})
+                    </div>
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {state.trace.map((event, index) => (
+                        <li key={`${event.timestamp}-${index}`} style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', background: 'rgba(0,0,0,0.25)', padding: '8px 12px', borderRadius: '6px' }}>
+                          <div><strong>{event.event_type}</strong> · {event.timestamp}</div>
+                          {event.data !== undefined && (
+                            <pre style={{ marginTop: '6px', fontSize: '0.8rem', color: 'var(--text-muted)', overflow: 'auto' }}>
+                              {JSON.stringify(event.data, null, 2)}
+                            </pre>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>
