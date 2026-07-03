@@ -115,3 +115,25 @@ body {
   cursor: not-allowed;
   transform: none;
 }
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.85); }
+}
+
+.status-dot-checking {
+  animation: status-pulse 1.5s ease-in-out infinite;
+}
+
+.runtime-url {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+.note-textarea {
+  field-sizing: content;
+  min-height: 100px;
+  max-height: 320px;
+}
