@@ -29,6 +29,10 @@ check "docs/traverse-starter-plan.md"          "traverse-starter plan"
 check "docs/traverse-runtime.md"               "Traverse runtime setup"
 check "docs/design-language.md"                "UI design language"
 
+# Platform clients
+check "apps/traverse-starter/ios-swift/TraverseStarter.xcodeproj" "ios-swift Xcode project"
+check "apps/traverse-starter/ios-swift/README.md"                 "ios-swift README"
+
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
 check "scripts/ci/pr_body_check.sh"            "PR body check"

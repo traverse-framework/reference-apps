@@ -12,12 +12,12 @@ This repo is **UI-only**. Traverse runtime and business logic live outside this 
 |---|---|---|
 | Web (React + TypeScript) | Shipped | `apps/traverse-starter/web-react/` |
 | trace-explorer (React) | Shipped | `apps/trace-explorer/web-react/` |
-| iOS (SwiftUI) | Blocked ([#44](https://github.com/traverse-framework/reference-apps/issues/44)) | Waiting: [Traverse #525](https://github.com/traverse-framework/Traverse/issues/525), [#526](https://github.com/traverse-framework/Traverse/issues/526), [#527](https://github.com/traverse-framework/Traverse/issues/527) |
-| macOS (SwiftUI + AppKit) | Blocked ([#45](https://github.com/traverse-framework/reference-apps/issues/45)) | Same as iOS |
-| Android (Jetpack Compose) | Planned | Issue TBD |
-| Windows (WinUI 3) | Planned | Issue TBD |
-| Linux (GTK4 + Rust) | Planned | Issue TBD |
-| CLI (Rust) | Planned | Issue TBD |
+| iOS (SwiftUI) | Shipped | `apps/traverse-starter/ios-swift/` |
+| macOS (SwiftUI + AppKit) | Ready ([#45](https://github.com/traverse-framework/reference-apps/issues/45)) | Phase 1 HTTP polling |
+| Android (Jetpack Compose) | Ready ([#52](https://github.com/traverse-framework/reference-apps/issues/52)) | Phase 1 HTTP polling |
+| Windows (WinUI 3) | Ready ([#53](https://github.com/traverse-framework/reference-apps/issues/53)) | Phase 1 HTTP polling |
+| Linux (GTK4 + Rust) | Ready ([#54](https://github.com/traverse-framework/reference-apps/issues/54)) | Phase 1 HTTP polling |
+| CLI (Rust) | Ready ([#55](https://github.com/traverse-framework/reference-apps/issues/55)) | Phase 1 HTTP polling |
 
 ### Ready to claim (query live board)
 
@@ -29,7 +29,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 ### Blocked work summary
 
 - **Web SSE refactor** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on Traverse #525, #526, #527
-- **iOS / macOS clients** ([#44](https://github.com/traverse-framework/reference-apps/issues/44), [#45](https://github.com/traverse-framework/reference-apps/issues/45)) — blocked on Traverse #522, #525+
+- **Platform SSE upgrade (Phase 2)** — iOS/macOS/Android/Windows/Linux/CLI Phase 1 scaffolds use HTTP polling; SSE blocked on same Traverse issues
 
 Update this section when a PR changes platform status (see PR template checklist).
 
@@ -39,6 +39,7 @@ Update this section when a PR changes platform status (see PR template checklist
 apps/
   traverse-starter/
     web-react/           # React UI shell
+    ios-swift/           # SwiftUI iOS client
 .agents/skills/
   app-refs-ops/          # Ops skill for Project 2 work
 .specify/memory/         # Constitution and governing principles
