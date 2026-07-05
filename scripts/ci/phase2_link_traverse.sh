@@ -9,7 +9,7 @@ LINK="$REPO_ROOT/manifests/traverse-starter/_traverse"
 if [ -z "${TRAVERSE_REPO:-}" ]; then
   echo "FAIL: TRAVERSE_REPO is not set."
   echo ""
-  echo "Clone Traverse main (v0.5.0+ with traverse-starter example) and export:"
+  echo "Clone Traverse v0.6.0+ (minimum v0.5.0 for Phase 2) with traverse-starter example and export:"
   echo "  export TRAVERSE_REPO=/path/to/Traverse"
   exit 1
 fi

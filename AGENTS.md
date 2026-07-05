@@ -18,12 +18,12 @@ scripts/ci/              # CI gate scripts
 
 ## Traverse Runtime
 
-Pinned version: **v0.3.0** | API spec: **033-http-json-api** (approved v1.1.0)
+**Current release: v0.6.0** (recommended for all phases) | Phase 1 minimum: v0.3.0 | Phase 2 minimum: v0.5.0 | API spec: **033-http-json-api** (approved v1.1.0)
 
 ```bash
 # Start local runtime
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
-cd /tmp/traverse && git checkout v0.3.0
+cd /tmp/traverse && git checkout v0.6.0
 cargo run -p traverse-cli -- serve
 # Writes .traverse/server.json with base_url=http://127.0.0.1:8787, workspace_default=local-default
 ```

@@ -4,6 +4,7 @@
 #
 # Governed by spec 033-http-json-api (approved v1.1.0).
 # Runtime: traverse-cli serve at 127.0.0.1:8787, discovery via .traverse/server.json.
+# Minimum Traverse version: v0.3.0 — tested with v0.6.0 (current release).
 #
 # Set TRAVERSE_RUNTIME_URL to override default discovery.
 # Set TRAVERSE_CAPABILITY_ID to override the capability being tested.
