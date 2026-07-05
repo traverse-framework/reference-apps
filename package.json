@@ -1,15 +1,16 @@
 {
-  "name": "app-references",
+  "name": "reference-apps",
   "private": true,
   "workspaces": [
-    "apps/traverse-starter/web-react"
+    "apps/traverse-starter/web-react",
+    "apps/trace-explorer/web-react"
   ],
   "scripts": {
     "dev": "npm run dev -w apps/traverse-starter/web-react",
-    "build": "npm run build -w apps/traverse-starter/web-react",
-    "typecheck": "npm run typecheck -w apps/traverse-starter/web-react",
-    "lint": "npm run lint -w apps/traverse-starter/web-react",
-    "test": "npm run test -w apps/traverse-starter/web-react",
-    "test:coverage": "npm run test:coverage -w apps/traverse-starter/web-react"
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:coverage": "npm run test:coverage --workspaces --if-present"
   }
 }

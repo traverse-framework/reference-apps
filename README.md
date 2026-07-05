@@ -50,6 +50,7 @@ A successful run shows all five output fields populated by the runtime. The UI c
 | Path | Purpose |
 |---|---|
 | [`apps/traverse-starter/web-react/`](apps/traverse-starter/web-react/) | traverse-starter React UI shell |
+| [`apps/trace-explorer/web-react/`](apps/trace-explorer/web-react/) | Trace Explorer — execution timeline debugger |
 | [`docs/`](docs/) | Plan, runtime setup, quality standards |
 | [`manifests/traverse-starter/`](manifests/traverse-starter/) | App manifest + component manifests (Phase 2) |
 | [`scripts/ci/`](scripts/ci/) | Repository checks, smoke tests, coverage gate |

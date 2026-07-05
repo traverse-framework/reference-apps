@@ -11,7 +11,7 @@ This repo is **UI-only**. Traverse runtime and business logic live outside this 
 | Platform | Status | Path |
 |---|---|---|
 | Web (React + TypeScript) | Shipped | `apps/traverse-starter/web-react/` |
-| trace-explorer (React) | Ready to scaffold ([#56](https://github.com/traverse-framework/reference-apps/issues/56)) | `apps/trace-explorer/web-react/` (not yet created) |
+| trace-explorer (React) | Shipped | `apps/trace-explorer/web-react/` |
 | iOS (SwiftUI) | Blocked ([#44](https://github.com/traverse-framework/reference-apps/issues/44)) | Waiting: [Traverse #525](https://github.com/traverse-framework/Traverse/issues/525), [#526](https://github.com/traverse-framework/Traverse/issues/526), [#527](https://github.com/traverse-framework/Traverse/issues/527) |
 | macOS (SwiftUI + AppKit) | Blocked ([#45](https://github.com/traverse-framework/reference-apps/issues/45)) | Same as iOS |
 | Android (Jetpack Compose) | Planned | Issue TBD |
