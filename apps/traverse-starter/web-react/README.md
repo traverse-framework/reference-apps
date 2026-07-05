@@ -1,63 +1,74 @@
 # traverse-starter (Web React UI)
 
-This is the React UI shell for the `traverse-starter` reference application. It represents a thin presentation layer that connects to the Traverse runtime.
+This is the React UI shell for the `traverse-starter` reference application. It is a thin presentation layer that connects to the Traverse runtime over the public HTTP/JSON API (spec 033).
 
 ## Core Design Principles
 
-1. **UI is a Rendering Layer only**: All business fields (such as notes tags, title, note type, suggested actions, and workflow status) are calculated and owned by the Traverse runtime. The UI only displays and subscribes to events.
-2. **Strict Boundary Isolation**: No private Traverse internals are imported into this codebase. All communication occurs over the public API surface.
+1. **UI is a rendering layer only** — business fields (title, tags, note type, suggested next action, status) come from the runtime. The UI displays them; it does not compute them.
+2. **Strict boundary isolation** — no private Traverse internals are imported. All communication uses public runtime surfaces.
 
 ## Configuration & Runtime Discovery
 
-The React shell connects to the Traverse runtime via HTTP endpoints. By default, it discovers the runtime at:
+The app reads runtime settings from Vite env vars. Defaults match a local `traverse-cli serve` instance:
 
-- `http://localhost:3000` (configurable via `VITE_TRAVERSE_RUNTIME_URL` env variable).
+| Variable | Default | Purpose |
+|---|---|---|
+| `VITE_TRAVERSE_BASE_URL` | `http://127.0.0.1:8787` | Runtime base URL (`/healthz`, execute, poll, trace) |
+| `VITE_TRAVERSE_WORKSPACE` | `local-default` | Workspace ID |
+| `VITE_TRAVERSE_CAPABILITY_ID` | `traverse-starter.process` | Capability to execute |
 
-You can define this environment variable in `apps/traverse-starter/web-react/.env` or in your system environment.
+Legacy alias: `VITE_TRAVERSE_RUNTIME_URL` is accepted as a fallback for `VITE_TRAVERSE_BASE_URL`.
 
-### Traverse CLI Pinned Release
-
-The project expects a pinned release of the Traverse CLI for executing tasks and workflow orchestration:
-
-```bash
-# Canonical path: runs the pinned release of the Traverse CLI
-npx traverse-cli serve
-```
-
-### TRAVERSE_REPO Override Behavior (Framework Development)
-
-For active framework development or testing local changes to the Traverse framework itself, you can override the pinned release by pointing to a local Traverse repository check-out:
+Copy or edit `apps/traverse-starter/web-react/.env`:
 
 ```bash
-# Environment override for active framework developers
-TRAVERSE_REPO=/path/to/local/Traverse npx traverse-cli serve
+VITE_TRAVERSE_BASE_URL=http://127.0.0.1:8787
+VITE_TRAVERSE_WORKSPACE=local-default
+VITE_TRAVERSE_CAPABILITY_ID=traverse-starter.process
 ```
 
-When `TRAVERSE_REPO` is set, scripts and test runners will locate and execute the local CLI binaries inside that directory (e.g. `cargo run -p traverse-cli -- serve`) instead of invoking the npm-distributed package.
+On startup, the runtime writes `.traverse/server.json` with `base_url` and `workspace_default` — use those values if your port differs.
+
+See [docs/traverse-runtime.md](../../../docs/traverse-runtime.md) for pinned versions and Phase 1 vs Phase 2 requirements.
+
+## Start the Traverse Runtime
+
+```bash
+git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
+cd /tmp/traverse && git checkout v0.6.0   # or v0.3.0+ for Phase 1 HTTP only
+cargo run -p traverse-cli -- serve
+```
+
+For active Traverse framework development:
+
+```bash
+export TRAVERSE_REPO=/path/to/Traverse
+cd "$TRAVERSE_REPO" && cargo run -p traverse-cli -- serve
+```
+
+Do not commit `TRAVERSE_REPO` into app code — it is a local developer override only.
 
 ## Development Commands
 
-Run the following commands from the root directory of the workspace:
+Run from the **repository root**:
 
 ```bash
-# Install all dependencies across workspaces
 npm install
-
-# Start the React app in local development mode
-npm run dev
-
-# Compile TypeScript and build the static distribution bundle
+npm run dev          # starts traverse-starter dev server
 npm run build
-
-# Perform type-checking
 npm run typecheck
-
-# Lint all source files
 npm run lint
-
-# Run all unit tests using Vitest
 npm run test
-
-# Run unit tests and generate coverage reports
 npm run test:coverage
+```
+
+## Smoke Tests
+
+```bash
+# Phase 1 — requires runtime at 127.0.0.1:8787 (or TRAVERSE_RUNTIME_URL)
+bash scripts/ci/phase1_smoke.sh
+
+# Phase 2 — requires TRAVERSE_REPO pointing at Traverse main/v0.5.0+
+export TRAVERSE_REPO=/path/to/Traverse
+bash scripts/ci/phase2_smoke.sh
 ```
