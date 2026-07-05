@@ -32,6 +32,8 @@ check "docs/design-language.md"                "UI design language"
 # Platform clients
 check "apps/traverse-starter/ios-swift/TraverseStarter.xcodeproj" "ios-swift Xcode project"
 check "apps/traverse-starter/ios-swift/README.md"                 "ios-swift README"
+check "apps/traverse-starter/macos-swift/TraverseStarterMac.xcodeproj" "macos-swift Xcode project"
+check "apps/traverse-starter/macos-swift/README.md"                    "macos-swift README"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
