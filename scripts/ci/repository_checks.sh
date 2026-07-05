@@ -36,6 +36,7 @@ check "scripts/ci/coverage_gate.sh"            "Coverage gate"
 check "scripts/ci/phase1_smoke.sh"             "Phase 1 smoke"
 check "scripts/ci/phase2_smoke.sh"             "Phase 2 smoke"
 check "scripts/ci/phase2_link_traverse.sh"     "Phase 2 Traverse link"
+check "scripts/ci/onboarding_check.sh"         "Onboarding check"
 
 # GitHub Actions
 check ".github/workflows/ci.yml"               "CI workflow"

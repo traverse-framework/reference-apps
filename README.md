@@ -63,9 +63,20 @@ npm run lint
 npm run test
 bash scripts/ci/repository_checks.sh
 bash scripts/ci/phase1_smoke.sh   # requires running runtime
+bash scripts/ci/onboarding_check.sh   # local setup verification (runtime steps skip if offline)
 ```
 
 See [docs/traverse-starter-plan.md](docs/traverse-starter-plan.md) for the full plan and [docs/traverse-runtime.md](docs/traverse-runtime.md) for runtime setup.
+
+## Verify Your Setup
+
+After following Getting Started, run:
+
+```bash
+bash scripts/ci/onboarding_check.sh
+```
+
+Checks 1–5 validate Node, install, typecheck, lint, and tests (no runtime required). Checks 6–10 probe the runtime when it is running; they **skip** gracefully when offline.
 
 ## What's Blocked
 
