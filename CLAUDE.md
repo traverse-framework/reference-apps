@@ -87,7 +87,9 @@ Read `.specify/memory/constitution.md` before any implementation work. Key rules
 
 | Detail | Value |
 |---|---|
-| Pinned version | `v0.3.0` |
+| Current release | **v0.6.0** (recommended checkout for all phases) |
+| Phase 1 minimum | v0.3.0 — HTTP/JSON API |
+| Phase 2 minimum | v0.5.0 — CLI app validate/register |
 | Start runtime | `cargo run -p traverse-cli -- serve` |
 | Default address | `127.0.0.1:8787` |
 | Discovery file | `.traverse/server.json` |
@@ -97,7 +99,7 @@ Read `.specify/memory/constitution.md` before any implementation work. Key rules
 Local setup:
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
-cd /tmp/traverse && git checkout v0.3.0
+cd /tmp/traverse && git checkout v0.6.0
 cargo run -p traverse-cli -- serve
 # Reads .traverse/server.json for base_url and workspace_default
 ```

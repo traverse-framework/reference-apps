@@ -27,11 +27,13 @@
 | Phase 1 (HTTP integration) | v0.3.0 |
 | Phase 2 (CLI app registration) | v0.5.0 |
 
+**Current release: v0.6.0** — use this checkout for local development; it satisfies both phase minimums.
+
 Start the runtime:
 
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
-cd /tmp/traverse && git checkout <version>
+cd /tmp/traverse && git checkout v0.6.0
 cargo run -p traverse-cli -- serve
 # Writes .traverse/server.json
 ```
@@ -93,7 +95,7 @@ VITE_TRAVERSE_WORKSPACE=local-default
 **Setup:** manifests reference WASM/contracts/workflows in Traverse via symlink:
 
 ```bash
-export TRAVERSE_REPO=/path/to/Traverse   # main branch, v0.5.0+
+export TRAVERSE_REPO=/path/to/Traverse   # v0.6.0+ with traverse-starter example
 bash scripts/ci/phase2_link_traverse.sh  # creates manifests/traverse-starter/_traverse
 cd $TRAVERSE_REPO && cargo run -p traverse-cli -- serve
 bash scripts/ci/phase2_smoke.sh

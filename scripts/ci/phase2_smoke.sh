@@ -3,7 +3,7 @@
 # Proves: app validate → app register → HTTP execute returns runtime output.
 #
 # Requires:
-#   TRAVERSE_REPO — Traverse main checkout with traverse-starter example (issue #499)
+#   TRAVERSE_REPO — Traverse v0.6.0+ checkout with traverse-starter example (minimum v0.5.0)
 #   Runtime at 127.0.0.1:8787 (via .traverse/server.json or TRAVERSE_RUNTIME_URL)
 #
 # Steps 1–2 (validate) run when TRAVERSE_REPO is set.
