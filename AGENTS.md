@@ -2,6 +2,37 @@
 
 This repo is **UI-only**. Traverse runtime and business logic live outside this repo.
 
+## Current State
+
+**Repo:** `traverse-framework/reference-apps` | **Board:** [Project 2](https://github.com/orgs/traverse-framework/projects/2)
+
+### Platform clients
+
+| Platform | Status | Path |
+|---|---|---|
+| Web (React + TypeScript) | Shipped | `apps/traverse-starter/web-react/` |
+| trace-explorer (React) | Ready to scaffold ([#56](https://github.com/traverse-framework/reference-apps/issues/56)) | `apps/trace-explorer/web-react/` (not yet created) |
+| iOS (SwiftUI) | Blocked ([#44](https://github.com/traverse-framework/reference-apps/issues/44)) | Waiting: [Traverse #525](https://github.com/traverse-framework/Traverse/issues/525), [#526](https://github.com/traverse-framework/Traverse/issues/526), [#527](https://github.com/traverse-framework/Traverse/issues/527) |
+| macOS (SwiftUI + AppKit) | Blocked ([#45](https://github.com/traverse-framework/reference-apps/issues/45)) | Same as iOS |
+| Android (Jetpack Compose) | Planned | Issue TBD |
+| Windows (WinUI 3) | Planned | Issue TBD |
+| Linux (GTK4 + Rust) | Planned | Issue TBD |
+| CLI (Rust) | Planned | Issue TBD |
+
+### Ready to claim (query live board)
+
+```bash
+gh project item-list 2 --owner traverse-framework --format json --limit 300 \
+  --jq '.items[] | select(.status == "Ready") | {number: .content.number, title: .content.title}'
+```
+
+### Blocked work summary
+
+- **Web SSE refactor** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on Traverse #525, #526, #527
+- **iOS / macOS clients** ([#44](https://github.com/traverse-framework/reference-apps/issues/44), [#45](https://github.com/traverse-framework/reference-apps/issues/45)) — blocked on Traverse #522, #525+
+
+Update this section when a PR changes platform status (see PR template checklist).
+
 ## Project Structure
 
 ```text
