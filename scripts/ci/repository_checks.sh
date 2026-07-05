@@ -27,6 +27,7 @@ check "docs/ticket-standard.md"               "Ticket standard"
 check "docs/multi-thread-workflow.md"          "Multi-thread workflow"
 check "docs/traverse-starter-plan.md"          "traverse-starter plan"
 check "docs/traverse-runtime.md"               "Traverse runtime setup"
+check "docs/design-language.md"                "UI design language"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
