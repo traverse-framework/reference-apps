@@ -36,6 +36,8 @@ check "apps/traverse-starter/macos-swift/TraverseStarterMac.xcodeproj" "macos-sw
 check "apps/traverse-starter/macos-swift/README.md"                    "macos-swift README"
 check "apps/traverse-starter/android-compose/settings.gradle.kts"      "android-compose Gradle project"
 check "apps/traverse-starter/android-compose/README.md"                "android-compose README"
+check "apps/traverse-starter/windows-winui/TraverseStarter.sln"        "windows-winui solution"
+check "apps/traverse-starter/windows-winui/README.md"                  "windows-winui README"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
