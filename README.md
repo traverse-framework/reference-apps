@@ -55,6 +55,21 @@ A successful run shows all five output fields populated by the runtime. The UI c
 | [`manifests/traverse-starter/`](manifests/traverse-starter/) | App manifest + component manifests (Phase 2) |
 | [`scripts/ci/`](scripts/ci/) | Repository checks, smoke tests, coverage gate |
 
+## Platform clients
+
+All clients are UI-only shells — they invoke the runtime and render structured output. Phase 1 scaffolds use HTTP polling; SSE upgrade is tracked in [#43](https://github.com/traverse-framework/reference-apps/issues/43).
+
+| Platform | Status | Path |
+|---|---|---|
+| Web (React + TypeScript) | Shipped | [`apps/traverse-starter/web-react/`](apps/traverse-starter/web-react/) |
+| trace-explorer (React) | Shipped | [`apps/trace-explorer/web-react/`](apps/trace-explorer/web-react/) |
+| iOS (SwiftUI) | Shipped | [`apps/traverse-starter/ios-swift/`](apps/traverse-starter/ios-swift/) |
+| macOS (SwiftUI + AppKit) | Shipped | [`apps/traverse-starter/macos-swift/`](apps/traverse-starter/macos-swift/) |
+| Android (Jetpack Compose) | Shipped | [`apps/traverse-starter/android-compose/`](apps/traverse-starter/android-compose/) |
+| Windows (WinUI 3) | Shipped | [`apps/traverse-starter/windows-winui/`](apps/traverse-starter/windows-winui/) |
+| Linux (GTK4 + Rust) | Shipped | [`apps/traverse-starter/linux-gtk/`](apps/traverse-starter/linux-gtk/) |
+| CLI (Rust) | Shipped | [`apps/traverse-starter/cli-rust/`](apps/traverse-starter/cli-rust/) |
+
 ## Development
 
 ```bash
@@ -81,10 +96,8 @@ Checks 1–5 validate Node, install, typecheck, lint, and tests (no runtime requ
 
 ## What's Blocked
 
-Platform expansion and SSE-based state subscription are blocked on Traverse runtime work:
+Active blockers on [Project 2](https://github.com/orgs/traverse-framework/projects/2):
 
-- **SSE state subscription** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — blocked on [Traverse #525](https://github.com/traverse-framework/Traverse/issues/525), [#526](https://github.com/traverse-framework/Traverse/issues/526), [#527](https://github.com/traverse-framework/Traverse/issues/527)
-- **iOS Swift client** ([#44](https://github.com/traverse-framework/reference-apps/issues/44)) — blocked on [Traverse #522](https://github.com/traverse-framework/Traverse/issues/522), [#525](https://github.com/traverse-framework/Traverse/issues/525)
-- **macOS Swift client** ([#45](https://github.com/traverse-framework/reference-apps/issues/45)) — same blockers as iOS
-
-Track active work on [Project 2](https://github.com/orgs/traverse-framework/projects/2).
+- **SSE state subscription** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on [Traverse #525](https://github.com/traverse-framework/Traverse/issues/525), [#526](https://github.com/traverse-framework/Traverse/issues/526), [#527](https://github.com/traverse-framework/Traverse/issues/527). All platform clients inherit this blocker for Phase 2 SSE upgrade.
+- **meeting-notes web-react** ([#57](https://github.com/traverse-framework/reference-apps/issues/57)) — second domain app (list-type output); blocked pending runtime capability work.
+- **doc-approval scaffolds** ([#65](https://github.com/traverse-framework/reference-apps/issues/65)–[#73](https://github.com/traverse-framework/reference-apps/issues/73)) — submitter + approver surfaces across Web, iOS, macOS, Android, Windows, Linux, CLI, and shared core packages; blocked pending domain capability registration in Traverse.

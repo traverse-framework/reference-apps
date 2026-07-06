@@ -211,6 +211,18 @@ gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz --id "$ITEM_ID" \
 gh issue close <NUMBER> --repo traverse-framework/App-References
 ```
 
+## Board hygiene
+
+When a platform client (or other major slice) ships, update all doc touchpoints in one pass:
+
+1. **Project 2** — set Status → Done; set Agent → Unassigned; remove any `agent:*` label
+2. **Issue** — close the linked GitHub issue
+3. **`AGENTS.md`** — update the Platform clients table and Blocked work summary if applicable
+4. **`README.md`** — update the Platform clients table; remove from **What's Blocked** if no longer blocked; add new blockers only when status is Blocked on Project 2
+5. **`docs/design-language.md`** — add or update the row in the Reference implementation table
+
+Do not leave shipped platforms listed as "in progress" or "blocked" in any doc.
+
 ## Project 2 Field IDs
 
 | Resource | ID |

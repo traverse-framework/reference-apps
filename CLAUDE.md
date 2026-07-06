@@ -14,6 +14,14 @@ See `docs/traverse-starter-plan.md` for the full plan and architecture boundary.
 apps/
   traverse-starter/
     web-react/           # React UI shell for the traverse-starter reference app
+    ios-swift/           # SwiftUI iOS client
+    macos-swift/         # SwiftUI macOS client
+    android-compose/     # Jetpack Compose Android client
+    windows-winui/       # WinUI 3 Windows client
+    linux-gtk/           # GTK4 + Rust Linux client
+    cli-rust/            # Rust CLI client
+  trace-explorer/
+    web-react/           # Trace Explorer — execution timeline debugger
 .agents/skills/
   app-refs-ops/          # Ops skill for executing Project 2 tickets
 .specify/memory/         # Constitution and governing principles
