@@ -1,6 +1,6 @@
 ---
 name: "app-refs-ops"
-description: "Start or resume the App-References operating model when the user says APP REFS OPS, asks to start app-refs ops/dev work, asks for the ready-ticket worker, PR finisher, or backlog gardener, or wants Codex to pick ready Project 2 work and run the App-References coordination process."
+description: "Start or resume the App-References operating model when the user says APP REFS OPS. Runs continuously until no Ready work remains or a hard blocker stops progress — merge green PRs, claim Ready tickets, implement, release, repeat."
 ---
 
 # App-References Ops
@@ -23,23 +23,76 @@ The target repo is `traverse-framework/reference-apps` (GitHub slug; product nam
 
 Read `docs/traverse-starter-plan.md` and `.specify/memory/constitution.md` before any implementation work.
 
+## Continuous run mode (default)
+
+`/app-refs-ops` is **not** a single-ticket session. When triggered, run the full ops loop **until idle** — do not stop after one PR, one merge, or one status summary, and do not ask the user "want me to continue?" between tickets.
+
+### Ops loop
+
+Repeat until a stop condition (below):
+
+1. **PR finisher** — inspect open PRs owned by this agent or blocking Ready work; fix CI/review issues; merge when green; rebase if behind `main`.
+2. **Release** — after merge: remove `agent:*` label, set Agent → Unassigned, Status → Done, close issue (see Release sequence below).
+3. **Ready-ticket worker** — query Ready items; run pre-flight on the next unclaimed ticket; claim; implement; open PR.
+4. **Validate** — run applicable local gates; wait for CI; merge when green; go to step 2.
+
+One issue at a time per agent thread, but **many issues per ops invocation** — keep cycling.
+
+### Stop conditions (only these)
+
+Stop reporting only when **all** are true:
+
+- No open PRs from this ops run need attention (merged or explicitly handed off).
+- No Project 2 items remain in `Ready` that pass pre-flight for this agent.
+- No fixable CI failures on open PRs you opened this session.
+
+**Do not stop** merely because one ticket shipped. **Do not pause** for merge approval if CI is green and the user invoked `/app-refs-ops` for autonomous end-to-end execution — merge and continue.
+
+### When to ask the user
+
+Ask only for:
+
+- Product or architecture decisions (`needs-enrico`)
+- Merge approval if the user explicitly said not to merge autonomously in this session
+- Hard blockers outside this repo (Traverse runtime feature missing, credentials, environment)
+
+Everything else — claim, implement, PR, CI fix, merge, release — proceed autonomously.
+
+### Release sequence (after merge)
+
+```bash
+gh issue edit <NUMBER> --repo traverse-framework/reference-apps --remove-label "<AGENT_LABEL>"
+
+ITEM_ID=$(gh project item-list 2 --owner traverse-framework --format json --limit 300 \
+  --jq '.items[] | select(.content.number == <NUMBER>) | .id')
+
+gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz --id "$ITEM_ID" \
+  --field-id PVTSSF_lADOEbiBt84BbzAzzhWjEik --single-select-option-id 8ebf043b
+
+gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz --id "$ITEM_ID" \
+  --field-id PVTSSF_lADOEbiBt84BbzAzzhWg5OQ --single-select-option-id 98236657
+
+gh issue close <NUMBER> --repo traverse-framework/reference-apps
+```
+
 ## Workflow
 
 1. Read `.specify/memory/constitution.md` before any implementation work.
 2. Read `AGENTS.md` and follow the agent coordination rules.
 3. Inspect current GitHub and Project 2 state.
-4. Prefer finishing existing open PRs before claiming new Ready work.
-5. If no active PR needs attention, pick one Ready Project 2 issue.
-6. Before work on an issue, run the pre-flight checks from `AGENTS.md`:
+4. Enter the **ops loop** above — do not exit after step 10 once; loop until idle.
+5. Before work on an issue, run the pre-flight checks from `AGENTS.md`:
    - issue must not have any `agent:*` label
    - no remote `*/issue-NNN-*` branch may exist
-7. If pre-flight passes, claim the issue:
+   - Project 2 status must be `Ready`
+6. If pre-flight passes, claim the issue:
    - add your agent label (see Agent Registry in `AGENTS.md`)
    - set Project 2 `Agent` to your tool
    - set Project 2 `Status` to `In Progress`
-8. Use a dedicated `<agent>/issue-NNN-*` branch (see Agent Registry in `AGENTS.md`).
-9. Keep work scoped to the claimed issue and the UI-only architecture boundary.
-10. Open a dedicated PR with the required sections (Summary, Definition of Done, Validation).
+7. Use a dedicated `<agent>/issue-NNN-*` branch (see Agent Registry in `AGENTS.md`).
+8. Keep work scoped to the claimed issue and the UI-only architecture boundary.
+9. Open a dedicated PR with the required sections (Summary, Definition of Done, Validation).
+10. Validate, merge when green, release, then **return to step 4** for the next Ready ticket.
 
 ## Project 2 IDs
 
@@ -133,9 +186,11 @@ Minimality must never push business logic into the UI, import private Traverse i
 
 ## Operating Lanes
 
-- **Ready-ticket worker**: claim one Ready Project 2 issue and implement it end to end.
-- **PR finisher**: inspect open PRs, fix CI/review issues, and merge when green.
-- **Backlog gardener**: audit Project 2 statuses, labels, blockers, and notes.
+All lanes run inside the **continuous ops loop** — none of them end the session after one pass.
+
+- **PR finisher**: inspect open PRs, fix CI/review issues, merge when green, release linked issues — then pick the next Ready ticket.
+- **Ready-ticket worker**: claim one Ready issue, implement end to end, merge, release — then claim the next Ready issue.
+- **Backlog gardener**: audit Project 2 statuses, labels, blockers, and notes — only when no Ready work is available or as hygiene between tickets.
 
 ## Guardrails
 
@@ -144,5 +199,7 @@ Minimality must never push business logic into the UI, import private Traverse i
 - Do not claim work already owned by another agent.
 - Do not broaden scope beyond the issue and the UI-only architecture boundary.
 - Create follow-up tickets for non-blocking improvements instead of expanding an active slice.
+- **Do not stop the ops loop after one ticket** — run until Ready queue is empty or a stop condition applies.
+- **Do not ask the user to continue** between tickets during `/app-refs-ops`; that breaks autonomous end-to-end execution.
 
 For the full operating model, see `docs/multi-thread-workflow.md`.

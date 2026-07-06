@@ -70,6 +70,18 @@ All clients are UI-only shells — they invoke the runtime and render structured
 | Linux (GTK4 + Rust) | Shipped | [`apps/traverse-starter/linux-gtk/`](apps/traverse-starter/linux-gtk/) |
 | CLI (Rust) | Shipped | [`apps/traverse-starter/cli-rust/`](apps/traverse-starter/cli-rust/) |
 
+### doc-approval (Phase 1 submitter)
+
+| Platform | Status | Path |
+|---|---|---|
+| Web (React + TypeScript) | Shipped | [`apps/doc-approval/web-react/`](apps/doc-approval/web-react/) |
+| iOS (SwiftUI) | Shipped | [`apps/doc-approval/ios-swift/`](apps/doc-approval/ios-swift/) |
+| macOS (SwiftUI + AppKit) | Shipped | [`apps/doc-approval/macos-swift/`](apps/doc-approval/macos-swift/) |
+| Android (Jetpack Compose) | Shipped | [`apps/doc-approval/android-compose/`](apps/doc-approval/android-compose/) |
+| Windows (WinUI 3) | Shipped | [`apps/doc-approval/windows-winui/`](apps/doc-approval/windows-winui/) |
+| Linux (GTK4 + Rust) | Shipped | [`apps/doc-approval/linux-gtk/`](apps/doc-approval/linux-gtk/) |
+| CLI (Rust) | Shipped | [`apps/doc-approval/cli-rust/`](apps/doc-approval/cli-rust/) |
+
 ## Development
 
 ```bash
@@ -100,4 +112,4 @@ Active blockers on [Project 2](https://github.com/orgs/traverse-framework/projec
 
 - **SSE state subscription** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on [Traverse #525](https://github.com/traverse-framework/Traverse/issues/525), [#526](https://github.com/traverse-framework/Traverse/issues/526), [#527](https://github.com/traverse-framework/Traverse/issues/527). All platform clients inherit this blocker for Phase 2 SSE upgrade.
 - **meeting-notes web-react** ([#57](https://github.com/traverse-framework/reference-apps/issues/57)) — second domain app (list-type output); blocked pending runtime capability work.
-- **doc-approval scaffolds** ([#65](https://github.com/traverse-framework/reference-apps/issues/65)–[#73](https://github.com/traverse-framework/reference-apps/issues/73)) — submitter + approver surfaces across Web, iOS, macOS, Android, Windows, Linux, CLI, and shared core packages; blocked pending domain capability registration in Traverse.
+- **doc-approval shared core** ([#72](https://github.com/traverse-framework/reference-apps/issues/72), [#73](https://github.com/traverse-framework/reference-apps/issues/73)) — extract shared Swift/Rust client packages for iOS/macOS and linux-gtk/cli-rust; Phase 2 work blocked on SSE and crate design.

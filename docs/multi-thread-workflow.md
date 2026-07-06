@@ -76,13 +76,15 @@ Use this short trigger when you want Codex to start or resume the App-References
 APP REFS OPS
 ```
 
-When Enrico says `APP REFS OPS`, Codex should:
+When Enrico says `APP REFS OPS`, the agent should run the **continuous ops loop** (see `.agents/skills/app-refs-ops/SKILL.md`) until idle:
 
-- Start or resume the **ready-ticket worker**: pick one Ready Project 2 ticket, follow `AGENTS.md`, claim it, set `In Progress`, implement on one branch, open one PR.
-- Start or resume the **PR finisher**: inspect open PRs, fix CI/review issues, merge green PRs, update linked issues and Project 2 state.
-- Start or resume the **backlog gardener**: audit Project 2 statuses, labels, blockers, and notes; ensure items have the right status; create missing tickets with full Definition of Done.
-- Do all feasible work autonomously. Ask only when a product or architecture decision requires Enrico.
-- Run lean: filtered Project 2 queries, bounded command output, focused diffs, summarized CI results.
+- **PR finisher** → merge green PRs, release linked issues
+- **Ready-ticket worker** → claim, implement, PR, merge, release — then pick the next Ready ticket
+- **Backlog gardener** → only when no Ready work is available
+
+Do **not** stop after one ticket or ask to continue between tickets. Ask only for product/architecture decisions or hard external blockers.
+
+Run lean: filtered Project 2 queries, bounded command output, focused diffs, summarized CI results.
 
 ## Starter Prompts
 

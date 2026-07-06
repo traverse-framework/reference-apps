@@ -19,6 +19,18 @@ This repo is **UI-only**. Traverse runtime and business logic live outside this 
 | Linux (GTK4 + Rust) | Shipped | `apps/traverse-starter/linux-gtk/` |
 | CLI (Rust) | Shipped | `apps/traverse-starter/cli-rust/` |
 
+### doc-approval clients (Phase 1 submitter — shipped)
+
+| Platform | Status | Path |
+|---|---|---|
+| Web (React + TypeScript) | Shipped | `apps/doc-approval/web-react/` |
+| iOS (SwiftUI) | Shipped | `apps/doc-approval/ios-swift/` |
+| macOS (SwiftUI + AppKit) | Shipped | `apps/doc-approval/macos-swift/` |
+| Android (Jetpack Compose) | Shipped | `apps/doc-approval/android-compose/` |
+| Windows (WinUI 3) | Shipped | `apps/doc-approval/windows-winui/` |
+| Linux (GTK4 + Rust) | Shipped | `apps/doc-approval/linux-gtk/` |
+| CLI (Rust) | Shipped | `apps/doc-approval/cli-rust/` |
+
 ### Ready to claim (query live board)
 
 ```bash
@@ -30,6 +42,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 - **Web SSE refactor** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on Traverse #525, #526, #527
 - **Platform SSE upgrade (Phase 2)** — iOS/macOS/Android/Windows/Linux/CLI Phase 1 scaffolds use HTTP polling; SSE blocked on same Traverse issues
+- **doc-approval shared core** ([#72](https://github.com/traverse-framework/reference-apps/issues/72), [#73](https://github.com/traverse-framework/reference-apps/issues/73)) — extract shared Swift/Rust client packages; blocked on Phase 2 SSE / shared crate design
 
 Update this section when a PR changes platform status (see PR template checklist).
 
@@ -39,6 +52,14 @@ Update this section when a PR changes platform status (see PR template checklist
 apps/
   traverse-starter/
     web-react/           # React UI shell
+    ios-swift/           # SwiftUI iOS client
+    macos-swift/         # SwiftUI macOS client
+    android-compose/     # Jetpack Compose Android client
+    windows-winui/       # WinUI 3 Windows client
+    linux-gtk/           # GTK4 + Rust Linux client
+    cli-rust/            # Rust CLI client
+  doc-approval/
+    web-react/           # React submitter UI
     ios-swift/           # SwiftUI iOS client
     macos-swift/         # SwiftUI macOS client
     android-compose/     # Jetpack Compose Android client
