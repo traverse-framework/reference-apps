@@ -46,6 +46,8 @@ check "apps/traverse-starter/cli-rust/README.md"                        "cli-rus
 # doc-approval clients
 check "apps/doc-approval/web-react/package.json"                        "doc-approval web-react package"
 check "apps/doc-approval/web-react/README.md"                           "doc-approval web-react README"
+check "apps/doc-approval/ios-swift/DocApproval.xcodeproj"               "doc-approval ios-swift Xcode project"
+check "apps/doc-approval/ios-swift/README.md"                           "doc-approval ios-swift README"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
