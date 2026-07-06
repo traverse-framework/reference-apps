@@ -69,6 +69,18 @@ The UI renders these fields exactly as the runtime provides them — never compu
 | Linux (GTK4 + Rust) | `apps/traverse-starter/linux-gtk/` | Shipped |
 | CLI (Rust) | `apps/traverse-starter/cli-rust/` | Shipped |
 
+### doc-approval (Phase 1 submitter)
+
+| Platform | Path | Status |
+|---|---|---|
+| Web (React) | `apps/doc-approval/web-react/` | Shipped |
+| iOS (SwiftUI) | `apps/doc-approval/ios-swift/` | Shipped |
+| macOS (SwiftUI + AppKit) | `apps/doc-approval/macos-swift/` | Shipped |
+| Android (Jetpack Compose) | `apps/doc-approval/android-compose/` | Shipped |
+| Windows (WinUI 3) | `apps/doc-approval/windows-winui/` | Shipped |
+| Linux (GTK4 + Rust) | `apps/doc-approval/linux-gtk/` | Shipped |
+| CLI (Rust) | `apps/doc-approval/cli-rust/` | Shipped |
+
 New platform clients must link to this doc in their issue Definition of Done.
 
 ## Governance
