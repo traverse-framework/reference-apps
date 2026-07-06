@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="TraverseStarter.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="20" MaxWidth="960">
+            <TextBlock Text="Start Workflow" Style="{ThemeResource SubtitleTextBlockStyle}" />
+
+            <TextBox
+                x:Name="NoteBox"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"
+                PlaceholderText="Enter a note to process…"
+                MinHeight="140" />
+
+            <TextBlock
+                x:Name="NoteCountText"
+                FontSize="12"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button x:Name="SubmitButton" Content="Start Workflow" Click="SubmitButton_Click" />
+                <Button Content="Reset" Click="ResetButton_Click" />
+            </StackPanel>
+
+            <TextBlock
+                x:Name="OfflineHint"
+                Text="Runtime offline — start with `cargo run -p traverse-cli -- serve`"
+                FontSize="12"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Visibility="Collapsed" />
+
+            <TextBlock Text="Execution Output" Style="{ThemeResource SubtitleTextBlockStyle}" />
+
+            <StackPanel x:Name="OutputPanel" Spacing="8">
+                <TextBlock
+                    x:Name="IdleText"
+                    Text="Submit a note above to start a workflow."
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBlock x:Name="LoadingText" Text="Starting execution…" Visibility="Collapsed" />
+                <TextBlock x:Name="PollingText" FontFamily="Consolas" FontSize="12" Visibility="Collapsed" />
+                <TextBlock x:Name="ErrorText" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap" />
+
+                <Grid x:Name="OutputGrid" Visibility="Collapsed" ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Title" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="TitleValue" Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Tags" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="TagsValue" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Note type" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="NoteTypeValue" Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Next action" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="NextActionValue" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Status" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="StatusValue" Grid.Row="4" Grid.Column="1" TextWrapping="Wrap" />
+                </Grid>
+
+                <Expander x:Name="TraceExpander" Header="Trace" Visibility="Collapsed">
+                    <ItemsControl x:Name="TraceList" />
+                </Expander>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
