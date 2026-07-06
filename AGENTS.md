@@ -4,7 +4,7 @@ This repo is **UI-only**. Traverse runtime and business logic live outside this 
 
 ## Current State
 
-**Repo:** `traverse-framework/reference-apps` | **Board:** [Project 2](https://github.com/orgs/traverse-framework/projects/2)
+**Repo:** `traverse-framework/reference-apps` (GitHub slug; product name App-References) | **Board:** [Project 2](https://github.com/orgs/traverse-framework/projects/2)
 
 ### Platform clients
 
@@ -125,7 +125,7 @@ Run these three checks **before starting any work on an issue**. All three must 
 ### Check 1 — No existing agent label
 
 ```bash
-gh issue view <NUMBER> --repo traverse-framework/App-References --json labels \
+gh issue view <NUMBER> --repo traverse-framework/reference-apps --json labels \
   --jq '.labels[].name | select(startswith("agent:"))'
 ```
 
@@ -162,7 +162,7 @@ Replace `<AGENT_LABEL>` with your tool's label and `<AGENT_OPTION_ID>` with your
 
 ```bash
 # 1. Add your agent label
-gh issue edit <NUMBER> --repo traverse-framework/App-References --add-label "<AGENT_LABEL>"
+gh issue edit <NUMBER> --repo traverse-framework/reference-apps --add-label "<AGENT_LABEL>"
 
 # 2. Get the Project 2 item ID for this issue
 ITEM_ID=$(gh project item-list 2 --owner traverse-framework --format json --limit 300 \
@@ -199,7 +199,7 @@ After your work is merged:
 
 ```bash
 # Remove your agent label
-gh issue edit <NUMBER> --repo traverse-framework/App-References --remove-label "<AGENT_LABEL>"
+gh issue edit <NUMBER> --repo traverse-framework/reference-apps --remove-label "<AGENT_LABEL>"
 
 # Set Agent → Unassigned, Status → Done
 gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz --id "$ITEM_ID" \
@@ -208,7 +208,7 @@ gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz --id "$ITEM_ID" \
   --field-id PVTSSF_lADOEbiBt84BbzAzzhWg5OQ --single-select-option-id 98236657
 
 # Close the issue
-gh issue close <NUMBER> --repo traverse-framework/App-References
+gh issue close <NUMBER> --repo traverse-framework/reference-apps
 ```
 
 ## Board hygiene

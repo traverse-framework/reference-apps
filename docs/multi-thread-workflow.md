@@ -103,13 +103,13 @@ Keep all work within the UI-only architecture boundary.
 Act as an App-References dev thread for issue #NN.
 
 Pre-flight (run before any work):
-1. gh issue view NN --repo traverse-framework/App-References --json labels
+1. gh issue view NN --repo traverse-framework/reference-apps --json labels
    If labels include "agent:claude" → STOP. Report: "Issue #NN is claimed by Claude Code."
 2. git ls-remote --heads origin | grep "issue-NN-"
    If a claude/issue-NN-* branch exists → STOP. Report: "A Claude Code branch exists for #NN."
 
 Claim (only if pre-flight passes):
-1. gh issue edit NN --repo traverse-framework/App-References --add-label "agent:codex"
+1. gh issue edit NN --repo traverse-framework/reference-apps --add-label "agent:codex"
 2. Get item ID: gh project item-list 2 --owner traverse-framework --format json --limit 300 \
      --jq '.items[] | select(.content.number == NN) | .id'
 3. Set Agent → Codex:

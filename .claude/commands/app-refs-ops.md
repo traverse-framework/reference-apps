@@ -19,7 +19,7 @@ This repo is **UI-only**. Traverse runtime and business logic live outside this 
 The UI must not compute business fields (tags, note type, next action, status) — it renders runtime-provided data only.
 
 All tickets live in [Project 2](https://github.com/orgs/traverse-framework/projects/2) (`traverse-framework`, project number `2`).
-The target repo is `traverse-framework/App-References`.
+The target repo is `traverse-framework/reference-apps` (GitHub slug; product name App-References).
 
 Read `docs/traverse-starter-plan.md` and `.specify/memory/constitution.md` before any implementation work.
 
@@ -67,7 +67,7 @@ Multiple agents run in parallel. All three checks must pass before claiming.
 
 ```bash
 # Check 1 — any agent:* label already on this issue?
-gh issue view <NUMBER> --repo traverse-framework/App-References --json labels \
+gh issue view <NUMBER> --repo traverse-framework/reference-apps --json labels \
   --jq '.labels[].name | select(startswith("agent:"))'
 # If anything is returned → STOP. Issue is already claimed.
 
@@ -82,7 +82,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 # ── All three passed — now claim ──────────────────────────────────────────
 
-gh issue edit <NUMBER> --repo traverse-framework/App-References --add-label "agent:codex"
+gh issue edit <NUMBER> --repo traverse-framework/reference-apps --add-label "agent:codex"
 
 ITEM_ID=$(gh project item-list 2 --owner traverse-framework --format json --limit 300 \
   --jq '.items[] | select(.content.number == <NUMBER>) | .id')
