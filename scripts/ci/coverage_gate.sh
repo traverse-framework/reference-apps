@@ -21,14 +21,14 @@ echo "Targets:"
 cat "$TARGETS_FILE"
 echo ""
 
-# Run tests with coverage in JSON format
+# Run tests with coverage
 cd "$REPO_ROOT"
-npm run test:coverage -- --reporter=json --outputFile=coverage/coverage-summary.json 2>/dev/null || {
+npm run test:coverage 2>/dev/null || {
   echo "FAIL: test suite failed."
   exit 1
 }
 
-COVERAGE_FILE="$REPO_ROOT/coverage/coverage-summary.json"
+COVERAGE_FILE="$REPO_ROOT/apps/traverse-starter/web-react/coverage/coverage-summary.json"
 if [ ! -f "$COVERAGE_FILE" ]; then
   echo "FAIL: coverage output not found at $COVERAGE_FILE"
   exit 1
