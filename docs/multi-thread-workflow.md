@@ -2,17 +2,17 @@
 
 App-References supports parallel execution when parallel work is real.
 
-One Codex thread is one active worker. For true parallel work, run multiple Codex threads — each with a separate issue, branch, and PR.
+One dev thread is one active worker. For true parallel work, run multiple dev threads — each with a separate issue, branch, and PR.
 
-## Two-Agent Model (Codex + Claude Code)
+## Multi-Agent Model
 
-Codex and Claude Code can work in parallel on separate issues. To prevent conflicts:
+Multiple coding agents (Codex, Claude Code, Cursor, Antigravity, Continue, and others) can work in parallel on separate issues. To prevent conflicts:
 
-- **Labels**: `agent:codex` and `agent:claude` mark which agent owns an issue
-- **Project board**: the Agent field (Unassigned / Codex / Claude Code) shows ownership at a glance
-- **Branches**: `codex/issue-NNN-*` and `claude/issue-NNN-*` naming makes branch ownership explicit
+- **Labels**: `agent:*` marks which agent owns an issue (see Agent Registry in `AGENTS.md`)
+- **Project board**: the Agent field shows ownership at a glance
+- **Branches**: `<agent>/issue-NNN-*` naming makes branch ownership explicit (e.g. `cursor/issue-84-*`, `codex/issue-84-*`)
 
-**Rule**: claim before you code. Both agents check for the other's label and branch before starting work. See `AGENTS.md` for the full pre-flight sequence.
+**Rule**: claim before you code. Every agent checks for any existing `agent:*` label and any remote `*/issue-NNN-*` branch before starting work. See `AGENTS.md` for the full pre-flight sequence.
 
 ## Thread Roles
 
@@ -103,25 +103,24 @@ Keep all work within the UI-only architecture boundary.
 Act as an App-References dev thread for issue #NN.
 
 Pre-flight (run before any work):
-1. gh issue view NN --repo traverse-framework/reference-apps --json labels
-   If labels include "agent:claude" → STOP. Report: "Issue #NN is claimed by Claude Code."
-2. git ls-remote --heads origin | grep "issue-NN-"
-   If a claude/issue-NN-* branch exists → STOP. Report: "A Claude Code branch exists for #NN."
+1. gh issue view NN --repo traverse-framework/reference-apps --json labels \
+     --jq '.labels[].name | select(startswith("agent:"))'
+   If any `agent:*` label is returned → STOP. Report which agent owns the issue.
+2. git ls-remote --heads origin | grep "/issue-NN-"
+   If any branch matches `*/issue-NN-*` → STOP. Report the existing branch.
 
 Claim (only if pre-flight passes):
-1. gh issue edit NN --repo traverse-framework/reference-apps --add-label "agent:codex"
+1. gh issue edit NN --repo traverse-framework/reference-apps --add-label "<AGENT_LABEL>"
 2. Get item ID: gh project item-list 2 --owner traverse-framework --format json --limit 300 \
      --jq '.items[] | select(.content.number == NN) | .id'
-3. Set Agent → Codex:
-   gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz --id <ITEM_ID> \
-     --field-id PVTSSF_lADOEbiBt84BbzAzzhWjEik --single-select-option-id e428b05e
+3. Set Agent field (see Agent Registry in AGENTS.md for option IDs)
 4. Set Status → In Progress:
    gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz --id <ITEM_ID> \
      --field-id PVTSSF_lADOEbiBt84BbzAzzhWg5OQ --single-select-option-id 47fc9ee4
 
 Then proceed:
 - Only work on this issue
-- Use a dedicated codex/issue-NN-* branch and open a dedicated PR
+- Use a dedicated <agent>/issue-NN-* branch and open a dedicated PR
 - Keep implementation within the UI-only architecture boundary
 - No business logic in the UI layer
 - No private Traverse internals imported

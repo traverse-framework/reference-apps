@@ -31,13 +31,13 @@ Read `docs/traverse-starter-plan.md` and `.specify/memory/constitution.md` befor
 4. Prefer finishing existing open PRs before claiming new Ready work.
 5. If no active PR needs attention, pick one Ready Project 2 issue.
 6. Before work on an issue, run the pre-flight checks from `AGENTS.md`:
-   - issue must not have `agent:claude`
-   - no remote `claude/issue-NNN-*` branch may exist
+   - issue must not have any `agent:*` label
+   - no remote `*/issue-NNN-*` branch may exist
 7. If pre-flight passes, claim the issue:
-   - add `agent:codex`
-   - set Project 2 `Agent` to `Codex`
+   - add your agent label (see Agent Registry in `AGENTS.md`)
+   - set Project 2 `Agent` to your tool
    - set Project 2 `Status` to `In Progress`
-8. Use a dedicated `codex/issue-NNN-*` branch.
+8. Use a dedicated `<agent>/issue-NNN-*` branch (see Agent Registry in `AGENTS.md`).
 9. Keep work scoped to the claimed issue and the UI-only architecture boundary.
 10. Open a dedicated PR with the required sections (Summary, Definition of Done, Validation).
 
@@ -59,6 +59,7 @@ Read `docs/traverse-starter-plan.md` and `.specify/memory/constitution.md` befor
 | Agent: Claude Code | `8f903ad6` |
 | Agent: Cursor | `a9811389` |
 | Agent: Antigravity | `77295899` |
+| Agent: Continue | `156c534e` |
 | Note field | `PVTF_lADOEbiBt84BbzAzzhWjEio` |
 
 ## Pre-flight + Claim Sequence
@@ -82,7 +83,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 # ── All three passed — now claim ──────────────────────────────────────────
 
-gh issue edit <NUMBER> --repo traverse-framework/reference-apps --add-label "agent:codex"
+gh issue edit <NUMBER> --repo traverse-framework/reference-apps --add-label "<AGENT_LABEL>"
 
 ITEM_ID=$(gh project item-list 2 --owner traverse-framework --format json --limit 300 \
   --jq '.items[] | select(.content.number == <NUMBER>) | .id')
@@ -90,7 +91,7 @@ ITEM_ID=$(gh project item-list 2 --owner traverse-framework --format json --limi
 gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz \
   --id "$ITEM_ID" \
   --field-id PVTSSF_lADOEbiBt84BbzAzzhWjEik \
-  --single-select-option-id e428b05e   # Codex
+  --single-select-option-id <AGENT_OPTION_ID>
 
 gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz \
   --id "$ITEM_ID" \
@@ -140,7 +141,7 @@ Minimality must never push business logic into the UI, import private Traverse i
 
 - Do not mark work `In Progress` unless a real dev thread has started.
 - Do not use labels as status; Project 2 status is the actionability source of truth.
-- Do not claim work already owned by Claude Code.
+- Do not claim work already owned by another agent.
 - Do not broaden scope beyond the issue and the UI-only architecture boundary.
 - Create follow-up tickets for non-blocking improvements instead of expanding an active slice.
 

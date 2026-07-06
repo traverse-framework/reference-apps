@@ -25,7 +25,7 @@ Every active or future ticket should use the relevant labels:
 - `quality` — code quality, coverage, or CI gate work
 - `documentation` — docs-only work
 
-Use `agent:claude` or `agent:codex` when claimed by an agent. See `AGENTS.md`.
+Use an `agent:*` label when claimed by an agent. Registered labels: `agent:claude`, `agent:codex`, `agent:cursor`, `agent:antigravity`, `agent:continue`. See `AGENTS.md` Agent Registry.
 
 Use Project 2 status for availability:
 
