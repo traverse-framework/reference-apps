@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="DocApproval.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="doc-approval">
+
+    <NavigationView
+        x:Name="NavView"
+        IsBackButtonVisible="Collapsed"
+        IsSettingsVisible="True"
+        PaneDisplayMode="LeftCompact"
+        SelectionChanged="NavView_SelectionChanged">
+
+        <NavigationView.Header>
+            <StackPanel Orientation="Horizontal" Spacing="8" Padding="12,8">
+                <Ellipse x:Name="StatusDot" Width="10" Height="10" Fill="Gray" />
+                <TextBlock x:Name="StatusText" Text="Checking…" VerticalAlignment="Center" />
+                <TextBlock
+                    x:Name="BaseUrlText"
+                    FontFamily="Consolas"
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    VerticalAlignment="Center" />
+            </StackPanel>
+        </NavigationView.Header>
+
+        <Frame x:Name="ContentFrame" />
+    </NavigationView>
+</Window>
