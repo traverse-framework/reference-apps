@@ -19,7 +19,7 @@ UI state must be driven by events from the Traverse runtime, not by locally comp
 Phase 1 is deterministic and does not require live AI access. It does require a real local Traverse runtime or an explicit, documented stub. Fake workflow registration, fake event emission, and mock runtime responses embedded in application code are constitution violations. Test doubles used in unit tests are acceptable when clearly scoped to tests.
 
 ### V. Phase Gate Discipline
-Phase 2 (app validation and registration via Traverse CLI) is explicitly blocked until the Traverse public CLI surface (`traverse-cli app validate`, `traverse-cli app register`) exists in a released or pinned build. Do not implement a workaround, HTTP registration endpoint, or service registry as a substitute. Document the dependency clearly and keep the Phase 2 ticket blocked.
+Phase 2 (app validation and registration via Traverse CLI) is available when the Traverse public CLI surface (`traverse-cli app validate`, `traverse-cli app register`) is present in a released or pinned build (v0.5.0+). Do not implement a workaround, HTTP registration endpoint, or service registry as a substitute for the CLI flow. Phase 2 work must use the official CLI surface and remain within the UI-only architecture boundary of this repo.
 
 ### VI. Traceability
 Every meaningful change must be tracked through a GitHub issue, a Project 2 item, and a pull request. These three artifacts are the minimum traceability model.
@@ -34,7 +34,7 @@ A change must not merge when any of the following are true:
 - The change lacks the required traceability artifacts
 
 ### VIII. Agent Coordination
-When two agents work in parallel, claim before you code. Check for `agent:claude` label and `claude/issue-NNN-*` branch before starting any issue. If either exists, stop and pick a different ticket. See `AGENTS.md` for the full pre-flight and claim sequence.
+When multiple agents work in parallel, claim before you code. Check for any existing `agent:*` label and any remote `*/issue-NNN-*` branch before starting any issue. If either exists, stop and pick a different ticket. See `AGENTS.md` for the full pre-flight and claim sequence.
 
 ## Non-Functional Requirements
 
@@ -61,8 +61,8 @@ All reviews must check for:
 - Private Traverse internals imported
 - Fake runtime behavior in application code
 - Missing traceability artifacts
-- Phase 2 work started without the required Traverse CLI surface
+- Phase 2 work that bypasses the official Traverse CLI surface (HTTP registration or service-registry substitutes)
 
 Amendments require documenting the rule being changed, the reason, and the migration impact.
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-27
+**Version**: 1.0.1 | **Ratified**: 2026-06-27 | **Amended**: 2026-07-06 — Principle V: Phase 2 unblocked at Traverse v0.5.0+; Principle VIII: multi-agent pre-flight aligned with `AGENTS.md`
