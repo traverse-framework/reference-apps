@@ -17,7 +17,7 @@ This repo is **UI-only**. Traverse runtime and business logic live outside this 
 | Android (Jetpack Compose) | Shipped | `apps/traverse-starter/android-compose/` |
 | Windows (WinUI 3) | Shipped | `apps/traverse-starter/windows-winui/` |
 | Linux (GTK4 + Rust) | Shipped | `apps/traverse-starter/linux-gtk/` |
-| CLI (Rust) | Ready ([#55](https://github.com/traverse-framework/reference-apps/issues/55)) | Phase 1 HTTP polling |
+| CLI (Rust) | Shipped | `apps/traverse-starter/cli-rust/` |
 
 ### Ready to claim (query live board)
 
@@ -44,6 +44,7 @@ apps/
     android-compose/     # Jetpack Compose Android client
     windows-winui/       # WinUI 3 Windows client
     linux-gtk/           # GTK4 + Rust Linux client
+    cli-rust/            # Rust CLI client
 .agents/skills/
   app-refs-ops/          # Ops skill for Project 2 work
 .specify/memory/         # Constitution and governing principles
