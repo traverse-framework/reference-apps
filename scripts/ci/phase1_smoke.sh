@@ -7,14 +7,15 @@
 # Minimum Traverse version: v0.3.0 — tested with v0.6.0 (current release).
 #
 # Set TRAVERSE_RUNTIME_URL to override default discovery.
-# Set TRAVERSE_CAPABILITY_ID to override the capability being tested.
+# Set TRAVERSE_CAPABILITY_ID to override the capability being tested
+#   (default: traverse-starter.process, input field: note).
 # Exit 0 on pass. Exit 1 on failure.
 set -euo pipefail
 
 REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 SERVER_JSON="${TRAVERSE_SERVER_JSON:-.traverse/server.json}"
 TIMEOUT="${SMOKE_TIMEOUT:-30}"
-CAPABILITY_ID="${TRAVERSE_CAPABILITY_ID:-traverse-starter}"
+CAPABILITY_ID="${TRAVERSE_CAPABILITY_ID:-traverse-starter.process}"
 
 echo "=== Phase 1 smoke test ==="
 
@@ -62,7 +63,7 @@ echo ""
 # ── 3. Execute capability ──────────────────────────────────────────────────
 
 echo "Step 2: executing capability '$CAPABILITY_ID'..."
-FIXTURE_INPUT='{"text": "Meeting with design team about onboarding flow improvements"}'
+FIXTURE_INPUT='{"note": "Meeting with design team about onboarding flow improvements"}'
 
 EXEC_RESPONSE=$(curl -sf --max-time 15 \
   -X POST "$BASE_URL/v1/workspaces/$WORKSPACE_ID/execute" \
