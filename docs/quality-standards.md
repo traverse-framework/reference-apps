@@ -53,9 +53,13 @@ The coverage gate is merge-safe before non-trivial logic exists — it passes wh
 
 ## Native Platform Clients
 
-Native traverse-starter clients follow the same UI-only architecture boundary as web: they render, sort, filter, and display runtime-provided data. They must not compute business fields (title, tags, note type, next action, status) or import private Traverse internals.
+Native clients follow the UI-only boundary: **native UI separated from business logic**. Business fields come from the embedded Traverse host (Phase 3) or dev HTTP sidecar (Phase 1/2 interim).
 
-**Runtime boundary**: use only the public Traverse HTTP/JSON API ([spec 033](https://github.com/traverse-framework/Traverse/blob/main/docs/specs/033-http-json-api.md)). Phase 1 clients poll execution status; SSE upgrades are tracked separately in `AGENTS.md`.
+**Runtime boundary (interim):** public HTTP/JSON API ([spec 033](https://github.com/traverse-framework/Traverse/blob/main/docs/specs/033-http-json-api.md)) for dev sidecar only.
+
+**Runtime boundary (target):** public embedded host SDK from Traverse — in-process execute, event subscription, bundled manifests + WASM. No `127.0.0.1:8787` in production builds.
+
+See [`docs/embedded-runtime-plan.md`](embedded-runtime-plan.md) for the Phase 3 platform matrix.
 
 **IA parity**: native shells must match the traverse-starter information architecture documented in [`docs/design-language.md`](design-language.md).
 

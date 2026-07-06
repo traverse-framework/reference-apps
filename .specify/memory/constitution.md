@@ -21,6 +21,8 @@ Phase 1 is deterministic and does not require live AI access. It does require a 
 ### V. Phase Gate Discipline
 Phase 2 (app validation and registration via Traverse CLI) is available when the Traverse public CLI surface (`traverse-cli app validate`, `traverse-cli app register`) is present in a released or pinned build (v0.5.0+). Do not implement a workaround, HTTP registration endpoint, or service registry as a substitute for the CLI flow. Phase 2 work must use the official CLI surface and remain within the UI-only architecture boundary of this repo.
 
+Phase 3 (embedded in-app WASM runtime) is the **production target** for all platform clients. Shipped apps must bundle the Traverse host and WASM artifacts; they must not require a separate `traverse-cli serve` process for end users. Phase 1 HTTP sidecar integration is a dev/CI path only until Phase 3 migration completes. See `docs/embedded-runtime-plan.md`.
+
 ### VI. Traceability
 Every meaningful change must be tracked through a GitHub issue, a Project 2 item, and a pull request. These three artifacts are the minimum traceability model.
 
@@ -41,7 +43,7 @@ When multiple agents work in parallel, claim before you code. Check for any exis
 - **Determinism**: same runtime events must produce the same rendered output
 - **Testability**: non-trivial UI logic must be designed for full automated verification
 - **Maintainability**: component boundaries must support long-term evolution without hidden coupling to runtime internals
-- **Portability**: the UI shell must remain deployable as a standard web app without coupling to a specific Traverse host or infrastructure vendor
+- **Portability**: each platform client ships as a self-contained app with an embedded Traverse runtime host; dev HTTP sidecar is optional and not the production deployment model
 - **Reproducibility**: builds, tests, and CI gates must be reproducible from pinned inputs and documented commands
 
 ## Development Workflow
@@ -65,4 +67,4 @@ All reviews must check for:
 
 Amendments require documenting the rule being changed, the reason, and the migration impact.
 
-**Version**: 1.0.1 | **Ratified**: 2026-06-27 | **Amended**: 2026-07-06 — Principle V: Phase 2 unblocked at Traverse v0.5.0+; Principle VIII: multi-agent pre-flight aligned with `AGENTS.md`
+**Version**: 1.1.0 | **Ratified**: 2026-06-27 | **Amended**: 2026-07-06 — Phase 3 embedded runtime as production target; Phase 1 HTTP sidecar demoted to dev-only path

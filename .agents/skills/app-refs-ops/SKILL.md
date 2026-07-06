@@ -15,13 +15,12 @@ APP REFS OPS
 
 ## Context
 
-This repo is **UI-only**. Traverse runtime and business logic live outside this repo.
-The UI must not compute business fields (tags, note type, next action, status) — it renders runtime-provided data only.
+This repo is **UI-only**. Business logic lives in Traverse WASM agents. **Phase 3 target:** embedded runtime in every platform app. Phase 1/2 HTTP sidecar is dev-only interim.
 
 All tickets live in [Project 2](https://github.com/orgs/traverse-framework/projects/2) (`traverse-framework`, project number `2`).
 The target repo is `traverse-framework/reference-apps` (GitHub slug; product name App-References).
 
-Read `docs/traverse-starter-plan.md` and `.specify/memory/constitution.md` before any implementation work.
+Read `docs/embedded-runtime-plan.md`, `docs/traverse-starter-plan.md`, and `.specify/memory/constitution.md` before any implementation work.
 
 ## Continuous run mode (default)
 
@@ -182,7 +181,9 @@ Minimality must never push business logic into the UI, import private Traverse i
 - **Never** import private Traverse internals
 - **Never** fake workflow registration or runtime behavior in application code
 - **Always** drive UI state from runtime-provided events
-- Phase 2 (app validation/registration) is **blocked** until Traverse public CLI surface exists
+- Phase 3 (embedded in-app runtime) is the production target — see `docs/embedded-runtime-plan.md`
+- Phase 2 (app validation/registration) uses Traverse CLI against dev sidecar
+- Phase 1 HTTP sidecar is **not** the shipping architecture
 
 ## Operating Lanes
 

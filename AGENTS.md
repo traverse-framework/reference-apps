@@ -1,6 +1,6 @@
 # App-References Development Guidelines
 
-This repo is **UI-only**. Traverse runtime and business logic live outside this repo.
+This repo is **UI-only**. Business logic and WASM agents live in the Traverse framework. **Shipped apps embed the Traverse runtime host (Phase 3 target);** Phase 1/2 dev uses an external HTTP sidecar.
 
 ## Current State
 
@@ -40,9 +40,11 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 ### Blocked work summary
 
-- **Web SSE refactor** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on Traverse #525, #526, #527
-- **Platform SSE upgrade (Phase 2)** — iOS/macOS/Android/Windows/Linux/CLI Phase 1 scaffolds use HTTP polling; SSE blocked on same Traverse issues
-- **doc-approval shared core** ([#72](https://github.com/traverse-framework/reference-apps/issues/72), [#73](https://github.com/traverse-framework/reference-apps/issues/73)) — extract shared Swift/Rust client packages; blocked on Phase 2 SSE / shared crate design
+- **Phase 3 embedded runtime** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)) — see `docs/embedded-runtime-plan.md`; blocked on [Traverse #553](https://github.com/traverse-framework/Traverse/issues/553)
+- **Multi-capability showcase workflows** ([#110](https://github.com/traverse-framework/reference-apps/issues/110), [#111](https://github.com/traverse-framework/reference-apps/issues/111)) — pipeline workflows with multiple WASM agents
+- **Web SSE refactor** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on Traverse **#527** only (#525/#526 done)
+- **Platform SSE upgrade** — iOS/macOS/Android/Windows/Linux/CLI Phase 1 scaffolds use HTTP polling; SSE blocked on same Traverse issues
+- **Shared embedded host packages** ([#58](https://github.com/traverse-framework/reference-apps/issues/58), [#59](https://github.com/traverse-framework/reference-apps/issues/59), [#72](https://github.com/traverse-framework/reference-apps/issues/72), [#73](https://github.com/traverse-framework/reference-apps/issues/73)) — Swift/Rust wrappers around embeddable host SDK; blocked on Phase 3 SDK
 
 Update this section when a PR changes platform status (see PR template checklist).
 
@@ -76,7 +78,9 @@ scripts/ci/              # CI gate scripts
 
 ## Traverse Runtime
 
-**Current release: v0.6.0** (recommended for all phases) | Phase 1 minimum: v0.3.0 | Phase 2 minimum: v0.5.0 | API spec: **033-http-json-api** (approved v1.1.0)
+**Production target (Phase 3):** embedded in-app WASM runtime host in every platform client — see `docs/embedded-runtime-plan.md`.
+
+**Dev sidecar (Phase 1/2, current):** v0.6.0 recommended | Phase 1 minimum: v0.3.0 | Phase 2 minimum: v0.5.0 | API spec: **033-http-json-api** (approved v1.1.0)
 
 ```bash
 # Start local runtime
@@ -103,6 +107,8 @@ npm run typecheck
 npm run lint
 npm run test
 npm run test:coverage
+bash scripts/dev/check-native-prerequisites.sh   # doc-approval native toolchain (macOS)
+bash scripts/dev/test-doc-approval-macos.sh      # doc-approval unit tests (macOS-testable platforms)
 bash scripts/ci/repository_checks.sh
 bash scripts/ci/phase1_smoke.sh
 ```

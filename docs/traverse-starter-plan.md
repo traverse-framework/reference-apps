@@ -4,8 +4,9 @@
 
 `traverse-starter` is the minimal Traverse reference UI app. It demonstrates the full app-consumable path for downstream developers:
 
-- **Phase 1**: UI → HTTP execute → poll → render runtime-provided structured output
-- **Phase 2**: app manifest → `traverse-cli app validate` → `traverse-cli app register` → runtime loads registered capability → UI invokes it end-to-end
+- **Phase 1**: UI → HTTP execute → poll → render runtime-provided structured output (dev sidecar)
+- **Phase 2**: app manifest → `traverse-cli app validate` → `traverse-cli app register` → sidecar loads capability → UI invokes it end-to-end
+- **Phase 3**: native UI → **embedded in-app WASM runtime** → multi-capability workflow → render runtime-provided output (production target — see [`embedded-runtime-plan.md`](embedded-runtime-plan.md))
 
 ## Architecture Boundary
 
@@ -18,7 +19,7 @@
 | App manifest + component manifests | This repo — `manifests/traverse-starter/` |
 | Capability contract + WASM agent | Traverse repo — `examples/traverse-starter/` |
 | Business output fields (title, tags, etc.) | Traverse runtime — UI renders, never computes |
-| Traverse CLI/runtime binary | External — pinned (see below) |
+| Traverse CLI/runtime binary | External for dev sidecar; **embedded host in shipped apps (Phase 3)** |
 
 ## Runtime Pin
 
@@ -113,12 +114,24 @@ bash scripts/ci/phase2_smoke.sh
 | 24 | Author traverse-starter app manifest | ✅ Ready (Traverse #499 merged) |
 | 6 | Phase 2 app registration | ✅ Ready (Traverse #499, #500 merged) |
 
+## Phase 3 — Embedded Runtime + Multi-Capability Workflow
+
+**Status: target — blocked on Traverse embeddable host SDK**
+
+See [`embedded-runtime-plan.md`](embedded-runtime-plan.md) for the full matrix and ticket index.
+
+**Showcase workflow:** `traverse-starter.pipeline` chains `validate` → `process` → `summarize`.
+
+**Exit criteria:** all seven platform clients run the pipeline with embedded runtime; no sidecar required.
+
 ## Accepted Decisions
 
 - UI renders runtime-provided fields only — no local business logic
-- No private Traverse internals imported
-- No HTTP app registration endpoint — setup uses CLI only
-- No service registry — discovery via `.traverse/server.json`
+- No private Traverse internals imported into UI code
+- No HTTP app registration endpoint — Phase 2 setup uses CLI only
+- Phase 1 HTTP sidecar + `.traverse/server.json` is **dev-only**, not production
+- Shipped apps embed Traverse host + bundled WASM (Phase 3)
 - No fake runtime responses in application code
 - Phase 1 does not require live AI/model access — runtime determinism is guaranteed
 - `TRAVERSE_REPO` env override is for active framework development only
+- At least one multi-capability workflow demonstrates orchestration across WASM agents

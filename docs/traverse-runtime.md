@@ -1,6 +1,15 @@
 # Traverse Runtime Setup
 
-This document is the canonical local setup reference for all apps in this repo.
+This document covers **how to run the Traverse runtime for local development**. For the **production target** (embedded in-app host), see [`embedded-runtime-plan.md`](embedded-runtime-plan.md).
+
+## Deployment Models
+
+| Model | Status | Use when |
+|---|---|---|
+| **Embedded in-app host (Phase 3)** | Target — not yet in platform clients | Building/shipping reference apps to end users |
+| **HTTP sidecar `traverse-cli serve` (Phase 1/2)** | Current dev path | Local development, CI smoke tests, trace-explorer |
+
+End-user apps **must not** depend on a separately running sidecar. The sidecar exists so developers can iterate before the embeddable host SDK ships in Traverse.
 
 ## Pinned Version
 
@@ -8,12 +17,13 @@ This document is the canonical local setup reference for all apps in this repo.
 |---|---|---|
 | Phase 1 (HTTP integration) | **v0.3.0** | HTTP/JSON API, `/healthz`, execute, poll, trace |
 | Phase 2 (CLI app registration) | **v0.5.0** | `traverse-cli app validate/register`, workspace state |
+| Phase 3 (embedded host) | **TBD** | In-app WASM runtime host SDK per platform |
 
-**Current release: v0.6.0** — recommended checkout for all phases (backward-compatible with Phase 1 and Phase 2 minimums).
+**Current release: v0.6.0** — recommended for Phase 1/2 dev sidecar.
 
 Requirements: Rust 1.94+
 
-## Start the Runtime
+## Dev Sidecar — Start the Runtime
 
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
@@ -34,7 +44,7 @@ cat .traverse/server.json
 # }
 ```
 
-## API Surface
+## HTTP API Surface (dev sidecar only)
 
 Governed by `033-http-json-api` (approved v1.1.0).
 
@@ -48,7 +58,9 @@ Governed by `033-http-json-api` (approved v1.1.0).
 
 Default workspace: `local-default`
 
-## Discovery in App Code
+Phase 3 embedded clients use the **public host SDK** instead of these HTTP endpoints for in-process execution.
+
+## Discovery in App Code (Phase 1/2 — dev only)
 
 ```typescript
 import fs from 'fs'
@@ -58,53 +70,54 @@ const baseUrl = server.base_url          // http://127.0.0.1:8787
 const workspaceId = server.workspace_default  // local-default
 ```
 
-In the browser (Vite dev server proxies to runtime):
+In the browser (Vite env vars):
+
 ```typescript
 const baseUrl = import.meta.env.VITE_TRAVERSE_BASE_URL ?? 'http://127.0.0.1:8787'
 const workspaceId = import.meta.env.VITE_TRAVERSE_WORKSPACE ?? 'local-default'
 ```
 
-## App Registration (Phase 2)
+Phase 3 clients load bundled manifests from the app artifact and initialize an in-process workspace — no URL discovery.
+
+## App Registration (Phase 2 — dev sidecar)
 
 Governed by `044-application-bundle-manifest` and `046-public-cli-app-registration` (both approved).
 
 ```bash
-# Validate app manifest
 traverse-cli app validate --manifest manifests/<app>/app.manifest.json --json
 
-# Register app into workspace
 traverse-cli app register \
   --manifest manifests/<app>/app.manifest.json \
   --workspace local-default \
   --json
 ```
 
-## Local Development Override
+Phase 3 production builds embed manifests + WASM at **build time**; registration into a sidecar workspace is not the shipping path.
 
-For active Traverse framework development, point at a local checkout instead of a tagged release:
+## Local Development Override
 
 ```bash
 export TRAVERSE_REPO=/path/to/Traverse
 cd $TRAVERSE_REPO && cargo run -p traverse-cli -- serve
 ```
 
-Do not commit `TRAVERSE_REPO` references into app code. This is a local developer override only.
+Do not commit `TRAVERSE_REPO` references into app code.
 
 ## CI Environment
-
-For CI environments without a local runtime, set:
 
 ```bash
 TRAVERSE_RUNTIME_URL=http://<host>:<port>
 TRAVERSE_WORKSPACE_ID=local-default
 ```
 
-The `scripts/ci/phase1_smoke.sh` reads these env vars when `.traverse/server.json` is not present.
+`scripts/ci/phase1_smoke.sh` reads these when `.traverse/server.json` is absent.
 
-Phase 2 validation and registration require a Traverse checkout:
+Phase 2:
 
 ```bash
-export TRAVERSE_REPO=/path/to/Traverse   # main branch with traverse-starter example
-bash scripts/ci/phase2_link_traverse.sh  # symlink WASM/contracts into manifests/
-bash scripts/ci/phase2_smoke.sh          # validate → register → HTTP execute
+export TRAVERSE_REPO=/path/to/Traverse
+bash scripts/ci/phase2_link_traverse.sh
+bash scripts/ci/phase2_smoke.sh
 ```
+
+Phase 3 will add `scripts/ci/embedded_smoke.sh` when the embeddable host is available.
