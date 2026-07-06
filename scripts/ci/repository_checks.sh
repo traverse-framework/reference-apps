@@ -52,6 +52,8 @@ check "apps/doc-approval/macos-swift/DocApprovalMac.xcodeproj"          "doc-app
 check "apps/doc-approval/macos-swift/README.md"                         "doc-approval macos-swift README"
 check "apps/doc-approval/android-compose/settings.gradle.kts"           "doc-approval android-compose Gradle project"
 check "apps/doc-approval/android-compose/README.md"                     "doc-approval android-compose README"
+check "apps/doc-approval/windows-winui/DocApproval.sln"                 "doc-approval windows-winui solution"
+check "apps/doc-approval/windows-winui/README.md"                         "doc-approval windows-winui README"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
