@@ -31,12 +31,12 @@ final class MockTraverseClient: TraverseClientProtocol {
 
 @MainActor
 final class ExecutionViewModelTests: XCTestCase {
-    func testCanSubmitWhenOnlineWithNote() {
+    func testCanSubmitWhenOnlineWithNote() async {
         let settings = AppSettings()
         let client = MockTraverseClient()
         client.healthOK = true
         let vm = ExecutionViewModel(client: client, settings: settings)
-        vm.runtimeStatus = .online
+        await vm.refreshHealth()
         vm.note = "hello"
         XCTAssertTrue(vm.canSubmit)
     }
@@ -65,7 +65,7 @@ final class ExecutionViewModelTests: XCTestCase {
             ),
         ]
         let vm = ExecutionViewModel(client: client, settings: settings)
-        vm.runtimeStatus = .online
+        await vm.refreshHealth()
         vm.note = "note text"
         vm.submit()
         try? await Task.sleep(nanoseconds: 2_000_000_000)
@@ -76,10 +76,25 @@ final class ExecutionViewModelTests: XCTestCase {
         }
     }
 
-    func testResetReturnsToIdle() {
+    func testResetReturnsToIdle() async {
         let settings = AppSettings()
-        let vm = ExecutionViewModel(client: MockTraverseClient(), settings: settings)
-        vm.phase = .failed(error: "boom")
+        let client = MockTraverseClient()
+        client.pollResults = [
+            ExecutionPollResult(
+                executionId: "exec_test",
+                status: "failed",
+                output: nil,
+                error: "boom"
+            ),
+        ]
+        let vm = ExecutionViewModel(client: client, settings: settings)
+        await vm.refreshHealth()
+        vm.note = "note text"
+        vm.submit()
+        try? await Task.sleep(nanoseconds: 500_000_000)
+        guard case .failed = vm.phase else {
+            return XCTFail("expected failed, got \(vm.phase)")
+        }
         vm.reset()
         XCTAssertEqual(vm.phase, .idle)
     }
