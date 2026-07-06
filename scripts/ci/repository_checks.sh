@@ -34,6 +34,8 @@ check "apps/traverse-starter/ios-swift/TraverseStarter.xcodeproj" "ios-swift Xco
 check "apps/traverse-starter/ios-swift/README.md"                 "ios-swift README"
 check "apps/traverse-starter/macos-swift/TraverseStarterMac.xcodeproj" "macos-swift Xcode project"
 check "apps/traverse-starter/macos-swift/README.md"                    "macos-swift README"
+check "apps/traverse-starter/android-compose/settings.gradle.kts"      "android-compose Gradle project"
+check "apps/traverse-starter/android-compose/README.md"                "android-compose README"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
