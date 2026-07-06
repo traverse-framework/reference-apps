@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "apps/traverse-starter/web-react",
-    "apps/trace-explorer/web-react"
+    "apps/trace-explorer/web-react",
+    "apps/doc-approval/web-react"
   ],
   "scripts": {
     "dev": "npm run dev -w apps/traverse-starter/web-react",
