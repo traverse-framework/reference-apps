@@ -56,6 +56,8 @@ check "apps/doc-approval/windows-winui/DocApproval.sln"                 "doc-app
 check "apps/doc-approval/windows-winui/README.md"                         "doc-approval windows-winui README"
 check "apps/doc-approval/linux-gtk/Cargo.toml"                            "doc-approval linux-gtk Cargo project"
 check "apps/doc-approval/linux-gtk/README.md"                             "doc-approval linux-gtk README"
+check "apps/doc-approval/cli-rust/Cargo.toml"                             "doc-approval cli-rust Cargo project"
+check "apps/doc-approval/cli-rust/README.md"                              "doc-approval cli-rust README"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
