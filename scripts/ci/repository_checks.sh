@@ -50,6 +50,8 @@ check "apps/doc-approval/ios-swift/DocApproval.xcodeproj"               "doc-app
 check "apps/doc-approval/ios-swift/README.md"                           "doc-approval ios-swift README"
 check "apps/doc-approval/macos-swift/DocApprovalMac.xcodeproj"          "doc-approval macos-swift Xcode project"
 check "apps/doc-approval/macos-swift/README.md"                         "doc-approval macos-swift README"
+check "apps/doc-approval/android-compose/settings.gradle.kts"           "doc-approval android-compose Gradle project"
+check "apps/doc-approval/android-compose/README.md"                     "doc-approval android-compose README"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
