@@ -43,6 +43,10 @@ check "apps/traverse-starter/linux-gtk/README.md"                       "linux-g
 check "apps/traverse-starter/cli-rust/Cargo.toml"                       "cli-rust Cargo project"
 check "apps/traverse-starter/cli-rust/README.md"                        "cli-rust README"
 
+# doc-approval clients
+check "apps/doc-approval/web-react/package.json"                        "doc-approval web-react package"
+check "apps/doc-approval/web-react/README.md"                           "doc-approval web-react README"
+
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
 check "scripts/ci/pr_body_check.sh"            "PR body check"
