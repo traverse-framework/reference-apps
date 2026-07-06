@@ -10,10 +10,12 @@ Every client presents the same three zones, top to bottom:
 
 | Element | Description |
 |---|---|
-| Runtime URL | Text display of the configured base URL |
-| Runtime status | `Online` (green) / `Offline` (red) / `Checking` (animated) |
+| Runtime mode | `Embedded` (Phase 3) or `Sidecar` (Phase 1/2 dev) |
+| Runtime status | `Ready` (green) / `Unavailable` (red) / `Starting` (animated) |
 | Workspace | Workspace ID (e.g. `local-default`) |
-| Capability ID | Capability being invoked (e.g. `traverse-starter.process`) |
+| Workflow / capability | Workflow or capability being invoked (e.g. `traverse-starter.pipeline`) |
+
+Phase 1/2 clients may still show a sidecar URL during dev migration. Phase 3 clients must not expose loopback URL as a required user configuration.
 
 ### Zone 2 — Input
 

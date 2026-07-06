@@ -2,9 +2,7 @@
 
 ## Repo Purpose
 
-This repo is **UI-only**. Traverse runtime and business logic live outside this repo.
-The React UI must not compute business fields — it renders, sorts, filters, and displays
-data provided by the Traverse runtime.
+This repo is **UI-only**. Business logic and WASM agents live in Traverse. **Phase 3 target:** each platform app embeds the WASM runtime host. Phase 1/2 dev uses an HTTP sidecar until migration completes.
 
 See `docs/traverse-starter-plan.md` for the full plan and architecture boundary.
 
@@ -95,16 +93,15 @@ Read `.specify/memory/constitution.md` before any implementation work. Key rules
 
 | Detail | Value |
 |---|---|
-| Current release | **v0.6.0** (recommended checkout for all phases) |
+| **Production target (Phase 3)** | Embedded in-app WASM runtime host in every platform client |
+| Dev sidecar (Phase 1/2 interim) | **v0.6.0** — `cargo run -p traverse-cli -- serve` @ `127.0.0.1:8787` |
 | Phase 1 minimum | v0.3.0 — HTTP/JSON API |
 | Phase 2 minimum | v0.5.0 — CLI app validate/register |
-| Start runtime | `cargo run -p traverse-cli -- serve` |
-| Default address | `127.0.0.1:8787` |
-| Discovery file | `.traverse/server.json` |
 | Default workspace | `local-default` |
-| Governing API spec | `033-http-json-api` (approved v1.1.0) |
+| Governing API spec (dev sidecar) | `033-http-json-api` (approved v1.1.0) |
+| Phase 3 plan | `docs/embedded-runtime-plan.md` |
 
-Local setup:
+Dev sidecar setup (interim):
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
 cd /tmp/traverse && git checkout v0.6.0

@@ -4,7 +4,9 @@
 
 Reference UI applications for the [Traverse](https://github.com/traverse-framework/Traverse) framework.
 
-**Architecture in one sentence:** This repo is UI-only. All business logic runs in the Traverse WASM runtime — the React clients start workflows, subscribe to events, and render runtime-provided output.
+**Architecture in one sentence:** This repo is UI-only. Each platform ships a **native UI shell** with an **embedded Traverse WASM runtime** (Phase 3 target). Business logic lives in bundled WASM agents; the UI starts workflows and renders runtime-provided output only.
+
+> **Current state:** Phase 1/2 clients still use an HTTP dev sidecar (`traverse-cli serve`). Phase 3 migration is tracked on [Project 2](https://github.com/orgs/traverse-framework/projects/2). See [`docs/embedded-runtime-plan.md`](docs/embedded-runtime-plan.md).
 
 ## Prerequisites
 
@@ -12,28 +14,15 @@ Reference UI applications for the [Traverse](https://github.com/traverse-framewo
 - **Rust 1.94+** (to build and run the Traverse runtime)
 - **`gh` CLI** (for agents claiming Project 2 tickets)
 
-## Getting Started
+## Getting Started (Phase 1/2 dev sidecar)
 
+Until Phase 3 embedded runtime lands, local development uses a separate Traverse process:
 ```bash
 # 1. Clone this repo
 git clone https://github.com/traverse-framework/reference-apps.git
 cd reference-apps
 
-# 2. Clone and start the Traverse runtime (separate terminal)
-git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
-cd /tmp/traverse && git checkout v0.6.0
-cargo run -p traverse-cli -- serve
-# Writes .traverse/server.json → http://127.0.0.1:8787
-
-# 3. Install dependencies
-npm install
-
-# 4. Start the traverse-starter dev server
-npm run dev
-# Opens http://localhost:5173
-
-# 5. In the browser: type a note → Start Workflow → see structured output
-```
+# 2. Clone and start the Traverse dev sidecar (separate terminal — not required in Phase 3)
 
 ## What You Will See
 
@@ -51,13 +40,14 @@ A successful run shows all five output fields populated by the runtime. The UI c
 |---|---|
 | [`apps/traverse-starter/web-react/`](apps/traverse-starter/web-react/) | traverse-starter React UI shell |
 | [`apps/trace-explorer/web-react/`](apps/trace-explorer/web-react/) | Trace Explorer — execution timeline debugger |
-| [`docs/`](docs/) | Plan, runtime setup, quality standards |
+| [`docs/embedded-runtime-plan.md`](docs/embedded-runtime-plan.md) | Phase 3 target — embedded runtime + multi-capability workflows |
+| [`docs/traverse-runtime.md`](docs/traverse-runtime.md) | Dev sidecar setup (Phase 1/2) |
 | [`manifests/traverse-starter/`](manifests/traverse-starter/) | App manifest + component manifests (Phase 2) |
 | [`scripts/ci/`](scripts/ci/) | Repository checks, smoke tests, coverage gate |
 
 ## Platform clients
 
-All clients are UI-only shells — they invoke the runtime and render structured output. Phase 1 scaffolds use HTTP polling; SSE upgrade is tracked in [#43](https://github.com/traverse-framework/reference-apps/issues/43).
+All clients are **native UI shells** separated from business logic. Phase 1/2 use an HTTP dev sidecar; **Phase 3 embeds the WASM runtime in every app** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)). SSE upgrade tracked in [#43](https://github.com/traverse-framework/reference-apps/issues/43).
 
 | Platform | Status | Path |
 |---|---|---|
@@ -94,6 +84,73 @@ bash scripts/ci/phase1_smoke.sh   # requires running runtime
 bash scripts/ci/onboarding_check.sh   # local setup verification (runtime steps skip if offline)
 ```
 
+### doc-approval native testing on macOS
+
+Platforms testable on a Mac without a Linux/Windows VM: **web-react**, **cli-rust**, **macos-swift**, **ios-swift**, **android-compose**.
+
+**One-time prerequisites**
+
+| Tool | Purpose | Install |
+|---|---|---|
+| Xcode 16+ | iOS + macOS | App Store |
+| JDK 17 | Android Gradle tests | `brew install openjdk@17` |
+| Android command-line tools | SDK for Gradle + emulator | `brew install android-commandlinetools` |
+| Android Studio | Android emulator (manual runs) | [developer.android.com](https://developer.android.com/studio) (optional if using CLI SDK) |
+| Rust | CLI client | [rustup.rs](https://rustup.rs/) |
+
+**Check prerequisites**
+
+```bash
+source scripts/dev/android-env.sh   # JAVA_HOME + ANDROID_HOME (after brew install below)
+bash scripts/dev/check-native-prerequisites.sh
+```
+
+**Android SDK one-time install (Homebrew, no Android Studio required for unit tests)**
+
+```bash
+brew install openjdk@17 android-commandlinetools
+source scripts/dev/android-env.sh
+yes | sdkmanager --licenses
+sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+```
+
+**Run all macOS-testable unit tests**
+
+```bash
+bash scripts/dev/test-doc-approval-macos.sh
+# optional E2E when runtime is up:
+bash scripts/dev/test-doc-approval-macos.sh --with-runtime-smoke
+```
+
+Per-app READMEs under `apps/doc-approval/*/README.md` cover manual GUI runs and runtime URL settings (Android emulator uses `http://10.0.2.2:8787` for host loopback).
+
+### Run the apps visually (manual testing)
+
+**1. Start the runtime** (keep this terminal open):
+
+```bash
+cd /tmp/traverse && cargo run -p traverse-cli -- serve
+```
+
+**2. Launch a client** (pick one per terminal/window):
+
+```bash
+bash scripts/dev/launch-doc-approval.sh web       # browser → http://localhost:5173
+bash scripts/dev/launch-doc-approval.sh macos     # opens Xcode → press ⌘R
+bash scripts/dev/launch-doc-approval.sh ios       # opens Xcode + Simulator → press ⌘R
+bash scripts/dev/launch-doc-approval.sh android   # starts emulator, installs app
+bash scripts/dev/launch-doc-approval.sh           # show menu
+```
+
+| App | How you see it | Runtime URL in settings |
+|-----|----------------|-------------------------|
+| Web | Browser at `http://localhost:5173` | `http://127.0.0.1:8787` (in `.env`) |
+| macOS | DocApprovalMac window | `http://127.0.0.1:8787` (⌘,) |
+| iOS | iPhone Simulator | `http://127.0.0.1:8787` (Settings) |
+| Android | Emulator | `http://10.0.2.2:8787` (Settings) |
+
+Paste document text → **Analyze** / submit → you should see analysis fields when the runtime is online and the capability is registered.
+
 See [docs/traverse-starter-plan.md](docs/traverse-starter-plan.md) for the full plan and [docs/traverse-runtime.md](docs/traverse-runtime.md) for runtime setup.
 
 ## Verify Your Setup
@@ -110,6 +167,8 @@ Checks 1–5 validate Node, install, typecheck, lint, and tests (no runtime requ
 
 Active blockers on [Project 2](https://github.com/orgs/traverse-framework/projects/2):
 
-- **SSE state subscription** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on [Traverse #525](https://github.com/traverse-framework/Traverse/issues/525), [#526](https://github.com/traverse-framework/Traverse/issues/526), [#527](https://github.com/traverse-framework/Traverse/issues/527). All platform clients inherit this blocker for Phase 2 SSE upgrade.
-- **meeting-notes web-react** ([#57](https://github.com/traverse-framework/reference-apps/issues/57)) — second domain app (list-type output); blocked pending runtime capability work.
-- **doc-approval shared core** ([#72](https://github.com/traverse-framework/reference-apps/issues/72), [#73](https://github.com/traverse-framework/reference-apps/issues/73)) — extract shared Swift/Rust client packages for iOS/macOS and linux-gtk/cli-rust; Phase 2 work blocked on SSE and crate design.
+- **Phase 3 embedded runtime** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)) — all platform clients must bundle the WASM runtime host; blocked on [Traverse #553](https://github.com/traverse-framework/Traverse/issues/553). HTTP sidecar is dev-only.
+- **Multi-capability showcase workflow** ([#110](https://github.com/traverse-framework/reference-apps/issues/110), [#111](https://github.com/traverse-framework/reference-apps/issues/111)) — traverse-starter and doc-approval pipeline workflows with multiple WASM capabilities.
+- **SSE state subscription** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on [Traverse #527](https://github.com/traverse-framework/Traverse/issues/527) only (#525/#526 done).
+- **meeting-notes web-react** ([#57](https://github.com/traverse-framework/reference-apps/issues/57)) — second domain app (list-type output); blocked on [Traverse #532](https://github.com/traverse-framework/Traverse/issues/532).
+- **Embedded runtime client packages** ([#58](https://github.com/traverse-framework/reference-apps/issues/58), [#59](https://github.com/traverse-framework/reference-apps/issues/59), [#72](https://github.com/traverse-framework/reference-apps/issues/72), [#73](https://github.com/traverse-framework/reference-apps/issues/73)) — shared Swift/Rust host wiring for embedded mode; reprioritized from HTTP client extraction.
