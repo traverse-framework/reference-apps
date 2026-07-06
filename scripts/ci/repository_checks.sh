@@ -54,6 +54,8 @@ check "apps/doc-approval/android-compose/settings.gradle.kts"           "doc-app
 check "apps/doc-approval/android-compose/README.md"                     "doc-approval android-compose README"
 check "apps/doc-approval/windows-winui/DocApproval.sln"                 "doc-approval windows-winui solution"
 check "apps/doc-approval/windows-winui/README.md"                         "doc-approval windows-winui README"
+check "apps/doc-approval/linux-gtk/Cargo.toml"                            "doc-approval linux-gtk Cargo project"
+check "apps/doc-approval/linux-gtk/README.md"                             "doc-approval linux-gtk README"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
