@@ -62,12 +62,14 @@ The UI renders these fields exactly as the runtime provides them — never compu
 |---|---|---|
 | Web (React) | `apps/traverse-starter/web-react/` | Shipped |
 | trace-explorer | `apps/trace-explorer/web-react/` | Developer tool (trace-only UI) |
+| iOS (SwiftUI) | `apps/traverse-starter/ios-swift/` | Shipped |
+| macOS (SwiftUI + AppKit) | `apps/traverse-starter/macos-swift/` | Shipped |
+| Android (Jetpack Compose) | `apps/traverse-starter/android-compose/` | Shipped |
+| Windows (WinUI 3) | `apps/traverse-starter/windows-winui/` | Shipped |
+| Linux (GTK4 + Rust) | `apps/traverse-starter/linux-gtk/` | Shipped |
+| CLI (Rust) | `apps/traverse-starter/cli-rust/` | Shipped |
 
-Platform clients in progress or blocked should link to this doc in their issue Definition of Done:
-
-- [#44](https://github.com/traverse-framework/reference-apps/issues/44) iOS
-- [#45](https://github.com/traverse-framework/reference-apps/issues/45) macOS
-- #52–#55 (Android, Windows, Linux, CLI) when filed
+New platform clients must link to this doc in their issue Definition of Done.
 
 ## Governance
 
