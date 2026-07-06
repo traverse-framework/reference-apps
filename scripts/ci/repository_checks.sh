@@ -48,6 +48,8 @@ check "apps/doc-approval/web-react/package.json"                        "doc-app
 check "apps/doc-approval/web-react/README.md"                           "doc-approval web-react README"
 check "apps/doc-approval/ios-swift/DocApproval.xcodeproj"               "doc-approval ios-swift Xcode project"
 check "apps/doc-approval/ios-swift/README.md"                           "doc-approval ios-swift README"
+check "apps/doc-approval/macos-swift/DocApprovalMac.xcodeproj"          "doc-approval macos-swift Xcode project"
+check "apps/doc-approval/macos-swift/README.md"                         "doc-approval macos-swift README"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
