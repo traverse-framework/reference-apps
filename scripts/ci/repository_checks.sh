@@ -40,6 +40,8 @@ check "apps/traverse-starter/windows-winui/TraverseStarter.sln"        "windows-
 check "apps/traverse-starter/windows-winui/README.md"                  "windows-winui README"
 check "apps/traverse-starter/linux-gtk/Cargo.toml"                      "linux-gtk Cargo project"
 check "apps/traverse-starter/linux-gtk/README.md"                       "linux-gtk README"
+check "apps/traverse-starter/cli-rust/Cargo.toml"                       "cli-rust Cargo project"
+check "apps/traverse-starter/cli-rust/README.md"                        "cli-rust README"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
