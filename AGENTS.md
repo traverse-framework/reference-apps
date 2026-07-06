@@ -16,7 +16,7 @@ This repo is **UI-only**. Traverse runtime and business logic live outside this 
 | macOS (SwiftUI + AppKit) | Shipped | `apps/traverse-starter/macos-swift/` |
 | Android (Jetpack Compose) | Shipped | `apps/traverse-starter/android-compose/` |
 | Windows (WinUI 3) | Shipped | `apps/traverse-starter/windows-winui/` |
-| Linux (GTK4 + Rust) | Ready ([#54](https://github.com/traverse-framework/reference-apps/issues/54)) | Phase 1 HTTP polling |
+| Linux (GTK4 + Rust) | Shipped | `apps/traverse-starter/linux-gtk/` |
 | CLI (Rust) | Ready ([#55](https://github.com/traverse-framework/reference-apps/issues/55)) | Phase 1 HTTP polling |
 
 ### Ready to claim (query live board)
@@ -43,6 +43,7 @@ apps/
     macos-swift/         # SwiftUI macOS client
     android-compose/     # Jetpack Compose Android client
     windows-winui/       # WinUI 3 Windows client
+    linux-gtk/           # GTK4 + Rust Linux client
 .agents/skills/
   app-refs-ops/          # Ops skill for Project 2 work
 .specify/memory/         # Constitution and governing principles

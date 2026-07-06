@@ -38,6 +38,8 @@ check "apps/traverse-starter/android-compose/settings.gradle.kts"      "android-
 check "apps/traverse-starter/android-compose/README.md"                "android-compose README"
 check "apps/traverse-starter/windows-winui/TraverseStarter.sln"        "windows-winui solution"
 check "apps/traverse-starter/windows-winui/README.md"                  "windows-winui README"
+check "apps/traverse-starter/linux-gtk/Cargo.toml"                      "linux-gtk Cargo project"
+check "apps/traverse-starter/linux-gtk/README.md"                       "linux-gtk README"
 
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
