@@ -7,7 +7,7 @@ describe('App', () => {
   afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks() })
 
   it('renders UI shell', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({ ok: true, json: () => Promise.resolve({}) } as Response)
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true, json: () => Promise.resolve({}) } as Response)
     await act(async () => { render(<App />) })
     expect(screen.getByText('Doc Approval')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Submit Document', level: 2 })).toBeInTheDocument()
@@ -15,7 +15,7 @@ describe('App', () => {
   })
 
   it('shows Offline when health check fails', async () => {
-    vi.spyOn(global, 'fetch').mockRejectedValue(new Error('Network error'))
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('Network error'))
     render(<App />)
     await act(async () => { await vi.runOnlyPendingTimersAsync() })
     expect(screen.getByText('Offline')).toBeInTheDocument()
@@ -24,7 +24,7 @@ describe('App', () => {
   })
 
   it('shows Online when health check succeeds', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({ ok: true, json: () => Promise.resolve({}) } as Response)
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true, json: () => Promise.resolve({}) } as Response)
     render(<App />)
     await act(async () => { await vi.runOnlyPendingTimersAsync() })
     expect(screen.getByText('Online')).toBeInTheDocument()
@@ -38,7 +38,7 @@ describe('App', () => {
       confidence: 0.88,
       recommendation: 'approve',
     }
-    vi.spyOn(global, 'fetch').mockImplementation((url, init) => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation((url, init) => {
       const path = String(url)
       if (path.includes('/healthz')) {
         return Promise.resolve({ ok: true } as Response)
@@ -83,7 +83,7 @@ describe('App', () => {
       confidence: 0.5,
       recommendation: 'review',
     }
-    vi.spyOn(global, 'fetch').mockImplementation((url) => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
       const path = String(url)
       if (path.includes('/healthz')) return Promise.resolve({ ok: true } as Response)
       if (path.includes('/execute')) {
