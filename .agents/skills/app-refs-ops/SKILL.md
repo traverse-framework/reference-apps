@@ -30,10 +30,10 @@ Read `docs/embedded-runtime-plan.md`, `docs/traverse-starter-plan.md`, and `.spe
 
 Repeat until a stop condition (below):
 
-1. **PR finisher** — inspect open PRs owned by this agent or blocking Ready work; fix CI/review issues; merge when green; rebase if behind `main`.
+1. **PR finisher** — inspect open PRs owned by this agent or blocking Ready work; fix CI/review issues; queue `gh pr merge <N> --squash --auto` once fixes are pushed; rebase if behind `main`. Dependabot PRs: `@dependabot rebase` + queue auto-merge, never hand-write their bodies.
 2. **Release** — after merge: remove `agent:*` label, set Agent → Unassigned, Status → Done, close issue (see Release sequence below).
 3. **Ready-ticket worker** — query Ready items; run pre-flight on the next unclaimed ticket; claim; implement; open PR.
-4. **Validate** — run applicable local gates; wait for CI; merge when green; go to step 2.
+4. **Validate** — run applicable local gates; queue `gh pr merge <N> --squash --auto`; do **not** poll CI — continue to the next Ready ticket and run the release step on a later pass once it has merged.
 
 One issue at a time per agent thread, but **many issues per ops invocation** — keep cycling.
 
@@ -59,25 +59,12 @@ Everything else — claim, implement, PR, CI fix, merge, release — proceed aut
 
 ### Release sequence (after merge)
 
-```bash
-gh issue edit <NUMBER> --repo traverse-framework/reference-apps --remove-label "<AGENT_LABEL>"
-
-ITEM_ID=$(gh project item-list 2 --owner traverse-framework --format json --limit 300 \
-  --jq '.items[] | select(.content.number == <NUMBER>) | .id')
-
-gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz --id "$ITEM_ID" \
-  --field-id PVTSSF_lADOEbiBt84BbzAzzhWjEik --single-select-option-id 8ebf043b
-
-gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz --id "$ITEM_ID" \
-  --field-id PVTSSF_lADOEbiBt84BbzAzzhWg5OQ --single-select-option-id 98236657
-
-gh issue close <NUMBER> --repo traverse-framework/reference-apps
-```
+Run the release command sequence from `AGENTS.md` (single copy: remove agent label, Agent → Unassigned, Status → Done, close issue).
 
 ## Workflow
 
-1. Read `.specify/memory/constitution.md` before any implementation work.
-2. Read `AGENTS.md` and follow the agent coordination rules.
+1. Read `AGENTS.md` and follow the agent coordination rules.
+2. Read the constitution (via `traverse-framework/.github`, pinned in `.governance-version`) only when the ticket touches architecture or contracts — lazy-read map in the org's `docs/ai-agent-hardening.md`.
 3. Inspect current GitHub and Project 2 state.
 4. Enter the **ops loop** above — do not exit after step 10 once; loop until idle.
 5. Before work on an issue, run the pre-flight checks from `AGENTS.md`:
@@ -90,77 +77,27 @@ gh issue close <NUMBER> --repo traverse-framework/reference-apps
    - set Project 2 `Status` to `In Progress`
 7. Use a dedicated `<agent>/issue-NNN-*` branch (see Agent Registry in `AGENTS.md`).
 8. Keep work scoped to the claimed issue and the UI-only architecture boundary.
-9. Open a dedicated PR with the required sections (Summary, Definition of Done, Validation).
-10. Validate, merge when green, release, then **return to step 4** for the next Ready ticket.
+9. Open a dedicated PR using the org body superset (`## Summary`, `## Governing Spec`, `## Project Item`, `## Definition of Done`, `## Validation`).
+10. Queue auto-merge, then **return to step 4** for the next Ready ticket; release merged work on the next loop pass.
 
-## Project 2 IDs
+## Project 2 IDs, Pre-flight & Claim
 
-| Resource | ID |
-|---|---|
-| Project node ID | `PVT_kwDOEbiBt84BbzAz` |
-| Status field | `PVTSSF_lADOEbiBt84BbzAzzhWg5OQ` |
-| Status: Todo | `f75ad846` |
-| Status: In Progress | `47fc9ee4` |
-| Status: Done | `98236657` |
-| Status: Ready | `81742589` |
-| Status: Blocked | `559e1fec` |
-| Status: Future | `7130dc35` |
-| Agent field | `PVTSSF_lADOEbiBt84BbzAzzhWjEik` |
-| Agent: Unassigned | `8ebf043b` |
-| Agent: Codex | `e428b05e` |
-| Agent: Claude Code | `8f903ad6` |
-| Agent: Cursor | `a9811389` |
-| Agent: Antigravity | `77295899` |
-| Agent: Continue | `156c534e` |
-| Note field | `PVTF_lADOEbiBt84BbzAzzhWjEio` |
+Field/option IDs, the three pre-flight checks, and the claim/release command sequences live in `AGENTS.md` — the single copy. Never duplicate them here.
 
-## Pre-flight + Claim Sequence
+## Gates & Failure Playbook
 
-Multiple agents run in parallel. All three checks must pass before claiming.
-
-```bash
-# Check 1 — any agent:* label already on this issue?
-gh issue view <NUMBER> --repo traverse-framework/reference-apps --json labels \
-  --jq '.labels[].name | select(startswith("agent:"))'
-# If anything is returned → STOP. Issue is already claimed.
-
-# Check 2 — any agent branch already exists?
-git ls-remote --heads origin | grep "/issue-<NUMBER>-"
-# If anything is returned → STOP. Another agent is already working this.
-
-# Check 3 — status is Ready?
-gh project item-list 2 --owner traverse-framework --format json --limit 300 \
-  --jq '.items[] | select(.content.number == <NUMBER>) | .status'
-# If not "Ready" → STOP.
-
-# ── All three passed — now claim ──────────────────────────────────────────
-
-gh issue edit <NUMBER> --repo traverse-framework/reference-apps --add-label "<AGENT_LABEL>"
-
-ITEM_ID=$(gh project item-list 2 --owner traverse-framework --format json --limit 300 \
-  --jq '.items[] | select(.content.number == <NUMBER>) | .id')
-
-gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz \
-  --id "$ITEM_ID" \
-  --field-id PVTSSF_lADOEbiBt84BbzAzzhWjEik \
-  --single-select-option-id <AGENT_OPTION_ID>
-
-gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz \
-  --id "$ITEM_ID" \
-  --field-id PVTSSF_lADOEbiBt84BbzAzzhWg5OQ \
-  --single-select-option-id 47fc9ee4   # In Progress
-```
+Every PR must pass the org gates `cla / cla` and `baseline / governance-baseline` plus this repo's CI (`pr-hygiene` checks the body sections). When a governance gate fails, use the failure playbook in `traverse-framework/.github` `docs/runbook.md` (CLA `recheck` comment; re-runs pin stale gate snapshots, push a commit instead).
 
 ## Token Discipline
 
-- Prefer targeted GitHub queries over full board dumps. For Ready work:
-  ```bash
-  gh project item-list 2 --owner traverse-framework --format json --limit 300 \
-    --jq '.items[] | select(.status == "Ready") | {number: .content.number, title: .content.title}'
-  ```
-- Do not paste full project lists, test output, or CI logs. Summarize pass/fail and quote only failing lines.
-- Use `git diff --stat` and focused file hunks before large diffs.
-- Keep progress updates short: current action, any blocker, next action.
+Org-canon token rules live in `traverse-framework/.github` `docs/ai-agent-hardening.md`
+(pinned via `.governance-version`): bounded `--limit` queries with server-side `--jq`,
+no raw board/CI/test log dumps, targeted diffs, short progress updates.
+Repo-specific addition:
+
+- Never index or read platform build output (see `.claudeignore`); reproduce gate
+  failures locally (`npm run test`, `bash scripts/ci/repository_checks.sh`) before
+  fetching remote logs.
 
 ## Minimality Ladder
 
