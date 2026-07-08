@@ -1,35 +1,6 @@
-# App-References Development Guidelines
+# App-References — Agent Coordination
 
-This repo is **UI-only**. Business logic and WASM agents live in the Traverse framework. **Shipped apps embed the Traverse runtime host (Phase 3 target);** Phase 1/2 dev uses an external HTTP sidecar.
-
-## Current State
-
-**Repo:** `traverse-framework/reference-apps` (GitHub slug; product name App-References) | **Board:** [Project 2](https://github.com/orgs/traverse-framework/projects/2)
-
-### Platform clients
-
-| Platform | Status | Path |
-|---|---|---|
-| Web (React + TypeScript) | Shipped | `apps/traverse-starter/web-react/` |
-| trace-explorer (React) | Shipped | `apps/trace-explorer/web-react/` |
-| iOS (SwiftUI) | Shipped | `apps/traverse-starter/ios-swift/` |
-| macOS (SwiftUI + AppKit) | Shipped | `apps/traverse-starter/macos-swift/` |
-| Android (Jetpack Compose) | Shipped | `apps/traverse-starter/android-compose/` |
-| Windows (WinUI 3) | Shipped | `apps/traverse-starter/windows-winui/` |
-| Linux (GTK4 + Rust) | Shipped | `apps/traverse-starter/linux-gtk/` |
-| CLI (Rust) | Shipped | `apps/traverse-starter/cli-rust/` |
-
-### doc-approval clients (Phase 1 submitter — shipped)
-
-| Platform | Status | Path |
-|---|---|---|
-| Web (React + TypeScript) | Shipped | `apps/doc-approval/web-react/` |
-| iOS (SwiftUI) | Shipped | `apps/doc-approval/ios-swift/` |
-| macOS (SwiftUI + AppKit) | Shipped | `apps/doc-approval/macos-swift/` |
-| Android (Jetpack Compose) | Shipped | `apps/doc-approval/android-compose/` |
-| Windows (WinUI 3) | Shipped | `apps/doc-approval/windows-winui/` |
-| Linux (GTK4 + Rust) | Shipped | `apps/doc-approval/linux-gtk/` |
-| CLI (Rust) | Shipped | `apps/doc-approval/cli-rust/` |
+This repo is **UI-only**; canonical agent instructions (scope, structure, stack, commands, style, runtime setup, workflow) live in [CLAUDE.md](CLAUDE.md). This file holds only multi-tool coordination and curated blocker context, per `traverse-framework/.github` `docs/ai-agent-hardening.md`. Platform shipping status lives in README.md and on [Project 2](https://github.com/orgs/traverse-framework/projects/2) — never snapshot it here.
 
 ### Ready to claim (query live board)
 
@@ -48,92 +19,6 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 Update this section when a PR changes platform status (see PR template checklist).
 
-## Project Structure
-
-```text
-apps/
-  traverse-starter/
-    web-react/           # React UI shell
-    ios-swift/           # SwiftUI iOS client
-    macos-swift/         # SwiftUI macOS client
-    android-compose/     # Jetpack Compose Android client
-    windows-winui/       # WinUI 3 Windows client
-    linux-gtk/           # GTK4 + Rust Linux client
-    cli-rust/            # Rust CLI client
-  doc-approval/
-    web-react/           # React submitter UI
-    ios-swift/           # SwiftUI iOS client
-    macos-swift/         # SwiftUI macOS client
-    android-compose/     # Jetpack Compose Android client
-    windows-winui/       # WinUI 3 Windows client
-    linux-gtk/           # GTK4 + Rust Linux client
-    cli-rust/            # Rust CLI client
-.agents/skills/
-  app-refs-ops/          # Ops skill for Project 2 work
-.specify/memory/         # Constitution and governing principles
-docs/                    # Quality standards, ticket standard, workflow docs
-scripts/ci/              # CI gate scripts
-.github/workflows/       # GitHub Actions
-```
-
-## Traverse Runtime
-
-**Production target (Phase 3):** embedded in-app WASM runtime host in every platform client — see `docs/embedded-runtime-plan.md`.
-
-**Dev sidecar (Phase 1/2, current):** v0.6.0 recommended | Phase 1 minimum: v0.3.0 | Phase 2 minimum: v0.5.0 | API spec: **033-http-json-api** (approved v1.1.0)
-
-```bash
-# Start local runtime
-git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
-cd /tmp/traverse && git checkout v0.6.0
-cargo run -p traverse-cli -- serve
-# Writes .traverse/server.json with base_url=http://127.0.0.1:8787, workspace_default=local-default
-```
-
-Discovery in code:
-```js
-const { base_url, workspace_default } = JSON.parse(fs.readFileSync('.traverse/server.json'))
-```
-
-Override: `TRAVERSE_REPO=/path/to/Traverse`
-
-## Commands
-
-```bash
-npm install
-npm run dev
-npm run build
-npm run typecheck
-npm run lint
-npm run test
-npm run test:coverage
-bash scripts/dev/check-native-prerequisites.sh   # doc-approval native toolchain (macOS)
-bash scripts/dev/test-doc-approval-macos.sh      # doc-approval unit tests (macOS-testable platforms)
-bash scripts/ci/repository_checks.sh
-bash scripts/ci/phase1_smoke.sh
-```
-
-## Code Style
-
-- No business logic in the React layer
-- No private Traverse internals imported
-- No fake runtime behavior
-- Full unit test coverage for non-trivial UI logic
-
-## Lean Implementation
-
-Before adding code:
-
-1. Does this change need to exist for the active issue?
-2. Does it belong in the UI layer at all, or in Traverse?
-3. Can existing components, hooks, or config already satisfy it?
-4. Can a type, config, or doc update solve it without a new abstraction?
-5. Can one focused component or hook solve it?
-6. Add only the minimum new structure needed.
-
-Minimality must never push business logic into the UI or import private Traverse internals.
-
-<!-- MANUAL ADDITIONS START -->
 ## Multi-Agent Coordination
 
 Multiple LLM coding tools work in parallel on this repo: Codex, Claude Code, Cursor, Antigravity, and others.
@@ -244,7 +129,7 @@ When a platform client (or other major slice) ships, update all doc touchpoints 
 
 1. **Project 2** — set Status → Done; set Agent → Unassigned; remove any `agent:*` label
 2. **Issue** — close the linked GitHub issue
-3. **`AGENTS.md`** — update the Platform clients table and Blocked work summary if applicable
+3. **`AGENTS.md`** — update the Blocked work summary if applicable (platform status lives in README.md only)
 4. **`README.md`** — update the Platform clients table; remove from **What's Blocked** if no longer blocked; add new blockers only when status is Blocked on Project 2
 5. **`docs/design-language.md`** — add or update the row in the Reference implementation table
 
@@ -269,12 +154,3 @@ Do not leave shipped platforms listed as "in progress" or "blocked" in any doc.
 | Agent: Cursor | `a9811389` |
 | Agent: Antigravity | `77295899` |
 | Note field | `PVTF_lADOEbiBt84BbzAzzhWjEio` |
-
-## Governance
-
-Read `.specify/memory/constitution.md` before any implementation work.
-
-- **UI boundary**: no business logic, no private Traverse internals, no fake runtime behavior
-- **Traceability**: all work must have a GitHub issue + Project 2 item + PR
-- **Phase 2 is blocked**: do not implement app registration until Traverse CLI surface exists
-<!-- MANUAL ADDITIONS END -->

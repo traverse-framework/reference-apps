@@ -1,0 +1,15 @@
+# Build artifacts and dependency trees — never index these
+node_modules/
+dist/
+build/
+target/
+coverage/
+.gradle/
+DerivedData/
+bin/
+obj/
+package-lock.json
+Cargo.lock
+.DS_Store
+.idea/
+.vscode/
