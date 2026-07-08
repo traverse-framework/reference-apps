@@ -71,23 +71,7 @@ Read `.specify/memory/constitution.md` before any implementation work. Key rules
 
 ## Project 2 IDs (for agent tooling)
 
-| Resource | ID |
-|---|---|
-| Project node ID | `PVT_kwDOEbiBt84BbzAz` |
-| Status field | `PVTSSF_lADOEbiBt84BbzAzzhWg5OQ` |
-| Status: Todo | `f75ad846` |
-| Status: In Progress | `47fc9ee4` |
-| Status: Done | `98236657` |
-| Status: Ready | `81742589` |
-| Status: Blocked | `559e1fec` |
-| Status: Future | `7130dc35` |
-| Agent field | `PVTSSF_lADOEbiBt84BbzAzzhWjEik` |
-| Agent: Unassigned | `8ebf043b` |
-| Agent: Codex | `e428b05e` |
-| Agent: Claude Code | `8f903ad6` |
-| Agent: Cursor | `a9811389` |
-| Agent: Antigravity | `77295899` |
-| Note field | `PVTF_lADOEbiBt84BbzAzzhWjEio` |
+Field/option IDs for board automation live in [AGENTS.md](AGENTS.md) — single copy, never duplicate them here.
 
 ## Traverse Runtime
 
