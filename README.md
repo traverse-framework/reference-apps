@@ -16,29 +16,79 @@ Reference UI applications for the [Traverse](https://github.com/traverse-framewo
 
 ## Getting Started (Phase 1/2 dev sidecar)
 
-Until Phase 3 embedded runtime lands, local development uses a separate Traverse process:
+Until Phase 3 embedded runtime lands, local development uses a separate Traverse process.
+
+**1. Clone and install**
+
 ```bash
-# 1. Clone this repo
 git clone https://github.com/traverse-framework/reference-apps.git
 cd reference-apps
+npm install
+```
 
-# 2. Clone and start the Traverse dev sidecar (separate terminal — not required in Phase 3)
+**2. Start the Traverse dev sidecar** (separate terminal — not required in Phase 3)
+
+```bash
+git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
+cd /tmp/traverse && git checkout v0.6.0
+cargo run -p traverse-cli -- serve
+```
+
+The runtime listens on `http://127.0.0.1:8787` by default and writes `.traverse/server.json` with `base_url` and `workspace_default`. See [`docs/traverse-runtime.md`](docs/traverse-runtime.md) for pinned versions and API details.
+
+**3. Start a web client** (from the repo root; only one Vite app at a time on port 5173)
+
+```bash
+npm run dev                                              # traverse-starter (default)
+npm run dev -w apps/doc-approval/web-react               # doc-approval
+npm run dev -w apps/meeting-notes/web-react              # meeting-notes
+npm run dev -w apps/trace-explorer/web-react             # trace-explorer
+```
+
+Open `http://localhost:5173`. Submit input when the runtime health strip shows **Online**.
 
 ## What You Will See
 
-The **traverse-starter** UI has three panels:
+### traverse-starter
 
-1. **Runtime Environment** — shows the runtime URL, online/offline status, workspace, and capability ID
-2. **Start Workflow** — note input and submit button (disabled when runtime is offline)
+Three panels:
+
+1. **Runtime Environment** — runtime URL, online/offline status, workspace, capability ID
+2. **Start Workflow** — note input and submit (disabled when runtime is offline)
 3. **Execution Output** — runtime-provided fields: title, tags, note type, suggested next action, status, and trace events
 
 A successful run shows all five output fields populated by the runtime. The UI computes none of them.
+
+### doc-approval
+
+Submitter surface: paste document text → runtime returns `docType`, `parties`, `amounts`, `confidence`, and `recommendation`.
+
+### meeting-notes
+
+Paste a meeting transcript → runtime returns `action_items`, `decisions`, `follow_ups`, and `summary`. Demonstrates **list-type structured output** (object arrays) vs traverse-starter's flat string fields.
+
+### trace-explorer
+
+Developer tool for browsing execution traces — not a domain workflow app.
+
+## Reference apps
+
+| App | Purpose | Web path | Default capability |
+|---|---|---|---|
+| traverse-starter | Flat string output from a short note | [`apps/traverse-starter/web-react/`](apps/traverse-starter/web-react/) | `traverse-starter.process` |
+| doc-approval | Document analysis submitter | [`apps/doc-approval/web-react/`](apps/doc-approval/web-react/) | `doc-approval.analyze` |
+| meeting-notes | List-type output from a transcript | [`apps/meeting-notes/web-react/`](apps/meeting-notes/web-react/) | `meeting-notes.process` |
+| trace-explorer | Execution timeline debugger | [`apps/trace-explorer/web-react/`](apps/trace-explorer/web-react/) | — |
+
+Each app also ships native clients (iOS, macOS, Android, Windows, Linux, CLI) where listed in [Platform clients](#platform-clients) below. Per-app READMEs under `apps/<app>/<platform>/README.md` cover build, run, and runtime URL settings.
 
 ## Project Structure
 
 | Path | Purpose |
 |---|---|
-| [`apps/traverse-starter/web-react/`](apps/traverse-starter/web-react/) | traverse-starter React UI shell |
+| [`apps/traverse-starter/`](apps/traverse-starter/) | traverse-starter clients (all platforms) |
+| [`apps/doc-approval/`](apps/doc-approval/) | doc-approval clients (all platforms) |
+| [`apps/meeting-notes/`](apps/meeting-notes/) | meeting-notes clients (web-react shipped) |
 | [`apps/trace-explorer/web-react/`](apps/trace-explorer/web-react/) | Trace Explorer — execution timeline debugger |
 | [`docs/embedded-runtime-plan.md`](docs/embedded-runtime-plan.md) | Phase 3 target — embedded runtime + multi-capability workflows |
 | [`docs/traverse-runtime.md`](docs/traverse-runtime.md) | Dev sidecar setup (Phase 1/2) |
@@ -48,6 +98,8 @@ A successful run shows all five output fields populated by the runtime. The UI c
 ## Platform clients
 
 All clients are **native UI shells** separated from business logic. Phase 1/2 use an HTTP dev sidecar; **Phase 3 embeds the WASM runtime in every app** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)). SSE upgrade tracked in [#43](https://github.com/traverse-framework/reference-apps/issues/43).
+
+### traverse-starter
 
 | Platform | Status | Path |
 |---|---|---|
@@ -86,76 +138,22 @@ npm run typecheck
 npm run lint
 npm run test
 bash scripts/ci/repository_checks.sh
-bash scripts/ci/phase1_smoke.sh   # requires running runtime
+bash scripts/ci/phase1_smoke.sh       # requires running runtime
 bash scripts/ci/onboarding_check.sh   # local setup verification (runtime steps skip if offline)
 ```
 
-### doc-approval native testing on macOS
+### Native clients
 
-Platforms testable on a Mac without a Linux/Windows VM: **web-react**, **cli-rust**, **macos-swift**, **ios-swift**, **android-compose**.
+Native platforms (iOS, macOS, Android, Windows, Linux, CLI) are built and run from their app directories. Each platform README documents prerequisites, runtime URL configuration, and test commands.
 
-**One-time prerequisites**
+| Platform | Typical entry point |
+|---|---|
+| iOS / macOS | Open the `.xcodeproj` in Xcode → Run (⌘R) |
+| Android | `cd apps/<app>/android-compose && ./gradlew test` |
+| Windows | Open the `.sln` in Visual Studio |
+| Linux GTK / CLI | `cargo test` in `apps/<app>/linux-gtk` or `cli-rust` |
 
-| Tool | Purpose | Install |
-|---|---|---|
-| Xcode 16+ | iOS + macOS | App Store |
-| JDK 17 | Android Gradle tests | `brew install openjdk@17` |
-| Android command-line tools | SDK for Gradle + emulator | `brew install android-commandlinetools` |
-| Android Studio | Android emulator (manual runs) | [developer.android.com](https://developer.android.com/studio) (optional if using CLI SDK) |
-| Rust | CLI client | [rustup.rs](https://rustup.rs/) |
-
-**Check prerequisites**
-
-```bash
-source scripts/dev/android-env.sh   # JAVA_HOME + ANDROID_HOME (after brew install below)
-bash scripts/dev/check-native-prerequisites.sh
-```
-
-**Android SDK one-time install (Homebrew, no Android Studio required for unit tests)**
-
-```bash
-brew install openjdk@17 android-commandlinetools
-source scripts/dev/android-env.sh
-yes | sdkmanager --licenses
-sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
-```
-
-**Run all macOS-testable unit tests**
-
-```bash
-bash scripts/dev/test-doc-approval-macos.sh
-# optional E2E when runtime is up:
-bash scripts/dev/test-doc-approval-macos.sh --with-runtime-smoke
-```
-
-Per-app READMEs under `apps/doc-approval/*/README.md` cover manual GUI runs and runtime URL settings (Android emulator uses `http://10.0.2.2:8787` for host loopback).
-
-### Run the apps visually (manual testing)
-
-**1. Start the runtime** (keep this terminal open):
-
-```bash
-cd /tmp/traverse && cargo run -p traverse-cli -- serve
-```
-
-**2. Launch a client** (pick one per terminal/window):
-
-```bash
-bash scripts/dev/launch-doc-approval.sh web       # browser → http://localhost:5173
-bash scripts/dev/launch-doc-approval.sh macos     # opens Xcode → press ⌘R
-bash scripts/dev/launch-doc-approval.sh ios       # opens Xcode + Simulator → press ⌘R
-bash scripts/dev/launch-doc-approval.sh android   # starts emulator, installs app
-bash scripts/dev/launch-doc-approval.sh           # show menu
-```
-
-| App | How you see it | Runtime URL in settings |
-|-----|----------------|-------------------------|
-| Web | Browser at `http://localhost:5173` | `http://127.0.0.1:8787` (in `.env`) |
-| macOS | DocApprovalMac window | `http://127.0.0.1:8787` (⌘,) |
-| iOS | iPhone Simulator | `http://127.0.0.1:8787` (Settings) |
-| Android | Emulator | `http://10.0.2.2:8787` (Settings) |
-
-Paste document text → **Analyze** / submit → you should see analysis fields when the runtime is online and the capability is registered.
+**Runtime URL:** loopback clients use `http://127.0.0.1:8787`. Android emulator uses `http://10.0.2.2:8787` for host loopback.
 
 See [docs/traverse-starter-plan.md](docs/traverse-starter-plan.md) for the full plan and [docs/traverse-runtime.md](docs/traverse-runtime.md) for runtime setup.
 
