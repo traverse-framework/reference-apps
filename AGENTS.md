@@ -11,7 +11,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 ### Blocked work summary
 
-- **Phase 3 embedded runtime** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)) — see `docs/embedded-runtime-plan.md`; blocked on [Traverse #553](https://github.com/traverse-framework/Traverse/issues/553)
+- **Phase 3 embedded runtime** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)) — see `docs/embedded-runtime-plan.md`; blocked on a **consumable platform embedder SDK** (Traverse [#553](https://github.com/traverse-framework/Traverse/issues/553) closed via [#578](https://github.com/traverse-framework/Traverse/pull/578) with manifest `execution_mode` only — no web/Swift/etc. embedder package yet)
 - **Multi-capability showcase workflows** ([#110](https://github.com/traverse-framework/reference-apps/issues/110), [#111](https://github.com/traverse-framework/reference-apps/issues/111)) — pipeline workflows with multiple WASM agents
 - **Web SSE refactor** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on Traverse **#527** only (#525/#526 done)
 - **Platform SSE upgrade** — iOS/macOS/Android/Windows/Linux/CLI Phase 1 scaffolds use HTTP polling; SSE blocked on same Traverse issues
