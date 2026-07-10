@@ -59,6 +59,10 @@ check "apps/doc-approval/linux-gtk/README.md"                             "doc-a
 check "apps/doc-approval/cli-rust/Cargo.toml"                             "doc-approval cli-rust Cargo project"
 check "apps/doc-approval/cli-rust/README.md"                              "doc-approval cli-rust README"
 
+# meeting-notes clients
+check "apps/meeting-notes/web-react/package.json"                       "meeting-notes web-react package"
+check "apps/meeting-notes/web-react/README.md"                          "meeting-notes web-react README"
+
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
 check "scripts/ci/pr_body_check.sh"            "PR body check"

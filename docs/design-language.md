@@ -83,6 +83,12 @@ The UI renders these fields exactly as the runtime provides them — never compu
 | Linux (GTK4 + Rust) | `apps/doc-approval/linux-gtk/` | Shipped |
 | CLI (Rust) | `apps/doc-approval/cli-rust/` | Shipped |
 
+### meeting-notes (list-type output)
+
+| Platform | Path | Status |
+|---|---|---|
+| Web (React) | `apps/meeting-notes/web-react/` | Shipped |
+
 New platform clients must link to this doc in their issue Definition of Done.
 
 ## Governance

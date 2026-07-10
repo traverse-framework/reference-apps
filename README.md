@@ -72,6 +72,12 @@ All clients are **native UI shells** separated from business logic. Phase 1/2 us
 | Linux (GTK4 + Rust) | Shipped | [`apps/doc-approval/linux-gtk/`](apps/doc-approval/linux-gtk/) |
 | CLI (Rust) | Shipped | [`apps/doc-approval/cli-rust/`](apps/doc-approval/cli-rust/) |
 
+### meeting-notes (list-type output)
+
+| Platform | Status | Path |
+|---|---|---|
+| Web (React + TypeScript) | Shipped | [`apps/meeting-notes/web-react/`](apps/meeting-notes/web-react/) |
+
 ## Development
 
 ```bash
@@ -170,5 +176,4 @@ Active blockers on [Project 2](https://github.com/orgs/traverse-framework/projec
 - **Phase 3 embedded runtime** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)) — all platform clients must bundle the WASM runtime host; blocked on [Traverse #553](https://github.com/traverse-framework/Traverse/issues/553). HTTP sidecar is dev-only.
 - **Multi-capability showcase workflow** ([#110](https://github.com/traverse-framework/reference-apps/issues/110), [#111](https://github.com/traverse-framework/reference-apps/issues/111)) — traverse-starter and doc-approval pipeline workflows with multiple WASM capabilities.
 - **SSE state subscription** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on [Traverse #527](https://github.com/traverse-framework/Traverse/issues/527) only (#525/#526 done).
-- **meeting-notes web-react** ([#57](https://github.com/traverse-framework/reference-apps/issues/57)) — second domain app (list-type output); blocked on [Traverse #532](https://github.com/traverse-framework/Traverse/issues/532).
 - **Embedded runtime client packages** ([#58](https://github.com/traverse-framework/reference-apps/issues/58), [#59](https://github.com/traverse-framework/reference-apps/issues/59), [#72](https://github.com/traverse-framework/reference-apps/issues/72), [#73](https://github.com/traverse-framework/reference-apps/issues/73)) — shared Swift/Rust host wiring for embedded mode; reprioritized from HTTP client extraction.
