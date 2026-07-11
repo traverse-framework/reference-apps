@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
-import { createTraverseClient } from './client/traverseClient'
-import { useExecution } from './hooks/useExecution'
+import { createTraverseClient, type TraceEvent } from './client/traverseClient'
+import { useAppState } from './hooks/useAppState'
 import { parseOutput } from './client/traverseOutput'
 
 const BASE_URL =
@@ -8,16 +8,19 @@ const BASE_URL =
   import.meta.env.VITE_TRAVERSE_RUNTIME_URL ??
   'http://127.0.0.1:8787'
 const WORKSPACE = import.meta.env.VITE_TRAVERSE_WORKSPACE ?? 'local-default'
-const CAPABILITY_ID = import.meta.env.VITE_TRAVERSE_CAPABILITY_ID ?? 'traverse-starter.process'
+const APP_ID = import.meta.env.VITE_TRAVERSE_APP_ID ?? 'traverse-starter'
 const NOTE_MAX_LENGTH = 2000
 
 function App() {
   const [note, setNote] = useState('')
   const [runtimeStatus, setRuntimeStatus] = useState<'checking' | 'online' | 'offline'>('checking')
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [trace, setTrace] = useState<TraceEvent[]>([])
   const formRef = useRef<HTMLFormElement>(null)
 
   const client = useMemo(() => createTraverseClient(BASE_URL), [])
-  const { state, run } = useExecution(client, WORKSPACE)
+  const { state, output, error, executionId } = useAppState(client, WORKSPACE, APP_ID)
 
   useEffect(() => {
     let active = true
@@ -34,25 +37,50 @@ function App() {
     return () => { active = false; clearInterval(interval) }
   }, [])
 
-  const isRunning = state.phase === 'loading' || state.phase === 'polling'
+  useEffect(() => {
+    if (state !== 'results' || !executionId) {
+      return
+    }
+    let active = true
+    client.fetchTrace(WORKSPACE, executionId).then(
+      (events) => { if (active) setTrace(events) },
+      () => { if (active) setTrace([]) },
+    )
+    return () => { active = false }
+  }, [client, state, executionId])
+
+  const isRunning = state === 'processing' || submitting
   const canSubmit = note.trim().length > 0 && runtimeStatus === 'online' && !isRunning
 
-  const handleStartWorkflow = useCallback((e?: React.FormEvent) => {
+  const handleStartWorkflow = useCallback(async (e?: React.FormEvent) => {
     e?.preventDefault()
     if (!canSubmit) return
-    run(CAPABILITY_ID, { note })
-  }, [canSubmit, run, note])
+    setSubmitting(true)
+    setSubmitError(null)
+    setTrace([])
+    try {
+      // Omit session_id so each submit starts a new runtime session at initial_state.
+      await client.sendCommand(WORKSPACE, APP_ID, 'submit', { note })
+    } catch (err) {
+      setSubmitError(String(err))
+    } finally {
+      setSubmitting(false)
+    }
+  }, [canSubmit, client, note])
 
   const handleNoteKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
       e.preventDefault()
-      handleStartWorkflow()
+      void handleStartWorkflow()
     }
   }
 
   const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNote(e.target.value.slice(0, NOTE_MAX_LENGTH))
   }
+
+  const displayError = submitError ?? (state === 'error' ? error : null)
+  const parsed = state === 'results' ? parseOutput(output) : null
 
   return (
     <div style={{ maxWidth: '800px', margin: '40px auto', padding: '0 20px' }}>
@@ -110,7 +138,7 @@ function App() {
             </div>
           </div>
           <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Workspace: <strong>{WORKSPACE}</strong> · Capability: <strong>{CAPABILITY_ID}</strong>
+            Workspace: <strong>{WORKSPACE}</strong> · App: <strong>{APP_ID}</strong>
           </div>
         </section>
 
@@ -118,7 +146,7 @@ function App() {
           <h2 style={{ fontSize: '1.25rem', marginBottom: '16px', fontWeight: 600 }}>
             Start Workflow
           </h2>
-          <form ref={formRef} onSubmit={handleStartWorkflow}>
+          <form ref={formRef} onSubmit={(e) => { void handleStartWorkflow(e) }}>
             <div style={{ marginBottom: '20px' }}>
               <label htmlFor="note-input" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: 500 }}>
                 Starter Input Note
@@ -170,78 +198,73 @@ function App() {
             Execution Output
           </h2>
 
-          {runtimeStatus === 'offline' && state.phase === 'idle' && (
+          {runtimeStatus === 'offline' && state === 'idle' && !displayError && (
             <div style={{ color: 'var(--text-muted)', fontSize: '0.95rem', textAlign: 'center', paddingTop: '32px' }}>
               Connect to the Traverse runtime to see workflow output here.
             </div>
           )}
 
-          {runtimeStatus !== 'offline' && state.phase === 'idle' && (
+          {runtimeStatus !== 'offline' && state === 'idle' && !displayError && !submitting && (
             <div style={{ color: 'var(--text-muted)', fontSize: '0.95rem', textAlign: 'center', paddingTop: '32px' }}>
               Submit a note above to start a workflow.
             </div>
           )}
 
-          {state.phase === 'loading' && (
-            <div style={{ color: 'var(--text-secondary)' }}>Starting execution…</div>
-          )}
-
-          {state.phase === 'polling' && (
+          {(state === 'processing' || submitting) && !displayError && (
             <div style={{ color: 'var(--text-secondary)' }}>
-              Polling execution <code>{state.executionId}</code>…
+              {state === 'processing' ? 'Processing…' : 'Submitting command…'}
             </div>
           )}
 
-          {state.phase === 'failed' && (
+          {displayError && (
             <div style={{ color: '#ef4444' }}>
-              <strong>Error:</strong> {state.error}
+              <strong>Error:</strong> {displayError}
             </div>
           )}
 
-          {state.phase === 'succeeded' && (() => {
-            const output = parseOutput(state.result.output)
-            return output ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <OutputField label="Title" value={output.title} />
-                <OutputField label="Note Type" value={output.noteType} />
-                <OutputField label="Status" value={output.status} />
-                <OutputField label="Suggested Next Action" value={output.suggestedNextAction} />
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Tags</div>
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                    {output.tags.map(tag => (
-                      <span key={tag} style={{ padding: '2px 10px', background: 'rgba(139,92,246,0.15)', color: 'var(--color-accent)', borderRadius: '20px', fontSize: '0.85rem' }}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+          {state === 'results' && parsed && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <OutputField label="Title" value={parsed.title} />
+              <OutputField label="Note Type" value={parsed.noteType} />
+              <OutputField label="Status" value={parsed.status} />
+              <OutputField label="Suggested Next Action" value={parsed.suggestedNextAction} />
+              <div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Tags</div>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                  {parsed.tags.map(tag => (
+                    <span key={tag} style={{ padding: '2px 10px', background: 'rgba(139,92,246,0.15)', color: 'var(--color-accent)', borderRadius: '20px', fontSize: '0.85rem' }}>
+                      {tag}
+                    </span>
+                  ))}
                 </div>
-                {state.trace.length > 0 && (
-                  <div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
-                      Trace Events ({state.trace.length})
-                    </div>
-                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {state.trace.map((event, index) => (
-                        <li key={`${event.timestamp}-${index}`} style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', background: 'rgba(0,0,0,0.25)', padding: '8px 12px', borderRadius: '6px' }}>
-                          <div><strong>{event.event_type}</strong> · {event.timestamp}</div>
-                          {event.data !== undefined && (
-                            <pre style={{ marginTop: '6px', fontSize: '0.8rem', color: 'var(--text-muted)', overflow: 'auto' }}>
-                              {JSON.stringify(event.data, null, 2)}
-                            </pre>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
               </div>
-            ) : (
-              <pre style={{ background: 'rgba(0,0,0,0.4)', padding: '16px', borderRadius: '6px', fontSize: '0.85rem', color: 'var(--text-primary)', overflow: 'auto' }}>
-                {JSON.stringify(state.result.output, null, 2)}
-              </pre>
-            )
-          })()}
+              {trace.length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+                    Trace Events ({trace.length})
+                  </div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {trace.map((event, index) => (
+                      <li key={`${event.timestamp}-${index}`} style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', background: 'rgba(0,0,0,0.25)', padding: '8px 12px', borderRadius: '6px' }}>
+                        <div><strong>{event.event_type}</strong> · {event.timestamp}</div>
+                        {event.data !== undefined && (
+                          <pre style={{ marginTop: '6px', fontSize: '0.8rem', color: 'var(--text-muted)', overflow: 'auto' }}>
+                            {JSON.stringify(event.data, null, 2)}
+                          </pre>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          {state === 'results' && !parsed && output != null && (
+            <pre style={{ background: 'rgba(0,0,0,0.4)', padding: '16px', borderRadius: '6px', fontSize: '0.85rem', color: 'var(--text-primary)', overflow: 'auto' }}>
+              {JSON.stringify(output, null, 2)}
+            </pre>
+          )}
         </section>
 
       </div>

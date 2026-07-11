@@ -51,10 +51,15 @@ Governed by `033-http-json-api` (approved v1.1.0).
 | Endpoint | Method | Purpose |
 |---|---|---|
 | `/healthz` | GET | Health check |
-| `/v1/workspaces/{workspace_id}/execute` | POST | Execute a capability |
-| `/v1/workspaces/{workspace_id}/executions/{execution_id}` | GET | Poll execution status |
+| `/v1/workspaces/{workspace_id}/execute` | POST | Execute a capability (Phase 1) |
+| `/v1/workspaces/{workspace_id}/executions/{execution_id}` | GET | Poll execution status (Phase 1) |
 | `/v1/workspaces/{workspace_id}/traces/{execution_id}` | GET | Fetch public trace |
 | `/v1/workspaces/{workspace_id}/capabilities` | POST | Register a capability |
+| `/v1/workspaces/{workspace_id}/apps/{app_id}/events` | GET | App state SSE stream (EventSource) |
+| `/v1/workspaces/{workspace_id}/apps/{app_id}/commands` | POST | Dispatch command to app state machine |
+| `/v1/workspaces/{workspace_id}/apps/{app_id}/sessions` | GET | List app state-machine sessions |
+
+`traverse-starter` web-react uses **commands + SSE** (not execute/poll) as the reference client pattern.
 
 Default workspace: `local-default`
 

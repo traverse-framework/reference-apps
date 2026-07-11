@@ -1,5 +1,5 @@
 # Non-trivial traverse-starter web-react UI logic (hooks + runtime event parsing)
 # Paths are matched as substrings against istanbul coverage-summary.json keys.
-hooks/useExecution.ts
+hooks/useAppState.ts
 client/traverseOutput.ts
 client/traverseClient.ts
