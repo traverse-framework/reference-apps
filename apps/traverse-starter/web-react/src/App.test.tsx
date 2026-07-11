@@ -2,9 +2,54 @@ import { render, screen, act, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import App from './App'
 
+type Listener = (event: MessageEvent<string>) => void
+
+class MockEventSource {
+  static instances: MockEventSource[] = []
+  url: string
+  onmessage: Listener | null = null
+  onerror: ((event: Event) => void) | null = null
+  private listeners = new Map<string, Set<Listener>>()
+
+  constructor(url: string) {
+    this.url = url
+    MockEventSource.instances.push(this)
+  }
+
+  addEventListener(type: string, listener: EventListenerOrEventListenerObject) {
+    const fn = listener as Listener
+    const set = this.listeners.get(type) ?? new Set()
+    set.add(fn)
+    this.listeners.set(type, set)
+  }
+
+  removeEventListener(type: string, listener: EventListenerOrEventListenerObject) {
+    this.listeners.get(type)?.delete(listener as Listener)
+  }
+
+  close() {}
+
+  emit(type: string, data: unknown) {
+    const event = { type, data: JSON.stringify(data) } as MessageEvent<string>
+    for (const listener of this.listeners.get(type) ?? []) listener(event)
+  }
+
+  static reset() {
+    MockEventSource.instances = []
+  }
+}
+
 describe('App', () => {
-  beforeEach(() => vi.useFakeTimers())
-  afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks() })
+  beforeEach(() => {
+    vi.useFakeTimers()
+    MockEventSource.reset()
+    vi.stubGlobal('EventSource', MockEventSource)
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
+  })
 
   it('renders UI shell', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true, json: () => Promise.resolve({}) } as Response)
@@ -14,7 +59,7 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: 'Start Workflow' })).toBeInTheDocument()
   })
 
-  it('shows Offline when health check fails', async () => {
+  it('shows offline when health check fails', async () => {
     vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('Network error'))
     render(<App />)
     await act(async () => { await vi.runOnlyPendingTimersAsync() })
@@ -39,7 +84,7 @@ describe('App', () => {
     expect(screen.getByText('5 / 2000')).toBeInTheDocument()
   })
 
-  it('submits on Cmd+Enter when runtime is online', async () => {
+  it('submits on Cmd+Enter and renders SSE capability_result output', async () => {
     const output = {
       title: 'T',
       tags: [],
@@ -52,16 +97,20 @@ describe('App', () => {
       if (path.includes('/healthz')) {
         return Promise.resolve({ ok: true } as Response)
       }
-      if (path.includes('/execute') && init?.method === 'POST') {
+      if (path.includes('/commands') && init?.method === 'POST') {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ execution_id: 'exec-1' }),
-        } as Response)
-      }
-      if (path.includes('/executions/exec-1')) {
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({ execution_id: 'exec-1', status: 'succeeded', output }),
+          json: () => Promise.resolve({
+            api_version: 'v1',
+            status: 'accepted',
+            workspace_id: 'local-default',
+            app_id: 'traverse-starter',
+            session_id: 'sess-1',
+            command: 'submit',
+            state: 'processing',
+            execution_id: 'exec-1',
+            links: {},
+          }),
         } as Response)
       }
       if (path.includes('/traces/exec-1')) {
@@ -81,8 +130,20 @@ describe('App', () => {
     fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true })
 
     await act(async () => { await Promise.resolve() })
-    await act(async () => { await vi.advanceTimersByTimeAsync(1000) })
+
+    const source = MockEventSource.instances.at(-1)
+    expect(source).toBeTruthy()
+    act(() => {
+      source!.emit('capability_result', {
+        session_id: 'sess-1',
+        execution_id: 'exec-1',
+        state: 'results',
+        previous_state: 'processing',
+        output,
+      })
+    })
 
     expect(screen.getByText('Title')).toBeInTheDocument()
+    expect(screen.getByText('T')).toBeInTheDocument()
   })
 })
