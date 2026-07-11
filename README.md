@@ -97,7 +97,7 @@ Each app also ships native clients (iOS, macOS, Android, Windows, Linux, CLI) wh
 
 ## Platform clients
 
-All clients are **native UI shells** separated from business logic. Phase 1/2 use an HTTP dev sidecar; **Phase 3 embeds the WASM runtime in every app** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)). SSE upgrade tracked in [#43](https://github.com/traverse-framework/reference-apps/issues/43).
+All clients are **native UI shells** separated from business logic. Phase 1/2 use an HTTP dev sidecar; **Phase 3 embeds the WASM runtime in every app** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)). Web SSE + `sendCommand` shipped in [#43](https://github.com/traverse-framework/reference-apps/issues/43); native platforms can follow that pattern.
 
 ### traverse-starter
 
@@ -173,6 +173,7 @@ Active blockers on [Project 2](https://github.com/orgs/traverse-framework/projec
 
 - **Phase 3 embedded runtime** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)) — all platform clients must bundle the WASM runtime host; blocked on a **consumable platform embedder SDK** (Traverse [#553](https://github.com/traverse-framework/Traverse/issues/553) closed via [#578](https://github.com/traverse-framework/Traverse/pull/578) with manifest `execution_mode` only). HTTP sidecar is dev-only.
 - **doc-approval multi-capability showcase** ([#111](https://github.com/traverse-framework/reference-apps/issues/111), [#112](https://github.com/traverse-framework/reference-apps/issues/112)) — blocked on Traverse [#538](https://github.com/traverse-framework/Traverse/issues/538) / [#555](https://github.com/traverse-framework/Traverse/issues/555) (`extract` / `recommend` agents).
+- **traverse-starter.pipeline showcase** ([#110](https://github.com/traverse-framework/reference-apps/issues/110)) — blocked on Traverse [#620](https://github.com/traverse-framework/Traverse/issues/620) (pipeline execute surface never landed on `main`).
 - **Embedded runtime client packages** ([#58](https://github.com/traverse-framework/reference-apps/issues/58), [#59](https://github.com/traverse-framework/reference-apps/issues/59), [#72](https://github.com/traverse-framework/reference-apps/issues/72), [#73](https://github.com/traverse-framework/reference-apps/issues/73)) — shared Swift/Rust host wiring for embedded mode; reprioritized from HTTP client extraction.
 
-Unblocked and Ready on Project 2: [#43](https://github.com/traverse-framework/reference-apps/issues/43) (web SSE + command dispatch), [#110](https://github.com/traverse-framework/reference-apps/issues/110) (traverse-starter.pipeline sidecar path).
+No Project 2 items are Ready right now.
