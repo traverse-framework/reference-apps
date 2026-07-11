@@ -12,10 +12,10 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 ### Blocked work summary
 
 - **Phase 3 embedded runtime** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)) — see `docs/embedded-runtime-plan.md`; blocked on a **consumable platform embedder SDK** (Traverse [#553](https://github.com/traverse-framework/Traverse/issues/553) closed via [#578](https://github.com/traverse-framework/Traverse/pull/578) with manifest `execution_mode` only — no web/Swift/etc. embedder package yet)
-- **Multi-capability showcase workflows** ([#110](https://github.com/traverse-framework/reference-apps/issues/110), [#111](https://github.com/traverse-framework/reference-apps/issues/111)) — pipeline workflows with multiple WASM agents
-- **Web SSE refactor** ([#43](https://github.com/traverse-framework/reference-apps/issues/43)) — replace polling with runtime SSE; blocked on Traverse **#527** only (#525/#526 done)
-- **Platform SSE upgrade** — iOS/macOS/Android/Windows/Linux/CLI Phase 1 scaffolds use HTTP polling; SSE blocked on same Traverse issues
+- **doc-approval multi-capability showcase** ([#111](https://github.com/traverse-framework/reference-apps/issues/111), [#112](https://github.com/traverse-framework/reference-apps/issues/112)) — blocked on Traverse [#538](https://github.com/traverse-framework/Traverse/issues/538) / [#555](https://github.com/traverse-framework/Traverse/issues/555) (`extract` / `recommend` agents)
 - **Shared embedded host packages** ([#58](https://github.com/traverse-framework/reference-apps/issues/58), [#59](https://github.com/traverse-framework/reference-apps/issues/59), [#72](https://github.com/traverse-framework/reference-apps/issues/72), [#73](https://github.com/traverse-framework/reference-apps/issues/73)) — Swift/Rust wrappers around embeddable host SDK; blocked on Phase 3 SDK
+
+Ready (not blocked): [#43](https://github.com/traverse-framework/reference-apps/issues/43) web SSE refactor; [#110](https://github.com/traverse-framework/reference-apps/issues/110) traverse-starter.pipeline sidecar path. Native platform SSE upgrades can follow #43.
 
 Update this section when a PR changes platform status (see PR template checklist).
 
