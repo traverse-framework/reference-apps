@@ -1,5 +1,4 @@
 use traverse_starter_gtk::client::TraverseClient;
-use traverse_starter_gtk::CAPABILITY_ID;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 
@@ -17,50 +16,27 @@ async fn check_health_returns_true_on_200() {
 }
 
 #[tokio::test]
-async fn execute_returns_execution_id() {
+async fn submit_note_posts_command() {
     let server = MockServer::start().await;
     Mock::given(method("POST"))
-        .respond_with(ResponseTemplate::new(200).set_body_json(serde_json::json!({
+        .and(path("/v1/workspaces/local-default/apps/traverse-starter/commands"))
+        .respond_with(ResponseTemplate::new(202).set_body_json(serde_json::json!({
+            "api_version": "v1",
+            "status": "accepted",
+            "workspace_id": "local-default",
+            "app_id": "traverse-starter",
+            "session_id": "sess-1",
+            "command": "submit",
+            "state": "processing",
             "execution_id": "exec_abc"
         })))
         .mount(&server)
         .await;
 
     let client = TraverseClient::new();
-    let id = client
-        .execute(
-            &server.uri(),
-            "local-default",
-            CAPABILITY_ID,
-            &serde_json::json!({ "note": "hello" }),
-        )
+    let accepted = client
+        .submit_note(&server.uri(), "local-default", "hello")
         .await
         .unwrap();
-    assert_eq!(id, "exec_abc");
-}
-
-#[tokio::test]
-async fn poll_execution_parses_output() {
-    let server = MockServer::start().await;
-    Mock::given(method("GET"))
-        .respond_with(ResponseTemplate::new(200).set_body_json(serde_json::json!({
-            "status": "succeeded",
-            "output": {
-                "title": "T",
-                "tags": ["a"],
-                "noteType": "n",
-                "suggestedNextAction": "x",
-                "status": "done"
-            }
-        })))
-        .mount(&server)
-        .await;
-
-    let client = TraverseClient::new();
-    let result = client
-        .poll_execution(&server.uri(), "local-default", "exec_abc")
-        .await
-        .unwrap();
-    assert_eq!(result.status, "succeeded");
-    assert_eq!(result.output.unwrap().title, "T");
+    assert_eq!(accepted.execution_id.as_deref(), Some("exec_abc"));
 }

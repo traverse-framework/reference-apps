@@ -1,6 +1,6 @@
 # traverse-starter (Rust CLI)
 
-Terminal client for the `traverse-starter` reference app. Phase 1 uses HTTP polling against the public Traverse HTTP/JSON API (spec 033) — same flow as `web-react` and the native GUI clients.
+Terminal client for the `traverse-starter` reference app. Uses the shared `traverse-core-rs` crate for HTTP command dispatch and SSE app-state events (same pattern as `web-react`).
 
 ## Prerequisites
 
@@ -15,11 +15,13 @@ cargo run -p traverse-cli -- serve
 
 ## Build and install
 
+Prefer the workspace root so the shared crate resolves cleanly:
+
 ```bash
-cd apps/traverse-starter/cli-rust
-cargo build --release
-cargo test
-cargo install --path .   # installs `traverse-starter` binary to ~/.cargo/bin
+cd apps/traverse-starter
+cargo build -p traverse-starter-cli --release
+cargo test -p traverse-starter-cli -p traverse-core-rs
+cargo install --path cli-rust   # installs `traverse-starter` binary to ~/.cargo/bin
 ```
 
 ## Usage
@@ -50,11 +52,8 @@ Environment variables:
 
 | File | Role |
 |---|---|
-| `client.rs` | Blocking `reqwest` HTTP client |
-| `commands/run.rs` | Execute + poll loop |
+| `../traverse-core-rs` | Shared HTTP `send_command` + SSE `subscribe_events` |
+| `client.rs` | Re-exports `traverse-core-rs` |
+| `commands/run.rs` | Submit note + wait for SSE terminal result |
 | `commands/health.rs` | `/healthz` check |
 | `output.rs` | Human (colored) and JSON formatters |
-
-## Phase 2 (not implemented)
-
-SSE streaming when Traverse ships [#525](https://github.com/traverse-framework/Traverse/issues/525)–[#527](https://github.com/traverse-framework/Traverse/issues/527). Shared client moves to `traverse-core-rs` ([#59](https://github.com/traverse-framework/reference-apps/issues/59)).
