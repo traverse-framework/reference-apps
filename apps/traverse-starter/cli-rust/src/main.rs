@@ -18,7 +18,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Execute traverse-starter.process with a note
+    /// Execute traverse-starter.pipeline with a note
     Run {
         #[arg(long)]
         note: String,

@@ -147,12 +147,20 @@ impl MainWindow {
                     }
                     ExecutionPhase::Succeeded { output, trace } => {
                         output_label.set_text(&format!(
-                            "Title: {}\nTags: {}\nNote type: {}\nNext action: {}\nStatus: {}",
-                            output.title,
-                            output.tags.join(", "),
-                            output.note_type,
-                            output.suggested_next_action,
-                            output.status
+                            "Valid: {}\nIssues: {}\nTitle: {}\nNote type: {}\nStatus: {}\nNext action: {}\nTags: {}\nSummary: {}\nWord count: {}",
+                            if output.validate.valid { "yes" } else { "no" },
+                            if output.validate.issues.is_empty() {
+                                "None".to_string()
+                            } else {
+                                output.validate.issues.join(", ")
+                            },
+                            output.process.title,
+                            output.process.note_type,
+                            output.process.status,
+                            output.process.suggested_next_action,
+                            output.process.tags.join(", "),
+                            output.summarize.summary,
+                            output.summarize.word_count
                         ));
                         output_label.remove_css_class("dim-label");
                         if !trace.is_empty() {
@@ -401,13 +409,7 @@ async fn wait_for_result(
                     }
                     if matches!(event.state.as_ref(), Some(AppState::Results)) {
                         state.lock().unwrap().phase = ExecutionPhase::Succeeded {
-                            output: TraverseStarterOutput {
-                                title: String::new(),
-                                tags: vec![],
-                                note_type: String::new(),
-                                suggested_next_action: String::new(),
-                                status: String::new(),
-                            },
+                            output: TraverseStarterOutput::empty(),
                             trace: Vec::new(),
                         };
                         refresh_ui();

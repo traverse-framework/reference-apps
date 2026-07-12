@@ -224,20 +224,27 @@ function App() {
 
           {state === 'results' && parsed && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <OutputField label="Title" value={parsed.title} />
-              <OutputField label="Note Type" value={parsed.noteType} />
-              <OutputField label="Status" value={parsed.status} />
-              <OutputField label="Suggested Next Action" value={parsed.suggestedNextAction} />
+              <OutputField label="Valid" value={parsed.validate.valid ? 'yes' : 'no'} />
+              <OutputField
+                label="Issues"
+                value={parsed.validate.issues.length ? parsed.validate.issues.join(', ') : 'None'}
+              />
+              <OutputField label="Title" value={parsed.process.title} />
+              <OutputField label="Note Type" value={parsed.process.noteType} />
+              <OutputField label="Status" value={parsed.process.status} />
+              <OutputField label="Suggested Next Action" value={parsed.process.suggestedNextAction} />
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Tags</div>
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                  {parsed.tags.map(tag => (
+                  {parsed.process.tags.map(tag => (
                     <span key={tag} style={{ padding: '2px 10px', background: 'rgba(139,92,246,0.15)', color: 'var(--color-accent)', borderRadius: '20px', fontSize: '0.85rem' }}>
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
+              <OutputField label="Summary" value={parsed.summarize.summary} />
+              <OutputField label="Word count" value={String(parsed.summarize.wordCount)} />
               {trace.length > 0 && (
                 <div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>

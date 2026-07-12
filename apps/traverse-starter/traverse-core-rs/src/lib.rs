@@ -6,7 +6,10 @@ mod discovery;
 mod sse;
 mod state;
 
-pub use client::{CommandAccepted, TraverseClient, TraverseClientError, TraverseStarterOutput, TraceEvent};
+pub use client::{
+    CommandAccepted, ProcessOutput, SummarizeOutput, TraceEvent, TraverseClient,
+    TraverseClientError, TraverseStarterOutput, ValidateOutput,
+};
 pub use discovery::{ServerDiscovery, ServerInfo};
 pub use sse::subscribe_events;
 pub use state::{AppState, StateEvent};

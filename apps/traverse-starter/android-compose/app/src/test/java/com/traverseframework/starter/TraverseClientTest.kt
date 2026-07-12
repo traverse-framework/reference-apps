@@ -44,7 +44,7 @@ class TraverseClientTest {
         val engine = MockEngine {
             respond(
                 content = """
-                {"status":"succeeded","output":{"title":"T","tags":["a"],"noteType":"n","suggestedNextAction":"x","status":"done"}}
+                {"status":"succeeded","output":{"validate":{"valid":true,"issues":[]},"process":{"title":"T","tags":["a"],"noteType":"n","suggestedNextAction":"x","status":"done"},"summarize":{"summary":"Summary","wordCount":1}}}
                 """.trimIndent(),
                 status = HttpStatusCode.OK,
                 headers = headersOf(HttpHeaders.ContentType, "application/json"),
@@ -53,6 +53,8 @@ class TraverseClientTest {
         val client = TraverseClient(engine)
         val result = client.pollExecution("http://10.0.2.2:8787", "local-default", "exec_abc")
         assertEquals("succeeded", result.status)
-        assertEquals("T", result.output?.title)
+        assertEquals("T", result.output?.process?.title)
+        assertEquals(true, result.output?.validate?.valid)
+        assertEquals(1, result.output?.summarize?.wordCount)
     }
 }

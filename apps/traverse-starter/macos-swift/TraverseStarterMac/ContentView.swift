@@ -128,24 +128,40 @@ struct ContentView: View {
     private func outputFields(_ output: TraverseStarterOutput) -> some View {
         Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
             GridRow {
-                Text("Title").foregroundStyle(.secondary)
-                Text(output.title)
+                Text("Valid").foregroundStyle(.secondary)
+                Text(output.validate.valid ? "yes" : "no")
             }
             GridRow {
-                Text("Tags").foregroundStyle(.secondary)
-                Text(output.tags.joined(separator: ", "))
+                Text("Issues").foregroundStyle(.secondary)
+                Text(output.validate.issues.isEmpty ? "None" : output.validate.issues.joined(separator: ", "))
+            }
+            GridRow {
+                Text("Title").foregroundStyle(.secondary)
+                Text(output.process.title)
             }
             GridRow {
                 Text("Note type").foregroundStyle(.secondary)
-                Text(output.noteType)
-            }
-            GridRow {
-                Text("Next action").foregroundStyle(.secondary)
-                Text(output.suggestedNextAction)
+                Text(output.process.noteType)
             }
             GridRow {
                 Text("Status").foregroundStyle(.secondary)
-                Text(output.status)
+                Text(output.process.status)
+            }
+            GridRow {
+                Text("Next action").foregroundStyle(.secondary)
+                Text(output.process.suggestedNextAction)
+            }
+            GridRow {
+                Text("Tags").foregroundStyle(.secondary)
+                Text(output.process.tags.joined(separator: ", "))
+            }
+            GridRow {
+                Text("Summary").foregroundStyle(.secondary)
+                Text(output.summarize.summary)
+            }
+            GridRow {
+                Text("Word count").foregroundStyle(.secondary)
+                Text(String(output.summarize.wordCount))
             }
         }
     }

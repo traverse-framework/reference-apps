@@ -82,15 +82,32 @@ final class TraverseClientTests: XCTestCase {
 final class TraverseOutputTests: XCTestCase {
     func testParseOutput() {
         let raw: [String: Any] = [
+            "validate": ["valid": true, "issues": [] as [String]],
+            "process": [
+                "title": "T",
+                "tags": ["a"],
+                "noteType": "n",
+                "suggestedNextAction": "x",
+                "status": "done",
+            ],
+            "summarize": ["summary": "A short summary", "wordCount": 3],
+        ]
+        let output = TraverseOutputParser.parse(raw)
+        XCTAssertEqual(output?.process.title, "T")
+        XCTAssertEqual(output?.process.tags, ["a"])
+        XCTAssertEqual(output?.validate.valid, true)
+        XCTAssertEqual(output?.summarize.wordCount, 3)
+    }
+
+    func testParseRejectsFlatLegacyOutput() {
+        let raw: [String: Any] = [
             "title": "T",
             "tags": ["a"],
             "noteType": "n",
             "suggestedNextAction": "x",
             "status": "done",
         ]
-        let output = TraverseOutputParser.parse(raw)
-        XCTAssertEqual(output?.title, "T")
-        XCTAssertEqual(output?.tags, ["a"])
+        XCTAssertNil(TraverseOutputParser.parse(raw))
     }
 
     func testParseEventPayload() {
@@ -99,16 +116,20 @@ final class TraverseOutputTests: XCTestCase {
             "session_id": "sess-1",
             "execution_id": "exec-1",
             "output": [
-                "title": "T",
-                "tags": [] as [String],
-                "noteType": "n",
-                "suggestedNextAction": "x",
-                "status": "done",
+                "validate": ["valid": true, "issues": [] as [String]],
+                "process": [
+                    "title": "T",
+                    "tags": [] as [String],
+                    "noteType": "n",
+                    "suggestedNextAction": "x",
+                    "status": "done",
+                ],
+                "summarize": ["summary": "Summary", "wordCount": 1],
             ],
         ]
         let payload = TraverseOutputParser.parseEventPayload(raw)
         XCTAssertEqual(payload?.state, "results")
-        XCTAssertEqual(payload?.output?.title, "T")
+        XCTAssertEqual(payload?.output?.process.title, "T")
     }
 }
 
@@ -177,16 +198,20 @@ final class AppStateViewModelTests: XCTestCase {
                 sessionId: "sess-1",
                 executionId: "exec-1",
                 output: TraverseStarterOutput(
-                    title: "T",
-                    tags: [],
-                    noteType: "n",
-                    suggestedNextAction: "x",
-                    status: "done"
+                    validate: ValidateOutput(valid: true, issues: []),
+                    process: ProcessOutput(
+                        title: "T",
+                        tags: [],
+                        noteType: "n",
+                        suggestedNextAction: "x",
+                        status: "done"
+                    ),
+                    summarize: SummarizeOutput(summary: "Summary", wordCount: 1)
                 )
             )
         )
         XCTAssertEqual(vm.currentState, "results")
-        XCTAssertEqual(vm.output?.title, "T")
+        XCTAssertEqual(vm.output?.process.title, "T")
         XCTAssertEqual(vm.executionId, "exec-1")
     }
 

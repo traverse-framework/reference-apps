@@ -168,11 +168,15 @@ private fun OutputCard(
 
 @Composable
 private fun OutputFields(output: TraverseStarterOutput) {
-    Field("Title", output.title)
-    Field("Tags", output.tags.joinToString(", "))
-    Field("Note type", output.noteType)
-    Field("Next action", output.suggestedNextAction)
-    Field("Status", output.status)
+    Field("Valid", if (output.validate.valid) "yes" else "no")
+    Field("Issues", output.validate.issues.joinToString(", ").ifEmpty { "None" })
+    Field("Title", output.process.title)
+    Field("Note type", output.process.noteType)
+    Field("Status", output.process.status)
+    Field("Next action", output.process.suggestedNextAction)
+    Field("Tags", output.process.tags.joinToString(", "))
+    Field("Summary", output.summarize.summary)
+    Field("Word count", output.summarize.wordCount.toString())
 }
 
 @Composable

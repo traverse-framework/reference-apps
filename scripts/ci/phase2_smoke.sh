@@ -16,7 +16,7 @@ REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 MANIFEST="$REPO_ROOT/manifests/traverse-starter/app.manifest.json"
 SERVER_JSON="${TRAVERSE_SERVER_JSON:-.traverse/server.json}"
 WORKSPACE_ID="${TRAVERSE_WORKSPACE_ID:-local-default}"
-CAPABILITY_ID="${TRAVERSE_CAPABILITY_ID:-traverse-starter.process}"
+CAPABILITY_ID="${TRAVERSE_CAPABILITY_ID:-traverse-starter.pipeline}"
 
 echo "=== Phase 2 smoke test ==="
 
@@ -128,7 +128,7 @@ fi
 echo ""
 echo "Step 4: asserting runtime-provided output fields..."
 ASSERT_FAIL=0
-for field in title tags noteType suggestedNextAction status; do
+for field in validate.valid process.title process.tags process.noteType process.suggestedNextAction process.status summarize.summary summarize.wordCount; do
   value=$(echo "$RESULT" | jq -r ".output.$field // empty" 2>/dev/null || echo "")
   if [ -n "$value" ] && [ "$value" != "null" ]; then
     echo "OK:   output.$field present"

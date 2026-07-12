@@ -186,12 +186,7 @@ public partial class ExecutionViewModel : ObservableObject, IDisposable
                         trace = Array.Empty<TraceEvent>();
                     }
 
-                    Output = result.Output ?? new TraverseStarterOutput(
-                        string.Empty,
-                        Array.Empty<string>(),
-                        string.Empty,
-                        string.Empty,
-                        string.Empty);
+                    Output = result.Output ?? TraverseStarterOutput.Empty;
                     Trace = trace;
                     Phase = ExecutionPhase.Succeeded;
                 }

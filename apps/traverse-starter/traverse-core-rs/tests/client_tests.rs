@@ -61,10 +61,10 @@ fn server_discovery_reads_json() {
 fn state_event_from_sse() {
     let event = StateEvent::from_sse(
         "capability_result",
-        r#"{"state":"results","output":{"title":"T","tags":[],"noteType":"n","suggestedNextAction":"x","status":"done"}}"#,
+        r#"{"state":"results","output":{"validate":{"valid":true,"issues":[]},"process":{"title":"T","tags":[],"noteType":"n","suggestedNextAction":"x","status":"done"},"summarize":{"summary":"Summary","wordCount":1}}}"#,
     )
     .unwrap();
-    assert_eq!(event.output.unwrap().title, "T");
+    assert_eq!(event.output.unwrap().process.title, "T");
 }
 
 fn tempfile_dir() -> std::path::PathBuf {

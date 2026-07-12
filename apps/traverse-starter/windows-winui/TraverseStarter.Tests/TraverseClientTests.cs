@@ -47,7 +47,7 @@ public class TraverseClientTests
             {
                 Content = new StringContent(
                     """
-                    {"status":"succeeded","output":{"title":"T","tags":["a"],"noteType":"n","suggestedNextAction":"x","status":"done"}}
+                    {"status":"succeeded","output":{"validate":{"valid":true,"issues":[]},"process":{"title":"T","tags":["a"],"noteType":"n","suggestedNextAction":"x","status":"done"},"summarize":{"summary":"Summary","wordCount":1}}}
                     """,
                     Encoding.UTF8,
                     "application/json"),
@@ -55,6 +55,8 @@ public class TraverseClientTests
 
         var result = await client.PollExecutionAsync("http://127.0.0.1:8787", "local-default", "exec_abc");
         Assert.Equal("succeeded", result.Status);
-        Assert.Equal("T", result.Output?.Title);
+        Assert.Equal("T", result.Output?.Process.Title);
+        Assert.True(result.Output?.Validate.Valid);
+        Assert.Equal(1, result.Output?.Summarize.WordCount);
     }
 }

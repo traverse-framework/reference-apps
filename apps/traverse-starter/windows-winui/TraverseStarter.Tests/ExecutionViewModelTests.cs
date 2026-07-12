@@ -73,7 +73,10 @@ public class ExecutionViewModelTests
                 new ExecutionPollResult(
                     "exec_test",
                     "succeeded",
-                    new TraverseStarterOutput("Title", ["tag"], "meeting", "follow up", "processed"),
+                    new TraverseStarterOutput(
+                        new ValidateOutput(true, Array.Empty<string>()),
+                        new ProcessOutput("Title", ["tag"], "meeting", "follow up", "processed"),
+                        new SummarizeOutput("A short summary", 3)),
                     null),
             ],
         };
@@ -88,7 +91,7 @@ public class ExecutionViewModelTests
         await Task.Delay(1500);
 
         Assert.Equal(ExecutionPhase.Succeeded, vm.Phase);
-        Assert.Equal("Title", vm.Output?.Title);
+        Assert.Equal("Title", vm.Output?.Process.Title);
     }
 
     [Fact]

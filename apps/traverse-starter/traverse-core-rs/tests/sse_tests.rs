@@ -22,12 +22,12 @@ fn parses_state_changed() {
 fn parses_capability_result_payload() {
     let event = StateEvent::from_sse(
         "capability_result",
-        r#"{"state":"results","session_id":"s1","execution_id":"e1","output":{"title":"Hello","tags":["a"],"noteType":"n","suggestedNextAction":"x","status":"done"}}"#,
+        r#"{"state":"results","session_id":"s1","execution_id":"e1","output":{"validate":{"valid":true,"issues":[]},"process":{"title":"Hello","tags":["a"],"noteType":"n","suggestedNextAction":"x","status":"done"},"summarize":{"summary":"A short summary","wordCount":3}}}"#,
     )
     .unwrap();
     assert_eq!(event.event_type, "capability_result");
     assert_eq!(event.execution_id.as_deref(), Some("e1"));
-    assert_eq!(event.output.unwrap().title, "Hello");
+    assert_eq!(event.output.unwrap().process.title, "Hello");
 }
 
 #[test]

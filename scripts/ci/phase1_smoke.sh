@@ -8,14 +8,14 @@
 #
 # Set TRAVERSE_RUNTIME_URL to override default discovery.
 # Set TRAVERSE_CAPABILITY_ID to override the capability being tested
-#   (default: traverse-starter.process, input field: note).
+#   (default: traverse-starter.pipeline, input field: note).
 # Exit 0 on pass. Exit 1 on failure.
 set -euo pipefail
 
 REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 SERVER_JSON="${TRAVERSE_SERVER_JSON:-.traverse/server.json}"
 TIMEOUT="${SMOKE_TIMEOUT:-30}"
-CAPABILITY_ID="${TRAVERSE_CAPABILITY_ID:-traverse-starter.process}"
+CAPABILITY_ID="${TRAVERSE_CAPABILITY_ID:-traverse-starter.pipeline}"
 
 echo "=== Phase 1 smoke test ==="
 
@@ -151,11 +151,14 @@ assert_field() {
 }
 
 # Fields are runtime-owned — UI must not compute these
-assert_field "title"
-assert_field "tags"
-assert_field "noteType"
-assert_field "suggestedNextAction"
-assert_field "status"
+assert_field "validate.valid"
+assert_field "process.title"
+assert_field "process.tags"
+assert_field "process.noteType"
+assert_field "process.suggestedNextAction"
+assert_field "process.status"
+assert_field "summarize.summary"
+assert_field "summarize.wordCount"
 
 echo ""
 if [ "$ASSERT_FAIL" -eq 1 ]; then

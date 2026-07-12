@@ -86,11 +86,15 @@ describe('App', () => {
 
   it('submits on Cmd+Enter and renders SSE capability_result output', async () => {
     const output = {
-      title: 'T',
-      tags: [],
-      noteType: 'fleeting',
-      suggestedNextAction: 'review',
-      status: 'complete',
+      validate: { valid: true, issues: [] as string[] },
+      process: {
+        title: 'T',
+        tags: [],
+        noteType: 'fleeting',
+        suggestedNextAction: 'review',
+        status: 'complete',
+      },
+      summarize: { summary: 'Short', wordCount: 1 },
     }
     vi.spyOn(globalThis, 'fetch').mockImplementation((url, init) => {
       const path = String(url)
@@ -145,5 +149,7 @@ describe('App', () => {
 
     expect(screen.getByText('Title')).toBeInTheDocument()
     expect(screen.getByText('T')).toBeInTheDocument()
+    expect(screen.getByText('Summary')).toBeInTheDocument()
+    expect(screen.getByText('Short')).toBeInTheDocument()
   })
 })
