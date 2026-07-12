@@ -1,25 +1,26 @@
 import SwiftUI
+import DocApprovalCore
 
-private struct ExecutionViewModelKey: FocusedValueKey {
-    typealias Value = ExecutionViewModel
+private struct AppStateViewModelKey: FocusedValueKey {
+    typealias Value = AppStateViewModel
 }
 
 extension FocusedValues {
-    var executionViewModel: ExecutionViewModel? {
-        get { self[ExecutionViewModelKey.self] }
-        set { self[ExecutionViewModelKey.self] = newValue }
+    var appStateViewModel: AppStateViewModel? {
+        get { self[AppStateViewModelKey.self] }
+        set { self[AppStateViewModelKey.self] = newValue }
     }
 }
 
 struct WorkflowCommands: Commands {
-    @FocusedValue(\.executionViewModel) private var viewModel
+    @FocusedValue(\.appStateViewModel) private var viewModel
 
     var body: some Commands {
         CommandMenu("Document") {
             Button("Analyze Document") { viewModel?.submit() }
                 .keyboardShortcut(.return, modifiers: .command)
                 .disabled(viewModel?.canSubmit != true)
-            Button("Reset") { viewModel?.reset() }
+            Button("Reset") { viewModel?.resetLocal() }
                 .keyboardShortcut("r", modifiers: .command)
         }
     }
@@ -29,14 +30,17 @@ struct WorkflowCommands: Commands {
 struct DocApprovalMacApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var settings = AppSettings()
-    @StateObject private var viewModel: ExecutionViewModel
+    @StateObject private var viewModel: AppStateViewModel
 
     init() {
         let settings = AppSettings()
         _settings = StateObject(wrappedValue: settings)
-        _viewModel = StateObject(wrappedValue: ExecutionViewModel(
-            client: TraverseClient(),
-            settings: settings
+        _viewModel = StateObject(wrappedValue: AppStateViewModel(
+            client: DocApprovalClient(),
+            baseURL: settings.baseURL,
+            workspaceId: settings.workspace,
+            appId: AppSettings.appId,
+            documentMaxLength: AppSettings.documentMaxLength
         ))
     }
 
@@ -45,7 +49,13 @@ struct DocApprovalMacApp: App {
             ContentView()
                 .environmentObject(settings)
                 .environmentObject(viewModel)
-                .focusedValue(\.executionViewModel, viewModel)
+                .focusedValue(\.appStateViewModel, viewModel)
+                .onChange(of: settings.baseURLString) { _, _ in
+                    viewModel.updateConnection(baseURL: settings.baseURL, workspaceId: settings.workspace)
+                }
+                .onChange(of: settings.workspace) { _, workspace in
+                    viewModel.updateConnection(baseURL: settings.baseURL, workspaceId: workspace)
+                }
         }
         .commands {
             WorkflowCommands()
