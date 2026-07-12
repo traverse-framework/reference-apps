@@ -61,6 +61,8 @@ check "apps/doc-approval/linux-gtk/README.md"                             "doc-a
 check "apps/doc-approval/cli-rust/Cargo.toml"                             "doc-approval cli-rust Cargo project"
 check "apps/doc-approval/cli-rust/README.md"                              "doc-approval cli-rust README"
 check "apps/doc-approval/DocApprovalCore/Package.swift"                   "doc-approval DocApprovalCore package"
+check "apps/doc-approval/doc-approval-core-rs/Cargo.toml"                 "doc-approval-core-rs Cargo crate"
+check "apps/doc-approval/Cargo.toml"                                      "doc-approval Cargo workspace"
 
 # meeting-notes clients
 check "apps/meeting-notes/web-react/package.json"                       "meeting-notes web-react package"
