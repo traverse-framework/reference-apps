@@ -1,5 +1,4 @@
 use doc_approval_gtk::client::TraverseClient;
-use doc_approval_gtk::CAPABILITY_ID;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 
@@ -17,50 +16,27 @@ async fn check_health_returns_true_on_200() {
 }
 
 #[tokio::test]
-async fn execute_returns_execution_id() {
+async fn submit_document_posts_command() {
     let server = MockServer::start().await;
     Mock::given(method("POST"))
-        .respond_with(ResponseTemplate::new(200).set_body_json(serde_json::json!({
+        .and(path("/v1/workspaces/local-default/apps/doc-approval/commands"))
+        .respond_with(ResponseTemplate::new(202).set_body_json(serde_json::json!({
+            "api_version": "v1",
+            "status": "accepted",
+            "workspace_id": "local-default",
+            "app_id": "doc-approval",
+            "session_id": "sess-1",
+            "command": "submit",
+            "state": "processing",
             "execution_id": "exec_abc"
         })))
         .mount(&server)
         .await;
 
     let client = TraverseClient::new();
-    let id = client
-        .execute(
-            &server.uri(),
-            "local-default",
-            CAPABILITY_ID,
-            &serde_json::json!({ "document": "contract" }),
-        )
+    let accepted = client
+        .submit_document(&server.uri(), "local-default", "contract")
         .await
         .unwrap();
-    assert_eq!(id, "exec_abc");
-}
-
-#[tokio::test]
-async fn poll_execution_parses_output() {
-    let server = MockServer::start().await;
-    Mock::given(method("GET"))
-        .respond_with(ResponseTemplate::new(200).set_body_json(serde_json::json!({
-            "status": "succeeded",
-            "output": {
-                "docType": "invoice",
-                "parties": ["A", "B"],
-                "amounts": ["$100"],
-                "confidence": 0.9,
-                "recommendation": "approve"
-            }
-        })))
-        .mount(&server)
-        .await;
-
-    let client = TraverseClient::new();
-    let result = client
-        .poll_execution(&server.uri(), "local-default", "exec_abc")
-        .await
-        .unwrap();
-    assert_eq!(result.status, "succeeded");
-    assert_eq!(result.output.unwrap().doc_type, "invoice");
+    assert_eq!(accepted.execution_id.as_deref(), Some("exec_abc"));
 }
