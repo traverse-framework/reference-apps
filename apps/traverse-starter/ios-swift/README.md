@@ -1,6 +1,6 @@
 # traverse-starter (iOS SwiftUI)
 
-Native iOS client for the `traverse-starter` reference app. Phase 1 uses HTTP polling against the public Traverse HTTP/JSON API (spec 033) — same flow as `web-react`.
+Native iOS client for the `traverse-starter` reference app. Uses shared [`TraverseCore`](../TraverseCore/) for HTTP command dispatch + SSE app state (same pattern as `web-react` after #43).
 
 ## Prerequisites
 
@@ -31,24 +31,21 @@ xcodebuild -scheme TraverseStarter \
   build test
 ```
 
+Package unit tests (preferred for client/SSE logic):
+
+```bash
+cd apps/traverse-starter/TraverseCore && swift test
+```
+
 Or open `TraverseStarter.xcodeproj` in Xcode and run on an iOS 17+ simulator.
 
 ## Architecture
 
-| File | Role |
+| File / package | Role |
 |---|---|
-| `TraverseClient.swift` | URLSession HTTP client (execute, poll, trace, health) |
-| `ExecutionViewModel.swift` | MVVM state machine: idle → loading → polling → done |
-| `ContentView.swift` | Main UI — runtime strip, note input, output fields, trace |
-| `SettingsView.swift` | Runtime URL + workspace |
-| `AppSettings.swift` | UserDefaults persistence |
+| [`../TraverseCore/`](../TraverseCore/) | Shared Swift package: `TraverseClient`, `AppStateViewModel`, output parsing, SSE |
+| `AppSettings.swift` | UserDefaults persistence + app id |
+| `ContentView.swift` | Three-zone UI (runtime / input / output) |
+| `SettingsView.swift` | Runtime URL + workspace editor |
 
-The UI renders runtime-provided output fields only — no business logic in the client.
-
-## Phase 2 (not implemented)
-
-When Traverse ships SSE state subscription ([#525](https://github.com/traverse-framework/Traverse/issues/525)–[#527](https://github.com/traverse-framework/Traverse/issues/527)), replace polling with SSE and command dispatch. See issue [#44](https://github.com/traverse-framework/reference-apps/issues/44).
-
-## Design language
-
-Follow [docs/design-language.md](../../../docs/design-language.md) for shared zone layout and field naming.
+UI renders runtime-owned fields only — no business logic in the shell.

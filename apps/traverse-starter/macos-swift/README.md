@@ -1,6 +1,6 @@
 # traverse-starter (macOS SwiftUI)
 
-Native macOS client for the `traverse-starter` reference app. Phase 1 uses HTTP polling against the public Traverse HTTP/JSON API (spec 033) — same flow as `web-react` and `ios-swift`.
+Native macOS client for the `traverse-starter` reference app. Uses shared [`TraverseCore`](../TraverseCore/) for HTTP command dispatch + SSE app state (same pattern as `web-react` / `ios-swift`).
 
 ## Prerequisites
 
@@ -17,7 +17,7 @@ cargo run -p traverse-cli -- serve
 
 Open **TraverseStarterMac → Settings…** (⌘,) and set:
 
-- **Runtime URL** — default `http://127.0.0.1:8787`
+- **Runtime URL** — default `http://127.0.0.1:8787` (auto-filled from `.traverse/server.json` when present)
 - **Workspace** — default `local-default`
 
 Values persist in UserDefaults.
@@ -27,6 +27,12 @@ Values persist in UserDefaults.
 ```bash
 cd apps/traverse-starter/macos-swift
 xcodebuild -scheme TraverseStarterMac -destination 'platform=macOS' build test
+```
+
+Package unit tests:
+
+```bash
+cd apps/traverse-starter/TraverseCore && swift test
 ```
 
 Or open `TraverseStarterMac.xcodeproj` in Xcode and run on macOS 14+.
@@ -41,18 +47,12 @@ Or open `TraverseStarterMac.xcodeproj` in Xcode and run on macOS 14+.
 
 ## Architecture
 
-| File | Role |
+| File / package | Role |
 |---|---|
-| `TraverseClient.swift` | URLSession HTTP client (copied from ios-swift; shared package in #58) |
-| `ExecutionViewModel.swift` | MVVM polling state machine |
+| [`../TraverseCore/`](../TraverseCore/) | Shared Swift package: client, SSE, `AppStateViewModel` |
 | `ContentView.swift` | Main window — input, output, toolbar health strip |
 | `PreferencesView.swift` | Runtime settings (Settings scene) |
 | `AppDelegate.swift` | `NSApplicationDelegate` lifecycle |
+| `AppSettings.swift` | UserDefaults + optional `ServerDiscovery` |
 
-## Phase 2 (not implemented)
-
-SSE subscription when Traverse ships [#525](https://github.com/traverse-framework/Traverse/issues/525)–[#527](https://github.com/traverse-framework/Traverse/issues/527). Extract shared `TraverseCore` with ios-swift ([#58](https://github.com/traverse-framework/reference-apps/issues/58)).
-
-## Design language
-
-Follow [docs/design-language.md](../../../docs/design-language.md).
+UI renders runtime-owned fields only — no business logic in the shell.

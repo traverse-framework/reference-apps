@@ -9,25 +9,20 @@
 /* Begin PBXBuildFile section */
 		A10000000000000000000001 /* TraverseStarterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* TraverseStarterApp.swift */; };
 		A10000000000000000000002 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* AppSettings.swift */; };
-		A10000000000000000000003 /* TraverseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* TraverseClient.swift */; };
-		A10000000000000000000004 /* ExecutionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* ExecutionViewModel.swift */; };
 		A10000000000000000000005 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* ContentView.swift */; };
 		A10000000000000000000006 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* SettingsView.swift */; };
 		A10000000000000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* Assets.xcassets */; };
-		A10000000000000000000008 /* TraverseClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* TraverseClientTests.swift */; };
-		A10000000000000000000009 /* ExecutionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* ExecutionViewModelTests.swift */; };
+		A1000000000000000000000A /* AppSettingsSmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* AppSettingsSmokeTests.swift */; };
+		A1000000000000000000000B /* TraverseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A1000000000000000000000C /* TraverseCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A20000000000000000000001 /* TraverseStarterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraverseStarterApp.swift; sourceTree = "<group>"; };
 		A20000000000000000000002 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
-		A20000000000000000000003 /* TraverseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraverseClient.swift; sourceTree = "<group>"; };
-		A20000000000000000000004 /* ExecutionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutionViewModel.swift; sourceTree = "<group>"; };
 		A20000000000000000000005 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A20000000000000000000006 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A20000000000000000000007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A20000000000000000000008 /* TraverseClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraverseClientTests.swift; sourceTree = "<group>"; };
-		A20000000000000000000009 /* ExecutionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutionViewModelTests.swift; sourceTree = "<group>"; };
+		A2000000000000000000000A /* AppSettingsSmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsSmokeTests.swift; sourceTree = "<group>"; };
 		A20000000000000000000010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A30000000000000000000001 /* TraverseStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TraverseStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A30000000000000000000002 /* TraverseStarterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TraverseStarterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -38,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1000000000000000000000B /* TraverseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,8 +61,6 @@
 			children = (
 				A20000000000000000000001 /* TraverseStarterApp.swift */,
 				A20000000000000000000002 /* AppSettings.swift */,
-				A20000000000000000000003 /* TraverseClient.swift */,
-				A20000000000000000000004 /* ExecutionViewModel.swift */,
 				A20000000000000000000005 /* ContentView.swift */,
 				A20000000000000000000006 /* SettingsView.swift */,
 				A20000000000000000000007 /* Assets.xcassets */,
@@ -78,8 +72,7 @@
 		A50000000000000000000003 /* TraverseStarterTests */ = {
 			isa = PBXGroup;
 			children = (
-				A20000000000000000000008 /* TraverseClientTests.swift */,
-				A20000000000000000000009 /* ExecutionViewModelTests.swift */,
+				A2000000000000000000000A /* AppSettingsSmokeTests.swift */,
 			);
 			path = TraverseStarterTests;
 			sourceTree = "<group>";
@@ -109,6 +102,9 @@
 			dependencies = (
 			);
 			name = TraverseStarter;
+			packageProductDependencies = (
+				A1000000000000000000000C /* TraverseCore */,
+			);
 			productName = TraverseStarter;
 			productReference = A30000000000000000000001 /* TraverseStarter.app */;
 			productType = "com.apple.product-type.application";
@@ -159,6 +155,9 @@
 				Base,
 			);
 			mainGroup = A50000000000000000000001;
+			packageReferences = (
+				A1000000000000000000000D /* XCLocalSwiftPackageReference "../TraverseCore" */,
+			);
 			productRefGroup = A50000000000000000000004 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -194,8 +193,6 @@
 			files = (
 				A10000000000000000000001 /* TraverseStarterApp.swift in Sources */,
 				A10000000000000000000002 /* AppSettings.swift in Sources */,
-				A10000000000000000000003 /* TraverseClient.swift in Sources */,
-				A10000000000000000000004 /* ExecutionViewModel.swift in Sources */,
 				A10000000000000000000005 /* ContentView.swift in Sources */,
 				A10000000000000000000006 /* SettingsView.swift in Sources */,
 			);
@@ -205,8 +202,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000000000000000000008 /* TraverseClientTests.swift in Sources */,
-				A10000000000000000000009 /* ExecutionViewModelTests.swift in Sources */,
+				A1000000000000000000000A /* AppSettingsSmokeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,6 +372,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		A1000000000000000000000D /* XCLocalSwiftPackageReference "../TraverseCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../TraverseCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A1000000000000000000000C /* TraverseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1000000000000000000000D /* XCLocalSwiftPackageReference "../TraverseCore" */;
+			productName = TraverseCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AA0000000000000000000001 /* Project object */;
 }
