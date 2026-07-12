@@ -1,3 +1,4 @@
+use futures_util::StreamExt;
 use gtk4::prelude::*;
 use gtk4::{
     Box as GtkBox, Button, Label, Orientation, ScrolledWindow, TextView, TextViewBuffer,
@@ -7,12 +8,13 @@ use libadwaita as adw;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
+use traverse_core_rs::AppState;
 
-use crate::client::TraverseClient;
+use crate::client::{TraverseClient, TraverseStarterOutput, DEFAULT_APP_ID};
 use crate::execution_state::{ExecutionPhase, ExecutionState, RuntimeStatus};
 use crate::settings::{load_settings, save_settings, AppSettings};
 use crate::ui::preferences::PreferencesDialog;
-use crate::{CAPABILITY_ID, NOTE_MAX_LENGTH};
+use crate::NOTE_MAX_LENGTH;
 
 pub struct MainWindow {
     pub window: adw::ApplicationWindow,
@@ -136,7 +138,7 @@ impl MainWindow {
                         output_label.remove_css_class("dim-label");
                     }
                     ExecutionPhase::Polling { execution_id } => {
-                        output_label.set_text(&format!("Polling execution {execution_id}…"));
+                        output_label.set_text(&format!("Waiting for runtime events ({execution_id})…"));
                         output_label.remove_css_class("dim-label");
                     }
                     ExecutionPhase::Failed { error } => {
@@ -219,25 +221,21 @@ impl MainWindow {
                     let state = state.clone();
                     let refresh_ui = refresh_ui.clone();
                     async move {
-                        match client
-                            .execute(
-                                &base_url,
-                                &workspace,
-                                CAPABILITY_ID,
-                                &serde_json::json!({ "note": note }),
-                            )
-                            .await
-                        {
-                            Ok(execution_id) => {
+                        match client.submit_note(&base_url, &workspace, &note).await {
+                            Ok(accepted) => {
+                                let label = accepted
+                                    .execution_id
+                                    .clone()
+                                    .unwrap_or_else(|| accepted.session_id.clone());
                                 state.lock().unwrap().phase =
-                                    ExecutionPhase::Polling { execution_id: execution_id.clone() };
+                                    ExecutionPhase::Polling { execution_id: label };
                                 refresh_ui();
-                                poll_until_terminal(
+                                wait_for_result(
                                     &client,
                                     &state,
                                     &base_url,
                                     &workspace,
-                                    &execution_id,
+                                    &accepted.session_id,
                                     &refresh_ui,
                                 )
                                 .await;
@@ -341,50 +339,94 @@ async fn refresh_health(
     });
 }
 
-async fn poll_until_terminal(
+async fn wait_for_result(
     client: &TraverseClient,
     state: &Arc<Mutex<ExecutionState>>,
     base_url: &str,
     workspace: &str,
-    execution_id: &str,
+    session_id: &str,
     refresh_ui: &impl Fn(),
 ) {
-    loop {
-        match client
-            .poll_execution(base_url, workspace, execution_id)
-            .await
-        {
-            Ok(result) if result.status == "succeeded" => {
-                let trace = client
-                    .fetch_trace(base_url, workspace, execution_id)
-                    .await
-                    .unwrap_or_default();
-                let output = result.output.unwrap_or(crate::client::TraverseStarterOutput {
-                    title: String::new(),
-                    tags: vec![],
-                    note_type: String::new(),
-                    suggested_next_action: String::new(),
-                    status: String::new(),
-                });
-                state.lock().unwrap().phase = ExecutionPhase::Succeeded { output, trace };
-                refresh_ui();
-                return;
-            }
-            Ok(result) if result.status == "failed" => {
-                state.lock().unwrap().phase = ExecutionPhase::Failed {
-                    error: result.error.unwrap_or_else(|| "execution failed".to_string()),
-                };
-                refresh_ui();
-                return;
-            }
-            Ok(_) => {
-                glib::timeout_future_seconds(1).await;
+    let mut stream = match client
+        .subscribe_events(base_url, workspace, DEFAULT_APP_ID)
+        .await
+    {
+        Ok(stream) => stream,
+        Err(err) => {
+            state.lock().unwrap().phase = ExecutionPhase::Failed {
+                error: err.to_string(),
+            };
+            refresh_ui();
+            return;
+        }
+    };
+
+    while let Some(item) = stream.next().await {
+        match item {
+            Ok(event) if event.event_type == "heartbeat" => continue,
+            Ok(event) => {
+                if let Some(sid) = event.session_id.as_deref() {
+                    if sid != session_id {
+                        continue;
+                    }
+                }
+                if event.event_type == "error"
+                    || matches!(event.state.as_ref(), Some(AppState::Error))
+                {
+                    state.lock().unwrap().phase = ExecutionPhase::Failed {
+                        error: event
+                            .error_message
+                            .unwrap_or_else(|| "execution failed".to_string()),
+                    };
+                    refresh_ui();
+                    return;
+                }
+                let terminal = matches!(event.state.as_ref(), Some(AppState::Results))
+                    || event.event_type == "capability_result";
+                if terminal {
+                    if let Some(output) = event.output {
+                        let execution_id = event.execution_id.clone().unwrap_or_default();
+                        let trace = if execution_id.is_empty() {
+                            Vec::new()
+                        } else {
+                            client
+                                .fetch_trace(base_url, workspace, &execution_id)
+                                .await
+                                .unwrap_or_default()
+                        };
+                        state.lock().unwrap().phase =
+                            ExecutionPhase::Succeeded { output, trace };
+                        refresh_ui();
+                        return;
+                    }
+                    if matches!(event.state.as_ref(), Some(AppState::Results)) {
+                        state.lock().unwrap().phase = ExecutionPhase::Succeeded {
+                            output: TraverseStarterOutput {
+                                title: String::new(),
+                                tags: vec![],
+                                note_type: String::new(),
+                                suggested_next_action: String::new(),
+                                status: String::new(),
+                            },
+                            trace: Vec::new(),
+                        };
+                        refresh_ui();
+                        return;
+                    }
+                }
             }
             Err(err) => {
-                state.lock().unwrap().phase = ExecutionPhase::Failed { error: err.to_string() };
+                state.lock().unwrap().phase = ExecutionPhase::Failed {
+                    error: err.to_string(),
+                };
                 refresh_ui();
                 return;
             }
         }
     }
+
+    state.lock().unwrap().phase = ExecutionPhase::Failed {
+        error: "event stream ended before result".to_string(),
+    };
+    refresh_ui();
 }

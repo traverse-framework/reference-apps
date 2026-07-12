@@ -42,6 +42,8 @@ check "apps/traverse-starter/linux-gtk/Cargo.toml"                      "linux-g
 check "apps/traverse-starter/linux-gtk/README.md"                       "linux-gtk README"
 check "apps/traverse-starter/cli-rust/Cargo.toml"                       "cli-rust Cargo project"
 check "apps/traverse-starter/cli-rust/README.md"                        "cli-rust README"
+check "apps/traverse-starter/traverse-core-rs/Cargo.toml"               "traverse-core-rs Cargo crate"
+check "apps/traverse-starter/Cargo.toml"                               "traverse-starter Cargo workspace"
 
 # doc-approval clients
 check "apps/doc-approval/web-react/package.json"                        "doc-approval web-react package"

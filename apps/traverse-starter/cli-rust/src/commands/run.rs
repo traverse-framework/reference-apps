@@ -1,59 +1,101 @@
-use std::{thread, time::Duration};
+use futures_util::StreamExt;
+use traverse_core_rs::{AppState, DEFAULT_APP_ID};
 
 use crate::client::{TraverseClient, TraverseStarterOutput};
 use crate::output::{print_run_result, RunResultJson};
-use crate::CAPABILITY_ID;
 
 pub fn execute(base_url: &str, workspace: &str, note: &str, json: bool) -> i32 {
-    let client = TraverseClient::new();
-    let execution_id = match client.execute(
-        base_url,
-        workspace,
-        CAPABILITY_ID,
-        &serde_json::json!({ "note": note }),
-    ) {
-        Ok(id) => id,
+    let runtime = match tokio::runtime::Runtime::new() {
+        Ok(rt) => rt,
         Err(err) => {
-            eprintln!("execute failed: {err}");
+            eprintln!("runtime failed: {err}");
             return 1;
         }
     };
 
-    loop {
-        match client.poll_execution(base_url, workspace, &execution_id) {
-            Ok(result) if result.status == "succeeded" => {
-                let trace = client
-                    .fetch_trace(base_url, workspace, &execution_id)
-                    .unwrap_or_default();
-                let output = result.output.unwrap_or(TraverseStarterOutput {
-                    title: String::new(),
-                    tags: vec![],
-                    note_type: String::new(),
-                    suggested_next_action: String::new(),
-                    status: String::new(),
-                });
-                print_run_result(
-                    &RunResultJson {
-                        execution_id,
-                        output,
-                        trace,
-                    },
-                    json,
-                );
-                return 0;
-            }
-            Ok(result) if result.status == "failed" => {
-                eprintln!(
-                    "execution failed: {}",
-                    result.error.unwrap_or_else(|| "unknown error".to_string())
-                );
-                return 1;
-            }
-            Ok(_) => thread::sleep(Duration::from_secs(1)),
+    runtime.block_on(async {
+        let client = TraverseClient::new();
+        let accepted = match client.submit_note(base_url, workspace, note).await {
+            Ok(accepted) => accepted,
             Err(err) => {
-                eprintln!("poll failed: {err}");
+                eprintln!("submit failed: {err}");
                 return 1;
+            }
+        };
+
+        let mut stream = match client
+            .subscribe_events(base_url, workspace, DEFAULT_APP_ID)
+            .await
+        {
+            Ok(stream) => stream,
+            Err(err) => {
+                eprintln!("subscribe failed: {err}");
+                return 1;
+            }
+        };
+
+        while let Some(item) = stream.next().await {
+            match item {
+                Ok(event) if event.event_type == "heartbeat" => continue,
+                Ok(event) => {
+                    if let Some(sid) = event.session_id.as_deref() {
+                        if sid != accepted.session_id {
+                            continue;
+                        }
+                    }
+                    if event.event_type == "error"
+                        || matches!(event.state.as_ref(), Some(AppState::Error))
+                    {
+                        eprintln!(
+                            "execution failed: {}",
+                            event
+                                .error_message
+                                .unwrap_or_else(|| "unknown error".to_string())
+                        );
+                        return 1;
+                    }
+                    let terminal = matches!(event.state.as_ref(), Some(AppState::Results))
+                        || event.event_type == "capability_result";
+                    if !terminal {
+                        continue;
+                    }
+                    let execution_id = event
+                        .execution_id
+                        .or(accepted.execution_id.clone())
+                        .unwrap_or_default();
+                    let output = event.output.unwrap_or(TraverseStarterOutput {
+                        title: String::new(),
+                        tags: vec![],
+                        note_type: String::new(),
+                        suggested_next_action: String::new(),
+                        status: String::new(),
+                    });
+                    let trace = if execution_id.is_empty() {
+                        Vec::new()
+                    } else {
+                        client
+                            .fetch_trace(base_url, workspace, &execution_id)
+                            .await
+                            .unwrap_or_default()
+                    };
+                    print_run_result(
+                        &RunResultJson {
+                            execution_id,
+                            output,
+                            trace,
+                        },
+                        json,
+                    );
+                    return 0;
+                }
+                Err(err) => {
+                    eprintln!("event stream failed: {err}");
+                    return 1;
+                }
             }
         }
-    }
+
+        eprintln!("event stream ended before result");
+        1
+    })
 }

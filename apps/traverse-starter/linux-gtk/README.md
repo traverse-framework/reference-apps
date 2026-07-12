@@ -1,6 +1,6 @@
 # traverse-starter (Linux GTK4)
 
-Native Linux client for the `traverse-starter` reference app. Phase 1 uses HTTP polling against the public Traverse HTTP/JSON API (spec 033) — same flow as `web-react` and the other native clients.
+Native Linux client for the `traverse-starter` reference app. Uses the shared `traverse-core-rs` crate for HTTP command dispatch and SSE app-state events (same pattern as `web-react`).
 
 ## Prerequisites
 
@@ -31,25 +31,24 @@ Values persist to `~/.config/traverse-starter/settings.json`.
 
 ## Build and run
 
+Prefer the workspace root so the shared crate resolves cleanly:
+
 ```bash
-cd apps/traverse-starter/linux-gtk
-cargo build
-cargo test
-cargo run
+cd apps/traverse-starter
+cargo build -p traverse-starter-gtk
+cargo test -p traverse-core-rs
+cargo run -p traverse-starter-gtk
 ```
 
 ## Architecture
 
 | File | Role |
 |---|---|
-| `client.rs` | `reqwest` HTTP client (execute / poll / trace / healthz) |
-| `execution_state.rs` | `Arc<Mutex<ExecutionState>>` polling state machine |
+| `../traverse-core-rs` | Shared HTTP `send_command` + SSE `subscribe_events` |
+| `client.rs` | Re-exports `traverse-core-rs` |
+| `execution_state.rs` | Shell UI phase / online status (not runtime transitions) |
 | `ui/main_window.rs` | `AdwApplicationWindow` — input, output, header health strip |
 | `ui/preferences.rs` | Runtime URL + workspace dialog |
-
-## Phase 2 (not implemented)
-
-SSE subscription when Traverse ships [#525](https://github.com/traverse-framework/Traverse/issues/525)–[#527](https://github.com/traverse-framework/Traverse/issues/527). Shared HTTP client moves to `traverse-core-rs` ([#59](https://github.com/traverse-framework/reference-apps/issues/59)).
 
 ## Design language
 
