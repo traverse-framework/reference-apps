@@ -43,17 +43,25 @@
                 <TextBlock x:Name="PollingText" FontFamily="Consolas" FontSize="12" Visibility="Collapsed" />
                 <TextBlock x:Name="ErrorText" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap" />
 
-                <Grid x:Name="OutputGrid" Visibility="Collapsed" ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Title" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <TextBlock x:Name="TitleValue" Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" />
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Tags" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <TextBlock x:Name="TagsValue" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Note type" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <TextBlock x:Name="NoteTypeValue" Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" />
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Next action" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <TextBlock x:Name="NextActionValue" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" />
+                <Grid x:Name="OutputGrid" Visibility="Collapsed" ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Valid" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="ValidValue" Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Issues" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="IssuesValue" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Title" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="TitleValue" Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Note type" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="NoteTypeValue" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" />
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Status" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     <TextBlock x:Name="StatusValue" Grid.Row="4" Grid.Column="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Next action" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="NextActionValue" Grid.Row="5" Grid.Column="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Tags" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="TagsValue" Grid.Row="6" Grid.Column="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="7" Grid.Column="0" Text="Summary" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="SummaryValue" Grid.Row="7" Grid.Column="1" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="Word count" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="WordCountValue" Grid.Row="8" Grid.Column="1" TextWrapping="Wrap" />
                 </Grid>
 
                 <Expander x:Name="TraceExpander" Header="Trace" Visibility="Collapsed">

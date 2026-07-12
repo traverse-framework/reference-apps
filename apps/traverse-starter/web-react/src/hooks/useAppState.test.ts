@@ -120,12 +120,18 @@ describe('useAppState', () => {
         execution_id: 'exec-1',
         state: 'results',
         previous_state: 'processing',
-        output: { title: 'T', tags: [], noteType: 'fleeting', suggestedNextAction: 'review', status: 'complete' },
+        output: {
+          validate: { valid: true, issues: [] },
+          process: { title: 'T', tags: [], noteType: 'fleeting', suggestedNextAction: 'review', status: 'complete' },
+          summarize: { summary: 'S', wordCount: 1 },
+        },
       })
     })
     expect(result.current.state).toBe('results')
     expect(result.current.output).toEqual(
-      expect.objectContaining({ title: 'T' }),
+      expect.objectContaining({
+        process: expect.objectContaining({ title: 'T' }),
+      }),
     )
   })
 

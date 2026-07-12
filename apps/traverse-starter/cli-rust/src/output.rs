@@ -34,11 +34,25 @@ pub fn print_run_result(result: &RunResultJson, json: bool) {
     }
 
     let output = &result.output;
-    println!("Title: {}", output.title.bold());
-    println!("Tags: {}", output.tags.join(", "));
-    println!("Note type: {}", output.note_type);
-    println!("Next action: {}", output.suggested_next_action);
-    println!("Status: {}", output.status);
+    println!(
+        "Valid: {}",
+        if output.validate.valid { "yes" } else { "no" }.bold()
+    );
+    println!(
+        "Issues: {}",
+        if output.validate.issues.is_empty() {
+            "None".to_string()
+        } else {
+            output.validate.issues.join(", ")
+        }
+    );
+    println!("Title: {}", output.process.title.bold());
+    println!("Note type: {}", output.process.note_type);
+    println!("Status: {}", output.process.status);
+    println!("Next action: {}", output.process.suggested_next_action);
+    println!("Tags: {}", output.process.tags.join(", "));
+    println!("Summary: {}", output.summarize.summary);
+    println!("Word count: {}", output.summarize.word_count);
     if !result.trace.is_empty() {
         println!("Trace ({} events):", result.trace.len());
         for event in &result.trace {

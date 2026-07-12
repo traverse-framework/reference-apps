@@ -106,13 +106,7 @@ class ExecutionViewModel(
                     } catch (_: Exception) {
                         emptyList()
                     }
-                    val output = result.output ?: TraverseStarterOutput(
-                        title = "",
-                        tags = emptyList(),
-                        noteType = "",
-                        suggestedNextAction = "",
-                        status = "",
-                    )
+                    val output = result.output ?: TraverseStarterOutput.EMPTY
                     _uiState.update { it.copy(phase = ExecutionPhase.Succeeded(output, trace)) }
                     return
                 }

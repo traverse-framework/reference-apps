@@ -30,7 +30,7 @@ fn run_flow_succeeds_against_mock_server() {
         )
         .create();
 
-    let sse_body = "event: capability_result\ndata: {\"state\":\"results\",\"session_id\":\"sess-1\",\"execution_id\":\"exec_abc\",\"output\":{\"title\":\"Title\",\"tags\":[\"tag\"],\"noteType\":\"meeting\",\"suggestedNextAction\":\"follow up\",\"status\":\"processed\"}}\n\n";
+    let sse_body = "event: capability_result\ndata: {\"state\":\"results\",\"session_id\":\"sess-1\",\"execution_id\":\"exec_abc\",\"output\":{\"validate\":{\"valid\":true,\"issues\":[]},\"process\":{\"title\":\"Title\",\"tags\":[\"tag\"],\"noteType\":\"meeting\",\"suggestedNextAction\":\"follow up\",\"status\":\"processed\"},\"summarize\":{\"summary\":\"A short summary\",\"wordCount\":3}}}\n\n";
     let _events = server
         .mock(
             "GET",

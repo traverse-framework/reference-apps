@@ -94,13 +94,21 @@ public sealed partial class HomePage : Page
                 break;
             case ExecutionPhase.Succeeded:
                 OutputGrid.Visibility = Visibility.Visible;
-                TitleValue.Text = _viewModel.Output?.Title ?? string.Empty;
+                ValidValue.Text = _viewModel.Output?.Validate.Valid == true ? "yes" : "no";
+                IssuesValue.Text = _viewModel.Output is null || _viewModel.Output.Validate.Issues.Count == 0
+                    ? "None"
+                    : string.Join(", ", _viewModel.Output.Validate.Issues);
+                TitleValue.Text = _viewModel.Output?.Process.Title ?? string.Empty;
+                NoteTypeValue.Text = _viewModel.Output?.Process.NoteType ?? string.Empty;
+                StatusValue.Text = _viewModel.Output?.Process.Status ?? string.Empty;
+                NextActionValue.Text = _viewModel.Output?.Process.SuggestedNextAction ?? string.Empty;
                 TagsValue.Text = _viewModel.Output is null
                     ? string.Empty
-                    : string.Join(", ", _viewModel.Output.Tags);
-                NoteTypeValue.Text = _viewModel.Output?.NoteType ?? string.Empty;
-                NextActionValue.Text = _viewModel.Output?.SuggestedNextAction ?? string.Empty;
-                StatusValue.Text = _viewModel.Output?.Status ?? string.Empty;
+                    : string.Join(", ", _viewModel.Output.Process.Tags);
+                SummaryValue.Text = _viewModel.Output?.Summarize.Summary ?? string.Empty;
+                WordCountValue.Text = _viewModel.Output is null
+                    ? string.Empty
+                    : _viewModel.Output.Summarize.WordCount.ToString();
 
                 if (_viewModel.Trace.Count > 0)
                 {

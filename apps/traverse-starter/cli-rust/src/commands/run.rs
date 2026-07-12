@@ -63,13 +63,7 @@ pub fn execute(base_url: &str, workspace: &str, note: &str, json: bool) -> i32 {
                         .execution_id
                         .or(accepted.execution_id.clone())
                         .unwrap_or_default();
-                    let output = event.output.unwrap_or(TraverseStarterOutput {
-                        title: String::new(),
-                        tags: vec![],
-                        note_type: String::new(),
-                        suggested_next_action: String::new(),
-                        status: String::new(),
-                    });
+                    let output = event.output.unwrap_or_else(TraverseStarterOutput::empty);
                     let trace = if execution_id.is_empty() {
                         Vec::new()
                     } else {

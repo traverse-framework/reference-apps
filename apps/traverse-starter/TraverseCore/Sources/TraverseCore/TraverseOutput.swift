@@ -1,6 +1,16 @@
 import Foundation
 
-public struct TraverseStarterOutput: Equatable, Sendable, Codable {
+public struct ValidateOutput: Equatable, Sendable, Codable {
+    public let valid: Bool
+    public let issues: [String]
+
+    public init(valid: Bool, issues: [String]) {
+        self.valid = valid
+        self.issues = issues
+    }
+}
+
+public struct ProcessOutput: Equatable, Sendable, Codable {
     public let title: String
     public let tags: [String]
     public let noteType: String
@@ -20,6 +30,41 @@ public struct TraverseStarterOutput: Equatable, Sendable, Codable {
         self.suggestedNextAction = suggestedNextAction
         self.status = status
     }
+}
+
+public struct SummarizeOutput: Equatable, Sendable, Codable {
+    public let summary: String
+    public let wordCount: Int
+
+    public init(summary: String, wordCount: Int) {
+        self.summary = summary
+        self.wordCount = wordCount
+    }
+}
+
+/// Combined pipeline final output (validate → process → summarize).
+public struct TraverseStarterOutput: Equatable, Sendable, Codable {
+    public let validate: ValidateOutput
+    public let process: ProcessOutput
+    public let summarize: SummarizeOutput
+
+    public init(validate: ValidateOutput, process: ProcessOutput, summarize: SummarizeOutput) {
+        self.validate = validate
+        self.process = process
+        self.summarize = summarize
+    }
+
+    public static let empty = TraverseStarterOutput(
+        validate: ValidateOutput(valid: false, issues: []),
+        process: ProcessOutput(
+            title: "",
+            tags: [],
+            noteType: "",
+            suggestedNextAction: "",
+            status: ""
+        ),
+        summarize: SummarizeOutput(summary: "", wordCount: 0)
+    )
 }
 
 public struct TraceEvent: Equatable, Sendable, Codable {
@@ -136,20 +181,12 @@ public enum JSONValue: Equatable, Sendable, Codable {
 public enum TraverseOutputParser {
     public static func parse(_ raw: Any?) -> TraverseStarterOutput? {
         guard let dict = raw as? [String: Any],
-              let title = dict["title"] as? String,
-              let tags = dict["tags"] as? [String],
-              let noteType = dict["noteType"] as? String,
-              let suggestedNextAction = dict["suggestedNextAction"] as? String,
-              let status = dict["status"] as? String else {
+              let validate = parseValidate(dict["validate"]),
+              let process = parseProcess(dict["process"]),
+              let summarize = parseSummarize(dict["summarize"]) else {
             return nil
         }
-        return TraverseStarterOutput(
-            title: title,
-            tags: tags,
-            noteType: noteType,
-            suggestedNextAction: suggestedNextAction,
-            status: status
-        )
+        return TraverseStarterOutput(validate: validate, process: process, summarize: summarize)
     }
 
     public static func parseEventPayload(_ raw: Any?) -> AppStateEventPayload? {
@@ -172,5 +209,48 @@ public enum TraverseOutputParser {
             output: output,
             errorMessage: errorMessage
         )
+    }
+
+    private static func parseValidate(_ raw: Any?) -> ValidateOutput? {
+        guard let dict = raw as? [String: Any],
+              let valid = dict["valid"] as? Bool,
+              let issues = dict["issues"] as? [String] else {
+            return nil
+        }
+        return ValidateOutput(valid: valid, issues: issues)
+    }
+
+    private static func parseProcess(_ raw: Any?) -> ProcessOutput? {
+        guard let dict = raw as? [String: Any],
+              let title = dict["title"] as? String,
+              let tags = dict["tags"] as? [String],
+              let noteType = dict["noteType"] as? String,
+              let suggestedNextAction = dict["suggestedNextAction"] as? String,
+              let status = dict["status"] as? String else {
+            return nil
+        }
+        return ProcessOutput(
+            title: title,
+            tags: tags,
+            noteType: noteType,
+            suggestedNextAction: suggestedNextAction,
+            status: status
+        )
+    }
+
+    private static func parseSummarize(_ raw: Any?) -> SummarizeOutput? {
+        guard let dict = raw as? [String: Any],
+              let summary = dict["summary"] as? String,
+              let wordCount = parseWordCount(dict["wordCount"]) else {
+            return nil
+        }
+        return SummarizeOutput(summary: summary, wordCount: wordCount)
+    }
+
+    private static func parseWordCount(_ raw: Any?) -> Int? {
+        if let value = raw as? Int { return value }
+        if let value = raw as? Double { return Int(value) }
+        if let value = raw as? String, let parsed = Int(value) { return parsed }
+        return nil
     }
 }

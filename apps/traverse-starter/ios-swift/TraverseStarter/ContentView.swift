@@ -137,11 +137,18 @@ struct ContentView: View {
 
     private func outputFields(_ output: TraverseStarterOutput) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            labeledField("Title", output.title)
-            labeledField("Tags", output.tags.joined(separator: ", "))
-            labeledField("Note type", output.noteType)
-            labeledField("Suggested next action", output.suggestedNextAction)
-            labeledField("Status", output.status)
+            labeledField("Valid", output.validate.valid ? "yes" : "no")
+            labeledField(
+                "Issues",
+                output.validate.issues.isEmpty ? "None" : output.validate.issues.joined(separator: ", ")
+            )
+            labeledField("Title", output.process.title)
+            labeledField("Note type", output.process.noteType)
+            labeledField("Status", output.process.status)
+            labeledField("Suggested next action", output.process.suggestedNextAction)
+            labeledField("Tags", output.process.tags.joined(separator: ", "))
+            labeledField("Summary", output.summarize.summary)
+            labeledField("Word count", String(output.summarize.wordCount))
         }
     }
 
