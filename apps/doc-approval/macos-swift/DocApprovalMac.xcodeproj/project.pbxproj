@@ -7,29 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B1000000000000000000000B /* DocApprovalCore in Frameworks */ = {isa = PBXBuildFile; productRef = B1000000000000000000000C /* DocApprovalCore */; };
+		B1000000000000000000000E /* AppSettingsSmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2000000000000000000000E /* AppSettingsSmokeTests.swift */; };
 		B10000000000000000000001 /* DocApprovalMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000001 /* DocApprovalMacApp.swift */; };
 		B10000000000000000000002 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000002 /* AppSettings.swift */; };
-		B10000000000000000000003 /* TraverseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000003 /* TraverseClient.swift */; };
-		B10000000000000000000004 /* ExecutionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000004 /* ExecutionViewModel.swift */; };
 		B10000000000000000000005 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000005 /* ContentView.swift */; };
 		B10000000000000000000006 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000006 /* PreferencesView.swift */; };
 		B10000000000000000000007 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000007 /* AppDelegate.swift */; };
 		B10000000000000000000008 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000008 /* Assets.xcassets */; };
-		B10000000000000000000009 /* TraverseClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000009 /* TraverseClientTests.swift */; };
-		B10000000000000000000010 /* ExecutionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000010 /* ExecutionViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B2000000000000000000000E /* AppSettingsSmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsSmokeTests.swift; sourceTree = "<group>"; };
 		B20000000000000000000001 /* DocApprovalMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocApprovalMacApp.swift; sourceTree = "<group>"; };
 		B20000000000000000000002 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
-		B20000000000000000000003 /* TraverseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraverseClient.swift; sourceTree = "<group>"; };
-		B20000000000000000000004 /* ExecutionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutionViewModel.swift; sourceTree = "<group>"; };
 		B20000000000000000000005 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B20000000000000000000006 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		B20000000000000000000007 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B20000000000000000000008 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B20000000000000000000009 /* TraverseClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraverseClientTests.swift; sourceTree = "<group>"; };
-		B20000000000000000000010 /* ExecutionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutionViewModelTests.swift; sourceTree = "<group>"; };
 		B20000000000000000000011 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B30000000000000000000001 /* DocApprovalMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocApprovalMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B30000000000000000000002 /* DocApprovalMacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocApprovalMacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -40,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1000000000000000000000B /* DocApprovalCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,8 +64,6 @@
 				B20000000000000000000001 /* DocApprovalMacApp.swift */,
 				B20000000000000000000007 /* AppDelegate.swift */,
 				B20000000000000000000002 /* AppSettings.swift */,
-				B20000000000000000000003 /* TraverseClient.swift */,
-				B20000000000000000000004 /* ExecutionViewModel.swift */,
 				B20000000000000000000005 /* ContentView.swift */,
 				B20000000000000000000006 /* PreferencesView.swift */,
 				B20000000000000000000008 /* Assets.xcassets */,
@@ -81,8 +75,7 @@
 		B50000000000000000000003 /* DocApprovalMacTests */ = {
 			isa = PBXGroup;
 			children = (
-				B20000000000000000000009 /* TraverseClientTests.swift */,
-				B20000000000000000000010 /* ExecutionViewModelTests.swift */,
+				B2000000000000000000000E /* AppSettingsSmokeTests.swift */,
 			);
 			path = DocApprovalMacTests;
 			sourceTree = "<group>";
@@ -112,6 +105,9 @@
 			dependencies = (
 			);
 			name = DocApprovalMac;
+			packageProductDependencies = (
+				B1000000000000000000000C /* DocApprovalCore */,
+			);
 			productName = DocApprovalMac;
 			productReference = B30000000000000000000001 /* DocApprovalMac.app */;
 			productType = "com.apple.product-type.application";
@@ -162,6 +158,9 @@
 				Base,
 			);
 			mainGroup = B50000000000000000000001;
+			packageReferences = (
+				B1000000000000000000000D /* XCLocalSwiftPackageReference "../DocApprovalCore" */,
+			);
 			productRefGroup = B50000000000000000000004 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -198,8 +197,6 @@
 				B10000000000000000000001 /* DocApprovalMacApp.swift in Sources */,
 				B10000000000000000000007 /* AppDelegate.swift in Sources */,
 				B10000000000000000000002 /* AppSettings.swift in Sources */,
-				B10000000000000000000003 /* TraverseClient.swift in Sources */,
-				B10000000000000000000004 /* ExecutionViewModel.swift in Sources */,
 				B10000000000000000000005 /* ContentView.swift in Sources */,
 				B10000000000000000000006 /* PreferencesView.swift in Sources */,
 			);
@@ -209,8 +206,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B10000000000000000000009 /* TraverseClientTests.swift in Sources */,
-				B10000000000000000000010 /* ExecutionViewModelTests.swift in Sources */,
+				B1000000000000000000000E /* AppSettingsSmokeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -375,6 +371,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		B1000000000000000000000D /* XCLocalSwiftPackageReference "../DocApprovalCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../DocApprovalCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B1000000000000000000000C /* DocApprovalCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B1000000000000000000000D /* XCLocalSwiftPackageReference "../DocApprovalCore" */;
+			productName = DocApprovalCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BA0000000000000000000001 /* Project object */;
 }

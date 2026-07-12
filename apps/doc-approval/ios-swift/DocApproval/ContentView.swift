@@ -1,8 +1,9 @@
 import SwiftUI
+import DocApprovalCore
 
 struct ContentView: View {
     @EnvironmentObject private var settings: AppSettings
-    @EnvironmentObject private var viewModel: ExecutionViewModel
+    @EnvironmentObject private var viewModel: AppStateViewModel
     @State private var showSettings = false
 
     var body: some View {
@@ -44,7 +45,7 @@ struct ContentView: View {
                 Text("workspace: \(settings.workspace)")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                Text("capability: \(AppSettings.capabilityId)")
+                Text("app: \(AppSettings.appId)")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -80,30 +81,36 @@ struct ContentView: View {
     private var outputSection: some View {
         GroupBox("Analysis Result") {
             VStack(alignment: .leading, spacing: 12) {
-                switch viewModel.phase {
-                case .idle:
+                if let error = viewModel.errorMessage, viewModel.currentState != "results" {
+                    Text("Error: \(error)")
+                        .foregroundStyle(.red)
+                }
+
+                switch viewModel.currentState {
+                case "idle":
                     if viewModel.runtimeStatus == .offline {
                         Text("Connect to the Traverse runtime to see analysis output here.")
                             .foregroundStyle(.secondary)
-                    } else {
+                    } else if viewModel.submitting {
+                        Text("Submitting command…")
+                    } else if viewModel.errorMessage == nil {
                         Text("Submit a document above to start analysis.")
                             .foregroundStyle(.secondary)
                     }
-                case .loading:
-                    Text("Starting analysis…")
-                case .polling(let executionId):
-                    Text("Polling execution \(executionId)…")
-                        .font(.footnote.monospaced())
-                case .failed(let error):
-                    Text("Error: \(error)")
+                case "processing":
+                    Text("Analyzing…")
+                case "error":
+                    Text("Error: \(viewModel.errorMessage ?? "execution failed")")
                         .foregroundStyle(.red)
-                    Button("Reset") { viewModel.reset() }
+                    Button("Reset") { viewModel.resetLocal() }
                         .buttonStyle(.bordered)
-                case .succeeded(let output, let trace):
-                    outputFields(output)
-                    if !trace.isEmpty {
-                        DisclosureGroup("Trace (\(trace.count) events)", isExpanded: $viewModel.showTrace) {
-                            ForEach(Array(trace.enumerated()), id: \.offset) { _, event in
+                case "results":
+                    if let output = viewModel.output {
+                        outputFields(output)
+                    }
+                    if !viewModel.trace.isEmpty {
+                        DisclosureGroup("Trace (\(viewModel.trace.count) events)", isExpanded: $viewModel.showTrace) {
+                            ForEach(Array(viewModel.trace.enumerated()), id: \.offset) { _, event in
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text("\(event.timestamp) · \(event.event_type)")
                                         .font(.caption.monospaced())
@@ -117,8 +124,11 @@ struct ContentView: View {
                             }
                         }
                     }
-                    Button("Reset") { viewModel.reset() }
+                    Button("Reset") { viewModel.resetLocal() }
                         .buttonStyle(.bordered)
+                default:
+                    Text("State: \(viewModel.currentState)")
+                        .foregroundStyle(.secondary)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -170,5 +180,9 @@ struct ContentView: View {
     let settings = AppSettings()
     ContentView()
         .environmentObject(settings)
-        .environmentObject(ExecutionViewModel(client: TraverseClient(), settings: settings))
+        .environmentObject(AppStateViewModel(
+            client: DocApprovalClient(),
+            baseURL: settings.baseURL,
+            workspaceId: settings.workspace
+        ))
 }
