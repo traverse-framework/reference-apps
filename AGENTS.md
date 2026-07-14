@@ -11,10 +11,10 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 ### Blocked work summary
 
-- **Phase 3 embedded runtime** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)) — see `docs/embedded-runtime-plan.md`; blocked on a **consumable platform embedder SDK** (Traverse [#553](https://github.com/traverse-framework/Traverse/issues/553) closed via [#578](https://github.com/traverse-framework/Traverse/pull/578) with manifest `execution_mode` only — no web/Swift/etc. embedder package yet). Traverse [#615](https://github.com/traverse-framework/Traverse/pull/615) added wasm32 core build only — not a platform embedder package.
+- **Phase 3 embedded runtime** ([#113](https://github.com/traverse-framework/reference-apps/issues/113)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)) — see `docs/embedded-runtime-plan.md`; blocked on **consumable platform embedder SDKs**: Traverse [#646](https://github.com/traverse-framework/Traverse/issues/646) (web/TS), [#647](https://github.com/traverse-framework/Traverse/issues/647) (Swift), [#648](https://github.com/traverse-framework/Traverse/issues/648) (Kotlin), [#649](https://github.com/traverse-framework/Traverse/issues/649) (.NET), [#650](https://github.com/traverse-framework/Traverse/issues/650) (Rust). [#553](https://github.com/traverse-framework/Traverse/issues/553) closed with manifest `execution_mode` only — not a shippable embedder package.
 - **doc-approval multi-capability showcase** ([#111](https://github.com/traverse-framework/reference-apps/issues/111), [#112](https://github.com/traverse-framework/reference-apps/issues/112)) — blocked on Traverse [#538](https://github.com/traverse-framework/Traverse/issues/538) / [#555](https://github.com/traverse-framework/Traverse/issues/555) (`extract` / `recommend` agents)
 
-Ready: (none — shared packages and [#110](https://github.com/traverse-framework/reference-apps/issues/110) pipeline showcase shipped).
+Ready: (none).
 
 Update this section when a PR changes platform status (see PR template checklist).
 
