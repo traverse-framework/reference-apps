@@ -12,6 +12,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 ### Blocked work summary
 
 - **Phase 3 embedded runtime** ([#113](https://github.com/traverse-framework/reference-apps/issues/113)–[#116](https://github.com/traverse-framework/reference-apps/issues/116)) — blocked on remaining consumable embedder SDKs: Traverse [#646](https://github.com/traverse-framework/Traverse/issues/646) (web/TS), [#647](https://github.com/traverse-framework/Traverse/issues/647) (Swift), [#648](https://github.com/traverse-framework/Traverse/issues/648) (Kotlin), [#649](https://github.com/traverse-framework/Traverse/issues/649) (.NET). Rust SDK shipped ([#650](https://github.com/traverse-framework/Traverse/issues/650) / PR #672); App-Refs [#117](https://github.com/traverse-framework/reference-apps/issues/117) Linux GTK + CLI embed shipped.
+- **doc-approval multi-capability showcase** ([#111](https://github.com/traverse-framework/reference-apps/issues/111), [#112](https://github.com/traverse-framework/reference-apps/issues/112)) — blocked only on Traverse [#555](https://github.com/traverse-framework/Traverse/issues/555) (`recommend`). Spec 069 closed [#538](https://github.com/traverse-framework/Traverse/issues/538): pipeline is `analyze → recommend` (no extract).
 
 Ready: none.
 
