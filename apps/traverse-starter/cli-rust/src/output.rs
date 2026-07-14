@@ -1,5 +1,6 @@
 use colored::Colorize;
 use serde::Serialize;
+use serde_json::Value;
 
 use crate::client::{TraceEvent, TraverseStarterOutput};
 
@@ -10,21 +11,8 @@ pub struct RunResultJson {
     pub trace: Vec<TraceEvent>,
 }
 
-pub fn print_health(base_url: &str, online: bool, json: bool) {
-    if json {
-        println!(
-            "{}",
-            serde_json::to_string(&serde_json::json!({
-                "base_url": base_url,
-                "status": if online { "online" } else { "offline" },
-            }))
-            .unwrap_or_default()
-        );
-        return;
-    }
-
-    let status = if online { "online" } else { "offline" };
-    println!("Runtime {base_url}: {status}");
+pub fn print_json(value: &Value) {
+    println!("{}", serde_json::to_string_pretty(value).unwrap_or_default());
 }
 
 pub fn print_run_result(result: &RunResultJson, json: bool) {

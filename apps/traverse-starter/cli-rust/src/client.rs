@@ -1,4 +1,5 @@
-//! Re-exports the shared traverse-core-rs client for the CLI shell.
+//! Re-exports the shared traverse-core-rs embedded host for the CLI shell.
 pub use traverse_core_rs::{
-    TraceEvent, TraverseClient, TraverseClientError, TraverseStarterOutput, DEFAULT_APP_ID,
+    EmbeddedRuntime, HostError, HostRunResult, TraceEvent, TraverseStarterOutput, DEFAULT_APP_ID,
+    DEFAULT_WORKFLOW_ID, DEFAULT_WORKSPACE, RUNTIME_MODE_EMBEDDED,
 };

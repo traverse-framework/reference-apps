@@ -66,6 +66,28 @@ impl StateEvent {
             });
         }
         let raw: Value = serde_json::from_str(data).ok()?;
+        Self::from_payload(event_type, raw)
+    }
+
+    /// Parses an `embedder-api/1.0.0` event envelope into a UI state event.
+    ///
+    /// Embedder events use `{ event_type, session_id, data: { ... } }` where
+    /// `data` carries the same fields historically delivered as SSE `data:`.
+    pub fn from_embedder_event(event: &Value) -> Option<Self> {
+        let event_type = event.get("event_type")?.as_str()?;
+        let data = event.get("data").cloned().unwrap_or(Value::Null);
+        let mut parsed = Self::from_payload(event_type, data)?;
+        if parsed.session_id.is_none() {
+            parsed.session_id = event
+                .get("session_id")
+                .and_then(|v| v.as_str())
+                .map(str::to_string);
+        }
+        parsed.raw = event.clone();
+        Some(parsed)
+    }
+
+    fn from_payload(event_type: &str, raw: Value) -> Option<Self> {
         let payload: EventPayload = serde_json::from_value(raw.clone()).ok()?;
         let error_message = match payload.error {
             Some(Value::String(s)) => Some(s),

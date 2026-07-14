@@ -1,8 +1,12 @@
 //! Shared Traverse runtime client for traverse-starter Rust shells.
 //! Platform-neutral: no GTK or terminal UI imports.
+//!
+//! Phase 3 production path is the embedded host (`host` module). HTTP sidecar
+//! helpers remain under the `sidecar` feature for migration/debug only.
 
 mod client;
 mod discovery;
+mod host;
 mod sse;
 mod state;
 
@@ -11,6 +15,10 @@ pub use client::{
     TraverseClientError, TraverseStarterOutput, ValidateOutput,
 };
 pub use discovery::{ServerDiscovery, ServerInfo};
+pub use host::{
+    resolve_manifest_path, EmbeddedRuntime, HostError, HostRunResult, TestEmbeddedRuntime,
+    DEFAULT_WORKFLOW_ID, MANIFEST_ENV, RUNTIME_MODE_EMBEDDED,
+};
 pub use sse::subscribe_events;
 pub use state::{AppState, StateEvent};
 

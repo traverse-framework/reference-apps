@@ -1,12 +1,24 @@
 # doc-approval (Linux GTK4)
 
-Native Linux client for the `doc-approval` reference app. Uses shared `doc-approval-core-rs` for HTTP command dispatch and SSE app-state events.
+Native Linux client for `doc-approval`. Uses `doc-approval-core-rs` with **`traverse-embedder`** (Phase 3). No sidecar URL.
 
-Requires GTK4 + libadwaita system packages.
+**Note:** Zone 1 shows Embedded / Unavailable until `manifests/doc-approval/` lands ([#112](https://github.com/traverse-framework/reference-apps/issues/112)).
+
+## Prerequisites
+
+```bash
+sudo apt install libgtk-4-dev libadwaita-1-dev
+export TRAVERSE_REPO=/path/to/Traverse   # sibling checkout with traverse-embedder
+```
+
+## Build
 
 ```bash
 cd apps/doc-approval
-cargo build -p doc-approval-gtk
 cargo test -p doc-approval-core-rs
 cargo run -p doc-approval-gtk
 ```
+
+## Design language
+
+Follow [docs/design-language.md](../../../docs/design-language.md).

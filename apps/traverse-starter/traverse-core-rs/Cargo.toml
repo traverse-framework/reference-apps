@@ -2,10 +2,11 @@
 name = "traverse-core-rs"
 version = "0.1.0"
 edition = "2021"
-description = "Shared Traverse HTTP/SSE client for traverse-starter Rust shells"
+description = "Shared Traverse embedded-runtime client for traverse-starter Rust shells"
 license = "MIT"
 
 [dependencies]
+traverse-embedder = { git = "https://github.com/traverse-framework/Traverse.git", package = "traverse-embedder" }
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
