@@ -2,7 +2,7 @@
 name = "doc-approval-cli"
 version = "0.1.0"
 edition = "2021"
-description = "CLI client for doc-approval (Phase 1 HTTP polling)"
+description = "CLI client for doc-approval (embedded Traverse runtime)"
 license = "MIT"
 
 [[bin]]
@@ -13,13 +13,7 @@ path = "src/main.rs"
 doc-approval-core-rs = { path = "../doc-approval-core-rs" }
 clap = { version = "4", features = ["derive", "env"] }
 colored = "2"
-futures-util = "0.3"
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
 [dev-dependencies]
-mockito = "1"
-assert_cmd = "2"
-predicates = "3"
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

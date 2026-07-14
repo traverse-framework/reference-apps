@@ -1,6 +1,6 @@
 # traverse-starter (Linux GTK4)
 
-Native Linux client for the `traverse-starter` reference app. Uses the shared `traverse-core-rs` crate for HTTP command dispatch and SSE app-state events (same pattern as `web-react`).
+Native Linux client for the `traverse-starter` reference app. Uses the shared `traverse-core-rs` crate with the public **`traverse-embedder`** SDK (Phase 3 embedded runtime). No `traverse-cli serve` sidecar is required.
 
 ## Prerequisites
 
@@ -12,31 +12,30 @@ Native Linux client for the `traverse-starter` reference app. Uses the shared `t
 sudo apt install libgtk-4-dev libadwaita-1-dev
 ```
 
-- **Traverse runtime** running locally:
+- **Traverse checkout** (sibling recommended) with `traverse-embedder` and example WASM:
 
 ```bash
-git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
-cd /tmp/traverse && git checkout v0.6.0
-cargo run -p traverse-cli -- serve
+export TRAVERSE_REPO=/path/to/Traverse
+bash scripts/ci/phase2_link_traverse.sh   # from App-References root
 ```
 
-## Runtime URL configuration
+`traverse-core-rs` depends on `traverse-embedder` from the Traverse git repo.
 
-Open **Preferences** (gear icon in the header bar) and set:
+## Bundle configuration
 
-- **Runtime URL** — default `http://127.0.0.1:8787`
+Open **Preferences** and optionally set:
+
 - **Workspace** — default `local-default`
+- **Bundle manifest path** — defaults to auto-discover `manifests/traverse-starter/app.manifest.json`
 
-Values persist to `~/.config/traverse-starter/settings.json`.
+Or set `TRAVERSE_STARTER_MANIFEST` to the absolute path of `app.manifest.json`.
 
 ## Build and run
-
-Prefer the workspace root so the shared crate resolves cleanly:
 
 ```bash
 cd apps/traverse-starter
 cargo build -p traverse-starter-gtk
-cargo test -p traverse-core-rs
+cargo test -p traverse-core-rs -p traverse-starter-gtk
 cargo run -p traverse-starter-gtk
 ```
 
@@ -44,12 +43,12 @@ cargo run -p traverse-starter-gtk
 
 | File | Role |
 |---|---|
-| `../traverse-core-rs` | Shared HTTP `send_command` + SSE `subscribe_events` |
-| `client.rs` | Re-exports `traverse-core-rs` |
-| `execution_state.rs` | Shell UI phase / online status (not runtime transitions) |
-| `ui/main_window.rs` | `AdwApplicationWindow` — input, output, header health strip |
-| `ui/preferences.rs` | Runtime URL + workspace dialog |
+| `../traverse-core-rs` | Shared `EmbeddedRuntime` over `traverse-embedder` |
+| `client.rs` | Re-exports embedded host types |
+| `execution_state.rs` | Shell UI phase / Ready status |
+| `ui/main_window.rs` | Zones 1–3 per design-language |
+| `ui/preferences.rs` | Workspace + optional manifest path |
 
 ## Design language
 
-Follow [docs/design-language.md](../../../docs/design-language.md).
+Follow [docs/design-language.md](../../../docs/design-language.md). Zone 1 shows **Embedded** runtime mode.

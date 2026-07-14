@@ -14,7 +14,7 @@ impl PreferencesDialog {
             .transient_for(parent)
             .modal(true)
             .title("Preferences")
-            .default_width(420)
+            .default_width(480)
             .default_height(280)
             .build();
 
@@ -24,18 +24,20 @@ impl PreferencesDialog {
         content.set_margin_start(16);
         content.set_margin_end(16);
 
-        content.append(&Label::new(Some("Runtime URL")));
-        let base_url_entry = Entry::new();
-        base_url_entry.set_text(&current.base_url);
-        content.append(&base_url_entry);
-
         content.append(&Label::new(Some("Workspace")));
         let workspace_entry = Entry::new();
         workspace_entry.set_text(&current.workspace);
         content.append(&workspace_entry);
 
+        content.append(&Label::new(Some("Bundle manifest path (optional)")));
+        let manifest_entry = Entry::new();
+        if let Some(path) = &current.manifest_path {
+            manifest_entry.set_text(path);
+        }
+        content.append(&manifest_entry);
+
         content.append(&Label::new(Some(
-            "Default: http://127.0.0.1:8787 with workspace local-default",
+            "Embedded runtime — no sidecar URL. Leave manifest empty to auto-discover.",
         )));
 
         let button_row = GtkBox::new(Orientation::Horizontal, 8);
@@ -65,12 +67,17 @@ impl PreferencesDialog {
             let dialog = dialog.clone();
             let result = result.clone();
             let finished = finished.clone();
-            let base_url_entry = base_url_entry.clone();
             let workspace_entry = workspace_entry.clone();
+            let manifest_entry = manifest_entry.clone();
             move |_| {
+                let manifest = manifest_entry.text().to_string();
                 result.set(Some(AppSettings {
-                    base_url: base_url_entry.text().to_string(),
                     workspace: workspace_entry.text().to_string(),
+                    manifest_path: if manifest.trim().is_empty() {
+                        None
+                    } else {
+                        Some(manifest)
+                    },
                 }));
                 finished.set(true);
                 dialog.close();

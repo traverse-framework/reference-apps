@@ -2,7 +2,7 @@
 name = "traverse-starter-gtk"
 version = "0.1.0"
 edition = "2021"
-description = "Native GTK4 client for traverse-starter (Phase 1 HTTP polling)"
+description = "Native GTK4 client for traverse-starter (embedded Traverse runtime)"
 license = "MIT"
 
 [lib]
@@ -16,12 +16,8 @@ path = "src/main.rs"
 traverse-core-rs = { path = "../traverse-core-rs" }
 gtk4 = "0.9"
 libadwaita = { version = "0.7", features = ["v1_5"] }
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
-futures-util = "0.3"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 directories = "5"
 
 [dev-dependencies]
-wiremock = "0.6"
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

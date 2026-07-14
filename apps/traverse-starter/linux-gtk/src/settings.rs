@@ -3,19 +3,20 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 
-use crate::{DEFAULT_BASE_URL, DEFAULT_WORKSPACE};
+use crate::{DEFAULT_WORKSPACE};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct AppSettings {
-    pub base_url: String,
     pub workspace: String,
+    #[serde(default)]
+    pub manifest_path: Option<String>,
 }
 
 impl Default for AppSettings {
     fn default() -> Self {
         Self {
-            base_url: DEFAULT_BASE_URL.to_string(),
             workspace: DEFAULT_WORKSPACE.to_string(),
+            manifest_path: None,
         }
     }
 }
@@ -42,5 +43,8 @@ pub fn save_settings(settings: &AppSettings) -> std::io::Result<()> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
     }
-    fs::write(path, serde_json::to_string_pretty(settings).unwrap_or_default())
+    fs::write(
+        path,
+        serde_json::to_string_pretty(settings).unwrap_or_default(),
+    )
 }

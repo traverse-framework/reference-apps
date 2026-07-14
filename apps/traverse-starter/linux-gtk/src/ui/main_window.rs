@@ -1,16 +1,17 @@
-use futures_util::StreamExt;
 use gtk4::prelude::*;
 use gtk4::{
-    Box as GtkBox, Button, Label, Orientation, ScrolledWindow, TextView, TextViewBuffer,
-    ToggleButton,
+    Box as GtkBox, Button, Label, Orientation, ScrolledWindow, TextView, ToggleButton,
 };
 use libadwaita as adw;
 use std::cell::RefCell;
+use std::path::PathBuf;
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
-use traverse_core_rs::AppState;
 
-use crate::client::{TraverseClient, TraverseStarterOutput, DEFAULT_APP_ID};
+use crate::client::{
+    EmbeddedRuntime, DEFAULT_APP_ID, DEFAULT_WORKFLOW_ID, DEFAULT_WORKSPACE,
+    RUNTIME_MODE_EMBEDDED,
+};
 use crate::execution_state::{ExecutionPhase, ExecutionState, RuntimeStatus};
 use crate::settings::{load_settings, save_settings, AppSettings};
 use crate::ui::preferences::PreferencesDialog;
@@ -24,7 +25,7 @@ impl MainWindow {
     pub fn new(app: &adw::Application) -> Self {
         let settings = Rc::new(RefCell::new(load_settings()));
         let state = Arc::new(Mutex::new(ExecutionState::default()));
-        let client = TraverseClient::new();
+        let host = Rc::new(RefCell::new(init_host(&settings.borrow())));
 
         let window = adw::ApplicationWindow::builder()
             .application(app)
@@ -34,10 +35,6 @@ impl MainWindow {
             .build();
 
         let header = adw::HeaderBar::new();
-        let status_label = Label::new(Some("Checking…"));
-        status_label.add_css_class("dim-label");
-        header.pack_end(&status_label);
-
         let prefs_button = Button::from_icon_name("preferences-system-symbolic");
         prefs_button.set_tooltip_text(Some("Preferences"));
         header.pack_end(&prefs_button);
@@ -51,6 +48,29 @@ impl MainWindow {
         content.set_margin_start(16);
         content.set_margin_end(16);
 
+        // Zone 1 — Runtime Environment
+        content.append(&Label::new(Some("Runtime Environment")));
+        let zone1 = GtkBox::new(Orientation::Vertical, 4);
+        let mode_label = Label::new(Some(&format!("Runtime mode: {RUNTIME_MODE_EMBEDDED}")));
+        mode_label.set_xalign(0.0);
+        let status_label = Label::new(Some("Runtime status: Starting"));
+        status_label.set_xalign(0.0);
+        status_label.add_css_class("dim-label");
+        let workspace_label = Label::new(Some(&format!("Workspace: {DEFAULT_WORKSPACE}")));
+        workspace_label.set_xalign(0.0);
+        workspace_label.add_css_class("dim-label");
+        let workflow_label = Label::new(Some(&format!(
+            "Workflow: {DEFAULT_WORKFLOW_ID} · App: {DEFAULT_APP_ID}"
+        )));
+        workflow_label.set_xalign(0.0);
+        workflow_label.add_css_class("dim-label");
+        zone1.append(&mode_label);
+        zone1.append(&status_label);
+        zone1.append(&workspace_label);
+        zone1.append(&workflow_label);
+        content.append(&zone1);
+
+        // Zone 2 — Input
         content.append(&Label::new(Some("Start Workflow")));
 
         let note_view = TextView::new();
@@ -76,12 +96,13 @@ impl MainWindow {
         content.append(&button_row);
 
         let offline_hint = Label::new(Some(
-            "Runtime offline — start with `cargo run -p traverse-cli -- serve`",
+            "Embedded runtime unavailable — check bundle manifest path and TRAVERSE_REPO link.",
         ));
         offline_hint.add_css_class("dim-label");
         offline_hint.set_visible(false);
         content.append(&offline_hint);
 
+        // Zone 3 — Output
         content.append(&Label::new(Some("Execution Output")));
 
         let output_label = Label::new(Some("Submit a note above to start a workflow."));
@@ -105,6 +126,34 @@ impl MainWindow {
         toolbar_view.set_content(Some(&scrolled));
         window.set_content(Some(&toolbar_view));
 
+        let refresh_zone1 = {
+            let host = host.clone();
+            let settings = settings.clone();
+            let state = state.clone();
+            let status_label = status_label.clone();
+            let workspace_label = workspace_label.clone();
+            move || {
+                let ready = host.borrow().is_some();
+                let status = if ready {
+                    RuntimeStatus::Ready
+                } else {
+                    RuntimeStatus::Unavailable
+                };
+                state.lock().unwrap().runtime_status = status;
+                status_label.set_text(match status {
+                    RuntimeStatus::Ready => "Runtime status: Ready",
+                    RuntimeStatus::Unavailable => "Runtime status: Unavailable",
+                    RuntimeStatus::Starting => "Runtime status: Starting",
+                });
+                let workspace = host
+                    .borrow()
+                    .as_ref()
+                    .map(|h| h.workspace_id().to_string())
+                    .unwrap_or_else(|| settings.borrow().workspace.clone());
+                workspace_label.set_text(&format!("Workspace: {workspace}"));
+            }
+        };
+
         let refresh_ui = {
             let state = state.clone();
             let output_label = output_label.clone();
@@ -114,9 +163,9 @@ impl MainWindow {
             let offline_hint = offline_hint.clone();
             move || {
                 let state = state.lock().unwrap();
-                let online = state.runtime_status == RuntimeStatus::Online;
-                submit_button.set_sensitive(state.can_submit(online));
-                offline_hint.set_visible(state.runtime_status == RuntimeStatus::Offline);
+                let ready = state.runtime_status == RuntimeStatus::Ready;
+                submit_button.set_sensitive(state.can_submit(ready));
+                offline_hint.set_visible(state.runtime_status == RuntimeStatus::Unavailable);
 
                 trace_box.set_visible(false);
                 trace_toggle.set_visible(false);
@@ -126,19 +175,15 @@ impl MainWindow {
 
                 match &state.phase {
                     ExecutionPhase::Idle => {
-                        output_label.set_text(if online {
+                        output_label.set_text(if ready {
                             "Submit a note above to start a workflow."
                         } else {
-                            "Connect to the Traverse runtime to see workflow output here."
+                            "Initialize the embedded runtime to see workflow output here."
                         });
                         output_label.add_css_class("dim-label");
                     }
                     ExecutionPhase::Loading => {
-                        output_label.set_text("Starting execution…");
-                        output_label.remove_css_class("dim-label");
-                    }
-                    ExecutionPhase::Polling { execution_id } => {
-                        output_label.set_text(&format!("Waiting for runtime events ({execution_id})…"));
+                        output_label.set_text("Running embedded workflow…");
                         output_label.remove_css_class("dim-label");
                     }
                     ExecutionPhase::Failed { error } => {
@@ -184,6 +229,9 @@ impl MainWindow {
             }
         };
 
+        refresh_zone1();
+        refresh_ui();
+
         note_buffer.connect_changed({
             let state = state.clone();
             let note_count = note_count.clone();
@@ -202,18 +250,12 @@ impl MainWindow {
 
         submit_button.connect_clicked({
             let state = state.clone();
-            let settings = settings.clone();
-            let client = client.clone();
+            let host = host.clone();
             let refresh_ui = refresh_ui.clone();
             move |_| {
-                let (base_url, workspace, note) = {
-                    let settings = settings.borrow();
+                let note = {
                     let state = state.lock().unwrap();
-                    (
-                        settings.base_url.clone(),
-                        settings.workspace.clone(),
-                        state.note.trim().to_string(),
-                    )
+                    state.note.trim().to_string()
                 };
                 if note.is_empty() {
                     return;
@@ -225,37 +267,29 @@ impl MainWindow {
                 }
                 refresh_ui();
 
-                glib::spawn_future_local({
-                    let state = state.clone();
-                    let refresh_ui = refresh_ui.clone();
-                    async move {
-                        match client.submit_note(&base_url, &workspace, &note).await {
-                            Ok(accepted) => {
-                                let label = accepted
-                                    .execution_id
-                                    .clone()
-                                    .unwrap_or_else(|| accepted.session_id.clone());
-                                state.lock().unwrap().phase =
-                                    ExecutionPhase::Polling { execution_id: label };
-                                refresh_ui();
-                                wait_for_result(
-                                    &client,
-                                    &state,
-                                    &base_url,
-                                    &workspace,
-                                    &accepted.session_id,
-                                    &refresh_ui,
-                                )
-                                .await;
-                            }
-                            Err(err) => {
-                                state.lock().unwrap().phase =
-                                    ExecutionPhase::Failed { error: err.to_string() };
-                                refresh_ui();
-                            }
-                        }
+                let result = {
+                    let mut host = host.borrow_mut();
+                    match host.as_mut() {
+                        Some(runtime) => runtime.submit_note(&note),
+                        None => Err(crate::client::HostError::Init(
+                            "embedded runtime not initialized".to_string(),
+                        )),
                     }
-                });
+                };
+
+                match result {
+                    Ok(run) => {
+                        state.lock().unwrap().phase = ExecutionPhase::Succeeded {
+                            output: run.output,
+                            trace: run.events,
+                        };
+                    }
+                    Err(err) => {
+                        state.lock().unwrap().phase =
+                            ExecutionPhase::Failed { error: err.to_string() };
+                    }
+                }
+                refresh_ui();
             }
         });
 
@@ -280,40 +314,16 @@ impl MainWindow {
         prefs_button.connect_clicked({
             let window = window.clone();
             let settings = settings.clone();
-            let status_label = status_label.clone();
-            let state = state.clone();
-            let client = client.clone();
+            let host = host.clone();
+            let refresh_zone1 = refresh_zone1.clone();
             let refresh_ui = refresh_ui.clone();
             move |_| {
                 if let Some(updated) = PreferencesDialog::run(&window, &settings.borrow()) {
                     *settings.borrow_mut() = updated.clone();
                     let _ = save_settings(&updated);
-                    glib::spawn_future_local({
-                        let settings = settings.clone();
-                        let status_label = status_label.clone();
-                        let state = state.clone();
-                        let client = client.clone();
-                        let refresh_ui = refresh_ui.clone();
-                        async move {
-                            refresh_health(&client, &settings, &state, &status_label).await;
-                            refresh_ui();
-                        }
-                    });
-                }
-            }
-        });
-
-        glib::spawn_future_local({
-            let settings = settings.clone();
-            let status_label = status_label.clone();
-            let state = state.clone();
-            let client = client.clone();
-            let refresh_ui = refresh_ui.clone();
-            async move {
-                loop {
-                    refresh_health(&client, &settings, &state, &status_label).await;
+                    *host.borrow_mut() = init_host(&updated);
+                    refresh_zone1();
                     refresh_ui();
-                    glib::timeout_future_seconds(5).await;
                 }
             }
         });
@@ -326,109 +336,9 @@ impl MainWindow {
     }
 }
 
-async fn refresh_health(
-    client: &TraverseClient,
-    settings: &Rc<RefCell<AppSettings>>,
-    state: &Arc<Mutex<ExecutionState>>,
-    status_label: &Label,
-) {
-    state.lock().unwrap().runtime_status = RuntimeStatus::Checking;
-    status_label.set_text("Checking…");
-    let base_url = settings.borrow().base_url.clone();
-    let status = match client.check_health(&base_url).await {
-        Ok(true) => RuntimeStatus::Online,
-        _ => RuntimeStatus::Offline,
-    };
-    state.lock().unwrap().runtime_status = status;
-    status_label.set_text(match status {
-        RuntimeStatus::Online => "Online",
-        RuntimeStatus::Offline => "Offline",
-        RuntimeStatus::Checking => "Checking…",
-    });
-}
-
-async fn wait_for_result(
-    client: &TraverseClient,
-    state: &Arc<Mutex<ExecutionState>>,
-    base_url: &str,
-    workspace: &str,
-    session_id: &str,
-    refresh_ui: &impl Fn(),
-) {
-    let mut stream = match client
-        .subscribe_events(base_url, workspace, DEFAULT_APP_ID)
-        .await
-    {
-        Ok(stream) => stream,
-        Err(err) => {
-            state.lock().unwrap().phase = ExecutionPhase::Failed {
-                error: err.to_string(),
-            };
-            refresh_ui();
-            return;
-        }
-    };
-
-    while let Some(item) = stream.next().await {
-        match item {
-            Ok(event) if event.event_type == "heartbeat" => continue,
-            Ok(event) => {
-                if let Some(sid) = event.session_id.as_deref() {
-                    if sid != session_id {
-                        continue;
-                    }
-                }
-                if event.event_type == "error"
-                    || matches!(event.state.as_ref(), Some(AppState::Error))
-                {
-                    state.lock().unwrap().phase = ExecutionPhase::Failed {
-                        error: event
-                            .error_message
-                            .unwrap_or_else(|| "execution failed".to_string()),
-                    };
-                    refresh_ui();
-                    return;
-                }
-                let terminal = matches!(event.state.as_ref(), Some(AppState::Results))
-                    || event.event_type == "capability_result";
-                if terminal {
-                    if let Some(output) = event.output {
-                        let execution_id = event.execution_id.clone().unwrap_or_default();
-                        let trace = if execution_id.is_empty() {
-                            Vec::new()
-                        } else {
-                            client
-                                .fetch_trace(base_url, workspace, &execution_id)
-                                .await
-                                .unwrap_or_default()
-                        };
-                        state.lock().unwrap().phase =
-                            ExecutionPhase::Succeeded { output, trace };
-                        refresh_ui();
-                        return;
-                    }
-                    if matches!(event.state.as_ref(), Some(AppState::Results)) {
-                        state.lock().unwrap().phase = ExecutionPhase::Succeeded {
-                            output: TraverseStarterOutput::empty(),
-                            trace: Vec::new(),
-                        };
-                        refresh_ui();
-                        return;
-                    }
-                }
-            }
-            Err(err) => {
-                state.lock().unwrap().phase = ExecutionPhase::Failed {
-                    error: err.to_string(),
-                };
-                refresh_ui();
-                return;
-            }
-        }
+fn init_host(settings: &AppSettings) -> Option<EmbeddedRuntime> {
+    if let Some(path) = &settings.manifest_path {
+        return EmbeddedRuntime::init(PathBuf::from(path)).ok();
     }
-
-    state.lock().unwrap().phase = ExecutionPhase::Failed {
-        error: "event stream ended before result".to_string(),
-    };
-    refresh_ui();
+    EmbeddedRuntime::init_default().ok()
 }

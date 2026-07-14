@@ -92,7 +92,7 @@
       {
         "id": "processing",
         "invoke": {
-          "capability_id": "traverse-starter.pipeline",
+          "capability_id": "traverse-starter.process",
           "input_from": "command.payload"
         },
         "transitions": [

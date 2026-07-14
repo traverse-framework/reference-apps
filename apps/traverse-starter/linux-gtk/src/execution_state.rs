@@ -4,7 +4,6 @@ use crate::client::{TraceEvent, TraverseStarterOutput};
 pub enum ExecutionPhase {
     Idle,
     Loading,
-    Polling { execution_id: String },
     Succeeded {
         output: TraverseStarterOutput,
         trace: Vec<TraceEvent>,
@@ -14,9 +13,9 @@ pub enum ExecutionPhase {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RuntimeStatus {
-    Checking,
-    Online,
-    Offline,
+    Starting,
+    Ready,
+    Unavailable,
 }
 
 #[derive(Debug, Clone)]
@@ -32,7 +31,7 @@ impl Default for ExecutionState {
         Self {
             phase: ExecutionPhase::Idle,
             note: String::new(),
-            runtime_status: RuntimeStatus::Checking,
+            runtime_status: RuntimeStatus::Starting,
             show_trace: false,
         }
     }
@@ -40,14 +39,11 @@ impl Default for ExecutionState {
 
 impl ExecutionState {
     pub fn is_running(&self) -> bool {
-        matches!(
-            self.phase,
-            ExecutionPhase::Loading | ExecutionPhase::Polling { .. }
-        )
+        matches!(self.phase, ExecutionPhase::Loading)
     }
 
-    pub fn can_submit(&self, runtime_online: bool) -> bool {
-        runtime_online && !self.note.trim().is_empty() && !self.is_running()
+    pub fn can_submit(&self, runtime_ready: bool) -> bool {
+        runtime_ready && !self.note.trim().is_empty() && !self.is_running()
     }
 
     pub fn reset(&mut self) {
