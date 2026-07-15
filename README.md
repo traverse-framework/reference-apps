@@ -90,9 +90,16 @@ Each app also ships native clients (iOS, macOS, Android, Windows, Linux, CLI) wh
 | [`apps/doc-approval/`](apps/doc-approval/) | doc-approval clients (all platforms) |
 | [`apps/meeting-notes/`](apps/meeting-notes/) | meeting-notes clients (web-react shipped) |
 | [`apps/trace-explorer/web-react/`](apps/trace-explorer/web-react/) | Trace Explorer — execution timeline debugger |
+| [`apps/react-demo/`](apps/react-demo/) | Expedition React browser demo (adopted from Traverse) |
+| [`apps/browser-consumer/`](apps/browser-consumer/) | Browser consumer façade for downstream apps |
+| [`apps/android-demo/`](apps/android-demo/) | Expedition Android demo |
+| [`apps/macos-demo/`](apps/macos-demo/) | Expedition macOS demo |
+| [`apps/youaskm3-starter-kit/`](apps/youaskm3-starter-kit/) | youaskm3 browser starter kit |
+| [`docs/adopted-platform-clients.md`](docs/adopted-platform-clients.md) | Canonical homes for adopted Traverse demos |
 | [`docs/embedded-runtime-plan.md`](docs/embedded-runtime-plan.md) | Phase 3 target — embedded runtime + multi-capability workflows |
 | [`docs/traverse-runtime.md`](docs/traverse-runtime.md) | Dev sidecar setup (Phase 1/2) |
 | [`manifests/traverse-starter/`](manifests/traverse-starter/) | App manifest + component manifests (Phase 2) |
+| [`fixtures/`](fixtures/) | Shared UI demo fixtures (e.g. expedition session) |
 | [`scripts/ci/`](scripts/ci/) | Repository checks, smoke tests, coverage gate |
 
 ## Platform clients

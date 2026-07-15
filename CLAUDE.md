@@ -18,8 +18,16 @@ apps/
     windows-winui/       # WinUI 3 Windows client
     linux-gtk/           # GTK4 + Rust Linux client
     cli-rust/            # Rust CLI client
+  doc-approval/          # doc-approval clients (all platforms)
+  meeting-notes/         # meeting-notes clients
   trace-explorer/
     web-react/           # Trace Explorer — execution timeline debugger
+  react-demo/            # Expedition React browser demo (adopted from Traverse)
+  browser-consumer/      # Browser consumer façade
+  android-demo/          # Expedition Android demo
+  macos-demo/            # Expedition macOS demo
+  youaskm3-starter-kit/  # Downstream browser starter kit
+fixtures/                # Shared UI demo fixtures
 .agents/skills/
   app-refs-ops/          # Ops skill for executing Project 2 tickets
 .specify/memory/         # Constitution and governing principles

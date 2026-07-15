@@ -74,6 +74,23 @@ check "manifests/doc-approval/components/recommend/component.manifest.json" "doc
 check "apps/meeting-notes/web-react/package.json"                       "meeting-notes web-react package"
 check "apps/meeting-notes/web-react/README.md"                          "meeting-notes web-react README"
 
+# Adopted Traverse platform demos / starter (issue #151)
+check "apps/android-demo/README.md"                                     "android-demo README"
+check "apps/android-demo/app/src/main/java/com/traverse/demo/android/MainActivity.kt" "android-demo MainActivity"
+check "apps/browser-consumer/index.js"                                  "browser-consumer package"
+check "apps/macos-demo/Package.swift"                                   "macos-demo Package.swift"
+check "apps/react-demo/src/main.js"                                     "react-demo main"
+check "apps/youaskm3-starter-kit/README.md"                             "youaskm3 starter kit"
+check "fixtures/expedition-runtime-session.json"                        "expedition runtime fixture"
+check "docs/adopted-platform-clients.md"                                "adopted platform clients doc"
+check "docs/youaskm3-starter-kit.md"                                    "youaskm3 starter guide"
+check "scripts/ci/android_demo_smoke.sh"                                "android demo smoke"
+check "scripts/ci/macos_demo_smoke.sh"                                  "macos demo smoke"
+check "scripts/ci/react_demo_smoke.sh"                                  "react demo smoke"
+check "scripts/ci/youaskm3_starter_kit_smoke.sh"                        "youaskm3 starter smoke"
+check "scripts/ci/react_demo_live_adapter_smoke.sh"                     "react demo live smoke"
+check "scripts/ci/browser_consumer_package_smoke.sh"                    "browser consumer live smoke"
+
 # CI scripts
 check "scripts/ci/repository_checks.sh"        "This script"
 check "scripts/ci/pr_body_check.sh"            "PR body check"
