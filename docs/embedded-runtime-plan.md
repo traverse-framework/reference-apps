@@ -130,7 +130,7 @@ Until (1–2) exist, platform migration tickets stay **Blocked**.
 | [110](https://github.com/traverse-framework/reference-apps/issues/110) | traverse-starter.pipeline multi-capability workflow | Blocked |
 | [111](https://github.com/traverse-framework/reference-apps/issues/111) | doc-approval.pipeline multi-capability workflow | Blocked |
 | [112](https://github.com/traverse-framework/reference-apps/issues/112) | doc-approval manifests | Blocked |
-| [113](https://github.com/traverse-framework/reference-apps/issues/113) | Embed runtime — web-react | Blocked |
+| [113](https://github.com/traverse-framework/reference-apps/issues/113) | Embed runtime — web-react | Done (this PR) |
 | [114](https://github.com/traverse-framework/reference-apps/issues/114) | Embed runtime — Swift (iOS + macOS) | Blocked |
 | [115](https://github.com/traverse-framework/reference-apps/issues/115) | Embed runtime — Android | Blocked |
 | [116](https://github.com/traverse-framework/reference-apps/issues/116) | Embed runtime — Windows | Blocked |

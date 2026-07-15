@@ -62,7 +62,7 @@ The UI renders these fields exactly as the runtime provides them — never compu
 
 | Platform | Path | Status |
 |---|---|---|
-| Web (React) | `apps/traverse-starter/web-react/` | Shipped |
+| Web (React) | `apps/traverse-starter/web-react/` | Shipped (embedded) |
 | trace-explorer | `apps/trace-explorer/web-react/` | Developer tool (trace-only UI) |
 | iOS (SwiftUI) | `apps/traverse-starter/ios-swift/` | Shipped |
 | macOS (SwiftUI + AppKit) | `apps/traverse-starter/macos-swift/` | Shipped |
@@ -75,7 +75,7 @@ The UI renders these fields exactly as the runtime provides them — never compu
 
 | Platform | Path | Status |
 |---|---|---|
-| Web (React) | `apps/doc-approval/web-react/` | Shipped |
+| Web (React) | `apps/doc-approval/web-react/` | Shipped (embedded; bundle waits on #112) |
 | iOS (SwiftUI) | `apps/doc-approval/ios-swift/` | Shipped |
 | macOS (SwiftUI + AppKit) | `apps/doc-approval/macos-swift/` | Shipped |
 | Android (Jetpack Compose) | `apps/doc-approval/android-compose/` | Shipped |

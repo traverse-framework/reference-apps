@@ -3,7 +3,7 @@ interface DocumentInputProps {
   maxLength: number
   canSubmit: boolean
   isRunning: boolean
-  runtimeOffline: boolean
+  runtimeUnavailable: boolean
   onChange: (value: string) => void
   onSubmit: (e?: React.FormEvent) => void
 }
@@ -13,7 +13,7 @@ export function DocumentInput({
   maxLength,
   canSubmit,
   isRunning,
-  runtimeOffline,
+  runtimeUnavailable,
   onChange,
   onSubmit,
 }: DocumentInputProps) {
@@ -31,7 +31,16 @@ export function DocumentInput({
       </h2>
       <form onSubmit={onSubmit}>
         <div style={{ marginBottom: '20px' }}>
-          <label htmlFor="document-input" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: 500 }}>
+          <label
+            htmlFor="document-input"
+            style={{
+              display: 'block',
+              fontSize: '0.85rem',
+              color: 'var(--text-muted)',
+              marginBottom: '8px',
+              fontWeight: 500,
+            }}
+          >
             Document Text
           </label>
           <textarea
@@ -54,23 +63,27 @@ export function DocumentInput({
               outline: 'none',
             }}
           />
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-            <span>{document.length} / {maxLength}</span>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginTop: '6px',
+              fontSize: '0.8rem',
+              color: 'var(--text-muted)',
+            }}
+          >
+            <span>
+              {document.length} / {maxLength}
+            </span>
             <span>⌘/Ctrl + Enter to submit</span>
           </div>
         </div>
-        <button
-          type="submit"
-          className="btn-glow"
-          disabled={!canSubmit}
-          style={{ width: '100%' }}
-        >
+        <button type="submit" className="btn-glow" disabled={!canSubmit} style={{ width: '100%' }}>
           {isRunning ? 'Analyzing…' : 'Analyze Document'}
         </button>
-        {runtimeOffline && (
+        {runtimeUnavailable && (
           <p role="status" style={{ marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            The runtime is offline. Start it with{' '}
-            <code>cargo run -p traverse-cli -- serve</code> before submitting a document.
+            Embedded runtime unavailable — doc-approval manifests require issue #112.
           </p>
         )}
       </form>
