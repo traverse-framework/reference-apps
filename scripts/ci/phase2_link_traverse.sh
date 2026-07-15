@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
-# Ensures manifests/traverse-starter/_traverse symlink points at TRAVERSE_REPO.
+# Ensures manifests/<app>/_traverse symlinks point at TRAVERSE_REPO.
 # Required for app validate/register — WASM, contracts, and workflows live in Traverse.
 set -euo pipefail
 
 REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
-LINK="$REPO_ROOT/manifests/traverse-starter/_traverse"
 
 if [ -z "${TRAVERSE_REPO:-}" ]; then
   echo "FAIL: TRAVERSE_REPO is not set."
   echo ""
-  echo "Clone Traverse v0.6.0+ (minimum v0.5.0 for Phase 2) with traverse-starter example and export:"
+  echo "Clone Traverse main (with traverse-starter + doc-approval examples) and export:"
   echo "  export TRAVERSE_REPO=/path/to/Traverse"
   exit 1
 fi
@@ -21,10 +20,22 @@ fi
 
 if [ ! -f "$TRAVERSE_REPO/examples/traverse-starter/process-agent/artifacts/process-agent.wasm" ]; then
   echo "FAIL: traverse-starter WASM not found in TRAVERSE_REPO."
-  echo "      Ensure TRAVERSE_REPO is Traverse main with issue #499 merged."
   exit 1
 fi
 
-mkdir -p "$(dirname "$LINK")"
-ln -sfn "$TRAVERSE_REPO" "$LINK"
-echo "OK: linked $LINK -> $TRAVERSE_REPO"
+if [ ! -f "$TRAVERSE_REPO/examples/doc-approval/analyze-agent/artifacts/analyze-agent.wasm" ]; then
+  echo "FAIL: doc-approval WASM not found in TRAVERSE_REPO."
+  echo "      Ensure TRAVERSE_REPO includes issue #555 recommend + analyze agents."
+  exit 1
+fi
+
+link_app() {
+  local app="$1"
+  local link="$REPO_ROOT/manifests/$app/_traverse"
+  mkdir -p "$(dirname "$link")"
+  ln -sfn "$TRAVERSE_REPO" "$link"
+  echo "OK: linked $link -> $TRAVERSE_REPO"
+}
+
+link_app "traverse-starter"
+link_app "doc-approval"

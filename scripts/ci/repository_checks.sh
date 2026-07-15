@@ -64,6 +64,12 @@ check "apps/doc-approval/DocApprovalCore/Package.swift"                   "doc-a
 check "apps/doc-approval/doc-approval-core-rs/Cargo.toml"                 "doc-approval-core-rs Cargo crate"
 check "apps/doc-approval/Cargo.toml"                                      "doc-approval Cargo workspace"
 
+# Application manifests
+check "manifests/traverse-starter/app.manifest.json"                      "traverse-starter app manifest"
+check "manifests/doc-approval/app.manifest.json"                          "doc-approval app manifest"
+check "manifests/doc-approval/components/analyze/component.manifest.json" "doc-approval analyze component"
+check "manifests/doc-approval/components/recommend/component.manifest.json" "doc-approval recommend component"
+
 # meeting-notes clients
 check "apps/meeting-notes/web-react/package.json"                       "meeting-notes web-react package"
 check "apps/meeting-notes/web-react/README.md"                          "meeting-notes web-react README"
