@@ -18,6 +18,7 @@ coverage/
 
 # Traverse checkout symlink for Phase 2 manifest validation
 manifests/traverse-starter/_traverse
+manifests/doc-approval/_traverse
 .traverse/
 apps/traverse-starter/TraverseCore/.build/
 
