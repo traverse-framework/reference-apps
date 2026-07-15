@@ -130,15 +130,23 @@ final class DocApprovalClientTests: XCTestCase {
 final class DocApprovalOutputTests: XCTestCase {
     func testParseOutput() {
         let raw: [String: Any] = [
-            "docType": "nda",
-            "parties": ["A", "B"],
-            "amounts": ["$1"],
-            "confidence": 0.9,
-            "recommendation": "approve",
+            "analysis": [
+                "docType": "nda",
+                "parties": ["A", "B"],
+                "amounts": ["$1"],
+                "confidence": 0.9,
+                "recommendation": "approve",
+            ],
+            "recommendation": [
+                "recommendation": "approve",
+                "rationale": "Policy match",
+                "confidence": "high",
+            ],
         ]
         let output = DocApprovalOutputParser.parse(raw)
-        XCTAssertEqual(output?.docType, "nda")
-        XCTAssertEqual(output?.recommendation, "approve")
+        XCTAssertEqual(output?.analysis.docType, "nda")
+        XCTAssertEqual(output?.recommendation.recommendation, "approve")
+        XCTAssertEqual(output?.analysis.confidence, "0.9")
     }
 
     func testParseEventPayload() {
@@ -147,16 +155,23 @@ final class DocApprovalOutputTests: XCTestCase {
             "session_id": "sess-1",
             "execution_id": "exec-1",
             "output": [
-                "docType": "nda",
-                "parties": [] as [String],
-                "amounts": [] as [String],
-                "confidence": 0.5,
-                "recommendation": "review",
+                "analysis": [
+                    "docType": "nda",
+                    "parties": [] as [String],
+                    "amounts": [] as [String],
+                    "confidence": 0.5,
+                    "recommendation": "review",
+                ],
+                "recommendation": [
+                    "recommendation": "review",
+                    "rationale": "Needs human",
+                    "confidence": "medium",
+                ],
             ],
         ]
         let payload = DocApprovalOutputParser.parseEventPayload(raw)
         XCTAssertEqual(payload?.state, "results")
-        XCTAssertEqual(payload?.output?.docType, "nda")
+        XCTAssertEqual(payload?.output?.analysis.docType, "nda")
     }
 
     func testParseSessionsArray() {
@@ -260,16 +275,23 @@ final class AppStateViewModelTests: XCTestCase {
                 sessionId: "sess-1",
                 executionId: "exec-1",
                 output: DocApprovalOutput(
-                    docType: "nda",
-                    parties: [],
-                    amounts: [],
-                    confidence: 0.8,
-                    recommendation: "approve"
+                    analysis: AnalysisOutput(
+                        docType: "nda",
+                        parties: [],
+                        amounts: [],
+                        confidence: "0.8",
+                        recommendation: "approve"
+                    ),
+                    recommendation: RecommendationOutput(
+                        recommendation: "approve",
+                        rationale: "Policy match",
+                        confidence: "high"
+                    )
                 )
             )
         )
         XCTAssertEqual(vm.currentState, "results")
-        XCTAssertEqual(vm.output?.docType, "nda")
+        XCTAssertEqual(vm.output?.analysis.docType, "nda")
     }
 
     func testCanSubmitWhenOnlineWithDocument() async {

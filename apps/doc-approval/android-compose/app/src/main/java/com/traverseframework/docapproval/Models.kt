@@ -3,13 +3,44 @@ package com.traverseframework.docapproval
 import kotlinx.serialization.json.JsonElement
 
 @kotlinx.serialization.Serializable
-data class DocApprovalOutput(
+data class AnalysisOutput(
     val docType: String,
     val parties: List<String>,
     val amounts: List<String>,
-    val confidence: Double,
+    val confidence: String,
     val recommendation: String,
 )
+
+@kotlinx.serialization.Serializable
+data class RecommendationOutput(
+    val recommendation: String,
+    val rationale: String,
+    val confidence: String,
+)
+
+/** Combined pipeline final output (analyze → recommend). */
+@kotlinx.serialization.Serializable
+data class DocApprovalOutput(
+    val analysis: AnalysisOutput,
+    val recommendation: RecommendationOutput,
+) {
+    companion object {
+        val EMPTY = DocApprovalOutput(
+            analysis = AnalysisOutput(
+                docType = "",
+                parties = emptyList(),
+                amounts = emptyList(),
+                confidence = "",
+                recommendation = "",
+            ),
+            recommendation = RecommendationOutput(
+                recommendation = "",
+                rationale = "",
+                confidence = "",
+            ),
+        )
+    }
+}
 
 @kotlinx.serialization.Serializable
 data class TraceEvent(
@@ -39,7 +70,7 @@ data class ExecutionPollResult(
 )
 
 object AppConstants {
-    const val CAPABILITY_ID = "doc-approval.analyze"
+    const val CAPABILITY_ID = "doc-approval.pipeline"
     const val DEFAULT_BASE_URL = "http://10.0.2.2:8787"
     const val DEFAULT_WORKSPACE = "local-default"
 }

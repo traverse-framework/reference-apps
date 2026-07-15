@@ -1,8 +1,6 @@
 //! Embedded Traverse runtime host for doc-approval shells.
 //!
-//! Production path uses [`BundleEmbedder`]. Bundle manifests land with
-//! reference-apps #112; until then `EmbeddedRuntime::init_default` reports
-//! Unavailable. Tests use [`EmbedderTestDouble`].
+//! Production path uses [`BundleEmbedder`]. Tests use [`EmbedderTestDouble`].
 
 use serde_json::{json, Value};
 use std::path::{Path, PathBuf};
@@ -126,13 +124,7 @@ fn collect_submit<E: TraverseEmbedderApi>(
             ));
         }
         if parsed.event_type == "capability_result" {
-            let output = parsed.output.unwrap_or(DocApprovalOutput {
-                doc_type: String::new(),
-                parties: vec![],
-                amounts: vec![],
-                confidence: 0.0,
-                recommendation: String::new(),
-            });
+            let output = parsed.output.unwrap_or_else(DocApprovalOutput::empty);
             return Ok(HostRunResult {
                 session_id,
                 output,
@@ -182,7 +174,7 @@ impl EmbeddedRuntime {
     pub fn init_default() -> Result<Self, HostError> {
         let path = resolve_manifest_path(None).ok_or_else(|| {
             HostError::Init(format!(
-                "could not find manifests/doc-approval/app.manifest.json (set {MANIFEST_ENV}; blocked on reference-apps #112)"
+                "could not find manifests/doc-approval/app.manifest.json (set {MANIFEST_ENV})"
             ))
         })?;
         Self::init(path)

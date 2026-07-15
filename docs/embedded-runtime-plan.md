@@ -65,9 +65,8 @@ Workflow `doc-approval.pipeline` chains:
 
 | Step | Capability ID | Notes |
 |---|---|---|
-| 1 | `doc-approval.extract` | Traverse [#538](https://github.com/traverse-framework/Traverse/issues/538) |
-| 2 | `doc-approval.analyze` | Existing client capability ID |
-| 3 | `doc-approval.recommend` | New capability — approval recommendation |
+| 1 | `doc-approval.analyze` | Existing analyze agent |
+| 2 | `doc-approval.recommend` | Spec 069 final recommendation (no extract) |
 
 Both apps must run the same workflow on all seven platform clients once embedded runtime is available.
 
@@ -127,9 +126,9 @@ Until (1–2) exist, platform migration tickets stay **Blocked**.
 | [Traverse #553](https://github.com/traverse-framework/Traverse/issues/553) | Implement spec 057 SDK | Blocked → Ready after 057 PR |
 | [Traverse #558](https://github.com/traverse-framework/Traverse/issues/558) | Implement spec 058 pipeline | Ready |
 | [Traverse #527](https://github.com/traverse-framework/Traverse/issues/527) | Implement spec 059 command dispatch | Blocked |
-| [110](https://github.com/traverse-framework/reference-apps/issues/110) | traverse-starter.pipeline multi-capability workflow | Blocked |
-| [111](https://github.com/traverse-framework/reference-apps/issues/111) | doc-approval.pipeline multi-capability workflow | Blocked |
-| [112](https://github.com/traverse-framework/reference-apps/issues/112) | doc-approval manifests | Blocked |
+| [110](https://github.com/traverse-framework/reference-apps/issues/110) | traverse-starter.pipeline multi-capability workflow | Done |
+| [111](https://github.com/traverse-framework/reference-apps/issues/111) | doc-approval.pipeline multi-capability workflow | Done |
+| [112](https://github.com/traverse-framework/reference-apps/issues/112) | doc-approval manifests | Done |
 | [113](https://github.com/traverse-framework/reference-apps/issues/113) | Embed runtime — web-react | Done |
 | [114](https://github.com/traverse-framework/reference-apps/issues/114) | Embed runtime — Swift (iOS + macOS) | Blocked |
 | [115](https://github.com/traverse-framework/reference-apps/issues/115) | Embed runtime — Android | Blocked |

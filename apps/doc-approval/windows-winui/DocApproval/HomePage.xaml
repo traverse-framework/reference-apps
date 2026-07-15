@@ -6,7 +6,7 @@
 
     <ScrollViewer Padding="24">
         <StackPanel Spacing="20" MaxWidth="960">
-            <TextBlock Text="Analyze Document" Style="{ThemeResource SubtitleTextBlockStyle}" />
+            <TextBlock Text="Run Pipeline" Style="{ThemeResource SubtitleTextBlockStyle}" />
 
             <TextBox
                 x:Name="DocumentBox"
@@ -27,29 +27,41 @@
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 Visibility="Collapsed" />
 
-            <TextBlock Text="Analysis Result" Style="{ThemeResource SubtitleTextBlockStyle}" />
+            <TextBlock Text="Pipeline Result" Style="{ThemeResource SubtitleTextBlockStyle}" />
 
             <StackPanel x:Name="OutputPanel" Spacing="8">
                 <TextBlock
                     x:Name="IdleText"
-                    Text="Submit a document above to start analysis."
+                    Text="Submit a document above to run doc-approval.pipeline."
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                <TextBlock x:Name="LoadingText" Text="Starting analysis…" Visibility="Collapsed" />
+                <TextBlock x:Name="LoadingText" Text="Starting pipeline…" Visibility="Collapsed" />
                 <TextBlock x:Name="PollingText" FontFamily="Consolas" FontSize="12" Visibility="Collapsed" />
                 <TextBlock x:Name="ErrorText" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap" />
 
-                <Grid x:Name="OutputGrid" Visibility="Collapsed" ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Document type" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <TextBlock x:Name="DocTypeValue" Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" />
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Parties" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <TextBlock x:Name="PartiesValue" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Amounts" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <TextBlock x:Name="AmountsValue" Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" />
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Confidence" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <TextBlock x:Name="ConfidenceValue" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" />
-                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Recommendation" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <TextBlock x:Name="RecommendationValue" Grid.Row="4" Grid.Column="1" TextWrapping="Wrap" />
-                </Grid>
+                <StackPanel x:Name="OutputGrid" Visibility="Collapsed" Spacing="8">
+                    <TextBlock Text="Analysis" FontWeight="SemiBold" />
+                    <Grid ColumnDefinitions="160,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Document type" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="DocTypeValue" Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Parties" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="PartiesValue" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Amounts" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="AmountsValue" Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Analyze confidence" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="AnalyzeConfidenceValue" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Analyze recommendation" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="AnalyzeRecommendationValue" Grid.Row="4" Grid.Column="1" TextWrapping="Wrap" />
+                    </Grid>
+                    <TextBlock Text="Recommendation" FontWeight="SemiBold" Margin="0,8,0,0" />
+                    <Grid ColumnDefinitions="160,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Decision" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="RecommendationValue" Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Rationale" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="RationaleValue" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Confidence" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="ConfidenceValue" Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" />
+                    </Grid>
+                </StackPanel>
 
                 <Expander x:Name="TraceExpander" Header="Trace" Visibility="Collapsed">
                     <ItemsControl x:Name="TraceList" />

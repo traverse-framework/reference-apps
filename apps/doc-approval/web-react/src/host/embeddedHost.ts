@@ -35,7 +35,7 @@ export function createTestEmbedder(output: DocApprovalOutput): TraverseEmbedderA
   }).withTargetOutput(DEFAULT_WORKFLOW_ID, output as unknown as JsonValue)
 }
 
-/** Returns null until manifests/doc-approval lands (#112). */
+/** BundleEmbedder.init; returns null when the local bundle cannot be loaded. */
 export async function initProductionEmbedder(
   manifestPath = import.meta.env.VITE_DOC_APPROVAL_MANIFEST ?? DEFAULT_MANIFEST_PATH,
 ): Promise<TraverseEmbedderApi | null> {

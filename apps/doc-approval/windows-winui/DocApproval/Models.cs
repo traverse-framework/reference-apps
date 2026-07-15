@@ -3,12 +3,27 @@ using System.Text.Json.Serialization;
 
 namespace DocApproval;
 
-public sealed record DocApprovalOutput(
+public sealed record AnalysisOutput(
     [property: JsonPropertyName("docType")] string DocType,
     [property: JsonPropertyName("parties")] IReadOnlyList<string> Parties,
     [property: JsonPropertyName("amounts")] IReadOnlyList<string> Amounts,
-    [property: JsonPropertyName("confidence")] double Confidence,
+    [property: JsonPropertyName("confidence")] string Confidence,
     [property: JsonPropertyName("recommendation")] string Recommendation);
+
+public sealed record RecommendationOutput(
+    [property: JsonPropertyName("recommendation")] string Recommendation,
+    [property: JsonPropertyName("rationale")] string Rationale,
+    [property: JsonPropertyName("confidence")] string Confidence);
+
+/// <summary>Combined pipeline final output (analyze → recommend).</summary>
+public sealed record DocApprovalOutput(
+    [property: JsonPropertyName("analysis")] AnalysisOutput Analysis,
+    [property: JsonPropertyName("recommendation")] RecommendationOutput Recommendation)
+{
+    public static DocApprovalOutput Empty { get; } = new(
+        new AnalysisOutput(string.Empty, Array.Empty<string>(), Array.Empty<string>(), string.Empty, string.Empty),
+        new RecommendationOutput(string.Empty, string.Empty, string.Empty));
+}
 
 public sealed record TraceEvent(
     [property: JsonPropertyName("event_type")] string EventType,

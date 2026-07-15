@@ -5,11 +5,18 @@ import { createTestEmbedder } from './host/embeddedHost'
 import type { DocApprovalOutput } from './client/traverseOutput'
 
 const sampleOutput: DocApprovalOutput = {
-  docType: 'invoice',
-  parties: ['Acme Corp'],
-  amounts: ['$500.00'],
-  confidence: 0.88,
-  recommendation: 'approve',
+  analysis: {
+    docType: 'invoice',
+    parties: ['Acme Corp'],
+    amounts: ['$500.00'],
+    confidence: '0.88',
+    recommendation: 'approve',
+  },
+  recommendation: {
+    recommendation: 'approve',
+    rationale: 'Amounts within policy',
+    confidence: 'high',
+  },
 }
 
 describe('App', () => {
@@ -25,10 +32,10 @@ describe('App', () => {
     render(<App embedder={null} />)
     expect(screen.getByText('Unavailable')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Analyze Document' })).toBeDisabled()
-    expect(screen.getByText(/doc-approval manifests require issue #112/)).toBeInTheDocument()
+    expect(screen.getByText(/sync the doc-approval bundle/)).toBeInTheDocument()
   })
 
-  it('submits document via test double and displays analysis fields', async () => {
+  it('submits document via test double and displays pipeline fields', async () => {
     render(<App embedder={createTestEmbedder(sampleOutput)} />)
     fireEvent.change(screen.getByPlaceholderText(/Paste or type document/i), {
       target: { value: 'Invoice #123' },
@@ -38,7 +45,8 @@ describe('App', () => {
     })
     expect(screen.getByText('Document Type')).toBeInTheDocument()
     expect(screen.getByText('invoice')).toBeInTheDocument()
-    expect(screen.getByText('88%')).toBeInTheDocument()
+    expect(screen.getByText('Amounts within policy')).toBeInTheDocument()
+    expect(screen.getByText('high')).toBeInTheDocument()
   })
 
   it('reset returns to idle', async () => {

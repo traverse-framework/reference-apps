@@ -95,7 +95,7 @@ impl MainWindow {
         content.append(&button_row);
 
         let offline_hint = Label::new(Some(
-            "Embedded runtime unavailable — doc-approval manifests require issue #112.",
+            "Embedded runtime unavailable — set DOC_APPROVAL_MANIFEST or run from repo root.",
         ));
         offline_hint.add_css_class("dim-label");
         offline_hint.set_visible(false);
@@ -174,9 +174,9 @@ impl MainWindow {
                 match &state.phase {
                     ExecutionPhase::Idle => {
                         output_label.set_text(if ready {
-                            "Submit a document above to start a workflow."
+                            "Submit a document above to run doc-approval.pipeline."
                         } else {
-                            "Initialize the embedded runtime (manifests #112) to see output here."
+                            "Initialize the embedded runtime to see pipeline output here."
                         });
                         output_label.add_css_class("dim-label");
                     }
@@ -190,12 +190,15 @@ impl MainWindow {
                     }
                     ExecutionPhase::Succeeded { output, trace } => {
                         output_label.set_text(&format!(
-                            "Document type: {}\nParties: {}\nAmounts: {}\nConfidence: {}\nRecommendation: {}",
-                            output.doc_type,
-                            output.parties.join(", "),
-                            output.amounts.join(", "),
-                            output.confidence,
-                            output.recommendation
+                            "Analysis\nDocument type: {}\nParties: {}\nAmounts: {}\nAnalyze confidence: {}\nAnalyze recommendation: {}\n\nRecommendation\nDecision: {}\nRationale: {}\nConfidence: {}",
+                            output.analysis.doc_type,
+                            output.analysis.parties.join(", "),
+                            output.analysis.amounts.join(", "),
+                            output.analysis.confidence,
+                            output.analysis.recommendation,
+                            output.recommendation.recommendation,
+                            output.recommendation.rationale,
+                            output.recommendation.confidence
                         ));
                         output_label.remove_css_class("dim-label");
                         if !trace.is_empty() {

@@ -1,17 +1,17 @@
 import Foundation
 
-public struct DocApprovalOutput: Equatable, Sendable, Codable {
+public struct AnalysisOutput: Equatable, Sendable, Codable {
     public let docType: String
     public let parties: [String]
     public let amounts: [String]
-    public let confidence: Double
+    public let confidence: String
     public let recommendation: String
 
     public init(
         docType: String,
         parties: [String],
         amounts: [String],
-        confidence: Double,
+        confidence: String,
         recommendation: String
     ) {
         self.docType = docType
@@ -20,6 +20,44 @@ public struct DocApprovalOutput: Equatable, Sendable, Codable {
         self.confidence = confidence
         self.recommendation = recommendation
     }
+}
+
+public struct RecommendationOutput: Equatable, Sendable, Codable {
+    public let recommendation: String
+    public let rationale: String
+    public let confidence: String
+
+    public init(recommendation: String, rationale: String, confidence: String) {
+        self.recommendation = recommendation
+        self.rationale = rationale
+        self.confidence = confidence
+    }
+}
+
+/// Combined pipeline final output (analyze → recommend).
+public struct DocApprovalOutput: Equatable, Sendable, Codable {
+    public let analysis: AnalysisOutput
+    public let recommendation: RecommendationOutput
+
+    public init(analysis: AnalysisOutput, recommendation: RecommendationOutput) {
+        self.analysis = analysis
+        self.recommendation = recommendation
+    }
+
+    public static let empty = DocApprovalOutput(
+        analysis: AnalysisOutput(
+            docType: "",
+            parties: [],
+            amounts: [],
+            confidence: "",
+            recommendation: ""
+        ),
+        recommendation: RecommendationOutput(
+            recommendation: "",
+            rationale: "",
+            confidence: ""
+        )
+    )
 }
 
 public struct TraceEvent: Equatable, Sendable, Codable {
@@ -155,29 +193,11 @@ public enum JSONValue: Equatable, Sendable, Codable {
 public enum DocApprovalOutputParser {
     public static func parse(_ raw: Any?) -> DocApprovalOutput? {
         guard let dict = raw as? [String: Any],
-              let docType = dict["docType"] as? String,
-              let parties = dict["parties"] as? [String],
-              let amounts = dict["amounts"] as? [String],
-              let recommendation = dict["recommendation"] as? String else {
+              let analysis = parseAnalysis(dict["analysis"]),
+              let recommendation = parseRecommendation(dict["recommendation"]) else {
             return nil
         }
-        let confidence: Double
-        if let value = dict["confidence"] as? Double {
-            confidence = value
-        } else if let value = dict["confidence"] as? Int {
-            confidence = Double(value)
-        } else if let value = dict["confidence"] as? NSNumber {
-            confidence = value.doubleValue
-        } else {
-            return nil
-        }
-        return DocApprovalOutput(
-            docType: docType,
-            parties: parties,
-            amounts: amounts,
-            confidence: confidence,
-            recommendation: recommendation
-        )
+        return DocApprovalOutput(analysis: analysis, recommendation: recommendation)
     }
 
     public static func parseEventPayload(_ raw: Any?) -> AppStateEventPayload? {
@@ -221,5 +241,45 @@ public enum DocApprovalOutputParser {
                 title: item["title"] as? String
             )
         }
+    }
+
+    private static func parseAnalysis(_ raw: Any?) -> AnalysisOutput? {
+        guard let dict = raw as? [String: Any],
+              let docType = dict["docType"] as? String,
+              let parties = dict["parties"] as? [String],
+              let amounts = dict["amounts"] as? [String],
+              let confidence = stringish(dict["confidence"]),
+              let recommendation = dict["recommendation"] as? String else {
+            return nil
+        }
+        return AnalysisOutput(
+            docType: docType,
+            parties: parties,
+            amounts: amounts,
+            confidence: confidence,
+            recommendation: recommendation
+        )
+    }
+
+    private static func parseRecommendation(_ raw: Any?) -> RecommendationOutput? {
+        guard let dict = raw as? [String: Any],
+              let recommendation = dict["recommendation"] as? String,
+              let rationale = dict["rationale"] as? String,
+              let confidence = stringish(dict["confidence"]) else {
+            return nil
+        }
+        return RecommendationOutput(
+            recommendation: recommendation,
+            rationale: rationale,
+            confidence: confidence
+        )
+    }
+
+    private static func stringish(_ raw: Any?) -> String? {
+        if let value = raw as? String { return value }
+        if let value = raw as? Double { return String(value) }
+        if let value = raw as? Int { return String(value) }
+        if let value = raw as? NSNumber { return value.stringValue }
+        return nil
     }
 }

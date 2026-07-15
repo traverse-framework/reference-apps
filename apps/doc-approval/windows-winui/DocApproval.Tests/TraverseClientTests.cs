@@ -47,7 +47,7 @@ public class TraverseClientTests
             {
                 Content = new StringContent(
                     """
-                    {"status":"succeeded","output":{"docType":"invoice","parties":["A"],"amounts":["$100"],"confidence":0.9,"recommendation":"approve"}}
+                    {"status":"succeeded","output":{"analysis":{"docType":"invoice","parties":["A"],"amounts":["$100"],"confidence":"0.9","recommendation":"approve"},"recommendation":{"recommendation":"approve","rationale":"Policy match","confidence":"high"}}}
                     """,
                     Encoding.UTF8,
                     "application/json"),
@@ -55,6 +55,7 @@ public class TraverseClientTests
 
         var result = await client.PollExecutionAsync("http://127.0.0.1:8787", "local-default", "exec_abc");
         Assert.Equal("succeeded", result.Status);
-        Assert.Equal("invoice", result.Output?.DocType);
+        Assert.Equal("invoice", result.Output?.Analysis.DocType);
+        Assert.Equal("approve", result.Output?.Recommendation.Recommendation);
     }
 }

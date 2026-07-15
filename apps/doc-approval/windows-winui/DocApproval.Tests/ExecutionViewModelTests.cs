@@ -73,7 +73,9 @@ public class ExecutionViewModelTests
                 new ExecutionPollResult(
                     "exec_test",
                     "succeeded",
-                    new DocApprovalOutput("invoice", ["A", "B"], ["$100"], 0.9, "approve"),
+                    new DocApprovalOutput(
+                        new AnalysisOutput("invoice", ["A", "B"], ["$100"], "0.9", "approve"),
+                        new RecommendationOutput("approve", "Policy match", "high")),
                     null),
             ],
         };
@@ -88,7 +90,7 @@ public class ExecutionViewModelTests
         await Task.Delay(1500);
 
         Assert.Equal(ExecutionPhase.Succeeded, vm.Phase);
-        Assert.Equal("invoice", vm.Output?.DocType);
+        Assert.Equal("invoice", vm.Output?.Analysis.DocType);
     }
 
     [Fact]

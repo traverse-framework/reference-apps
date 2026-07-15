@@ -83,7 +83,7 @@ export function DocumentInput({
         </button>
         {runtimeUnavailable && (
           <p role="status" style={{ marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Embedded runtime unavailable — doc-approval manifests require issue #112.
+            Embedded runtime unavailable — sync the doc-approval bundle (scripts/ci/sync_web_doc_approval_bundle.sh).
           </p>
         )}
       </form>

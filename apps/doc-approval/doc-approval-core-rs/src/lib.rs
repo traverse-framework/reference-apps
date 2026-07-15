@@ -2,7 +2,7 @@
 //! Platform-neutral: no GTK or terminal UI imports.
 //!
 //! Phase 3 production path is the embedded host (`host` module). HTTP sidecar
-//! helpers remain for migration/debug until manifests (#112) land.
+//! helpers remain for migration/debug.
 
 mod client;
 mod discovery;
@@ -12,7 +12,8 @@ mod sse;
 mod state;
 
 pub use client::{
-    CommandAccepted, DocApprovalClient, DocApprovalClientError, DocApprovalOutput, TraceEvent,
+    AnalysisOutput, CommandAccepted, DocApprovalClient, DocApprovalClientError, DocApprovalOutput,
+    RecommendationOutput, TraceEvent,
 };
 pub use discovery::{ServerDiscovery, ServerInfo};
 pub use host::{

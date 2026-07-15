@@ -106,13 +106,7 @@ class ExecutionViewModel(
                     } catch (_: Exception) {
                         emptyList()
                     }
-                    val output = result.output ?: DocApprovalOutput(
-                        docType = "",
-                        parties = emptyList(),
-                        amounts = emptyList(),
-                        confidence = 0.0,
-                        recommendation = "",
-                    )
+                    val output = result.output ?: DocApprovalOutput.EMPTY
                     _uiState.update { it.copy(phase = ExecutionPhase.Succeeded(output, trace)) }
                     return
                 }

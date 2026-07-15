@@ -81,6 +81,8 @@ check "scripts/ci/coverage_gate.sh"            "Coverage gate"
 check "scripts/ci/phase1_smoke.sh"             "Phase 1 smoke"
 check "scripts/ci/phase2_smoke.sh"             "Phase 2 smoke"
 check "scripts/ci/phase2_link_traverse.sh"     "Phase 2 Traverse link"
+check "scripts/ci/sync_web_starter_bundle.sh"  "Web starter bundle sync"
+check "scripts/ci/sync_web_doc_approval_bundle.sh" "Web doc-approval bundle sync"
 check "scripts/ci/onboarding_check.sh"         "Onboarding check"
 
 # GitHub Actions

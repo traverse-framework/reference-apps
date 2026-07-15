@@ -76,7 +76,7 @@ Developer tool for browsing execution traces — not a domain workflow app.
 | App | Purpose | Web path | Default capability |
 |---|---|---|---|
 | traverse-starter | Flat string output from a short note | [`apps/traverse-starter/web-react/`](apps/traverse-starter/web-react/) | `traverse-starter.process` |
-| doc-approval | Document analysis submitter | [`apps/doc-approval/web-react/`](apps/doc-approval/web-react/) | `doc-approval.analyze` |
+| doc-approval | Document analysis submitter | [`apps/doc-approval/web-react/`](apps/doc-approval/web-react/) | `doc-approval.pipeline` |
 | meeting-notes | List-type output from a transcript | [`apps/meeting-notes/web-react/`](apps/meeting-notes/web-react/) | `meeting-notes.process` |
 | trace-explorer | Execution timeline debugger | [`apps/trace-explorer/web-react/`](apps/trace-explorer/web-react/) | — |
 
@@ -116,13 +116,13 @@ All clients are **native UI shells** separated from business logic. Phase 1/2 us
 
 | Platform | Status | Path |
 |---|---|---|
-| Web (React + TypeScript) | Shipped (embedded; bundle waits on #112) | [`apps/doc-approval/web-react/`](apps/doc-approval/web-react/) |
-| iOS (SwiftUI) | Shipped | [`apps/doc-approval/ios-swift/`](apps/doc-approval/ios-swift/) |
-| macOS (SwiftUI + AppKit) | Shipped | [`apps/doc-approval/macos-swift/`](apps/doc-approval/macos-swift/) |
-| Android (Jetpack Compose) | Shipped | [`apps/doc-approval/android-compose/`](apps/doc-approval/android-compose/) |
-| Windows (WinUI 3) | Shipped | [`apps/doc-approval/windows-winui/`](apps/doc-approval/windows-winui/) |
-| Linux (GTK4 + Rust) | Shipped (embedded; bundle waits on #112) | [`apps/doc-approval/linux-gtk/`](apps/doc-approval/linux-gtk/) |
-| CLI (Rust) | Shipped (embedded; bundle waits on #112) | [`apps/doc-approval/cli-rust/`](apps/doc-approval/cli-rust/) |
+| Web (React + TypeScript) | Shipped (embedded + pipeline) | [`apps/doc-approval/web-react/`](apps/doc-approval/web-react/) |
+| iOS (SwiftUI) | Shipped (pipeline via HTTP) | [`apps/doc-approval/ios-swift/`](apps/doc-approval/ios-swift/) |
+| macOS (SwiftUI + AppKit) | Shipped (pipeline via HTTP) | [`apps/doc-approval/macos-swift/`](apps/doc-approval/macos-swift/) |
+| Android (Jetpack Compose) | Shipped (pipeline via HTTP) | [`apps/doc-approval/android-compose/`](apps/doc-approval/android-compose/) |
+| Windows (WinUI 3) | Shipped (pipeline via HTTP) | [`apps/doc-approval/windows-winui/`](apps/doc-approval/windows-winui/) |
+| Linux (GTK4 + Rust) | Shipped (embedded + pipeline) | [`apps/doc-approval/linux-gtk/`](apps/doc-approval/linux-gtk/) |
+| CLI (Rust) | Shipped (embedded + pipeline) | [`apps/doc-approval/cli-rust/`](apps/doc-approval/cli-rust/) |
 
 ### meeting-notes (list-type output)
 
@@ -171,7 +171,6 @@ Checks 1–5 validate Node, install, typecheck, lint, and tests (no runtime requ
 
 Active blockers on [Project 2](https://github.com/orgs/traverse-framework/projects/2):
 
-- **Phase 3 embedded runtime** ([#113](https://github.com/traverse-framework/reference-apps/issues/113)–[#116](https://github.com/traverse-framework/reference-apps/issues/116)) — blocked on remaining embedder SDKs: Traverse [#646](https://github.com/traverse-framework/Traverse/issues/646) (web/TS), [#647](https://github.com/traverse-framework/Traverse/issues/647) (Swift), [#648](https://github.com/traverse-framework/Traverse/issues/648) (Kotlin), [#649](https://github.com/traverse-framework/Traverse/issues/649) (.NET). Rust SDK shipped ([#650](https://github.com/traverse-framework/Traverse/issues/650)); [#117](https://github.com/traverse-framework/reference-apps/issues/117) is Ready. HTTP sidecar remains dev-only.
-- **doc-approval multi-capability showcase** ([#111](https://github.com/traverse-framework/reference-apps/issues/111), [#112](https://github.com/traverse-framework/reference-apps/issues/112)) — blocked only on Traverse [#555](https://github.com/traverse-framework/Traverse/issues/555) (`recommend`). Spec 069: pipeline is `analyze → recommend` (no extract; [#538](https://github.com/traverse-framework/Traverse/issues/538) closed).
+- **Phase 3 embedded runtime** ([#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116)) — blocked on remaining embedder SDKs: Traverse [#647](https://github.com/traverse-framework/Traverse/issues/647) (Swift), [#648](https://github.com/traverse-framework/Traverse/issues/648) (Kotlin), [#649](https://github.com/traverse-framework/Traverse/issues/649) (.NET). Rust (#650) and Web/TS (#646) embedder SDKs shipped; App-Refs [#117](https://github.com/traverse-framework/reference-apps/issues/117) and [#113](https://github.com/traverse-framework/reference-apps/issues/113) shipped. HTTP sidecar remains dev-only for platforms without embed SDKs.
 
-Ready on Project 2: [#111](https://github.com/traverse-framework/reference-apps/issues/111), [#112](https://github.com/traverse-framework/reference-apps/issues/112) (after #113 merges).
+Ready on Project 2: check the live board (doc-approval pipeline showcase [#111](https://github.com/traverse-framework/reference-apps/issues/111) ships with this change set).

@@ -128,33 +128,46 @@ struct ContentView: View {
     private func outputFields(_ output: DocApprovalOutput) -> some View {
         Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
             GridRow {
+                Text("Analysis").font(.headline)
+                Text("")
+            }
+            GridRow {
                 Text("Document type").foregroundStyle(.secondary)
-                Text(output.docType)
+                Text(output.analysis.docType)
             }
             GridRow {
-                Text("Recommendation").foregroundStyle(.secondary)
-                Text(output.recommendation)
+                Text("Analyze recommendation").foregroundStyle(.secondary)
+                Text(output.analysis.recommendation)
             }
             GridRow {
-                Text("Confidence").foregroundStyle(.secondary)
-                Text(formatConfidence(output.confidence))
+                Text("Analyze confidence").foregroundStyle(.secondary)
+                Text(output.analysis.confidence)
             }
             GridRow {
                 Text("Parties").foregroundStyle(.secondary)
-                Text(output.parties.isEmpty ? "None" : output.parties.joined(separator: ", "))
+                Text(output.analysis.parties.isEmpty ? "None" : output.analysis.parties.joined(separator: ", "))
             }
             GridRow {
                 Text("Amounts").foregroundStyle(.secondary)
-                Text(output.amounts.isEmpty ? "None" : output.amounts.joined(separator: ", "))
+                Text(output.analysis.amounts.isEmpty ? "None" : output.analysis.amounts.joined(separator: ", "))
+            }
+            GridRow {
+                Text("Recommendation").font(.headline)
+                Text("")
+            }
+            GridRow {
+                Text("Decision").foregroundStyle(.secondary)
+                Text(output.recommendation.recommendation)
+            }
+            GridRow {
+                Text("Rationale").foregroundStyle(.secondary)
+                Text(output.recommendation.rationale)
+            }
+            GridRow {
+                Text("Confidence").foregroundStyle(.secondary)
+                Text(output.recommendation.confidence)
             }
         }
-    }
-
-    private func formatConfidence(_ value: Double) -> String {
-        if value >= 0 && value <= 1 {
-            return "\(Int((value * 100).rounded()))%"
-        }
-        return String(value)
     }
 
     private var statusColor: Color {
