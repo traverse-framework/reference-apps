@@ -1,6 +1,8 @@
 # Dependencies
 node_modules/
 dist/
+!vendor/**/dist/
+!vendor/**/dist/**
 
 # Test coverage
 coverage/
