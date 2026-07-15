@@ -1,6 +1,8 @@
 # Dependencies
 node_modules/
 dist/
+!vendor/**/dist/
+!vendor/**/dist/**
 
 # Test coverage
 coverage/
@@ -18,3 +20,6 @@ coverage/
 manifests/traverse-starter/_traverse
 .traverse/
 apps/traverse-starter/TraverseCore/.build/
+
+# Vite-served app bundles (run scripts/ci/sync_web_starter_bundle.sh)
+apps/*/web-react/public/bundles/

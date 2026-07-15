@@ -1,5 +1,4 @@
-# Non-trivial traverse-starter web-react UI logic (hooks + runtime event parsing)
+# Non-trivial traverse-starter web-react UI logic (embedded host + output parsing)
 # Paths are matched as substrings against istanbul coverage-summary.json keys.
-hooks/useAppState.ts
+host/embeddedHost.ts
 client/traverseOutput.ts
-client/traverseClient.ts
