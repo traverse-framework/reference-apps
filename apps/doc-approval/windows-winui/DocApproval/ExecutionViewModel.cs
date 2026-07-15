@@ -178,12 +178,7 @@ public partial class ExecutionViewModel : ObservableObject, IDisposable
                         trace = Array.Empty<TraceEvent>();
                     }
 
-                    Output = result.Output ?? new DocApprovalOutput(
-                        string.Empty,
-                        Array.Empty<string>(),
-                        Array.Empty<string>(),
-                        0,
-                        string.Empty);
+                    Output = result.Output ?? DocApprovalOutput.Empty;
                     Trace = trace;
                     Phase = ExecutionPhase.Succeeded;
                 }

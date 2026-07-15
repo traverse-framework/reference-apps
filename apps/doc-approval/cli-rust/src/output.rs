@@ -22,11 +22,17 @@ pub fn print_submit_result(result: &SubmitResultJson, json: bool) {
     }
 
     let output = &result.output;
-    println!("Document type: {}", output.doc_type.bold());
-    println!("Parties: {}", output.parties.join(", "));
-    println!("Amounts: {}", output.amounts.join(", "));
-    println!("Confidence: {}", output.confidence);
-    println!("Recommendation: {}", output.recommendation);
+    println!("Document type: {}", output.analysis.doc_type.bold());
+    println!("Parties: {}", output.analysis.parties.join(", "));
+    println!("Amounts: {}", output.analysis.amounts.join(", "));
+    println!("Analyze confidence: {}", output.analysis.confidence);
+    println!("Analyze recommendation: {}", output.analysis.recommendation);
+    println!(
+        "Recommendation: {}",
+        output.recommendation.recommendation.bold()
+    );
+    println!("Rationale: {}", output.recommendation.rationale);
+    println!("Recommend confidence: {}", output.recommendation.confidence);
     if !result.trace.is_empty() {
         println!("Trace ({} events):", result.trace.len());
         for event in &result.trace {

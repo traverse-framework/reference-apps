@@ -168,11 +168,17 @@ private fun OutputCard(
 
 @Composable
 private fun OutputFields(output: DocApprovalOutput) {
-    Field("Document type", output.docType)
-    Field("Parties", output.parties.joinToString(", "))
-    Field("Amounts", output.amounts.joinToString(", "))
-    Field("Confidence", output.confidence.toString())
-    Field("Recommendation", output.recommendation)
+    Text("Analysis", style = MaterialTheme.typography.titleSmall)
+    Field("Document type", output.analysis.docType)
+    Field("Parties", output.analysis.parties.joinToString(", "))
+    Field("Amounts", output.analysis.amounts.joinToString(", "))
+    Field("Analyze confidence", output.analysis.confidence)
+    Field("Analyze recommendation", output.analysis.recommendation)
+    Spacer(modifier = Modifier.height(8.dp))
+    Text("Recommendation", style = MaterialTheme.typography.titleSmall)
+    Field("Decision", output.recommendation.recommendation)
+    Field("Rationale", output.recommendation.rationale)
+    Field("Confidence", output.recommendation.confidence)
 }
 
 @Composable

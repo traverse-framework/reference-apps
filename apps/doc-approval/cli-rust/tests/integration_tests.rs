@@ -1,13 +1,22 @@
 use doc_approval_cli::commands;
-use doc_approval_core_rs::{DocApprovalOutput, TestEmbeddedRuntime};
+use doc_approval_core_rs::{
+    AnalysisOutput, DocApprovalOutput, RecommendationOutput, TestEmbeddedRuntime,
+};
 
 fn sample_output() -> DocApprovalOutput {
     DocApprovalOutput {
-        doc_type: "invoice".to_string(),
-        parties: vec!["A".to_string()],
-        amounts: vec!["$10".to_string()],
-        confidence: 0.9,
-        recommendation: "approve".to_string(),
+        analysis: AnalysisOutput {
+            doc_type: "invoice".to_string(),
+            parties: vec!["A".to_string()],
+            amounts: vec!["$10".to_string()],
+            confidence: "0.9".to_string(),
+            recommendation: "approve".to_string(),
+        },
+        recommendation: RecommendationOutput {
+            recommendation: "approve".to_string(),
+            rationale: "Amounts within policy".to_string(),
+            confidence: "high".to_string(),
+        },
     }
 }
 

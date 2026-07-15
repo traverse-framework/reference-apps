@@ -46,7 +46,7 @@ dotnet run --project DocApproval\DocApproval.csproj
 | `SettingsPage.xaml` | Runtime URL + workspace (`ApplicationData`) |
 | `MainWindow.xaml` | Navigation shell with title-bar health strip |
 
-The UI renders runtime-provided output fields only (`docType`, `parties`, `amounts`, `confidence`, `recommendation`).
+The UI renders runtime-provided pipeline fields only (`analysis.*`, `recommendation.*`).
 
 ## Phase 2 (not implemented)
 

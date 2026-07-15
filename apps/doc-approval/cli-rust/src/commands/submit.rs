@@ -10,7 +10,7 @@ pub fn execute(document: &str, json: bool) -> i32 {
         Err(err) => {
             eprintln!("{err}");
             eprintln!(
-                "hint: doc-approval bundle manifests are tracked in reference-apps #112; set DOC_APPROVAL_MANIFEST when available"
+                "hint: set DOC_APPROVAL_MANIFEST to manifests/doc-approval/app.manifest.json"
             );
             return 1;
         }

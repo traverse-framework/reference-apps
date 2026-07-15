@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { HostRunResult } from '../host/embeddedHost'
 
 interface AnalysisResultProps {
@@ -26,7 +27,7 @@ export function AnalysisResult({
           marginBottom: '16px',
         }}
       >
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Analysis Result</h2>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Pipeline Result</h2>
         {showReset && (
           <button
             type="button"
@@ -48,7 +49,7 @@ export function AnalysisResult({
             paddingTop: '32px',
           }}
         >
-          Initialize the embedded runtime (manifests #112) to see output here.
+          Initialize the embedded runtime to see pipeline output here.
         </div>
       )}
 
@@ -61,7 +62,7 @@ export function AnalysisResult({
             paddingTop: '32px',
           }}
         >
-          Submit a document above to start analysis.
+          Submit a document above to run doc-approval.pipeline.
         </div>
       )}
 
@@ -74,12 +75,21 @@ export function AnalysisResult({
       )}
 
       {output && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <OutputField label="Document Type" value={output.docType} />
-          <OutputField label="Recommendation" value={output.recommendation} />
-          <OutputField label="Confidence" value={formatConfidence(output.confidence)} />
-          <TagList label="Parties" items={output.parties} />
-          <TagList label="Amounts" items={output.amounts} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <SectionHeading>Analysis</SectionHeading>
+            <OutputField label="Document Type" value={output.analysis.docType} />
+            <OutputField label="Analyze recommendation" value={output.analysis.recommendation} />
+            <OutputField label="Analyze confidence" value={output.analysis.confidence} />
+            <TagList label="Parties" items={output.analysis.parties} />
+            <TagList label="Amounts" items={output.analysis.amounts} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <SectionHeading>Recommendation</SectionHeading>
+            <OutputField label="Recommendation" value={output.recommendation.recommendation} />
+            <OutputField label="Rationale" value={output.recommendation.rationale} />
+            <OutputField label="Confidence" value={output.recommendation.confidence} />
+          </div>
         </div>
       )}
 
@@ -101,9 +111,19 @@ export function AnalysisResult({
   )
 }
 
-function formatConfidence(value: number): string {
-  if (value >= 0 && value <= 1) return `${Math.round(value * 100)}%`
-  return String(value)
+function SectionHeading({ children }: { children: ReactNode }) {
+  return (
+    <h3
+      style={{
+        fontSize: '0.95rem',
+        fontWeight: 600,
+        color: 'var(--text-secondary)',
+        margin: 0,
+      }}
+    >
+      {children}
+    </h3>
+  )
 }
 
 function OutputField({ label, value }: { label: string; value: string }) {

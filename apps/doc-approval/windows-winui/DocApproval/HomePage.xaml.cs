@@ -96,15 +96,18 @@ public sealed partial class HomePage : Page
                 break;
             case ExecutionPhase.Succeeded:
                 OutputGrid.Visibility = Visibility.Visible;
-                DocTypeValue.Text = _viewModel.Output?.DocType ?? string.Empty;
+                DocTypeValue.Text = _viewModel.Output?.Analysis.DocType ?? string.Empty;
                 PartiesValue.Text = _viewModel.Output is null
                     ? string.Empty
-                    : string.Join(", ", _viewModel.Output.Parties);
+                    : string.Join(", ", _viewModel.Output.Analysis.Parties);
                 AmountsValue.Text = _viewModel.Output is null
                     ? string.Empty
-                    : string.Join(", ", _viewModel.Output.Amounts);
-                ConfidenceValue.Text = _viewModel.Output?.Confidence.ToString() ?? string.Empty;
-                RecommendationValue.Text = _viewModel.Output?.Recommendation ?? string.Empty;
+                    : string.Join(", ", _viewModel.Output.Analysis.Amounts);
+                AnalyzeConfidenceValue.Text = _viewModel.Output?.Analysis.Confidence ?? string.Empty;
+                AnalyzeRecommendationValue.Text = _viewModel.Output?.Analysis.Recommendation ?? string.Empty;
+                RecommendationValue.Text = _viewModel.Output?.Recommendation.Recommendation ?? string.Empty;
+                RationaleValue.Text = _viewModel.Output?.Recommendation.Rationale ?? string.Empty;
+                ConfidenceValue.Text = _viewModel.Output?.Recommendation.Confidence ?? string.Empty;
 
                 if (_viewModel.Trace.Count > 0)
                 {

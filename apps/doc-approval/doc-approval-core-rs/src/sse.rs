@@ -93,11 +93,11 @@ mod tests {
 
     #[test]
     fn parses_capability_result_block() {
-        let block = "event: capability_result\ndata: {\"state\":\"results\",\"session_id\":\"s1\",\"execution_id\":\"e1\",\"output\":{\"docType\":\"nda\",\"parties\":[],\"amounts\":[],\"confidence\":0.9,\"recommendation\":\"approve\"}}";
+        let block = "event: capability_result\ndata: {\"state\":\"results\",\"session_id\":\"s1\",\"execution_id\":\"e1\",\"output\":{\"analysis\":{\"docType\":\"nda\",\"parties\":[],\"amounts\":[],\"confidence\":0.9,\"recommendation\":\"approve\"},\"recommendation\":{\"recommendation\":\"approve\",\"rationale\":\"ok\",\"confidence\":\"high\"}}}";
         let event = parse_block(block).expect("event");
         assert_eq!(event.event_type, "capability_result");
         assert_eq!(
-            event.output.as_ref().map(|o| o.doc_type.as_str()),
+            event.output.as_ref().map(|o| o.analysis.doc_type.as_str()),
             Some("nda")
         );
     }

@@ -37,7 +37,7 @@ impl PreferencesDialog {
         content.append(&manifest_entry);
 
         content.append(&Label::new(Some(
-            "Embedded runtime — requires manifests/doc-approval (issue #112). No sidecar URL.",
+            "Embedded runtime — uses manifests/doc-approval. No sidecar URL.",
         )));
 
         let button_row = GtkBox::new(Orientation::Horizontal, 8);

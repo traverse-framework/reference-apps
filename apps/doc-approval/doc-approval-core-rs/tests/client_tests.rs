@@ -112,8 +112,8 @@ fn server_discovery_reads_json() {
 fn state_event_from_sse() {
     let event = StateEvent::from_sse(
         "capability_result",
-        r#"{"state":"results","output":{"docType":"nda","parties":[],"amounts":[],"confidence":0.5,"recommendation":"review"}}"#,
+        r#"{"state":"results","output":{"analysis":{"docType":"nda","parties":[],"amounts":[],"confidence":0.5,"recommendation":"review"},"recommendation":{"recommendation":"review","rationale":"needs human","confidence":"medium"}}}"#,
     )
     .unwrap();
-    assert_eq!(event.output.unwrap().doc_type, "nda");
+    assert_eq!(event.output.unwrap().analysis.doc_type, "nda");
 }

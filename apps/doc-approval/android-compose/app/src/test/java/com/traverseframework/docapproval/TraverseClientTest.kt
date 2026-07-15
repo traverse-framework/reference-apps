@@ -44,7 +44,7 @@ class TraverseClientTest {
         val engine = MockEngine {
             respond(
                 content = """
-                {"status":"succeeded","output":{"docType":"invoice","parties":["A","B"],"amounts":["$100"],"confidence":0.9,"recommendation":"approve"}}
+                {"status":"succeeded","output":{"analysis":{"docType":"invoice","parties":["A","B"],"amounts":["$100"],"confidence":"0.9","recommendation":"approve"},"recommendation":{"recommendation":"approve","rationale":"Policy match","confidence":"high"}}}
                 """.trimIndent(),
                 status = HttpStatusCode.OK,
                 headers = headersOf(HttpHeaders.ContentType, "application/json"),
@@ -53,6 +53,7 @@ class TraverseClientTest {
         val client = TraverseClient(engine)
         val result = client.pollExecution("http://10.0.2.2:8787", "local-default", "exec_abc")
         assertEquals("succeeded", result.status)
-        assertEquals("invoice", result.output?.docType)
+        assertEquals("invoice", result.output?.analysis?.docType)
+        assertEquals("approve", result.output?.recommendation?.recommendation)
     }
 }

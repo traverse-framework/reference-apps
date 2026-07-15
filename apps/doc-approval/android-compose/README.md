@@ -43,7 +43,7 @@ Open the project in Android Studio and run on an API 26+ emulator.
 | `ui/SettingsScreen.kt` | Runtime URL + workspace |
 | `SettingsRepository.kt` | DataStore persistence |
 
-The UI renders runtime-provided output fields only (`docType`, `parties`, `amounts`, `confidence`, `recommendation`).
+The UI renders runtime-provided pipeline fields only (`analysis.*`, `recommendation.*`).
 
 ## Phase 2 (not implemented)
 

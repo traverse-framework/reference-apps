@@ -2,7 +2,7 @@
 
 Native Linux client for `doc-approval`. Uses `doc-approval-core-rs` with **`traverse-embedder`** (Phase 3). No sidecar URL.
 
-**Note:** Zone 1 shows Embedded / Unavailable until `manifests/doc-approval/` lands ([#112](https://github.com/traverse-framework/reference-apps/issues/112)).
+**Note:** Zone 1 shows Embedded / Ready when `manifests/doc-approval/` resolves (or `DOC_APPROVAL_MANIFEST`).
 
 ## Prerequisites
 

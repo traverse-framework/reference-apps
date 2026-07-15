@@ -137,19 +137,17 @@ struct ContentView: View {
 
     private func outputFields(_ output: DocApprovalOutput) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            labeledField("Document type", output.docType)
-            labeledField("Recommendation", output.recommendation)
-            labeledField("Confidence", formatConfidence(output.confidence))
-            labeledField("Parties", output.parties.isEmpty ? "None" : output.parties.joined(separator: ", "))
-            labeledField("Amounts", output.amounts.isEmpty ? "None" : output.amounts.joined(separator: ", "))
+            Text("Analysis").font(.headline)
+            labeledField("Document type", output.analysis.docType)
+            labeledField("Analyze recommendation", output.analysis.recommendation)
+            labeledField("Analyze confidence", output.analysis.confidence)
+            labeledField("Parties", output.analysis.parties.isEmpty ? "None" : output.analysis.parties.joined(separator: ", "))
+            labeledField("Amounts", output.analysis.amounts.isEmpty ? "None" : output.analysis.amounts.joined(separator: ", "))
+            Text("Recommendation").font(.headline)
+            labeledField("Decision", output.recommendation.recommendation)
+            labeledField("Rationale", output.recommendation.rationale)
+            labeledField("Confidence", output.recommendation.confidence)
         }
-    }
-
-    private func formatConfidence(_ value: Double) -> String {
-        if value >= 0 && value <= 1 {
-            return "\(Int((value * 100).rounded()))%"
-        }
-        return String(value)
     }
 
     private func labeledField(_ label: String, _ value: String) -> some View {
