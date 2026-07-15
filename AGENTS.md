@@ -13,7 +13,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 - **Phase 3 embedded runtime** ([#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116)) — blocked on remaining consumable embedder SDKs: Traverse [#647](https://github.com/traverse-framework/Traverse/issues/647) (Swift), [#648](https://github.com/traverse-framework/Traverse/issues/648) (Kotlin), [#649](https://github.com/traverse-framework/Traverse/issues/649) (.NET). Rust (#650) and Web/TS (#646) embedder SDKs shipped; App-Refs [#117](https://github.com/traverse-framework/reference-apps/issues/117) Linux/CLI and [#113](https://github.com/traverse-framework/reference-apps/issues/113) web-react embed shipped.
 
-Ready: (none — claim from Project 2 when new Ready items appear).
+Ready: (none after #151 — claim from Project 2 when new Ready items appear).
 
 Update this section when a PR changes platform status (see PR template checklist).
 
