@@ -11,9 +11,9 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 ### Blocked work summary
 
-- **Phase 3 embedded runtime** ([#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116)) — Blocked: platform packages scaffolded, but production WASM `BundleEmbedder` bridges still tracked by Traverse [#647](https://github.com/traverse-framework/Traverse/issues/647) (Swift), [#648](https://github.com/traverse-framework/Traverse/issues/648) (Kotlin), [#649](https://github.com/traverse-framework/Traverse/issues/649) (.NET). Rust (#650) + Web/TS (#646) executable embedders shipped; App-Refs [#117](https://github.com/traverse-framework/reference-apps/issues/117)/[#113](https://github.com/traverse-framework/reference-apps/issues/113) done.
+- **Phase 3 Swift embed** ([#114](https://github.com/traverse-framework/reference-apps/issues/114)) — Blocked until Traverse [#647](https://github.com/traverse-framework/Traverse/issues/647) ships the production Swift `BundleEmbedder` bridge (WasmKit resource-control floor still open). Kotlin (#648) + .NET (#649) + Rust (#650) + Web/TS (#646) embedder SDKs shipped; App-Refs [#115](https://github.com/traverse-framework/reference-apps/issues/115)/[#116](https://github.com/traverse-framework/reference-apps/issues/116)/[#117](https://github.com/traverse-framework/reference-apps/issues/117)/[#113](https://github.com/traverse-framework/reference-apps/issues/113) Ready or Done.
 
-Ready: none (live board).
+Ready: [#115](https://github.com/traverse-framework/reference-apps/issues/115), [#116](https://github.com/traverse-framework/reference-apps/issues/116) (live board).
 
 Update this section when a PR changes platform status (see PR template checklist).
 
