@@ -6,7 +6,7 @@
 
 - **Phase 1**: UI → HTTP execute → poll → render runtime-provided structured output (dev sidecar)
 - **Phase 2**: app manifest → `traverse-cli app validate` → `traverse-cli app register` → sidecar loads capability → UI invokes it end-to-end
-- **Phase 3**: native UI → **embedded in-app WASM runtime** → multi-capability workflow → render runtime-provided output (production target — see [`embedded-runtime-plan.md`](embedded-runtime-plan.md))
+- **Phase 3**: native UI → **embedded in-app WASM runtime** → multi-capability workflow → render runtime-provided output (production target — see [`embedded-runtime-plan.md`](embedded-runtime-plan.md); hands-on path: [`getting-started-embedded.md`](getting-started-embedded.md))
 
 ## Architecture Boundary
 

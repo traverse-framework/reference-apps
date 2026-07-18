@@ -6,7 +6,7 @@ Reference UI applications for the [Traverse](https://github.com/traverse-framewo
 
 **Architecture in one sentence:** This repo is UI-only. Each platform ships a **native UI shell** with an **embedded Traverse WASM runtime** (Phase 3 target). Business logic lives in bundled WASM agents; the UI starts workflows and renders runtime-provided output only.
 
-> **Current state:** Phase 1/2 clients still use an HTTP dev sidecar (`traverse-cli serve`). Phase 3 migration is tracked on [Project 2](https://github.com/orgs/traverse-framework/projects/2). See [`docs/embedded-runtime-plan.md`](docs/embedded-runtime-plan.md).
+> **Current state:** Web / Linux / CLI embed the WASM runtime (no sidecar). Apple / Android / Windows still use the HTTP sidecar interim until [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116). Start with [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md).
 
 ## Prerequisites
 
@@ -14,19 +14,36 @@ Reference UI applications for the [Traverse](https://github.com/traverse-framewo
 - **Rust 1.94+** (to build and run the Traverse runtime)
 - **`gh` CLI** (for agents claiming Project 2 tickets)
 
-## Getting Started (Phase 1/2 dev sidecar)
+## Getting Started (embedded — production path)
 
-Until Phase 3 embedded runtime lands, local development uses a separate Traverse process.
+Business logic lives in WASM once; each UI shell only submits input and renders runtime-owned fields. **Web React, Linux GTK, and Rust CLI** already embed — no `traverse-cli serve` required.
 
-**1. Clone and install**
+Follow the guided walkthrough: **[`docs/getting-started-embedded.md`](docs/getting-started-embedded.md)**.
+
+**Quick start (Web):**
 
 ```bash
 git clone https://github.com/traverse-framework/reference-apps.git
 cd reference-apps
 npm install
+export TRAVERSE_REPO=/path/to/Traverse   # checkout with example WASM
+bash scripts/ci/sync_web_starter_bundle.sh
+npm run dev                              # traverse-starter embedded web shell
 ```
 
-**2. Start the Traverse dev sidecar** (separate terminal — not required in Phase 3)
+Open `http://localhost:5173`. Submit a note when the embedded host is ready; confirm title / tags / note type / suggested next action / status come from the runtime.
+
+Other Vite apps (one at a time on port 5173):
+
+```bash
+npm run dev -w apps/doc-approval/web-react               # embedded + pipeline
+npm run dev -w apps/meeting-notes/web-react              # meeting-notes
+npm run dev -w apps/trace-explorer/web-react             # trace-explorer
+```
+
+### Dev sidecar (Phase 1/2 interim)
+
+Apple / Android / Windows clients (and optional HTTP integration) still use a separate Traverse process until [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) complete:
 
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
@@ -34,19 +51,7 @@ cd /tmp/traverse && git checkout v0.6.0
 cargo run -p traverse-cli -- serve
 ```
 
-The runtime listens on `http://127.0.0.1:8787` by default and writes `.traverse/server.json` with `base_url` and `workspace_default`. See [`docs/traverse-runtime.md`](docs/traverse-runtime.md) for pinned versions and API details.
-
-**3. Start a web client** (from the repo root; only one Vite app at a time on port 5173)
-
-```bash
-npm run dev                                              # traverse-starter (default)
-npm run dev -w apps/doc-approval/web-react               # doc-approval
-npm run dev -w apps/meeting-notes/web-react              # meeting-notes
-npm run dev -w apps/trace-explorer/web-react             # trace-explorer
-```
-
-Open `http://localhost:5173`. Submit input when the runtime health strip shows **Online**.
-
+The sidecar listens on `http://127.0.0.1:8787` and writes `.traverse/server.json`. See [`docs/traverse-runtime.md`](docs/traverse-runtime.md). Prefer the embedded guide above for platforms marked **Shipped (embedded)**.
 ## What You Will See
 
 ### traverse-starter
@@ -96,8 +101,9 @@ Each app also ships native clients (iOS, macOS, Android, Windows, Linux, CLI) wh
 | [`apps/macos-demo/`](apps/macos-demo/) | Expedition macOS demo |
 | [`apps/youaskm3-starter-kit/`](apps/youaskm3-starter-kit/) | youaskm3 browser starter kit |
 | [`docs/adopted-platform-clients.md`](docs/adopted-platform-clients.md) | Canonical homes for adopted Traverse demos |
+| [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md) | Embedded-first onboarding (Web + Linux/CLI) |
 | [`docs/embedded-runtime-plan.md`](docs/embedded-runtime-plan.md) | Phase 3 target — embedded runtime + multi-capability workflows |
-| [`docs/traverse-runtime.md`](docs/traverse-runtime.md) | Dev sidecar setup (Phase 1/2) |
+| [`docs/traverse-runtime.md`](docs/traverse-runtime.md) | Dev sidecar setup (Phase 1/2 interim) |
 | [`manifests/traverse-starter/`](manifests/traverse-starter/) | App manifest + component manifests (Phase 2) |
 | [`fixtures/`](fixtures/) | Shared UI demo fixtures (e.g. expedition session) |
 | [`scripts/ci/`](scripts/ci/) | Repository checks, smoke tests, coverage gate |

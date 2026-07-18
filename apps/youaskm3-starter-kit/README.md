@@ -17,6 +17,7 @@ Use this starter kit as the first place a downstream app developer looks when wi
 
 ## Included References
 
+- [Embedded getting started (this repo)](../../docs/getting-started-embedded.md) — WASM-once / UI-shell model on Web + Linux/CLI
 - [Consumer bundle (Traverse)](https://github.com/traverse-framework/Traverse/blob/main/docs/app-consumable-consumer-bundle.md)
 - [Starter kit guide (this repo)](../../docs/youaskm3-starter-kit.md)
 - [Integration validation (Traverse)](https://github.com/traverse-framework/Traverse/blob/main/docs/youaskm3-integration-validation.md)

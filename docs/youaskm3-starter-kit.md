@@ -10,6 +10,8 @@ This youaskm3 starter kit and integration guide is the canonical browser-hosted 
 
 Give a downstream app team one clear adoption path for Traverse without forcing them to reverse-engineer either repository.
 
+For the **embedded reference-app** walkthrough (WASM once, UI shells everywhere — Web / Linux / CLI), start with [`getting-started-embedded.md`](getting-started-embedded.md). This youaskm3 kit is the **browser consumer-bundle** path for downstream hosts.
+
 ## What to Install
 
 Downstream apps should adopt the versioned Traverse consumer bundle and the browser-targeted consumer package:
