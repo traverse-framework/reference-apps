@@ -1,11 +1,13 @@
 # doc-approval (macOS)
 
-Native macOS submitter client for the **doc-approval** reference app. Uses shared `DocApprovalCore` for HTTP command dispatch and SSE app-state events.
+**Runtime mode: HTTP sidecar (interim)** — shared `DocApprovalCore` HTTP command dispatch + SSE. Embedded WASM cutover is tracked in [#114](https://github.com/traverse-framework/reference-apps/issues/114). Requires `traverse-cli serve`.
+
+Native macOS submitter client for the **doc-approval** reference app.
 
 ## Prerequisites
 
 - Xcode 16+
-- Traverse runtime locally (`cargo run -p traverse-cli -- serve`)
+- Traverse HTTP sidecar locally (`cargo run -p traverse-cli -- serve`)
 
 ## Open and run
 

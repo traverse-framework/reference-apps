@@ -1,11 +1,13 @@
 # traverse-starter (macOS SwiftUI)
 
-Native macOS client for the `traverse-starter` reference app. Uses shared [`TraverseCore`](../TraverseCore/) for HTTP command dispatch + SSE app state (same pattern as `web-react` / `ios-swift`).
+**Runtime mode: HTTP sidecar (interim)** — uses shared [`TraverseCore`](../TraverseCore/) for HTTP command dispatch + SSE. Embedded WASM cutover is tracked in [#114](https://github.com/traverse-framework/reference-apps/issues/114). Requires `traverse-cli serve`.
+
+Native macOS client for the `traverse-starter` reference app.
 
 ## Prerequisites
 
 - **Xcode 16+** on macOS
-- **Traverse runtime** running locally
+- **Traverse HTTP sidecar** running locally
 
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse

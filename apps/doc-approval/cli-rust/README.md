@@ -1,6 +1,8 @@
 # doc-approval (Rust CLI)
 
-Terminal client for the `doc-approval` reference app. Uses `doc-approval-core-rs` with the public **`traverse-embedder`** SDK. No `traverse-cli serve` sidecar.
+**Runtime mode: embedded** — `doc-approval-core-rs` + public `traverse-embedder`. No `traverse-cli serve` sidecar is required.
+
+Terminal client for the `doc-approval` reference app.
 
 **Note:** production bundle init uses `manifests/doc-approval/`. Unit tests use `EmbedderTestDouble`.
 

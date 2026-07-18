@@ -1,12 +1,14 @@
 # doc-approval (Windows WinUI 3)
 
-Native Windows submitter client for the `doc-approval` reference app. Phase 1 uses HTTP polling against the public Traverse HTTP/JSON API (spec 033) — same flow as `web-react`, `ios-swift`, and `android-compose`.
+**Runtime mode: HTTP sidecar (interim)** — Phase 1 HTTP polling against the public Traverse HTTP/JSON API (spec 033). Embedded WASM cutover is tracked in [#116](https://github.com/traverse-framework/reference-apps/issues/116). Requires `traverse-cli serve`. (Web React for this app is already embedded; do not copy its path here.)
+
+Native Windows submitter client for the `doc-approval` reference app.
 
 ## Prerequisites
 
 - **Windows 10 1809+** (build 17763) or Windows 11
 - **Visual Studio 2022** with the **Windows App SDK** and **.NET desktop development** workloads
-- **Traverse runtime** running locally
+- **Traverse HTTP sidecar** running locally
 
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git C:\temp\traverse

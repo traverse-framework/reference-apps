@@ -1,6 +1,8 @@
 # doc-approval (Web React UI)
 
-React UI shell for the **doc-approval** reference application. Submitter surface: paste document text, run `doc-approval.pipeline` via the embedded Traverse host (or HTTP execute on platforms still on sidecar), and render runtime-provided analysis + recommendation fields.
+**Runtime mode: embedded** — in-app WASM via the public embedder host (`FetchBundleLoader` + bundled `doc-approval` manifest). No `traverse-cli serve` sidecar is required.
+
+React UI shell for the **doc-approval** reference application. Submitter surface: paste document text, run `doc-approval.pipeline`, and render runtime-provided analysis + recommendation fields.
 
 ## Core Design Principles
 

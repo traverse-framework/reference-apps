@@ -1,6 +1,8 @@
 # traverse-starter (Linux GTK4)
 
-Native Linux client for the `traverse-starter` reference app. Uses the shared `traverse-core-rs` crate with the public **`traverse-embedder`** SDK (Phase 3 embedded runtime). No `traverse-cli serve` sidecar is required.
+**Runtime mode: embedded** — public `traverse-embedder` SDK via `traverse-core-rs`. No `traverse-cli serve` sidecar is required.
+
+Native Linux client for the `traverse-starter` reference app.
 
 ## Prerequisites
 

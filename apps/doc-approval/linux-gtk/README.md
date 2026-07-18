@@ -1,6 +1,8 @@
 # doc-approval (Linux GTK4)
 
-Native Linux client for `doc-approval`. Uses `doc-approval-core-rs` with **`traverse-embedder`** (Phase 3). No sidecar URL.
+**Runtime mode: embedded** — `doc-approval-core-rs` + public `traverse-embedder`. No `traverse-cli serve` sidecar is required.
+
+Native Linux client for `doc-approval`.
 
 **Note:** Zone 1 shows Embedded / Ready when `manifests/doc-approval/` resolves (or `DOC_APPROVAL_MANIFEST`).
 
