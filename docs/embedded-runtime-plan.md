@@ -10,6 +10,8 @@ App-References must demonstrate the **production-shaped** Traverse integration m
 
 Phase 1 (HTTP sidecar) and Phase 2 (CLI registration into a sidecar) remain valid **developer/integration** paths until Phase 3 lands. They are **not** the target production architecture.
 
+**Hands-on onboarding (embedded platforms already shipped):** [`getting-started-embedded.md`](getting-started-embedded.md).
+
 ## Architecture Boundary (unchanged)
 
 | Concern | Lives in |
