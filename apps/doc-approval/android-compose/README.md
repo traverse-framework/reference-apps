@@ -1,12 +1,14 @@
 # doc-approval (Android Compose)
 
-Native Android submitter client for the `doc-approval` reference app. Phase 1 uses HTTP polling via Ktor — same flow as `web-react`.
+**Runtime mode: HTTP sidecar (interim)** — Phase 1 HTTP polling via Ktor. Embedded WASM cutover is tracked in [#115](https://github.com/traverse-framework/reference-apps/issues/115). Requires `traverse-cli serve`. (Web React for this app is already embedded; do not copy its path here.)
+
+Native Android submitter client for the `doc-approval` reference app.
 
 ## Prerequisites
 
 - **Android Studio Ladybug+** (or compatible AGP 8.7 / Kotlin 2.0)
-- **Android emulator** API 26+ (or physical device on same network as runtime)
-- **Traverse runtime** running on your host machine
+- **Android emulator** API 26+ (or physical device on same network as the sidecar)
+- **Traverse HTTP sidecar** running on your host machine
 
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
