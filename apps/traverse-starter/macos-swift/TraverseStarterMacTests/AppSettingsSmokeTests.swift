@@ -9,5 +9,6 @@ final class AppSettingsSmokeTests: XCTestCase {
         let settings = AppSettings(userDefaults: defaults)
         XCTAssertEqual(settings.workspace, AppSettings.defaultWorkspace)
         XCTAssertEqual(AppSettings.appId, "traverse-starter")
+        XCTAssertTrue(settings.bundlePath.isEmpty)
     }
 }

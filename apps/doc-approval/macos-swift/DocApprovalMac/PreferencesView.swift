@@ -5,14 +5,14 @@ struct PreferencesView: View {
 
     var body: some View {
         Form {
-            Section("Runtime") {
-                TextField("Runtime URL", text: $settings.baseURLString)
-                    .textFieldStyle(.roundedBorder)
+            Section("Embedded runtime") {
                 TextField("Workspace", text: $settings.workspace)
+                    .textFieldStyle(.roundedBorder)
+                TextField("Bundle path (optional)", text: $settings.bundlePath)
                     .textFieldStyle(.roundedBorder)
             }
             Section {
-                Text("Default: http://127.0.0.1:8787 with workspace local-default")
+                Text("Embedded mode uses the bundled runtime/runtime.wasm. Restart after changing the bundle path.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

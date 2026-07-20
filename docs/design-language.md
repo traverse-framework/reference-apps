@@ -64,8 +64,8 @@ The UI renders these fields exactly as the runtime provides them — never compu
 |---|---|---|
 | Web (React) | `apps/traverse-starter/web-react/` | Shipped (embedded) |
 | trace-explorer | `apps/trace-explorer/web-react/` | Developer tool (trace-only UI) |
-| iOS (SwiftUI) | `apps/traverse-starter/ios-swift/` | Shipped |
-| macOS (SwiftUI + AppKit) | `apps/traverse-starter/macos-swift/` | Shipped |
+| iOS (SwiftUI) | `apps/traverse-starter/ios-swift/` | Shipped (embedded) |
+| macOS (SwiftUI + AppKit) | `apps/traverse-starter/macos-swift/` | Shipped (embedded) |
 | Android (Jetpack Compose) | `apps/traverse-starter/android-compose/` | Shipped |
 | Windows (WinUI 3) | `apps/traverse-starter/windows-winui/` | Shipped (embedded) |
 | Linux (GTK4 + Rust) | `apps/traverse-starter/linux-gtk/` | Shipped (embedded) |
@@ -76,8 +76,8 @@ The UI renders these fields exactly as the runtime provides them — never compu
 | Platform | Path | Status |
 |---|---|---|
 | Web (React) | `apps/doc-approval/web-react/` | Shipped (embedded + pipeline) |
-| iOS (SwiftUI) | `apps/doc-approval/ios-swift/` | Shipped (pipeline via HTTP) |
-| macOS (SwiftUI + AppKit) | `apps/doc-approval/macos-swift/` | Shipped (pipeline via HTTP) |
+| iOS (SwiftUI) | `apps/doc-approval/ios-swift/` | Shipped (embedded + pipeline) |
+| macOS (SwiftUI + AppKit) | `apps/doc-approval/macos-swift/` | Shipped (embedded + pipeline) |
 | Android (Jetpack Compose) | `apps/doc-approval/android-compose/` | Shipped (pipeline via HTTP) |
 | Windows (WinUI 3) | `apps/doc-approval/windows-winui/` | Shipped (embedded + pipeline) |
 | Linux (GTK4 + Rust) | `apps/doc-approval/linux-gtk/` | Shipped (embedded + pipeline) |

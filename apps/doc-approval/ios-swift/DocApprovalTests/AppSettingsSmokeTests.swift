@@ -7,6 +7,7 @@ final class AppSettingsSmokeTests: XCTestCase {
         let defaults = UserDefaults(suiteName: "doc-approval-smoke-\(UUID().uuidString)")!
         let settings = AppSettings(userDefaults: defaults)
         XCTAssertEqual(settings.workspace, AppSettings.defaultWorkspace)
-        XCTAssertFalse(settings.baseURLString.isEmpty)
+        XCTAssertEqual(AppSettings.appId, "doc-approval")
+        XCTAssertTrue(settings.bundlePath.isEmpty)
     }
 }

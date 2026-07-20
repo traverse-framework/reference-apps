@@ -15,6 +15,7 @@
 		B10000000000000000000006 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000006 /* PreferencesView.swift */; };
 		B10000000000000000000007 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000007 /* AppDelegate.swift */; };
 		B10000000000000000000008 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000008 /* Assets.xcassets */; };
+		B10000000000000000000020 /* Resources in Resources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000020 /* Resources */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		B20000000000000000000006 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		B20000000000000000000007 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B20000000000000000000008 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B20000000000000000000020 /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = "<group>"; };
 		B20000000000000000000011 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B30000000000000000000001 /* DocApprovalMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocApprovalMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B30000000000000000000002 /* DocApprovalMacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocApprovalMacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +69,7 @@
 				B20000000000000000000005 /* ContentView.swift */,
 				B20000000000000000000006 /* PreferencesView.swift */,
 				B20000000000000000000008 /* Assets.xcassets */,
+				B20000000000000000000020 /* Resources */,
 				B20000000000000000000011 /* Info.plist */,
 			);
 			path = DocApprovalMac;
@@ -177,6 +180,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B10000000000000000000008 /* Assets.xcassets in Resources */,
+				B10000000000000000000020 /* Resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

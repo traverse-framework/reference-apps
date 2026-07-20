@@ -1,8 +1,11 @@
 # DocApprovalCore
 
-Shared Swift package for doc-approval iOS and macOS shells: HTTP command dispatch, SSE app-state events, session listing, and output parsing. Platform-neutral — no UIKit or AppKit.
+Shared Swift package for doc-approval iOS and macOS shells.
+
+- `EmbeddedHost` — `RuntimeTraverseEmbedder` / `InMemoryTraverseEmbedder` boundary
+- `AppStateViewModel` — Zone 1 Ready/Unavailable + submit/reset
+- `DocApprovalOutput` — runtime-owned field decoding only
 
 ```bash
-cd apps/doc-approval/DocApprovalCore
-swift test
+cd apps/doc-approval/DocApprovalCore && swift test
 ```

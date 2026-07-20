@@ -32,6 +32,8 @@ struct ContentView: View {
     private var runtimeSection: some View {
         GroupBox("Runtime Environment") {
             VStack(alignment: .leading, spacing: 8) {
+                Text(viewModel.runtimeMode)
+                    .font(.headline)
                 HStack {
                     Circle()
                         .fill(statusColor)
@@ -39,13 +41,10 @@ struct ContentView: View {
                     Text(statusLabel)
                     Spacer()
                 }
-                Text(settings.baseURLString)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
                 Text("workspace: \(settings.workspace)")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                Text("app: \(AppSettings.appId)")
+                Text("workflow: \(viewModel.workflowId)")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -68,8 +67,8 @@ struct ContentView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(!viewModel.canSubmit)
-                if viewModel.runtimeStatus == .offline {
-                    Text("Runtime offline — start with `cargo run -p traverse-cli -- serve`")
+                if viewModel.runtimeStatus == .unavailable {
+                    Text("Embedded runtime unavailable — run scripts/ci/sync_swift_starter_bundle.sh")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -81,18 +80,16 @@ struct ContentView: View {
     private var outputSection: some View {
         GroupBox("Execution Output") {
             VStack(alignment: .leading, spacing: 12) {
-                if let error = viewModel.errorMessage, viewModel.currentState != "results" {
+                if let error = viewModel.errorMessage, viewModel.currentState == "error" {
                     Text("Error: \(error)")
                         .foregroundStyle(.red)
                 }
 
                 switch viewModel.currentState {
                 case "idle":
-                    if viewModel.runtimeStatus == .offline {
-                        Text("Connect to the Traverse runtime to see workflow output here.")
+                    if viewModel.runtimeStatus == .unavailable {
+                        Text("Embedded runtime unavailable — sync the Swift bundle to see output here.")
                             .foregroundStyle(.secondary)
-                    } else if viewModel.submitting {
-                        Text("Submitting command…")
                     } else if viewModel.errorMessage == nil {
                         Text("Submit a note above to start a workflow.")
                             .foregroundStyle(.secondary)
@@ -104,7 +101,7 @@ struct ContentView: View {
                         .foregroundStyle(.red)
                     Button("Reset") { viewModel.resetLocal() }
                         .buttonStyle(.bordered)
-                case "results":
+                case "completed", "results":
                     if let output = viewModel.output {
                         outputFields(output)
                     }
@@ -161,17 +158,17 @@ struct ContentView: View {
 
     private var statusColor: Color {
         switch viewModel.runtimeStatus {
-        case .online: return .cyan
-        case .offline: return .red
-        case .checking: return .gray
+        case .ready: return .cyan
+        case .unavailable: return .red
+        case .starting: return .gray
         }
     }
 
     private var statusLabel: String {
         switch viewModel.runtimeStatus {
-        case .online: return "Online"
-        case .offline: return "Offline"
-        case .checking: return "Checking…"
+        case .ready: return "Ready"
+        case .unavailable: return "Unavailable"
+        case .starting: return "Starting…"
         }
     }
 }
@@ -180,9 +177,5 @@ struct ContentView: View {
     let settings = AppSettings()
     ContentView()
         .environmentObject(settings)
-        .environmentObject(AppStateViewModel(
-            client: TraverseClient(),
-            baseURL: settings.baseURL,
-            workspaceId: settings.workspace
-        ))
+        .environmentObject(AppStateViewModel(host: nil, workspaceId: settings.workspace))
 }
