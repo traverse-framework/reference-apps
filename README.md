@@ -6,7 +6,7 @@ Reference UI applications for the [Traverse](https://github.com/traverse-framewo
 
 **Architecture in one sentence:** This repo is UI-only. Each platform ships a **native UI shell** with an **embedded Traverse WASM runtime** (Phase 3 target). Business logic lives in bundled WASM agents; the UI starts workflows and renders runtime-provided output only.
 
-> **Current state:** Web / Linux / CLI embed the WASM runtime (no sidecar). Apple / Android / Windows embeds are **Ready** on Project 2 ([#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116)) after Traverse shipped the certified native `runtime.wasm` + platform SDKs — clients still run the HTTP sidecar until those App-Refs PRs land. Start with [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md).
+> **Current state:** Web / Linux / CLI / Windows embed the WASM runtime (no sidecar). Apple / Android still use the HTTP sidecar interim until [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#115](https://github.com/traverse-framework/reference-apps/issues/115). Start with [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md).
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ Reference UI applications for the [Traverse](https://github.com/traverse-framewo
 
 ## Getting Started (embedded — production path)
 
-Business logic lives in WASM once; each UI shell only submits input and renders runtime-owned fields. **Web React, Linux GTK, and Rust CLI** already embed — no `traverse-cli serve` required.
+Business logic lives in WASM once; each UI shell only submits input and renders runtime-owned fields. **Web React, Linux GTK, Rust CLI, and Windows WinUI** already embed — no `traverse-cli serve` required.
 
 Follow the guided walkthrough: **[`docs/getting-started-embedded.md`](docs/getting-started-embedded.md)**.
 
@@ -43,7 +43,7 @@ npm run dev -w apps/trace-explorer/web-react             # trace-explorer
 
 ### Dev sidecar (Phase 1/2 interim)
 
-Apple / Android / Windows clients still use a separate Traverse process until [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) merge (Ready on Project 2; Traverse SDKs + artifact already shipped):
+Apple / Android clients still use a separate Traverse process until [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#115](https://github.com/traverse-framework/reference-apps/issues/115) merge:
 
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
@@ -121,7 +121,7 @@ All clients are **native UI shells** separated from business logic. Phase 1/2 us
 | iOS (SwiftUI) | Shipped | [`apps/traverse-starter/ios-swift/`](apps/traverse-starter/ios-swift/) |
 | macOS (SwiftUI + AppKit) | Shipped | [`apps/traverse-starter/macos-swift/`](apps/traverse-starter/macos-swift/) |
 | Android (Jetpack Compose) | Shipped | [`apps/traverse-starter/android-compose/`](apps/traverse-starter/android-compose/) |
-| Windows (WinUI 3) | Shipped | [`apps/traverse-starter/windows-winui/`](apps/traverse-starter/windows-winui/) |
+| Windows (WinUI 3) | Shipped (embedded) | [`apps/traverse-starter/windows-winui/`](apps/traverse-starter/windows-winui/) |
 | Linux (GTK4 + Rust) | Shipped (embedded) | [`apps/traverse-starter/linux-gtk/`](apps/traverse-starter/linux-gtk/) |
 | CLI (Rust) | Shipped (embedded) | [`apps/traverse-starter/cli-rust/`](apps/traverse-starter/cli-rust/) |
 
@@ -133,7 +133,7 @@ All clients are **native UI shells** separated from business logic. Phase 1/2 us
 | iOS (SwiftUI) | Shipped (pipeline via HTTP) | [`apps/doc-approval/ios-swift/`](apps/doc-approval/ios-swift/) |
 | macOS (SwiftUI + AppKit) | Shipped (pipeline via HTTP) | [`apps/doc-approval/macos-swift/`](apps/doc-approval/macos-swift/) |
 | Android (Jetpack Compose) | Shipped (pipeline via HTTP) | [`apps/doc-approval/android-compose/`](apps/doc-approval/android-compose/) |
-| Windows (WinUI 3) | Shipped (pipeline via HTTP) | [`apps/doc-approval/windows-winui/`](apps/doc-approval/windows-winui/) |
+| Windows (WinUI 3) | Shipped (embedded + pipeline) | [`apps/doc-approval/windows-winui/`](apps/doc-approval/windows-winui/) |
 | Linux (GTK4 + Rust) | Shipped (embedded + pipeline) | [`apps/doc-approval/linux-gtk/`](apps/doc-approval/linux-gtk/) |
 | CLI (Rust) | Shipped (embedded + pipeline) | [`apps/doc-approval/cli-rust/`](apps/doc-approval/cli-rust/) |
 
@@ -184,4 +184,4 @@ Checks 1–5 validate Node, install, typecheck, lint, and tests (no runtime requ
 
 No active Project 2 **Blocked** items. Upstream Traverse native delivery (#750/#751/#647–#649) is closed.
 
-Ready on Project 2 (claim next): [#114](https://github.com/traverse-framework/reference-apps/issues/114) Swift, [#115](https://github.com/traverse-framework/reference-apps/issues/115) Android, [#116](https://github.com/traverse-framework/reference-apps/issues/116) Windows — wire public `TraverseEmbedder` + digest-pinned `runtime/runtime.wasm` (sidecar interim until each PR merges).
+Ready on Project 2 (claim next): [#114](https://github.com/traverse-framework/reference-apps/issues/114) Swift, [#115](https://github.com/traverse-framework/reference-apps/issues/115) Android — wire public `TraverseEmbedder` + digest-pinned `runtime/runtime.wasm` (sidecar interim until each PR merges). Windows [#116](https://github.com/traverse-framework/reference-apps/issues/116) ships embedded in this change set.

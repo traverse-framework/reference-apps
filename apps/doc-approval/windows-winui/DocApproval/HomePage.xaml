@@ -22,8 +22,9 @@
 
             <TextBlock
                 x:Name="OfflineHint"
-                Text="Runtime offline — start with `cargo run -p traverse-cli -- serve`"
+                Text="Embedded runtime unavailable — run scripts/ci/sync_winui_doc_approval_bundle.sh with TRAVERSE_REPO set."
                 FontSize="12"
+                TextWrapping="Wrap"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 Visibility="Collapsed" />
 
@@ -35,7 +36,6 @@
                     Text="Submit a document above to run doc-approval.pipeline."
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 <TextBlock x:Name="LoadingText" Text="Starting pipeline…" Visibility="Collapsed" />
-                <TextBlock x:Name="PollingText" FontFamily="Consolas" FontSize="12" Visibility="Collapsed" />
                 <TextBlock x:Name="ErrorText" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap" />
 
                 <StackPanel x:Name="OutputGrid" Visibility="Collapsed" Spacing="8">

@@ -30,45 +30,39 @@ public sealed record TraceEvent(
     string Timestamp,
     JsonElement? Data);
 
-public sealed record ExecutionPollResult(
-    string ExecutionId,
-    string Status,
-    DocApprovalOutput? Output,
-    string? Error);
-
 public enum ExecutionPhase
 {
     Idle,
     Loading,
-    Polling,
     Succeeded,
     Failed,
 }
 
 public enum RuntimeStatus
 {
-    Checking,
-    Online,
-    Offline,
+    Starting,
+    Ready,
+    Unavailable,
 }
 
 public sealed class ExecutionUiState
 {
     public ExecutionPhase Phase { get; init; } = ExecutionPhase.Idle;
     public string Document { get; init; } = string.Empty;
-    public RuntimeStatus RuntimeStatus { get; init; } = RuntimeStatus.Checking;
-    public string BaseUrl { get; init; } = AppConstants.DefaultBaseUrl;
+    public RuntimeStatus RuntimeStatus { get; init; } = RuntimeStatus.Starting;
     public string Workspace { get; init; } = AppConstants.DefaultWorkspace;
+    public string WorkflowId { get; init; } = AppConstants.CapabilityId;
+    public string RuntimeMode { get; init; } = EmbeddedHost.RuntimeModeEmbedded;
     public bool ShowTrace { get; init; }
-    public string? PollingExecutionId { get; init; }
+    public string? SessionId { get; init; }
     public DocApprovalOutput? Output { get; init; }
     public IReadOnlyList<TraceEvent> Trace { get; init; } = Array.Empty<TraceEvent>();
     public string? Error { get; init; }
 
-    public bool IsRunning => Phase is ExecutionPhase.Loading or ExecutionPhase.Polling;
+    public bool IsRunning => Phase is ExecutionPhase.Loading;
 
     public bool CanSubmit =>
-        RuntimeStatus == RuntimeStatus.Online &&
+        RuntimeStatus == RuntimeStatus.Ready &&
         !string.IsNullOrWhiteSpace(Document) &&
         !IsRunning;
 }

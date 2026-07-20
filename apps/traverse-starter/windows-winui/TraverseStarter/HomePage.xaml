@@ -27,8 +27,9 @@
 
             <TextBlock
                 x:Name="OfflineHint"
-                Text="Runtime offline — start with `cargo run -p traverse-cli -- serve`"
+                Text="Embedded runtime unavailable — run scripts/ci/sync_winui_starter_bundle.sh with TRAVERSE_REPO set."
                 FontSize="12"
+                TextWrapping="Wrap"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 Visibility="Collapsed" />
 
@@ -40,7 +41,6 @@
                     Text="Submit a note above to start a workflow."
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 <TextBlock x:Name="LoadingText" Text="Starting execution…" Visibility="Collapsed" />
-                <TextBlock x:Name="PollingText" FontFamily="Consolas" FontSize="12" Visibility="Collapsed" />
                 <TextBlock x:Name="ErrorText" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap" />
 
                 <Grid x:Name="OutputGrid" Visibility="Collapsed" ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">

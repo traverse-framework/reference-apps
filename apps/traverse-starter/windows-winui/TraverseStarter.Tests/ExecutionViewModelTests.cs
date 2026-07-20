@@ -1,103 +1,57 @@
 namespace TraverseStarter.Tests;
 
-public sealed class MockTraverseClient : ITraverseClient
-{
-    public bool HealthOk { get; set; } = true;
-    public string ExecutionId { get; set; } = "exec_test";
-    public List<ExecutionPollResult> PollResults { get; init; } = [];
-    public int PollIndex { get; set; }
-    public IReadOnlyList<TraceEvent> Trace { get; init; } = Array.Empty<TraceEvent>();
-
-    public Task<bool> CheckHealthAsync(string baseUrl, CancellationToken cancellationToken = default) =>
-        Task.FromResult(HealthOk);
-
-    public Task<string> ExecuteAsync(
-        string baseUrl,
-        string workspaceId,
-        string capability,
-        IReadOnlyDictionary<string, string> input,
-        CancellationToken cancellationToken = default) =>
-        Task.FromResult(ExecutionId);
-
-    public Task<ExecutionPollResult> PollExecutionAsync(
-        string baseUrl,
-        string workspaceId,
-        string executionId,
-        CancellationToken cancellationToken = default)
-    {
-        var result = PollIndex < PollResults.Count
-            ? PollResults[PollIndex]
-            : PollResults[^1];
-        PollIndex++;
-        return Task.FromResult(result);
-    }
-
-    public Task<IReadOnlyList<TraceEvent>> FetchTraceAsync(
-        string baseUrl,
-        string workspaceId,
-        string executionId,
-        CancellationToken cancellationToken = default) =>
-        Task.FromResult(Trace);
-}
-
 internal sealed class InMemorySettingsRepository : ISettingsRepository
 {
-    public string BaseUrl { get; set; } = AppConstants.DefaultBaseUrl;
     public string Workspace { get; set; } = AppConstants.DefaultWorkspace;
+    public string BundlePath { get; set; } = string.Empty;
 }
 
 public class ExecutionViewModelTests
 {
+    private static TraverseStarterOutput SampleOutput { get; } = new(
+        new ValidateOutput(true, Array.Empty<string>()),
+        new ProcessOutput("Title", ["tag"], "meeting", "follow up", "processed"),
+        new SummarizeOutput("A short summary", 3));
+
     [Fact]
-    public void CanSubmitWhenOnlineWithNote()
+    public void CanSubmitWhenReadyWithNote()
     {
-        var client = new MockTraverseClient { HealthOk = true };
+        using var host = EmbeddedHost.CreateTestHost(SampleOutput);
         var settings = new InMemorySettingsRepository();
-        var vm = new ExecutionViewModel(client, settings)
+        var vm = new ExecutionViewModel(host, settings)
         {
-            RuntimeStatus = RuntimeStatus.Online,
             Note = "hello",
         };
 
+        Assert.Equal(RuntimeStatus.Ready, vm.RuntimeStatus);
+        Assert.Equal(EmbeddedHost.RuntimeModeEmbedded, vm.RuntimeMode);
         Assert.True(vm.CanSubmit);
     }
 
     [Fact]
-    public async Task SubmitTransitionsToSucceeded()
+    public async Task SubmitTransitionsToSucceededWithScriptedOutput()
     {
-        var client = new MockTraverseClient
-        {
-            PollResults =
-            [
-                new ExecutionPollResult("exec_test", "running", null, null),
-                new ExecutionPollResult(
-                    "exec_test",
-                    "succeeded",
-                    new TraverseStarterOutput(
-                        new ValidateOutput(true, Array.Empty<string>()),
-                        new ProcessOutput("Title", ["tag"], "meeting", "follow up", "processed"),
-                        new SummarizeOutput("A short summary", 3)),
-                    null),
-            ],
-        };
+        using var host = EmbeddedHost.CreateTestHost(SampleOutput);
         var settings = new InMemorySettingsRepository();
-        var vm = new ExecutionViewModel(client, settings)
+        var vm = new ExecutionViewModel(host, settings)
         {
-            RuntimeStatus = RuntimeStatus.Online,
             Note = "note text",
         };
 
         await vm.SubmitCommand.ExecuteAsync(null);
-        await Task.Delay(1500);
 
         Assert.Equal(ExecutionPhase.Succeeded, vm.Phase);
         Assert.Equal("Title", vm.Output?.Process.Title);
+        Assert.True(vm.Output?.Validate.Valid);
+        Assert.Equal(3, vm.Output?.Summarize.WordCount);
+        Assert.NotNull(vm.SessionId);
     }
 
     [Fact]
     public void ResetReturnsToIdle()
     {
-        var vm = new ExecutionViewModel(new MockTraverseClient(), new InMemorySettingsRepository())
+        using var host = EmbeddedHost.CreateTestHost(SampleOutput);
+        var vm = new ExecutionViewModel(host, new InMemorySettingsRepository())
         {
             Phase = ExecutionPhase.Failed,
             Error = "boom",
@@ -105,5 +59,44 @@ public class ExecutionViewModelTests
 
         vm.ResetCommand.Execute(null);
         Assert.Equal(ExecutionPhase.Idle, vm.Phase);
+        Assert.Null(vm.Error);
+    }
+
+    [Fact]
+    public void UnavailableHostDisablesSubmit()
+    {
+        var vm = new ExecutionViewModel(null, new InMemorySettingsRepository())
+        {
+            Note = "hello",
+        };
+
+        Assert.Equal(RuntimeStatus.Unavailable, vm.RuntimeStatus);
+        Assert.False(vm.CanSubmit);
+    }
+}
+
+public class EmbeddedHostTests
+{
+    [Fact]
+    public void TestHostReturnsScriptedCapabilityResult()
+    {
+        var output = new TraverseStarterOutput(
+            new ValidateOutput(true, ["ok"]),
+            new ProcessOutput("FromRuntime", ["a", "b"], "type", "next", "done"),
+            new SummarizeOutput("sum", 1));
+
+        using var host = EmbeddedHost.CreateTestHost(output);
+        var result = host.SubmitNote("any note");
+
+        Assert.Null(result.Error);
+        Assert.Equal("FromRuntime", result.Output?.Process.Title);
+        Assert.Contains(result.Events, e => e.EventType == "capability_result");
+    }
+
+    [Fact]
+    public void PinnedDigestMatchesReleaseMetadataConstant()
+    {
+        Assert.StartsWith("sha256:", EmbeddedHost.PinnedRuntimeWasmDigest);
+        Assert.Equal(71, EmbeddedHost.PinnedRuntimeWasmDigest.Length);
     }
 }
