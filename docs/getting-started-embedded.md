@@ -2,7 +2,7 @@
 
 Build a Traverse app where **business logic lives once in WASM** and every UI shell only submits input and renders runtime-owned output. This guide uses platforms that already embed successfully today.
 
-> **Not this path yet?** Apple / Android / Windows still document the HTTP sidecar until [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) merge (Ready on Project 2). See each platform README’s **Runtime mode** line and [`traverse-runtime.md`](traverse-runtime.md).
+> **Not this path yet?** Apple / Android still document the HTTP sidecar until [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#115](https://github.com/traverse-framework/reference-apps/issues/115) merge. Windows WinUI is embedded ([#116](https://github.com/traverse-framework/reference-apps/issues/116)). See each platform README’s **Runtime mode** line and [`traverse-runtime.md`](traverse-runtime.md).
 
 ## Mental model
 
@@ -109,9 +109,9 @@ Checklist for a new shell (or promoting a sidecar client to embedded):
 | Web React | **Embedded** | [#113](https://github.com/traverse-framework/reference-apps/issues/113) shipped |
 | Linux GTK | **Embedded** | [#117](https://github.com/traverse-framework/reference-apps/issues/117) shipped |
 | Rust CLI | **Embedded** | [#117](https://github.com/traverse-framework/reference-apps/issues/117) shipped |
+| Windows WinUI | **Embedded** | [#116](https://github.com/traverse-framework/reference-apps/issues/116) shipped |
 | iOS / macOS | HTTP sidecar (interim) → embed Ready | [#114](https://github.com/traverse-framework/reference-apps/issues/114) |
 | Android | HTTP sidecar (interim) → embed Ready | [#115](https://github.com/traverse-framework/reference-apps/issues/115) |
-| Windows | HTTP sidecar (interim) → embed Ready | [#116](https://github.com/traverse-framework/reference-apps/issues/116) |
 
 Same matrix for `doc-approval` (embedded Web / Linux / CLI with `doc-approval.pipeline`). Status labels in the root [`README.md`](../README.md) **Platform clients** table remain the source of truth.
 

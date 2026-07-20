@@ -1,4 +1,3 @@
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
@@ -22,19 +21,19 @@ public sealed partial class SettingsPage : Page
         }
 
         _settings = settings;
-        BaseUrlBox.Text = settings.BaseUrl;
         WorkspaceBox.Text = settings.Workspace;
+        BundlePathBox.Text = settings.BundlePath;
     }
 
-    private async void Setting_TextChanged(object sender, TextChangedEventArgs e)
+    private void Setting_TextChanged(object sender, TextChangedEventArgs e)
     {
         if (_settings is null)
         {
             return;
         }
 
-        _settings.BaseUrl = BaseUrlBox.Text;
         _settings.Workspace = WorkspaceBox.Text;
-        await App.ViewModel.RefreshHealthAsync();
+        _settings.BundlePath = BundlePathBox.Text;
+        App.ViewModel.RefreshRuntimeStatus();
     }
 }

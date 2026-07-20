@@ -10,7 +10,11 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
-        ViewModel = new ExecutionViewModel(new TraverseClient(), Settings);
+        var bundleOverride = string.IsNullOrWhiteSpace(Settings.BundlePath)
+            ? null
+            : Settings.BundlePath;
+        var host = EmbeddedHost.TryCreateProduction(bundleOverride, Settings.Workspace);
+        ViewModel = new ExecutionViewModel(host, Settings);
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)

@@ -9,20 +9,21 @@
             <TextBlock Text="Settings" Style="{ThemeResource TitleTextBlockStyle}" />
 
             <TextBox
-                x:Name="BaseUrlBox"
-                Header="Runtime URL"
-                PlaceholderText="http://127.0.0.1:8787"
-                TextChanged="Setting_TextChanged" />
-
-            <TextBox
                 x:Name="WorkspaceBox"
                 Header="Workspace"
                 PlaceholderText="local-default"
                 TextChanged="Setting_TextChanged" />
 
+            <TextBox
+                x:Name="BundlePathBox"
+                Header="Bundle path (optional override)"
+                PlaceholderText="Assets/bundles/traverse-starter"
+                TextChanged="Setting_TextChanged" />
+
             <TextBlock
-                Text="Default: http://127.0.0.1:8787 with workspace local-default"
+                Text="Embedded mode uses the bundled runtime/runtime.wasm. Restart the app after changing the bundle path."
                 FontSize="12"
+                TextWrapping="Wrap"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
         </StackPanel>
     </ScrollViewer>

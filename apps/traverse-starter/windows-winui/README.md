@@ -1,6 +1,6 @@
 # traverse-starter (Windows WinUI 3)
 
-**Runtime mode: HTTP sidecar (interim)** — Phase 1 HTTP polling against the public Traverse HTTP/JSON API (spec 033). Embedded WASM cutover is tracked in [#116](https://github.com/traverse-framework/reference-apps/issues/116). Requires `traverse-cli serve`. (Web React is already embedded; do not copy its path here.)
+**Runtime mode: Embedded** — in-process `TraverseEmbedder` (.NET) loads digest-pinned `runtime/runtime.wasm`. No `traverse-cli serve` required.
 
 Native Windows client for the `traverse-starter` reference app.
 
@@ -8,22 +8,25 @@ Native Windows client for the `traverse-starter` reference app.
 
 - **Windows 10 1809+** (build 17763) or Windows 11
 - **Visual Studio 2022** with the **Windows App SDK** and **.NET desktop development** workloads
-- **Traverse HTTP sidecar** running locally
+- Bundled runtime assets under `TraverseStarter/Assets/bundles/traverse-starter/` (synced below)
 
-```bash
-git clone https://github.com/traverse-framework/Traverse.git C:\temp\traverse
-cd C:\temp\traverse && git checkout v0.6.0
-cargo run -p traverse-cli -- serve
+## Sync the embedded bundle
+
+```powershell
+$env:TRAVERSE_REPO = "C:\temp\traverse"   # clone of traverse-framework/Traverse
+bash scripts/ci/sync_winui_starter_bundle.sh
 ```
 
-## Runtime URL configuration
+This copies `runtime/runtime.wasm` + `runtime-release.json` (digest pin) and app manifests into the WinUI Assets tree.
 
-Open **Settings** (gear icon in the navigation pane) and set:
+## Settings
 
-- **Runtime URL** — default `http://127.0.0.1:8787`
+Open **Settings** (gear icon) to set:
+
 - **Workspace** — default `local-default`
+- **Bundle path** (optional) — override the bundled Assets root
 
-Values persist in `ApplicationData.Current.LocalSettings`.
+No Runtime URL is required in embedded mode.
 
 ## Build and run
 
@@ -42,16 +45,14 @@ dotnet run --project TraverseStarter\TraverseStarter.csproj
 
 | File | Role |
 |---|---|
-| `TraverseClient.cs` | `HttpClient` wrapper for execute / poll / trace / healthz |
-| `ExecutionViewModel.cs` | MVVM polling state machine (`CommunityToolkit.Mvvm`) |
-| `HomePage.xaml` | Main view — note input, output fields, trace expander |
-| `SettingsPage.xaml` | Runtime URL + workspace (`ApplicationData`) |
-| `MainWindow.xaml` | Navigation shell with title-bar health strip |
+| `EmbeddedHost.cs` | `RuntimeTraverseEmbedder` / `InMemoryTraverseEmbedder` boundary |
+| `ExecutionViewModel.cs` | MVVM submit + Zone 1 Ready/Unavailable |
+| `HomePage.xaml` | Note input, runtime-owned output fields, trace |
+| `SettingsPage.xaml` | Workspace + optional bundle path |
+| `MainWindow.xaml` | Navigation shell — Embedded + status + workspace + workflow |
 
-## Phase 2 (not implemented)
-
-SSE subscription when Traverse ships [#525](https://github.com/traverse-framework/Traverse/issues/525)–[#527](https://github.com/traverse-framework/Traverse/issues/527).
+Vendored SDK: [`vendor/traverse-embedder-dotnet/`](../../../../vendor/traverse-embedder-dotnet/) (Traverse Spec 068 / 071).
 
 ## Design language
 
-Follow [docs/design-language.md](../../../docs/design-language.md).
+Follow [docs/design-language.md](../../../docs/design-language.md). Zone 1 shows **Embedded** with Ready / Unavailable / Starting.

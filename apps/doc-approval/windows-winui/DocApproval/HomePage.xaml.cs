@@ -64,13 +64,12 @@ public sealed partial class HomePage : Page
         }
 
         SubmitButton.IsEnabled = _viewModel.CanSubmit;
-        OfflineHint.Visibility = _viewModel.RuntimeStatus == RuntimeStatus.Offline
+        OfflineHint.Visibility = _viewModel.RuntimeStatus == RuntimeStatus.Unavailable
             ? Visibility.Visible
             : Visibility.Collapsed;
 
         IdleText.Visibility = Visibility.Collapsed;
         LoadingText.Visibility = Visibility.Collapsed;
-        PollingText.Visibility = Visibility.Collapsed;
         ErrorText.Visibility = Visibility.Collapsed;
         OutputGrid.Visibility = Visibility.Collapsed;
         TraceExpander.Visibility = Visibility.Collapsed;
@@ -79,16 +78,12 @@ public sealed partial class HomePage : Page
         {
             case ExecutionPhase.Idle:
                 IdleText.Visibility = Visibility.Visible;
-                IdleText.Text = _viewModel.RuntimeStatus == RuntimeStatus.Offline
-                    ? "Connect to the Traverse runtime to see analysis output here."
+                IdleText.Text = _viewModel.RuntimeStatus == RuntimeStatus.Unavailable
+                    ? "Embedded runtime unavailable — sync the WinUI bundle (scripts/ci/sync_winui_doc_approval_bundle.sh)."
                     : "Submit a document above to start analysis.";
                 break;
             case ExecutionPhase.Loading:
                 LoadingText.Visibility = Visibility.Visible;
-                break;
-            case ExecutionPhase.Polling:
-                PollingText.Visibility = Visibility.Visible;
-                PollingText.Text = $"Polling execution {_viewModel.PollingExecutionId}…";
                 break;
             case ExecutionPhase.Failed:
                 ErrorText.Visibility = Visibility.Visible;

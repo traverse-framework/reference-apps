@@ -1,102 +1,53 @@
 namespace DocApproval.Tests;
 
-public sealed class MockTraverseClient : ITraverseClient
-{
-    public bool HealthOk { get; set; } = true;
-    public string ExecutionId { get; set; } = "exec_test";
-    public List<ExecutionPollResult> PollResults { get; init; } = [];
-    public int PollIndex { get; set; }
-    public IReadOnlyList<TraceEvent> Trace { get; init; } = Array.Empty<TraceEvent>();
-
-    public Task<bool> CheckHealthAsync(string baseUrl, CancellationToken cancellationToken = default) =>
-        Task.FromResult(HealthOk);
-
-    public Task<string> ExecuteAsync(
-        string baseUrl,
-        string workspaceId,
-        string capability,
-        IReadOnlyDictionary<string, string> input,
-        CancellationToken cancellationToken = default) =>
-        Task.FromResult(ExecutionId);
-
-    public Task<ExecutionPollResult> PollExecutionAsync(
-        string baseUrl,
-        string workspaceId,
-        string executionId,
-        CancellationToken cancellationToken = default)
-    {
-        var result = PollIndex < PollResults.Count
-            ? PollResults[PollIndex]
-            : PollResults[^1];
-        PollIndex++;
-        return Task.FromResult(result);
-    }
-
-    public Task<IReadOnlyList<TraceEvent>> FetchTraceAsync(
-        string baseUrl,
-        string workspaceId,
-        string executionId,
-        CancellationToken cancellationToken = default) =>
-        Task.FromResult(Trace);
-}
-
 internal sealed class InMemorySettingsRepository : ISettingsRepository
 {
-    public string BaseUrl { get; set; } = AppConstants.DefaultBaseUrl;
     public string Workspace { get; set; } = AppConstants.DefaultWorkspace;
+    public string BundlePath { get; set; } = string.Empty;
 }
 
 public class ExecutionViewModelTests
 {
+    private static DocApprovalOutput SampleOutput { get; } = new(
+        new AnalysisOutput("nda", ["Acme", "Beta"], ["$10"], "0.9", "review"),
+        new RecommendationOutput("approve", "Looks fine", "0.8"));
+
     [Fact]
-    public void CanSubmitWhenOnlineWithDocument()
+    public void CanSubmitWhenReadyWithDocument()
     {
-        var client = new MockTraverseClient { HealthOk = true };
-        var settings = new InMemorySettingsRepository();
-        var vm = new ExecutionViewModel(client, settings)
+        using var host = EmbeddedHost.CreateTestHost(SampleOutput);
+        var vm = new ExecutionViewModel(host, new InMemorySettingsRepository())
         {
-            RuntimeStatus = RuntimeStatus.Online,
             Document = "contract text",
         };
 
+        Assert.Equal(RuntimeStatus.Ready, vm.RuntimeStatus);
+        Assert.Equal(EmbeddedHost.RuntimeModeEmbedded, vm.RuntimeMode);
         Assert.True(vm.CanSubmit);
     }
 
     [Fact]
-    public async Task SubmitTransitionsToSucceeded()
+    public async Task SubmitTransitionsToSucceededWithScriptedOutput()
     {
-        var client = new MockTraverseClient
+        using var host = EmbeddedHost.CreateTestHost(SampleOutput);
+        var vm = new ExecutionViewModel(host, new InMemorySettingsRepository())
         {
-            PollResults =
-            [
-                new ExecutionPollResult("exec_test", "running", null, null),
-                new ExecutionPollResult(
-                    "exec_test",
-                    "succeeded",
-                    new DocApprovalOutput(
-                        new AnalysisOutput("invoice", ["A", "B"], ["$100"], "0.9", "approve"),
-                        new RecommendationOutput("approve", "Policy match", "high")),
-                    null),
-            ],
-        };
-        var settings = new InMemorySettingsRepository();
-        var vm = new ExecutionViewModel(client, settings)
-        {
-            RuntimeStatus = RuntimeStatus.Online,
             Document = "contract text",
         };
 
         await vm.SubmitCommand.ExecuteAsync(null);
-        await Task.Delay(1500);
 
         Assert.Equal(ExecutionPhase.Succeeded, vm.Phase);
-        Assert.Equal("invoice", vm.Output?.Analysis.DocType);
+        Assert.Equal("nda", vm.Output?.Analysis.DocType);
+        Assert.Equal("approve", vm.Output?.Recommendation.Recommendation);
+        Assert.NotNull(vm.SessionId);
     }
 
     [Fact]
     public void ResetReturnsToIdle()
     {
-        var vm = new ExecutionViewModel(new MockTraverseClient(), new InMemorySettingsRepository())
+        using var host = EmbeddedHost.CreateTestHost(SampleOutput);
+        var vm = new ExecutionViewModel(host, new InMemorySettingsRepository())
         {
             Phase = ExecutionPhase.Failed,
             Error = "boom",
@@ -104,5 +55,36 @@ public class ExecutionViewModelTests
 
         vm.ResetCommand.Execute(null);
         Assert.Equal(ExecutionPhase.Idle, vm.Phase);
+        Assert.Null(vm.Error);
+    }
+
+    [Fact]
+    public void UnavailableHostDisablesSubmit()
+    {
+        var vm = new ExecutionViewModel(null, new InMemorySettingsRepository())
+        {
+            Document = "hello",
+        };
+
+        Assert.Equal(RuntimeStatus.Unavailable, vm.RuntimeStatus);
+        Assert.False(vm.CanSubmit);
+    }
+}
+
+public class EmbeddedHostTests
+{
+    [Fact]
+    public void TestHostReturnsScriptedCapabilityResult()
+    {
+        var output = new DocApprovalOutput(
+            new AnalysisOutput("msa", ["A"], ["1"], "high", "review"),
+            new RecommendationOutput("reject", "risk", "med"));
+
+        using var host = EmbeddedHost.CreateTestHost(output);
+        var result = host.SubmitDocument("any doc");
+
+        Assert.Null(result.Error);
+        Assert.Equal("msa", result.Output?.Analysis.DocType);
+        Assert.Contains(result.Events, e => e.EventType == "capability_result");
     }
 }

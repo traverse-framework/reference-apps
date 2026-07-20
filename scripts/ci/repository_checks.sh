@@ -100,6 +100,8 @@ check "scripts/ci/phase2_smoke.sh"             "Phase 2 smoke"
 check "scripts/ci/phase2_link_traverse.sh"     "Phase 2 Traverse link"
 check "scripts/ci/sync_web_starter_bundle.sh"  "Web starter bundle sync"
 check "scripts/ci/sync_web_doc_approval_bundle.sh" "Web doc-approval bundle sync"
+check "scripts/ci/sync_winui_starter_bundle.sh" "WinUI starter bundle sync"
+check "scripts/ci/sync_winui_doc_approval_bundle.sh" "WinUI doc-approval bundle sync"
 check "scripts/ci/onboarding_check.sh"         "Onboarding check"
 
 # GitHub Actions
