@@ -6,7 +6,7 @@ Reference UI applications for the [Traverse](https://github.com/traverse-framewo
 
 **Architecture in one sentence:** This repo is UI-only. Each platform ships a **native UI shell** with an **embedded Traverse WASM runtime** (Phase 3 target). Business logic lives in bundled WASM agents; the UI starts workflows and renders runtime-provided output only.
 
-> **Current state:** Web / Linux / CLI embed the WASM runtime (no sidecar). Apple / Android / Windows still use the HTTP sidecar interim until [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116). Start with [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md).
+> **Current state:** Web / Linux / CLI embed the WASM runtime (no sidecar). Apple / Android / Windows embeds are **Ready** on Project 2 ([#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116)) after Traverse shipped the certified native `runtime.wasm` + platform SDKs — clients still run the HTTP sidecar until those App-Refs PRs land. Start with [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md).
 
 ## Prerequisites
 
@@ -43,7 +43,7 @@ npm run dev -w apps/trace-explorer/web-react             # trace-explorer
 
 ### Dev sidecar (Phase 1/2 interim)
 
-Apple / Android / Windows clients (and optional HTTP integration) still use a separate Traverse process until [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) complete:
+Apple / Android / Windows clients still use a separate Traverse process until [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) merge (Ready on Project 2; Traverse SDKs + artifact already shipped):
 
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
@@ -182,8 +182,6 @@ Checks 1–5 validate Node, install, typecheck, lint, and tests (no runtime requ
 
 ## What's Blocked
 
-Active blockers on [Project 2](https://github.com/orgs/traverse-framework/projects/2):
+No active Project 2 **Blocked** items. Upstream Traverse native delivery (#750/#751/#647–#649) is closed.
 
-- **Phase 3 native embeds** ([#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116)) — Blocked on Traverse [#750](https://github.com/traverse-framework/Traverse/issues/750) (orchestrator `runtime/runtime.wasm`), [#751](https://github.com/traverse-framework/Traverse/issues/751) (native output API parity), [#752](https://github.com/traverse-framework/Traverse/issues/752) (baseline; gates #750); Swift/#114 also on [#647](https://github.com/traverse-framework/Traverse/issues/647). Flip to Ready when those close (see `AGENTS.md` flip rules). Kotlin/Android and .NET loaders already shipped (#648/#649). Rust/Web embeds shipped ([#117](https://github.com/traverse-framework/reference-apps/issues/117), [#113](https://github.com/traverse-framework/reference-apps/issues/113)).
-
-Ready on Project 2: none (query the live board).
+Ready on Project 2 (claim next): [#114](https://github.com/traverse-framework/reference-apps/issues/114) Swift, [#115](https://github.com/traverse-framework/reference-apps/issues/115) Android, [#116](https://github.com/traverse-framework/reference-apps/issues/116) Windows — wire public `TraverseEmbedder` + digest-pinned `runtime/runtime.wasm` (sidecar interim until each PR merges).

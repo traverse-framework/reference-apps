@@ -11,20 +11,17 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 ### Blocked work summary
 
-- **Phase 3 native embeds** ([#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116)) — Blocked on Traverse delivery: [#750](https://github.com/traverse-framework/Traverse/issues/750) (publish Spec 071 `runtime/runtime.wasm` + consumer evidence), [#751](https://github.com/traverse-framework/Traverse/issues/751) (native public API output parity + scriptable test doubles), [#752](https://github.com/traverse-framework/Traverse/issues/752) (Native Embedder Baseline 1; currently gates #750). Swift/#114 also needs [#647](https://github.com/traverse-framework/Traverse/issues/647). Kotlin (#648) + .NET (#649) loaders already shipped; Rust/Web embeds done ([#117](https://github.com/traverse-framework/reference-apps/issues/117)/[#113](https://github.com/traverse-framework/reference-apps/issues/113)).
+- None — Traverse [#750](https://github.com/traverse-framework/Traverse/issues/750)/[#751](https://github.com/traverse-framework/Traverse/issues/751)/[#647](https://github.com/traverse-framework/Traverse/issues/647) closed (2026-07-20). Native embeds [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) are **Ready** for App-Refs integration (public Swift/Kotlin/.NET `TraverseEmbedder` + digest-pinned `runtime/runtime.wasm`). Rust/Web embeds already shipped ([#117](https://github.com/traverse-framework/reference-apps/issues/117)/[#113](https://github.com/traverse-framework/reference-apps/issues/113)).
 
-Ready: none (live board).
+Ready: #114, #115, #116 (query the live board).
 
 ### Flip rules (native embeds)
 
-When polling Traverse / during `/app-refs-ops` backlog gardening, **update Project 2 status** — do not leave stale Blocked/Ready:
+Upstream flip conditions are met (Traverse #750/#751/#647 closed). Keep Project 2 in sync:
 
-| App-Refs | Flip Blocked → Ready when closed/Done |
+| App-Refs | Status rule |
 |---|---|
-| [#115](https://github.com/traverse-framework/reference-apps/issues/115), [#116](https://github.com/traverse-framework/reference-apps/issues/116) | Traverse [#750](https://github.com/traverse-framework/Traverse/issues/750) **and** [#751](https://github.com/traverse-framework/Traverse/issues/751) |
-| [#114](https://github.com/traverse-framework/reference-apps/issues/114) | Traverse [#750](https://github.com/traverse-framework/Traverse/issues/750), [#751](https://github.com/traverse-framework/Traverse/issues/751), **and** [#647](https://github.com/traverse-framework/Traverse/issues/647) |
-
-On flip: Status → Ready, Agent → Unassigned, refresh Project Note, update this section + README **What's Blocked**, comment on the issue. If an upstream ticket reopens or loses the artifact, return App-Refs items to Blocked.
+| [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) | **Ready** until claimed; return to **Blocked** only if Traverse reopens #750/#751/#647 or withdraws the certified artifact |
 
 Update this section when a PR changes platform status (see PR template checklist).
 
