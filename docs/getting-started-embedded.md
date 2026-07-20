@@ -2,7 +2,7 @@
 
 Build a Traverse app where **business logic lives once in WASM** and every UI shell only submits input and renders runtime-owned output. This guide uses platforms that already embed successfully today.
 
-> **Not this path yet?** Android still documents the HTTP sidecar until [#115](https://github.com/traverse-framework/reference-apps/issues/115) merges. Windows and Apple (iOS/macOS) are embedded ([#116](https://github.com/traverse-framework/reference-apps/issues/116)/[#114](https://github.com/traverse-framework/reference-apps/issues/114)). See each platform README’s **Runtime mode** line and [`traverse-runtime.md`](traverse-runtime.md).
+> **All platforms embed today.** Sidecar docs remain in [`traverse-runtime.md`](traverse-runtime.md) for historical Phase 1/2 only.
 
 ## Mental model
 
@@ -109,9 +109,10 @@ Checklist for a new shell (or promoting a sidecar client to embedded):
 | Web React | **Embedded** | [#113](https://github.com/traverse-framework/reference-apps/issues/113) shipped |
 | Linux GTK | **Embedded** | [#117](https://github.com/traverse-framework/reference-apps/issues/117) shipped |
 | Rust CLI | **Embedded** | [#117](https://github.com/traverse-framework/reference-apps/issues/117) shipped |
-| Windows WinUI | **Embedded** | [#116](https://github.com/traverse-framework/reference-apps/issues/116) shipped |
+| Android | **Embedded** | [#115](https://github.com/traverse-framework/reference-apps/issues/115) shipped |
 | iOS / macOS | **Embedded** | [#114](https://github.com/traverse-framework/reference-apps/issues/114) shipped |
-| Android | HTTP sidecar (interim) → embed Ready/In Progress | [#115](https://github.com/traverse-framework/reference-apps/issues/115) |
+| Windows | **Embedded** | [#116](https://github.com/traverse-framework/reference-apps/issues/116) shipped |
+
 
 Same matrix for `doc-approval` (embedded Web / Linux / CLI with `doc-approval.pipeline`). Status labels in the root [`README.md`](../README.md) **Platform clients** table remain the source of truth.
 

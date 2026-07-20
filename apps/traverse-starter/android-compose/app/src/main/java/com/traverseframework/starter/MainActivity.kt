@@ -19,11 +19,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val settings = SettingsRepository(applicationContext)
+        val bundleRoot = BundleAssets.materialize(applicationContext)
+        val host: StarterHost = ProductionStarterHost.createOrNull(bundleRoot)
+            ?: UnavailableStarterHost
         setContent {
             TraverseStarterTheme {
                 val navController = rememberNavController()
                 val viewModel: ExecutionViewModel = viewModel(
-                    factory = ExecutionViewModelFactory(TraverseClient(), settings),
+                    factory = ExecutionViewModelFactory(host, settings),
                 )
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -41,7 +44,6 @@ class MainActivity : ComponentActivity() {
                     composable("settings") {
                         SettingsScreen(
                             settings = settings,
-                            currentBaseUrl = uiState.baseUrl,
                             currentWorkspace = uiState.workspace,
                             onBack = { navController.popBackStack() },
                         )
@@ -50,4 +52,12 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+/** Fallback when the digest-pinned runtime bundle is missing from assets. */
+object UnavailableStarterHost : StarterHost {
+    override val runtimeMode: String = AppConstants.RUNTIME_MODE_EMBEDDED
+    override val isReady: Boolean = false
+    override fun submitNote(note: String): HostRunResult =
+        HostRunResult("", null, emptyList(), "embedded runtime unavailable — sync the app bundle")
 }
