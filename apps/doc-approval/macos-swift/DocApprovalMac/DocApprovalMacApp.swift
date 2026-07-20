@@ -35,9 +35,12 @@ struct DocApprovalMacApp: App {
     init() {
         let settings = AppSettings()
         _settings = StateObject(wrappedValue: settings)
+        let host = EmbeddedHost.tryCreateProduction(
+            bundleRoot: settings.bundleURL,
+            workspaceId: settings.workspace
+        )
         _viewModel = StateObject(wrappedValue: AppStateViewModel(
-            client: DocApprovalClient(),
-            baseURL: settings.baseURL,
+            host: host,
             workspaceId: settings.workspace,
             appId: AppSettings.appId,
             documentMaxLength: AppSettings.documentMaxLength
@@ -50,11 +53,8 @@ struct DocApprovalMacApp: App {
                 .environmentObject(settings)
                 .environmentObject(viewModel)
                 .focusedValue(\.appStateViewModel, viewModel)
-                .onChange(of: settings.baseURLString) { _, _ in
-                    viewModel.updateConnection(baseURL: settings.baseURL, workspaceId: settings.workspace)
-                }
                 .onChange(of: settings.workspace) { _, workspace in
-                    viewModel.updateConnection(baseURL: settings.baseURL, workspaceId: workspace)
+                    viewModel.updateWorkspace(workspace)
                 }
         }
         .commands {

@@ -26,8 +26,8 @@ struct ContentView: View {
                         .fill(statusColor)
                         .frame(width: 10, height: 10)
                     Text(statusLabel)
-                    Text(settings.baseURLString)
-                        .font(.caption.monospaced())
+                    Text(viewModel.runtimeMode)
+                        .font(.caption)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -37,9 +37,10 @@ struct ContentView: View {
     private var sidebar: some View {
         List {
             Section("Runtime Environment") {
+                LabeledContent("Mode", value: viewModel.runtimeMode)
                 LabeledContent("Status", value: statusLabel)
                 LabeledContent("Workspace", value: settings.workspace)
-                LabeledContent("App", value: AppSettings.appId)
+                LabeledContent("Workflow", value: viewModel.workflowId)
             }
         }
         .navigationSplitViewColumnWidth(min: 200, ideal: 220)
@@ -56,14 +57,14 @@ struct ContentView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 HStack {
-                    Button("Start Workflow") { viewModel.submit() }
+                    Button(viewModel.isRunning ? "Running…" : "Start Workflow") { viewModel.submit() }
                         .keyboardShortcut(.return, modifiers: .command)
                         .disabled(!viewModel.canSubmit)
                     Button("Reset") { viewModel.resetLocal() }
                         .keyboardShortcut("r", modifiers: .command)
                 }
-                if viewModel.runtimeStatus == .offline {
-                    Text("Runtime offline — start with `cargo run -p traverse-cli -- serve`")
+                if viewModel.runtimeStatus == .unavailable {
+                    Text("Embedded runtime unavailable — run scripts/ci/sync_swift_starter_bundle.sh")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -75,18 +76,16 @@ struct ContentView: View {
     private var outputSection: some View {
         GroupBox("Execution Output") {
             VStack(alignment: .leading, spacing: 12) {
-                if let error = viewModel.errorMessage, viewModel.currentState != "results" {
+                if let error = viewModel.errorMessage, viewModel.currentState == "error" {
                     Text("Error: \(error)")
                         .foregroundStyle(.red)
                 }
 
                 switch viewModel.currentState {
                 case "idle":
-                    if viewModel.runtimeStatus == .offline {
-                        Text("Connect to the Traverse runtime to see workflow output here.")
+                    if viewModel.runtimeStatus == .unavailable {
+                        Text("Embedded runtime unavailable — sync the Swift bundle to see output here.")
                             .foregroundStyle(.secondary)
-                    } else if viewModel.submitting {
-                        Text("Submitting command…")
                     } else if viewModel.errorMessage == nil {
                         Text("Submit a note above to start a workflow (⌘↩).")
                             .foregroundStyle(.secondary)
@@ -96,7 +95,7 @@ struct ContentView: View {
                 case "error":
                     Text("Error: \(viewModel.errorMessage ?? "execution failed")")
                         .foregroundStyle(.red)
-                case "results":
+                case "completed", "results":
                     if let output = viewModel.output {
                         outputFields(output)
                     }
@@ -168,17 +167,17 @@ struct ContentView: View {
 
     private var statusColor: Color {
         switch viewModel.runtimeStatus {
-        case .online: return .cyan
-        case .offline: return .red
-        case .checking: return .gray
+        case .ready: return .cyan
+        case .unavailable: return .red
+        case .starting: return .gray
         }
     }
 
     private var statusLabel: String {
         switch viewModel.runtimeStatus {
-        case .online: return "Online"
-        case .offline: return "Offline"
-        case .checking: return "Checking…"
+        case .ready: return "Ready"
+        case .unavailable: return "Unavailable"
+        case .starting: return "Starting…"
         }
     }
 }
@@ -187,9 +186,5 @@ struct ContentView: View {
     let settings = AppSettings()
     ContentView()
         .environmentObject(settings)
-        .environmentObject(AppStateViewModel(
-            client: TraverseClient(),
-            baseURL: settings.baseURL,
-            workspaceId: settings.workspace
-        ))
+        .environmentObject(AppStateViewModel(host: nil, workspaceId: settings.workspace))
 }

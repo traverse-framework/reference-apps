@@ -10,8 +10,16 @@ let package = Package(
     products: [
         .library(name: "TraverseCore", targets: ["TraverseCore"]),
     ],
+    dependencies: [
+        .package(path: "../../../vendor/traverse-embedder-swift"),
+    ],
     targets: [
-        .target(name: "TraverseCore"),
+        .target(
+            name: "TraverseCore",
+            dependencies: [
+                .product(name: "TraverseEmbedder", package: "TraverseEmbedder"),
+            ]
+        ),
         .testTarget(
             name: "TraverseCoreTests",
             dependencies: ["TraverseCore"]

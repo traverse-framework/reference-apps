@@ -13,6 +13,7 @@
 		B10000000000000000000006 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000006 /* PreferencesView.swift */; };
 		B1000000000000000000000E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2000000000000000000000E /* AppDelegate.swift */; };
 		B10000000000000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000007 /* Assets.xcassets */; };
+		B10000000000000000000020 /* Resources in Resources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000020 /* Resources */; };
 		B1000000000000000000000A /* AppSettingsSmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2000000000000000000000A /* AppSettingsSmokeTests.swift */; };
 		B1000000000000000000000B /* TraverseCore in Frameworks */ = {isa = PBXBuildFile; productRef = B1000000000000000000000C /* TraverseCore */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,7 @@
 		B20000000000000000000006 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		B2000000000000000000000E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B20000000000000000000007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B20000000000000000000020 /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = "<group>"; };
 		B2000000000000000000000A /* AppSettingsSmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsSmokeTests.swift; sourceTree = "<group>"; };
 		B20000000000000000000010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B30000000000000000000001 /* TraverseStarterMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TraverseStarterMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +69,7 @@
 				B20000000000000000000005 /* ContentView.swift */,
 				B20000000000000000000006 /* PreferencesView.swift */,
 				B20000000000000000000007 /* Assets.xcassets */,
+				B20000000000000000000020 /* Resources */,
 				B20000000000000000000010 /* Info.plist */,
 			);
 			path = TraverseStarterMac;
@@ -177,6 +180,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B10000000000000000000007 /* Assets.xcassets in Resources */,
+				B10000000000000000000020 /* Resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,17 +7,16 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Runtime") {
-                    TextField("Runtime URL", text: $settings.baseURLString)
+                Section("Embedded runtime") {
+                    TextField("Workspace", text: $settings.workspace)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                        .keyboardType(.URL)
-                    TextField("Workspace", text: $settings.workspace)
+                    TextField("Bundle path (optional)", text: $settings.bundlePath)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 }
                 Section {
-                    Text("Default: http://127.0.0.1:8787 with workspace local-default")
+                    Text("Embedded mode uses the bundled runtime/runtime.wasm. Restart after changing the bundle path.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

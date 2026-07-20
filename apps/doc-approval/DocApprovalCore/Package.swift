@@ -10,8 +10,16 @@ let package = Package(
     products: [
         .library(name: "DocApprovalCore", targets: ["DocApprovalCore"]),
     ],
+    dependencies: [
+        .package(path: "../../../vendor/traverse-embedder-swift"),
+    ],
     targets: [
-        .target(name: "DocApprovalCore"),
+        .target(
+            name: "DocApprovalCore",
+            dependencies: [
+                .product(name: "TraverseEmbedder", package: "TraverseEmbedder"),
+            ]
+        ),
         .testTarget(
             name: "DocApprovalCoreTests",
             dependencies: ["DocApprovalCore"]
