@@ -2,42 +2,40 @@ package com.traverseframework.docapproval
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ExecutionViewModel(
-    private val client: TraverseClient,
+    private val host: DocApprovalHost,
     private val settings: RuntimeSettings,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(ExecutionUiState())
+    private val _uiState = MutableStateFlow(
+        ExecutionUiState(
+            runtimeStatus = if (host.isReady) RuntimeStatus.Ready else RuntimeStatus.Unavailable,
+            runtimeMode = host.runtimeMode,
+            workspace = AppConstants.DEFAULT_WORKSPACE,
+        ),
+    )
     val uiState: StateFlow<ExecutionUiState> = _uiState.asStateFlow()
 
-    private var pollJob: Job? = null
-    private var healthJob: Job? = null
+    private var submitJob: Job? = null
 
     init {
-        viewModelScope.launch {
-            settings.baseUrl.collect { url ->
-                _uiState.update { it.copy(baseUrl = url) }
-                refreshHealth()
-            }
-        }
         viewModelScope.launch {
             settings.workspace.collect { workspace ->
                 _uiState.update { it.copy(workspace = workspace) }
             }
         }
-        startHealthChecks()
     }
 
     fun updateDocument(document: String) {
-        _uiState.update { it.copy(document = document) }
+        _uiState.update { it.copy(document = document.take(AppConstants.DOCUMENT_MAX_LENGTH)) }
     }
 
     fun toggleTrace(show: Boolean) {
@@ -47,77 +45,29 @@ class ExecutionViewModel(
     fun submit() {
         val state = _uiState.value
         if (!state.canSubmit) return
-        pollJob?.cancel()
+        submitJob?.cancel()
         _uiState.update { it.copy(phase = ExecutionPhase.Loading) }
         val document = state.document.trim()
-        pollJob = viewModelScope.launch {
-            try {
-                val executionId = client.execute(
-                    baseUrl = state.baseUrl.trimEnd('/'),
-                    workspaceId = state.workspace,
-                    capability = AppConstants.CAPABILITY_ID,
-                    input = mapOf("document" to document),
-                )
-                _uiState.update { it.copy(phase = ExecutionPhase.Polling(executionId)) }
-                pollUntilTerminal(state.baseUrl.trimEnd('/'), state.workspace, executionId)
-            } catch (e: Exception) {
-                _uiState.update { it.copy(phase = ExecutionPhase.Failed(e.message ?: "unknown error")) }
+        submitJob = viewModelScope.launch {
+            val result = withContext(Dispatchers.Default) { host.submitDocument(document) }
+            if (result.error != null && result.output == null) {
+                _uiState.update { it.copy(phase = ExecutionPhase.Failed(result.error)) }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        phase = ExecutionPhase.Succeeded(
+                            result.output ?: DocApprovalOutput.EMPTY,
+                            result.events,
+                        ),
+                    )
+                }
             }
         }
     }
 
     fun reset() {
-        pollJob?.cancel()
-        pollJob = null
-        _uiState.update { it.copy(phase = ExecutionPhase.Idle, document = "", showTrace = false) }
-    }
-
-    private fun startHealthChecks() {
-        healthJob?.cancel()
-        healthJob = viewModelScope.launch {
-            while (isActive) {
-                refreshHealth()
-                delay(5_000)
-            }
-        }
-    }
-
-    private suspend fun refreshHealth() {
-        val baseUrl = _uiState.value.baseUrl.trimEnd('/')
-        _uiState.update { it.copy(runtimeStatus = RuntimeStatus.Checking) }
-        _uiState.update {
-            it.copy(
-                runtimeStatus = try {
-                    if (client.checkHealth(baseUrl)) RuntimeStatus.Online else RuntimeStatus.Offline
-                } catch (_: Exception) {
-                    RuntimeStatus.Offline
-                },
-            )
-        }
-    }
-
-    private suspend fun pollUntilTerminal(baseUrl: String, workspaceId: String, executionId: String) {
-        while (true) {
-            val result = client.pollExecution(baseUrl, workspaceId, executionId)
-            when (result.status) {
-                "succeeded" -> {
-                    val trace = try {
-                        client.fetchTrace(baseUrl, workspaceId, executionId)
-                    } catch (_: Exception) {
-                        emptyList()
-                    }
-                    val output = result.output ?: DocApprovalOutput.EMPTY
-                    _uiState.update { it.copy(phase = ExecutionPhase.Succeeded(output, trace)) }
-                    return
-                }
-                "failed" -> {
-                    _uiState.update {
-                        it.copy(phase = ExecutionPhase.Failed(result.error ?: "execution failed"))
-                    }
-                    return
-                }
-                else -> delay(1_000)
-            }
-        }
+        submitJob?.cancel()
+        submitJob = null
+        _uiState.update { it.copy(phase = ExecutionPhase.Idle, showTrace = false) }
     }
 }

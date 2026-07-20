@@ -49,28 +49,11 @@ data class TraceEvent(
     val data: JsonElement? = null,
 )
 
-@kotlinx.serialization.Serializable
-data class ExecuteResponse(
-    val execution_id: String,
-)
-
-@kotlinx.serialization.Serializable
-data class ExecutionPollResponse(
-    val execution_id: String? = null,
-    val status: String,
-    val output: DocApprovalOutput? = null,
-    val error: String? = null,
-)
-
-data class ExecutionPollResult(
-    val executionId: String,
-    val status: String,
-    val output: DocApprovalOutput?,
-    val error: String?,
-)
-
 object AppConstants {
     const val CAPABILITY_ID = "doc-approval.pipeline"
-    const val DEFAULT_BASE_URL = "http://10.0.2.2:8787"
+    const val RUNTIME_MODE_EMBEDDED = "Embedded"
     const val DEFAULT_WORKSPACE = "local-default"
+    const val DOCUMENT_MAX_LENGTH = 4000
+    /** Asset-relative bundle root (must include runtime/runtime.wasm). */
+    const val BUNDLE_ASSET_DIR = "bundles/doc-approval"
 }

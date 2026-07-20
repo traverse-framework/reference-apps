@@ -1,8 +1,5 @@
 package com.traverseframework.docapproval
 
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,35 +29,60 @@ class ExecutionViewModelTest {
     }
 
     @Test
-    fun canSubmitWhenOnlineWithDocument() = runTest(testDispatcher) {
-        val engine = MockEngine { respond("", status = HttpStatusCode.OK) }
-        val vm = ExecutionViewModel(TraverseClient(engine), FakeRuntimeSettings())
+    fun canSubmitWhenReadyWithDocument() = runTest(testDispatcher) {
+        val host = InMemoryDocApprovalHost.withScriptedOutput(sampleOutput())
+        val vm = ExecutionViewModel(host, FakeRuntimeSettings())
         advanceUntilIdle()
-        vm.updateDocument("contract text")
+        vm.updateDocument("invoice text")
         assertTrue(vm.uiState.value.canSubmit)
+        assertEquals(RuntimeStatus.Ready, vm.uiState.value.runtimeStatus)
+        assertEquals(AppConstants.RUNTIME_MODE_EMBEDDED, vm.uiState.value.runtimeMode)
+    }
+
+    @Test
+    fun submitRendersRuntimeOwnedFields() = runTest(testDispatcher) {
+        val host = InMemoryDocApprovalHost.withScriptedOutput(sampleOutput())
+        val vm = ExecutionViewModel(host, FakeRuntimeSettings())
+        advanceUntilIdle()
+        vm.updateDocument("Invoice for services rendered")
+        vm.submit()
+        advanceUntilIdle()
+        val phase = vm.uiState.value.phase
+        assertTrue(phase is ExecutionPhase.Succeeded)
+        val output = (phase as ExecutionPhase.Succeeded).output
+        assertEquals("invoice", output.analysis.docType)
+        assertEquals("approve", output.recommendation.recommendation)
     }
 
     @Test
     fun resetReturnsToIdle() = runTest(testDispatcher) {
-        val engine = MockEngine { respond("", status = HttpStatusCode.OK) }
-        val vm = ExecutionViewModel(TraverseClient(engine), FakeRuntimeSettings())
+        val host = InMemoryDocApprovalHost.withScriptedOutput(sampleOutput())
+        val vm = ExecutionViewModel(host, FakeRuntimeSettings())
         vm.reset()
         assertEquals(ExecutionPhase.Idle, vm.uiState.value.phase)
     }
 }
 
+private fun sampleOutput() = DocApprovalOutput(
+    analysis = AnalysisOutput(
+        docType = "invoice",
+        parties = listOf("Acme Corp", "Client Inc"),
+        amounts = listOf("$1000"),
+        confidence = "0.95",
+        recommendation = "approve",
+    ),
+    recommendation = RecommendationOutput(
+        recommendation = "approve",
+        rationale = "Matches standard invoice policy",
+        confidence = "high",
+    ),
+)
+
 private class FakeRuntimeSettings(
-    base: String = AppConstants.DEFAULT_BASE_URL,
     workspace: String = AppConstants.DEFAULT_WORKSPACE,
 ) : RuntimeSettings {
-    private val _base = MutableStateFlow(base)
-    override val baseUrl = _base
     private val _workspace = MutableStateFlow(workspace)
     override val workspace = _workspace
-
-    override suspend fun setBaseUrl(url: String) {
-        _base.value = url
-    }
 
     override suspend fun setWorkspace(workspace: String) {
         _workspace.value = workspace

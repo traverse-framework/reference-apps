@@ -1,56 +1,48 @@
 # doc-approval (Android Compose)
 
-**Runtime mode: HTTP sidecar (interim)** — Phase 1 HTTP polling via Ktor. Embedded WASM cutover is tracked in [#115](https://github.com/traverse-framework/reference-apps/issues/115). Requires `traverse-cli serve`. (Web React for this app is already embedded; do not copy its path here.)
+**Runtime mode: embedded** — public Kotlin `TraverseEmbedder` (`dev.traverse.embedder`) with digest-pinned `runtime/runtime.wasm`. No `traverse-cli serve` sidecar is required.
 
-Native Android submitter client for the `doc-approval` reference app.
+Native Android client for the `doc-approval` reference app.
 
 ## Prerequisites
 
 - **Android Studio Ladybug+** (or compatible AGP 8.7 / Kotlin 2.0)
-- **Android emulator** API 26+ (or physical device on same network as the sidecar)
-- **Traverse HTTP sidecar** running on your host machine
+- **Android emulator** API 28+ (or physical device)
+- **Traverse checkout** with the Kotlin embedder package and certified runtime artifact:
 
 ```bash
-git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
-cd /tmp/traverse && git checkout v0.6.0
-cargo run -p traverse-cli -- serve
+export TRAVERSE_REPO=/path/to/Traverse
+bash scripts/ci/sync_android_doc_approval_bundle.sh
 ```
 
-## Runtime URL configuration
+`settings.gradle.kts` composites `$TRAVERSE_REPO/packages/kotlin/TraverseEmbedder` as `:traverse-embedder`.
 
-Default base URL is `http://10.0.2.2:8787` — the Android emulator alias for host `127.0.0.1`.
+## Bundle configuration
 
-1. Open the app → **Settings**
-2. Set **Runtime URL** and **Workspace** (`local-default`)
-3. Save (persisted via DataStore)
+Assets live under `app/src/main/assets/bundles/doc-approval/` (including `runtime/runtime.wasm` + `runtime-release.json`). The app copies them into `filesDir` on launch.
 
-On a physical device, use your computer's LAN IP instead of `10.0.2.2`.
+Settings → **Workspace** only (no sidecar URL).
 
-## Build and run
+## Build and test
 
 ```bash
+export TRAVERSE_REPO=/path/to/Traverse
 cd apps/doc-approval/android-compose
-./gradlew :app:assembleDebug :app:testDebugUnitTest
+./gradlew test
+./gradlew :app:assembleDebug
 ```
 
-Open the project in Android Studio and run on an API 26+ emulator.
+Unit tests inject `InMemoryTraverseEmbedder` via `InMemoryDocApprovalHost` — they never compute business fields in the UI.
 
 ## Architecture
 
 | File | Role |
 |---|---|
-| `TraverseClient.kt` | Ktor HTTP client (execute, poll, trace, health) |
-| `ExecutionViewModel.kt` | StateFlow state machine: idle → loading → polling → done |
-| `ui/MainScreen.kt` | Compose UI — runtime strip, document input, analysis output |
-| `ui/SettingsScreen.kt` | Runtime URL + workspace |
-| `SettingsRepository.kt` | DataStore persistence |
-
-The UI renders runtime-provided pipeline fields only (`analysis.*`, `recommendation.*`).
-
-## Phase 2 (not implemented)
-
-Replace polling with Ktor SSE when Traverse ships [#525](https://github.com/traverse-framework/Traverse/issues/525)–[#527](https://github.com/traverse-framework/Traverse/issues/527).
+| `EmbeddedHost.kt` | Production + in-memory embedded hosts |
+| `ExecutionViewModel.kt` | Submit document → render runtime-owned output |
+| `BundleAssets.kt` | Materialize asset bundle into filesDir |
+| `ui/MainScreen.kt` | Zones 1–3; Zone 1 shows Embedded / Ready |
 
 ## Design language
 
-Follow [docs/design-language.md](../../../docs/design-language.md).
+Follow [docs/design-language.md](../../../docs/design-language.md). Zone 1 shows **Embedded** runtime mode.
