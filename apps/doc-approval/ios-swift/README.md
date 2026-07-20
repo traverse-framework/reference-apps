@@ -1,13 +1,17 @@
 # doc-approval (iOS)
 
-**Runtime mode: HTTP sidecar (interim)** — shared `DocApprovalCore` HTTP command dispatch + SSE. Embedded WASM cutover is tracked in [#114](https://github.com/traverse-framework/reference-apps/issues/114). Requires `traverse-cli serve`.
+**Runtime mode: Embedded** — uses `TraverseEmbedder` (WASM runtime host) via shared [`DocApprovalCore`](../DocApprovalCore/). No HTTP sidecar required. Implements [#114](https://github.com/traverse-framework/reference-apps/issues/114).
 
 Native iOS submitter client for the **doc-approval** reference app.
 
 ## Prerequisites
 
 - Xcode 16+
-- Traverse HTTP sidecar locally (`cargo run -p traverse-cli -- serve`)
+- Bundle sync (first time and after Traverse updates):
+
+```bash
+TRAVERSE_REPO=/tmp/Traverse bash scripts/ci/sync_swift_doc_approval_bundle.sh
+```
 
 ## Open and run
 
@@ -15,15 +19,16 @@ Native iOS submitter client for the **doc-approval** reference app.
 open apps/doc-approval/ios-swift/DocApproval.xcodeproj
 ```
 
-Settings (gear) configures runtime URL and workspace (defaults `http://127.0.0.1:8787` / `local-default`).
+Settings (gear) configures workspace (default `local-default`).
 
 ## Architecture
 
 | Path | Role |
 |---|---|
-| `../DocApprovalCore` | Shared HTTP/SSE client, `AppStateViewModel`, session listing |
+| `../DocApprovalCore` | Shared embedded host client, `AppStateViewModel`, output parsing |
 | `ContentView.swift` | SwiftUI shell — input, output, runtime strip |
-| `AppSettings.swift` | UserDefaults for URL / workspace |
+| `AppSettings.swift` | UserDefaults for workspace |
+| `Resources/bundles/doc-approval/` | Bundled WASM runtime + manifests |
 
 ## Design language
 

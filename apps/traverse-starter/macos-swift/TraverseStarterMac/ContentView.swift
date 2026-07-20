@@ -26,7 +26,7 @@ struct ContentView: View {
                         .fill(statusColor)
                         .frame(width: 10, height: 10)
                     Text(statusLabel)
-                    Text(settings.baseURLString)
+                    Text("Embedded")
                         .font(.caption.monospaced())
                         .foregroundStyle(.secondary)
                 }
@@ -36,8 +36,9 @@ struct ContentView: View {
 
     private var sidebar: some View {
         List {
-            Section("Runtime Environment") {
+            Section("Runtime") {
                 LabeledContent("Status", value: statusLabel)
+                LabeledContent("Mode", value: "Embedded")
                 LabeledContent("Workspace", value: settings.workspace)
                 LabeledContent("App", value: AppSettings.appId)
             }
@@ -62,8 +63,8 @@ struct ContentView: View {
                     Button("Reset") { viewModel.resetLocal() }
                         .keyboardShortcut("r", modifiers: .command)
                 }
-                if viewModel.runtimeStatus == .offline {
-                    Text("Runtime offline — start with `cargo run -p traverse-cli -- serve`")
+                if viewModel.runtimeStatus == .unavailable {
+                    Text("Runtime unavailable — check bundle resources.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -82,11 +83,11 @@ struct ContentView: View {
 
                 switch viewModel.currentState {
                 case "idle":
-                    if viewModel.runtimeStatus == .offline {
-                        Text("Connect to the Traverse runtime to see workflow output here.")
+                    if viewModel.runtimeStatus == .unavailable {
+                        Text("Runtime unavailable — check bundle resources.")
                             .foregroundStyle(.secondary)
                     } else if viewModel.submitting {
-                        Text("Submitting command…")
+                        Text("Submitting…")
                     } else if viewModel.errorMessage == nil {
                         Text("Submit a note above to start a workflow (⌘↩).")
                             .foregroundStyle(.secondary)
@@ -168,28 +169,33 @@ struct ContentView: View {
 
     private var statusColor: Color {
         switch viewModel.runtimeStatus {
-        case .online: return .cyan
-        case .offline: return .red
-        case .checking: return .gray
+        case .ready: return .cyan
+        case .unavailable: return .red
         }
     }
 
     private var statusLabel: String {
         switch viewModel.runtimeStatus {
-        case .online: return "Online"
-        case .offline: return "Offline"
-        case .checking: return "Checking…"
+        case .ready: return "Ready"
+        case .unavailable: return "Unavailable"
         }
     }
 }
 
 #Preview {
     let settings = AppSettings()
+    let host = try? EmbeddedRuntime.makeTestHost(
+        targetOutput: TraverseStarterOutput(
+            validate: ValidateOutput(valid: true, issues: []),
+            process: ProcessOutput(title: "Preview", tags: [], noteType: "note", suggestedNextAction: "n/a", status: "done"),
+            summarize: SummarizeOutput(summary: "A preview summary", wordCount: 3)
+        )
+    )
     ContentView()
         .environmentObject(settings)
         .environmentObject(AppStateViewModel(
-            client: TraverseClient(),
-            baseURL: settings.baseURL,
-            workspaceId: settings.workspace
+            host: host,
+            appId: AppSettings.appId,
+            noteMaxLength: AppSettings.noteMaxLength
         ))
 }

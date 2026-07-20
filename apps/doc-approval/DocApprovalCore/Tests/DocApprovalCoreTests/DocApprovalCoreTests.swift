@@ -183,6 +183,44 @@ final class DocApprovalOutputTests: XCTestCase {
     }
 }
 
+final class DocApprovalEmbeddedRuntimeTests: XCTestCase {
+    private static let sampleOutput = DocApprovalOutput(
+        analysis: AnalysisOutput(
+            docType: "nda",
+            parties: ["A", "B"],
+            amounts: ["$1"],
+            confidence: "high",
+            recommendation: "approve"
+        ),
+        recommendation: RecommendationOutput(
+            recommendation: "approve",
+            rationale: "Policy match",
+            confidence: "high"
+        )
+    )
+
+    func testTestHostReturnsScriptedCapabilityResult() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let result = try host.submit(document: "test document")
+        XCTAssertNil(result.error)
+        XCTAssertEqual(result.output?.analysis.docType, "nda")
+        XCTAssertEqual(result.output?.recommendation.recommendation, "approve")
+        XCTAssertTrue(result.events.contains { $0.event_type == "capability_result" })
+    }
+
+    func testTestHostIsReady() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        XCTAssertTrue(host.isReady)
+        XCTAssertEqual(host.workspaceID, EmbeddedRuntime.defaultWorkspace)
+        XCTAssertEqual(host.workflowID, EmbeddedRuntime.defaultWorkflowID)
+    }
+
+    func testPinnedDigestFormat() {
+        XCTAssertTrue(EmbeddedRuntime.pinnedRuntimeWasmDigest.hasPrefix("sha256:"))
+        XCTAssertEqual(EmbeddedRuntime.pinnedRuntimeWasmDigest.count, 71)
+    }
+}
+
 @MainActor
 final class AppStateViewModelTests: XCTestCase {
     final class MockClient: DocApprovalClientProtocol, @unchecked Sendable {
@@ -251,58 +289,81 @@ final class AppStateViewModelTests: XCTestCase {
         }
     }
 
-    func testHeartbeatMarksConnectedWithoutChangingState() {
-        let vm = AppStateViewModel(
-            client: MockClient(),
-            baseURL: URL(string: "http://127.0.0.1:8787"),
-            workspaceId: "local-default"
+    private static let sampleOutput = DocApprovalOutput(
+        analysis: AnalysisOutput(
+            docType: "nda",
+            parties: [],
+            amounts: [],
+            confidence: "0.8",
+            recommendation: "approve"
+        ),
+        recommendation: RecommendationOutput(
+            recommendation: "approve",
+            rationale: "Policy match",
+            confidence: "high"
         )
-        vm.apply(eventType: "heartbeat", payload: AppStateEventPayload())
-        XCTAssertTrue(vm.connected)
-        XCTAssertEqual(vm.currentState, "idle")
+    )
+
+    func testReadyStatusWhenHostIsReady() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let vm = AppStateViewModel(host: host)
+        XCTAssertEqual(vm.runtimeStatus, .ready)
     }
 
-    func testCapabilityResultMapsToResults() {
-        let vm = AppStateViewModel(
-            client: MockClient(),
-            baseURL: URL(string: "http://127.0.0.1:8787"),
-            workspaceId: "local-default"
-        )
-        vm.apply(
-            eventType: "capability_result",
-            payload: AppStateEventPayload(
-                state: "results",
-                sessionId: "sess-1",
-                executionId: "exec-1",
-                output: DocApprovalOutput(
-                    analysis: AnalysisOutput(
-                        docType: "nda",
-                        parties: [],
-                        amounts: [],
-                        confidence: "0.8",
-                        recommendation: "approve"
-                    ),
-                    recommendation: RecommendationOutput(
-                        recommendation: "approve",
-                        rationale: "Policy match",
-                        confidence: "high"
-                    )
-                )
-            )
-        )
-        XCTAssertEqual(vm.currentState, "results")
-        XCTAssertEqual(vm.output?.analysis.docType, "nda")
+    func testUnavailableStatusWhenHostIsNil() {
+        let vm = AppStateViewModel(host: nil)
+        XCTAssertEqual(vm.runtimeStatus, .unavailable)
     }
 
-    func testCanSubmitWhenOnlineWithDocument() async {
-        let vm = AppStateViewModel(
-            client: MockClient(),
-            baseURL: URL(string: "http://127.0.0.1:8787"),
-            workspaceId: "local-default"
-        )
-        await vm.refreshHealth()
+    func testCanSubmitWhenReadyWithDocument() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let vm = AppStateViewModel(host: host)
         vm.document = "hello"
         XCTAssertTrue(vm.canSubmit)
+    }
+
+    func testCannotSubmitWhenUnavailable() {
+        let vm = AppStateViewModel(host: nil)
+        vm.document = "hello"
+        XCTAssertFalse(vm.canSubmit)
+    }
+
+    func testApplyResultSetsResults() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let vm = AppStateViewModel(host: host)
+        let result = HostRunResult(
+            sessionID: "sess-1",
+            output: Self.sampleOutput,
+            events: [],
+            error: nil
+        )
+        vm.apply(result: result)
+        XCTAssertEqual(vm.currentState, "results")
+        XCTAssertEqual(vm.output?.analysis.docType, "nda")
+        XCTAssertEqual(vm.sessionId, "sess-1")
+        XCTAssertNil(vm.errorMessage)
+    }
+
+    func testApplyResultWithErrorSetsErrorState() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let vm = AppStateViewModel(host: host)
+        let result = HostRunResult(sessionID: "sess-e", output: nil, events: [], error: "boom")
+        vm.apply(result: result)
+        XCTAssertEqual(vm.currentState, "error")
+        XCTAssertEqual(vm.errorMessage, "boom")
+    }
+
+    func testResetLocalRestoresIdle() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let vm = AppStateViewModel(host: host)
+        vm.apply(result: HostRunResult(
+            sessionID: "s", output: Self.sampleOutput, events: [], error: nil
+        ))
+        vm.resetLocal()
+        XCTAssertEqual(vm.currentState, "idle")
+        XCTAssertNil(vm.output)
+        XCTAssertNil(vm.errorMessage)
+        XCTAssertNil(vm.sessionId)
     }
 }
 

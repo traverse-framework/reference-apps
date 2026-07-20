@@ -79,65 +79,6 @@ public struct TraceEvent: Equatable, Sendable, Codable {
     }
 }
 
-public struct CommandAccepted: Equatable, Sendable {
-    public let apiVersion: String
-    public let status: String
-    public let workspaceId: String
-    public let appId: String
-    public let sessionId: String
-    public let command: String
-    public let state: String
-    public let executionId: String?
-
-    public init(
-        apiVersion: String,
-        status: String,
-        workspaceId: String,
-        appId: String,
-        sessionId: String,
-        command: String,
-        state: String,
-        executionId: String?
-    ) {
-        self.apiVersion = apiVersion
-        self.status = status
-        self.workspaceId = workspaceId
-        self.appId = appId
-        self.sessionId = sessionId
-        self.command = command
-        self.state = state
-        self.executionId = executionId
-    }
-}
-
-public struct AppStateEventPayload: Equatable, Sendable {
-    public let state: String?
-    public let sessionId: String?
-    public let executionId: String?
-    public let output: TraverseStarterOutput?
-    public let errorMessage: String?
-
-    public init(
-        state: String? = nil,
-        sessionId: String? = nil,
-        executionId: String? = nil,
-        output: TraverseStarterOutput? = nil,
-        errorMessage: String? = nil
-    ) {
-        self.state = state
-        self.sessionId = sessionId
-        self.executionId = executionId
-        self.output = output
-        self.errorMessage = errorMessage
-    }
-}
-
-public enum TraverseClientError: Error, Equatable, Sendable {
-    case http(status: Int)
-    case decode
-    case invalidURL
-}
-
 public enum JSONValue: Equatable, Sendable, Codable {
     case string(String)
     case number(Double)
@@ -187,28 +128,6 @@ public enum TraverseOutputParser {
             return nil
         }
         return TraverseStarterOutput(validate: validate, process: process, summarize: summarize)
-    }
-
-    public static func parseEventPayload(_ raw: Any?) -> AppStateEventPayload? {
-        guard let dict = raw as? [String: Any] else { return nil }
-        let state = dict["state"] as? String
-        let sessionId = dict["session_id"] as? String
-        let executionId = dict["execution_id"] as? String
-        let output = parse(dict["output"])
-        var errorMessage: String?
-        if let error = dict["error"] as? String {
-            errorMessage = error
-        } else if let errorObj = dict["error"] as? [String: Any],
-                  let message = errorObj["message"] as? String {
-            errorMessage = message
-        }
-        return AppStateEventPayload(
-            state: state,
-            sessionId: sessionId,
-            executionId: executionId,
-            output: output,
-            errorMessage: errorMessage
-        )
     }
 
     private static func parseValidate(_ raw: Any?) -> ValidateOutput? {

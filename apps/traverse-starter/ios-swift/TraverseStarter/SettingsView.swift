@@ -8,16 +8,12 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section("Runtime") {
-                    TextField("Runtime URL", text: $settings.baseURLString)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .keyboardType(.URL)
                     TextField("Workspace", text: $settings.workspace)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 }
                 Section {
-                    Text("Default: http://127.0.0.1:8787 with workspace local-default")
+                    Text("Runtime mode: Embedded — no sidecar required.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

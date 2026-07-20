@@ -9,10 +9,9 @@ struct DocApprovalApp: App {
     init() {
         let settings = AppSettings()
         _settings = StateObject(wrappedValue: settings)
+        let host = EmbeddedRuntime.tryMakeProductionHost(workspaceID: settings.workspace)
         _viewModel = StateObject(wrappedValue: AppStateViewModel(
-            client: DocApprovalClient(),
-            baseURL: settings.baseURL,
-            workspaceId: settings.workspace,
+            host: host,
             appId: AppSettings.appId,
             documentMaxLength: AppSettings.documentMaxLength
         ))
@@ -23,12 +22,6 @@ struct DocApprovalApp: App {
             ContentView()
                 .environmentObject(settings)
                 .environmentObject(viewModel)
-                .onChange(of: settings.baseURLString) { _, _ in
-                    viewModel.updateConnection(baseURL: settings.baseURL, workspaceId: settings.workspace)
-                }
-                .onChange(of: settings.workspace) { _, workspace in
-                    viewModel.updateConnection(baseURL: settings.baseURL, workspaceId: workspace)
-                }
         }
     }
 }

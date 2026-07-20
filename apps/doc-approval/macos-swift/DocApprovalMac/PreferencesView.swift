@@ -6,19 +6,17 @@ struct PreferencesView: View {
     var body: some View {
         Form {
             Section("Runtime") {
-                TextField("Runtime URL", text: $settings.baseURLString)
-                    .textFieldStyle(.roundedBorder)
                 TextField("Workspace", text: $settings.workspace)
                     .textFieldStyle(.roundedBorder)
             }
             Section {
-                Text("Default: http://127.0.0.1:8787 with workspace local-default")
+                Text("Runtime mode: Embedded — no sidecar required.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
-        .frame(width: 420, height: 180)
+        .frame(width: 420, height: 160)
         .padding()
     }
 }

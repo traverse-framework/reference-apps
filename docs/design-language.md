@@ -76,8 +76,8 @@ The UI renders these fields exactly as the runtime provides them — never compu
 | Platform | Path | Status |
 |---|---|---|
 | Web (React) | `apps/doc-approval/web-react/` | Shipped (embedded + pipeline) |
-| iOS (SwiftUI) | `apps/doc-approval/ios-swift/` | Shipped (pipeline via HTTP) |
-| macOS (SwiftUI + AppKit) | `apps/doc-approval/macos-swift/` | Shipped (pipeline via HTTP) |
+| iOS (SwiftUI) | `apps/doc-approval/ios-swift/` | Shipped (embedded + pipeline) |
+| macOS (SwiftUI + AppKit) | `apps/doc-approval/macos-swift/` | Shipped (embedded + pipeline) |
 | Android (Jetpack Compose) | `apps/doc-approval/android-compose/` | Shipped (pipeline via HTTP) |
 | Windows (WinUI 3) | `apps/doc-approval/windows-winui/` | Shipped (embedded + pipeline) |
 | Linux (GTK4 + Rust) | `apps/doc-approval/linux-gtk/` | Shipped (embedded + pipeline) |

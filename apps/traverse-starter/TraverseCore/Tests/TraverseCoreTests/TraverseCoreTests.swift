@@ -2,83 +2,6 @@ import Foundation
 import XCTest
 @testable import TraverseCore
 
-final class MockURLProtocol: URLProtocol, @unchecked Sendable {
-    nonisolated(unsafe) static var handler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
-
-    override class func canInit(with request: URLRequest) -> Bool { true }
-    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
-
-    override func startLoading() {
-        guard let handler = Self.handler else {
-            client?.urlProtocol(self, didFailWithError: URLError(.badURL))
-            return
-        }
-        do {
-            let (response, data) = try handler(request)
-            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-            client?.urlProtocol(self, didLoad: data)
-            client?.urlProtocolDidFinishLoading(self)
-        } catch {
-            client?.urlProtocol(self, didFailWithError: error)
-        }
-    }
-
-    override func stopLoading() {}
-}
-
-enum TestURLSessionFactory {
-    static func make() -> URLSession {
-        let config = URLSessionConfiguration.ephemeral
-        config.protocolClasses = [MockURLProtocol.self]
-        return URLSession(configuration: config)
-    }
-}
-
-final class TraverseClientTests: XCTestCase {
-    func testCheckHealthReturnsTrueOn200() async throws {
-        MockURLProtocol.handler = { request in
-            XCTAssertTrue(request.url?.path.hasSuffix("/healthz") == true)
-            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-            return (response, Data())
-        }
-        let client = TraverseClient(session: TestURLSessionFactory.make())
-        let ok = try await client.checkHealth(baseURL: URL(string: "http://127.0.0.1:8787")!)
-        XCTAssertTrue(ok)
-    }
-
-    func testSendCommandPostsToAppsCommands() async throws {
-        MockURLProtocol.handler = { request in
-            XCTAssertEqual(request.httpMethod, "POST")
-            XCTAssertTrue(request.url?.path.contains("/apps/traverse-starter/commands") == true)
-            let response = HTTPURLResponse(url: request.url!, statusCode: 202, httpVersion: nil, headerFields: nil)!
-            let body = """
-            {"api_version":"v1","status":"accepted","workspace_id":"local-default","app_id":"traverse-starter","session_id":"sess-1","command":"submit","state":"processing","execution_id":"exec-1"}
-            """.data(using: .utf8)!
-            return (response, body)
-        }
-        let client = TraverseClient(session: TestURLSessionFactory.make())
-        let accepted = try await client.sendCommand(
-            workspaceId: "local-default",
-            appId: "traverse-starter",
-            command: .submit(note: "hello"),
-            baseURL: URL(string: "http://127.0.0.1:8787")!
-        )
-        XCTAssertEqual(accepted.sessionId, "sess-1")
-        XCTAssertEqual(accepted.state, "processing")
-        XCTAssertEqual(accepted.executionId, "exec-1")
-    }
-
-    func testAppEventsURL() {
-        let client = TraverseClient()
-        let url = client.appEventsURL(
-            workspaceId: "local-default",
-            appId: "traverse-starter",
-            baseURL: URL(string: "http://127.0.0.1:8787")!
-        )
-        XCTAssertEqual(url.path, "/v1/workspaces/local-default/apps/traverse-starter/events")
-    }
-}
-
 final class TraverseOutputTests: XCTestCase {
     func testParseOutput() {
         let raw: [String: Any] = [
@@ -109,121 +32,116 @@ final class TraverseOutputTests: XCTestCase {
         ]
         XCTAssertNil(TraverseOutputParser.parse(raw))
     }
+}
 
-    func testParseEventPayload() {
-        let raw: [String: Any] = [
-            "state": "results",
-            "session_id": "sess-1",
-            "execution_id": "exec-1",
-            "output": [
-                "validate": ["valid": true, "issues": [] as [String]],
-                "process": [
-                    "title": "T",
-                    "tags": [] as [String],
-                    "noteType": "n",
-                    "suggestedNextAction": "x",
-                    "status": "done",
-                ],
-                "summarize": ["summary": "Summary", "wordCount": 1],
-            ],
-        ]
-        let payload = TraverseOutputParser.parseEventPayload(raw)
-        XCTAssertEqual(payload?.state, "results")
-        XCTAssertEqual(payload?.output?.process.title, "T")
+final class EmbeddedRuntimeTests: XCTestCase {
+    private static let sampleOutput = TraverseStarterOutput(
+        validate: ValidateOutput(valid: true, issues: []),
+        process: ProcessOutput(
+            title: "Title",
+            tags: ["tag"],
+            noteType: "meeting",
+            suggestedNextAction: "follow up",
+            status: "processed"
+        ),
+        summarize: SummarizeOutput(summary: "A short summary", wordCount: 3)
+    )
+
+    func testTestHostReturnsScriptedCapabilityResult() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let result = try host.submit(note: "any note")
+        XCTAssertNil(result.error)
+        XCTAssertEqual(result.output?.process.title, "Title")
+        XCTAssertEqual(result.output?.summarize.wordCount, 3)
+        XCTAssertTrue(result.events.contains { $0.event_type == "capability_result" })
+    }
+
+    func testTestHostIsReady() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        XCTAssertTrue(host.isReady)
+        XCTAssertEqual(host.workspaceID, EmbeddedRuntime.defaultWorkspace)
+        XCTAssertEqual(host.workflowID, EmbeddedRuntime.defaultWorkflowID)
+    }
+
+    func testPinnedDigestFormat() {
+        XCTAssertTrue(EmbeddedRuntime.pinnedRuntimeWasmDigest.hasPrefix("sha256:"))
+        XCTAssertEqual(EmbeddedRuntime.pinnedRuntimeWasmDigest.count, 71)
     }
 }
 
 @MainActor
 final class AppStateViewModelTests: XCTestCase {
-    final class MockClient: TraverseClientProtocol, @unchecked Sendable {
-        var healthOK = true
-        func checkHealth(baseURL: URL) async throws -> Bool { healthOK }
-        func sendCommand(
-            workspaceId: String,
-            appId: String,
-            command: TraverseCommand,
-            baseURL: URL
-        ) async throws -> CommandAccepted {
-            CommandAccepted(
-                apiVersion: "v1",
-                status: "accepted",
-                workspaceId: workspaceId,
-                appId: appId,
-                sessionId: "sess-1",
-                command: command.name,
-                state: "processing",
-                executionId: "exec-1"
-            )
-        }
-        func fetchTrace(workspaceId: String, executionId: String, baseURL: URL) async throws -> [TraceEvent] {
-            []
-        }
-        func appEventsURL(workspaceId: String, appId: String, baseURL: URL) -> URL {
-            URL(string: "http://127.0.0.1:8787/v1/workspaces/\(workspaceId)/apps/\(appId)/events")!
-        }
-        func subscribeAppEvents(
-            workspaceId: String,
-            appId: String,
-            baseURL: URL,
-            onEvent: @escaping @Sendable (String, AppStateEventPayload) -> Void
-        ) async throws {
-            // Stay idle until cancelled for unit tests that drive apply() directly.
-            while !Task.isCancelled {
-                try await Task.sleep(nanoseconds: 100_000_000)
-            }
-        }
+    private static let sampleOutput = TraverseStarterOutput(
+        validate: ValidateOutput(valid: true, issues: []),
+        process: ProcessOutput(
+            title: "T",
+            tags: [],
+            noteType: "n",
+            suggestedNextAction: "x",
+            status: "done"
+        ),
+        summarize: SummarizeOutput(summary: "Summary", wordCount: 1)
+    )
+
+    func testReadyStatusWhenHostIsReady() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let vm = AppStateViewModel(host: host)
+        XCTAssertEqual(vm.runtimeStatus, .ready)
     }
 
-    func testHeartbeatMarksConnectedWithoutChangingState() {
-        let vm = AppStateViewModel(
-            client: MockClient(),
-            baseURL: URL(string: "http://127.0.0.1:8787"),
-            workspaceId: "local-default"
-        )
-        vm.apply(eventType: "heartbeat", payload: AppStateEventPayload())
-        XCTAssertTrue(vm.connected)
-        XCTAssertEqual(vm.currentState, "idle")
+    func testUnavailableStatusWhenHostIsNil() {
+        let vm = AppStateViewModel(host: nil)
+        XCTAssertEqual(vm.runtimeStatus, .unavailable)
     }
 
-    func testCapabilityResultMapsToResults() {
-        let vm = AppStateViewModel(
-            client: MockClient(),
-            baseURL: URL(string: "http://127.0.0.1:8787"),
-            workspaceId: "local-default"
-        )
-        vm.apply(
-            eventType: "capability_result",
-            payload: AppStateEventPayload(
-                state: "results",
-                sessionId: "sess-1",
-                executionId: "exec-1",
-                output: TraverseStarterOutput(
-                    validate: ValidateOutput(valid: true, issues: []),
-                    process: ProcessOutput(
-                        title: "T",
-                        tags: [],
-                        noteType: "n",
-                        suggestedNextAction: "x",
-                        status: "done"
-                    ),
-                    summarize: SummarizeOutput(summary: "Summary", wordCount: 1)
-                )
-            )
-        )
-        XCTAssertEqual(vm.currentState, "results")
-        XCTAssertEqual(vm.output?.process.title, "T")
-        XCTAssertEqual(vm.executionId, "exec-1")
-    }
-
-    func testCanSubmitWhenOnlineWithNote() async {
-        let client = MockClient()
-        let vm = AppStateViewModel(
-            client: client,
-            baseURL: URL(string: "http://127.0.0.1:8787"),
-            workspaceId: "local-default"
-        )
-        await vm.refreshHealth()
+    func testCanSubmitWhenReadyWithNote() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let vm = AppStateViewModel(host: host)
         vm.note = "hello"
         XCTAssertTrue(vm.canSubmit)
+    }
+
+    func testCannotSubmitWhenUnavailable() {
+        let vm = AppStateViewModel(host: nil)
+        vm.note = "hello"
+        XCTAssertFalse(vm.canSubmit)
+    }
+
+    func testApplyResultSetsResults() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let vm = AppStateViewModel(host: host)
+        let result = HostRunResult(
+            sessionID: "sess-1",
+            output: Self.sampleOutput,
+            events: [],
+            error: nil
+        )
+        vm.apply(result: result)
+        XCTAssertEqual(vm.currentState, "results")
+        XCTAssertEqual(vm.output?.process.title, "T")
+        XCTAssertEqual(vm.sessionId, "sess-1")
+        XCTAssertNil(vm.errorMessage)
+    }
+
+    func testApplyResultWithErrorSetsErrorState() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let vm = AppStateViewModel(host: host)
+        let result = HostRunResult(sessionID: "sess-e", output: nil, events: [], error: "boom")
+        vm.apply(result: result)
+        XCTAssertEqual(vm.currentState, "error")
+        XCTAssertEqual(vm.errorMessage, "boom")
+    }
+
+    func testResetLocalRestoresIdle() throws {
+        let host = try EmbeddedRuntime.makeTestHost(targetOutput: Self.sampleOutput)
+        let vm = AppStateViewModel(host: host)
+        vm.apply(result: HostRunResult(
+            sessionID: "s", output: Self.sampleOutput, events: [], error: nil
+        ))
+        vm.resetLocal()
+        XCTAssertEqual(vm.currentState, "idle")
+        XCTAssertNil(vm.output)
+        XCTAssertNil(vm.errorMessage)
+        XCTAssertNil(vm.sessionId)
     }
 }

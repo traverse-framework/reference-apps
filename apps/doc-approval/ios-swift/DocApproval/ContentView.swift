@@ -30,7 +30,7 @@ struct ContentView: View {
     }
 
     private var runtimeSection: some View {
-        GroupBox("Runtime Environment") {
+        GroupBox("Runtime") {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Circle()
@@ -39,7 +39,7 @@ struct ContentView: View {
                     Text(statusLabel)
                     Spacer()
                 }
-                Text(settings.baseURLString)
+                Text("Mode: Embedded")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                 Text("workspace: \(settings.workspace)")
@@ -68,8 +68,8 @@ struct ContentView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(!viewModel.canSubmit)
-                if viewModel.runtimeStatus == .offline {
-                    Text("Runtime offline — start with `cargo run -p traverse-cli -- serve`")
+                if viewModel.runtimeStatus == .unavailable {
+                    Text("Runtime unavailable — check bundle resources.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -88,11 +88,11 @@ struct ContentView: View {
 
                 switch viewModel.currentState {
                 case "idle":
-                    if viewModel.runtimeStatus == .offline {
-                        Text("Connect to the Traverse runtime to see analysis output here.")
+                    if viewModel.runtimeStatus == .unavailable {
+                        Text("Runtime unavailable — check bundle resources.")
                             .foregroundStyle(.secondary)
                     } else if viewModel.submitting {
-                        Text("Submitting command…")
+                        Text("Submitting…")
                     } else if viewModel.errorMessage == nil {
                         Text("Submit a document above to start analysis.")
                             .foregroundStyle(.secondary)
@@ -159,28 +159,37 @@ struct ContentView: View {
 
     private var statusColor: Color {
         switch viewModel.runtimeStatus {
-        case .online: return .cyan
-        case .offline: return .red
-        case .checking: return .gray
+        case .ready: return .cyan
+        case .unavailable: return .red
         }
     }
 
     private var statusLabel: String {
         switch viewModel.runtimeStatus {
-        case .online: return "Online"
-        case .offline: return "Offline"
-        case .checking: return "Checking…"
+        case .ready: return "Ready"
+        case .unavailable: return "Unavailable"
         }
     }
 }
 
 #Preview {
     let settings = AppSettings()
+    let host = try? EmbeddedRuntime.makeTestHost(
+        targetOutput: DocApprovalOutput(
+            analysis: AnalysisOutput(
+                docType: "nda", parties: ["A", "B"], amounts: ["$1"],
+                confidence: "high", recommendation: "approve"
+            ),
+            recommendation: RecommendationOutput(
+                recommendation: "approve", rationale: "Policy match", confidence: "high"
+            )
+        )
+    )
     ContentView()
         .environmentObject(settings)
         .environmentObject(AppStateViewModel(
-            client: DocApprovalClient(),
-            baseURL: settings.baseURL,
-            workspaceId: settings.workspace
+            host: host,
+            appId: AppSettings.appId,
+            documentMaxLength: AppSettings.documentMaxLength
         ))
 }
