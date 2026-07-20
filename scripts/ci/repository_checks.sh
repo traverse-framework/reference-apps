@@ -102,8 +102,12 @@ check "scripts/ci/sync_web_starter_bundle.sh"  "Web starter bundle sync"
 check "scripts/ci/sync_web_doc_approval_bundle.sh" "Web doc-approval bundle sync"
 check "scripts/ci/sync_winui_starter_bundle.sh" "WinUI starter bundle sync"
 check "scripts/ci/sync_winui_doc_approval_bundle.sh" "WinUI doc-approval bundle sync"
+check "scripts/ci/sync_windows_starter_bundle.sh" "Windows starter bundle sync"
+check "scripts/ci/sync_windows_doc_approval_bundle.sh" "Windows doc-approval bundle sync"
 check "scripts/ci/sync_swift_starter_bundle.sh" "Swift starter bundle sync"
 check "scripts/ci/sync_swift_doc_approval_bundle.sh" "Swift doc-approval bundle sync"
+check "scripts/ci/sync_android_starter_bundle.sh" "Android starter bundle sync"
+check "scripts/ci/sync_android_doc_approval_bundle.sh" "Android doc-approval bundle sync"
 check "scripts/ci/onboarding_check.sh"         "Onboarding check"
 
 # GitHub Actions

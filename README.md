@@ -120,7 +120,7 @@ All clients are **native UI shells** separated from business logic. Phase 1/2 us
 | trace-explorer (React) | Shipped | [`apps/trace-explorer/web-react/`](apps/trace-explorer/web-react/) |
 | iOS (SwiftUI) | Shipped (embedded) | [`apps/traverse-starter/ios-swift/`](apps/traverse-starter/ios-swift/) |
 | macOS (SwiftUI + AppKit) | Shipped (embedded) | [`apps/traverse-starter/macos-swift/`](apps/traverse-starter/macos-swift/) |
-| Android (Jetpack Compose) | Shipped | [`apps/traverse-starter/android-compose/`](apps/traverse-starter/android-compose/) |
+| Android (Jetpack Compose) | Shipped (embedded) | [`apps/traverse-starter/android-compose/`](apps/traverse-starter/android-compose/) |
 | Windows (WinUI 3) | Shipped (embedded) | [`apps/traverse-starter/windows-winui/`](apps/traverse-starter/windows-winui/) |
 | Linux (GTK4 + Rust) | Shipped (embedded) | [`apps/traverse-starter/linux-gtk/`](apps/traverse-starter/linux-gtk/) |
 | CLI (Rust) | Shipped (embedded) | [`apps/traverse-starter/cli-rust/`](apps/traverse-starter/cli-rust/) |
@@ -132,7 +132,7 @@ All clients are **native UI shells** separated from business logic. Phase 1/2 us
 | Web (React + TypeScript) | Shipped (embedded + pipeline) | [`apps/doc-approval/web-react/`](apps/doc-approval/web-react/) |
 | iOS (SwiftUI) | Shipped (embedded + pipeline) | [`apps/doc-approval/ios-swift/`](apps/doc-approval/ios-swift/) |
 | macOS (SwiftUI + AppKit) | Shipped (embedded + pipeline) | [`apps/doc-approval/macos-swift/`](apps/doc-approval/macos-swift/) |
-| Android (Jetpack Compose) | Shipped (pipeline via HTTP) | [`apps/doc-approval/android-compose/`](apps/doc-approval/android-compose/) |
+| Android (Jetpack Compose) | Shipped (embedded + pipeline) | [`apps/doc-approval/android-compose/`](apps/doc-approval/android-compose/) |
 | Windows (WinUI 3) | Shipped (embedded + pipeline) | [`apps/doc-approval/windows-winui/`](apps/doc-approval/windows-winui/) |
 | Linux (GTK4 + Rust) | Shipped (embedded + pipeline) | [`apps/doc-approval/linux-gtk/`](apps/doc-approval/linux-gtk/) |
 | CLI (Rust) | Shipped (embedded + pipeline) | [`apps/doc-approval/cli-rust/`](apps/doc-approval/cli-rust/) |

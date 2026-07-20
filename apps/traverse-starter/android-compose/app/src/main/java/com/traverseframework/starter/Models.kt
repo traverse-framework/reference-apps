@@ -74,7 +74,9 @@ data class ExecutionPollResult(
 
 object AppConstants {
     const val CAPABILITY_ID = "traverse-starter.pipeline"
-    const val DEFAULT_BASE_URL = "http://10.0.2.2:8787"
+    const val RUNTIME_MODE_EMBEDDED = "Embedded"
     const val DEFAULT_WORKSPACE = "local-default"
     const val NOTE_MAX_LENGTH = 2000
+    /** Asset-relative bundle root (must include runtime/runtime.wasm). */
+    const val BUNDLE_ASSET_DIR = "bundles/traverse-starter"
 }

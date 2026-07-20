@@ -1,8 +1,5 @@
 package com.traverseframework.starter
 
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,35 +29,57 @@ class ExecutionViewModelTest {
     }
 
     @Test
-    fun canSubmitWhenOnlineWithNote() = runTest(testDispatcher) {
-        val engine = MockEngine { respond("", status = HttpStatusCode.OK) }
-        val vm = ExecutionViewModel(TraverseClient(engine), FakeRuntimeSettings())
+    fun canSubmitWhenReadyWithNote() = runTest(testDispatcher) {
+        val host = InMemoryStarterHost.withScriptedOutput(sampleOutput())
+        val vm = ExecutionViewModel(host, FakeRuntimeSettings())
         advanceUntilIdle()
         vm.updateNote("hello")
         assertTrue(vm.uiState.value.canSubmit)
+        assertEquals(RuntimeStatus.Ready, vm.uiState.value.runtimeStatus)
+        assertEquals(AppConstants.RUNTIME_MODE_EMBEDDED, vm.uiState.value.runtimeMode)
+    }
+
+    @Test
+    fun submitRendersRuntimeOwnedFields() = runTest(testDispatcher) {
+        val host = InMemoryStarterHost.withScriptedOutput(sampleOutput())
+        val vm = ExecutionViewModel(host, FakeRuntimeSettings())
+        advanceUntilIdle()
+        vm.updateNote("Meeting with Alice")
+        vm.submit()
+        advanceUntilIdle()
+        val phase = vm.uiState.value.phase
+        assertTrue(phase is ExecutionPhase.Succeeded)
+        val output = (phase as ExecutionPhase.Succeeded).output
+        assertEquals("Alice Meeting", output.process.title)
+        assertEquals("meeting", output.process.noteType)
     }
 
     @Test
     fun resetReturnsToIdle() = runTest(testDispatcher) {
-        val engine = MockEngine { respond("", status = HttpStatusCode.OK) }
-        val vm = ExecutionViewModel(TraverseClient(engine), FakeRuntimeSettings())
+        val host = InMemoryStarterHost.withScriptedOutput(sampleOutput())
+        val vm = ExecutionViewModel(host, FakeRuntimeSettings())
         vm.reset()
         assertEquals(ExecutionPhase.Idle, vm.uiState.value.phase)
     }
 }
 
+private fun sampleOutput() = TraverseStarterOutput(
+    validate = ValidateOutput(valid = true, issues = emptyList()),
+    process = ProcessOutput(
+        title = "Alice Meeting",
+        tags = listOf("meeting"),
+        noteType = "meeting",
+        suggestedNextAction = "Schedule follow-up",
+        status = "ready",
+    ),
+    summarize = SummarizeOutput(summary = "Met with Alice", wordCount = 3),
+)
+
 private class FakeRuntimeSettings(
-    base: String = AppConstants.DEFAULT_BASE_URL,
     workspace: String = AppConstants.DEFAULT_WORKSPACE,
 ) : RuntimeSettings {
-    private val _base = MutableStateFlow(base)
-    override val baseUrl = _base
     private val _workspace = MutableStateFlow(workspace)
     override val workspace = _workspace
-
-    override suspend fun setBaseUrl(url: String) {
-        _base.value = url
-    }
 
     override suspend fun setWorkspace(workspace: String) {
         _workspace.value = workspace

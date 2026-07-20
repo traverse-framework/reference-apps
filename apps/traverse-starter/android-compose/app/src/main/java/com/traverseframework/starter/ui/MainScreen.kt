@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.traverseframework.starter.AppConstants
 import com.traverseframework.starter.ExecutionPhase
 import com.traverseframework.starter.ExecutionUiState
 import com.traverseframework.starter.RuntimeStatus
@@ -86,9 +87,9 @@ private fun RuntimeCard(uiState: ExecutionUiState) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Runtime Environment", style = MaterialTheme.typography.titleMedium)
-            Text(uiState.baseUrl, style = MaterialTheme.typography.bodySmall)
+            Text("mode: ${uiState.runtimeMode}", style = MaterialTheme.typography.bodySmall)
             Text("workspace: ${uiState.workspace}", style = MaterialTheme.typography.bodySmall)
-            Text("capability: ${com.traverseframework.starter.AppConstants.CAPABILITY_ID}", style = MaterialTheme.typography.bodySmall)
+            Text("workflow: ${AppConstants.CAPABILITY_ID}", style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -110,13 +111,13 @@ private fun InputCard(
                     .height(140.dp),
                 placeholder = { Text("Enter a note…") },
             )
-            Text("${uiState.note.length}/${com.traverseframework.starter.AppConstants.NOTE_MAX_LENGTH}")
+            Text("${uiState.note.length}/${AppConstants.NOTE_MAX_LENGTH}")
             Button(onClick = onSubmit, enabled = uiState.canSubmit, modifier = Modifier.fillMaxWidth()) {
                 Text(if (uiState.isRunning) "Running…" else "Start Workflow")
             }
-            if (uiState.runtimeStatus == RuntimeStatus.Offline) {
+            if (uiState.runtimeStatus == RuntimeStatus.Unavailable) {
                 Text(
-                    "Runtime offline — start with cargo run -p traverse-cli -- serve",
+                    "Embedded runtime unavailable — sync the bundle with scripts/ci/sync_android_starter_bundle.sh (requires TRAVERSE_REPO).",
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
@@ -136,16 +137,15 @@ private fun OutputCard(
             when (val phase = uiState.phase) {
                 ExecutionPhase.Idle -> {
                     Text(
-                        if (uiState.runtimeStatus == RuntimeStatus.Offline) {
-                            "Connect to the Traverse runtime to see workflow output here."
+                        if (uiState.runtimeStatus == RuntimeStatus.Unavailable) {
+                            "Initialize the embedded runtime to see workflow output here."
                         } else {
                             "Submit a note above to start a workflow."
                         },
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
-                ExecutionPhase.Loading -> Text("Starting execution…")
-                is ExecutionPhase.Polling -> Text("Polling execution ${phase.executionId}…")
+                ExecutionPhase.Loading -> Text("Submitting to embedded runtime…")
                 is ExecutionPhase.Failed -> Text("Error: ${phase.error}", color = MaterialTheme.colorScheme.error)
                 is ExecutionPhase.Succeeded -> {
                     OutputFields(phase.output)
@@ -189,9 +189,9 @@ private fun Field(label: String, value: String) {
 @Composable
 private fun StatusDot(status: RuntimeStatus) {
     val color = when (status) {
-        RuntimeStatus.Online -> Color(0xFF06B6D4)
-        RuntimeStatus.Offline -> Color(0xFFEF4444)
-        RuntimeStatus.Checking -> Color.Gray
+        RuntimeStatus.Ready -> Color(0xFF06B6D4)
+        RuntimeStatus.Unavailable -> Color(0xFFEF4444)
+        RuntimeStatus.Starting -> Color.Gray
     }
     Box(
         modifier = Modifier
@@ -202,7 +202,7 @@ private fun StatusDot(status: RuntimeStatus) {
 }
 
 private fun statusLabel(status: RuntimeStatus): String = when (status) {
-    RuntimeStatus.Online -> "Online"
-    RuntimeStatus.Offline -> "Offline"
-    RuntimeStatus.Checking -> "Checking…"
+    RuntimeStatus.Ready -> "Ready"
+    RuntimeStatus.Unavailable -> "Unavailable"
+    RuntimeStatus.Starting -> "Starting…"
 }
