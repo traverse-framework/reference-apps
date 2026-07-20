@@ -17,7 +17,7 @@ Reference UI applications for the [Traverse](https://github.com/traverse-framewo
 
 ## Getting Started (embedded — production path)
 
-Business logic lives in WASM once; each UI shell only submits input and renders runtime-owned fields. **Web React, Linux GTK, Rust CLI, Windows WinUI, and Apple (iOS/macOS)** already embed — no `traverse-cli serve` required.
+Business logic lives in WASM once; each UI shell only submits input and renders runtime-owned fields. **All seven platforms** embed — no `traverse-cli serve` required for production.
 
 Follow the guided walkthrough: **[`docs/getting-started-embedded.md`](docs/getting-started-embedded.md)**.
 
