@@ -133,8 +133,9 @@ Until (1–2) exist, platform migration tickets stay **Blocked**.
 | [112](https://github.com/traverse-framework/reference-apps/issues/112) | doc-approval manifests | Done |
 | [113](https://github.com/traverse-framework/reference-apps/issues/113) | Embed runtime — web-react | Done |
 | [114](https://github.com/traverse-framework/reference-apps/issues/114) | Embed runtime — Swift (iOS + macOS) | Done |
-| [115](https://github.com/traverse-framework/reference-apps/issues/115) | Embed runtime — Android | Ready |
+| [115](https://github.com/traverse-framework/reference-apps/issues/115) | Embed runtime — Android | Done |
 | [116](https://github.com/traverse-framework/reference-apps/issues/116) | Embed runtime — Windows | Done |
+
 | [117](https://github.com/traverse-framework/reference-apps/issues/117) | Embed runtime — Linux + CLI | Done (this PR) |
 | [118](https://github.com/traverse-framework/reference-apps/issues/118) | embedded_smoke.sh CI gate | Future |
 | [58](https://github.com/traverse-framework/reference-apps/issues/58), [72](https://github.com/traverse-framework/reference-apps/issues/72) | Shared Swift embedded host package | Blocked |
