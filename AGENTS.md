@@ -11,9 +11,9 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 ### Blocked work summary
 
-- None — Traverse [#750](https://github.com/traverse-framework/Traverse/issues/750)/[#751](https://github.com/traverse-framework/Traverse/issues/751)/[#647](https://github.com/traverse-framework/Traverse/issues/647) closed (2026-07-20). Windows [#116](https://github.com/traverse-framework/reference-apps/issues/116) ships embedded (.NET `TraverseEmbedder`). Remaining Ready: Swift [#114](https://github.com/traverse-framework/reference-apps/issues/114), Android [#115](https://github.com/traverse-framework/reference-apps/issues/115). Rust/Web embeds already shipped ([#117](https://github.com/traverse-framework/reference-apps/issues/117)/[#113](https://github.com/traverse-framework/reference-apps/issues/113)).
+- None — Traverse [#750](https://github.com/traverse-framework/Traverse/issues/750)/[#751](https://github.com/traverse-framework/Traverse/issues/751)/[#647](https://github.com/traverse-framework/Traverse/issues/647) closed (2026-07-20). Windows [#116](https://github.com/traverse-framework/reference-apps/issues/116) shipped embedded (.NET `TraverseEmbedder`). Remaining In Progress: Swift [#114](https://github.com/traverse-framework/reference-apps/issues/114), Android [#115](https://github.com/traverse-framework/reference-apps/issues/115). Rust/Web embeds already shipped ([#117](https://github.com/traverse-framework/reference-apps/issues/117)/[#113](https://github.com/traverse-framework/reference-apps/issues/113)).
 
-Ready: #114, #115 (query the live board; #116 In Progress → Done on merge).
+Ready: #114, #115 (query the live board).
 
 ### Flip rules (native embeds)
 
@@ -21,7 +21,7 @@ Upstream flip conditions are met (Traverse #750/#751/#647 closed). Keep Project 
 
 | App-Refs | Status rule |
 |---|---|
-| [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) | **Ready** until claimed; return to **Blocked** only if Traverse reopens #750/#751/#647 or withdraws the certified artifact |
+| [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#115](https://github.com/traverse-framework/reference-apps/issues/115) | **In Progress** until merged; return to **Blocked** only if Traverse reopens #750/#751/#647 or withdraws the certified artifact |
 
 Update this section when a PR changes platform status (see PR template checklist).
 

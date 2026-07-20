@@ -184,4 +184,4 @@ Checks 1–5 validate Node, install, typecheck, lint, and tests (no runtime requ
 
 No active Project 2 **Blocked** items. Upstream Traverse native delivery (#750/#751/#647–#649) is closed.
 
-Ready on Project 2 (claim next): [#114](https://github.com/traverse-framework/reference-apps/issues/114) Swift, [#115](https://github.com/traverse-framework/reference-apps/issues/115) Android — wire public `TraverseEmbedder` + digest-pinned `runtime/runtime.wasm` (sidecar interim until each PR merges). Windows [#116](https://github.com/traverse-framework/reference-apps/issues/116) ships embedded in this change set.
+Ready on Project 2 (claim next): [#114](https://github.com/traverse-framework/reference-apps/issues/114) Swift, [#115](https://github.com/traverse-framework/reference-apps/issues/115) Android — wire public `TraverseEmbedder` + digest-pinned `runtime/runtime.wasm` (sidecar interim until each PR merges).
