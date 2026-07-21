@@ -2,6 +2,7 @@ package com.traverseframework.docapproval
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +15,7 @@ import kotlinx.coroutines.withContext
 class ExecutionViewModel(
     private val host: DocApprovalHost,
     private val settings: RuntimeSettings,
+    private val computeDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         ExecutionUiState(
@@ -49,7 +51,7 @@ class ExecutionViewModel(
         _uiState.update { it.copy(phase = ExecutionPhase.Loading) }
         val document = state.document.trim()
         submitJob = viewModelScope.launch {
-            val result = withContext(Dispatchers.Default) { host.submitDocument(document) }
+            val result = withContext(computeDispatcher) { host.submitDocument(document) }
             if (result.error != null && result.output == null) {
                 _uiState.update { it.copy(phase = ExecutionPhase.Failed(result.error)) }
             } else {

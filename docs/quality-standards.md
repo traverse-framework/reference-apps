@@ -88,7 +88,7 @@ Native CI build gates (#88, tiered):
 |---|---|---|
 | Linux `cargo test` (traverse-starter + doc-approval: **core + CLI**) | **PR merge-blocking** | `native-linux` in `.github/workflows/ci.yml` |
 | Linux GTK `cargo test` | **Nightly required** | `native-linux-gtk` in `.github/workflows/nightly.yml` |
-| macOS `xcodebuild` (TraverseStarterMac + DocApprovalMac) | **Nightly required** | `native-macos` in `.github/workflows/nightly.yml` |
+| macOS `xcodebuild` (TraverseStarterMac + DocApprovalMac) | **Nightly required** (`macos-15` + Xcode 16 / Swift 6) | `native-macos` in `.github/workflows/nightly.yml` |
 | Windows `dotnet test` (WinUI solutions) | **Nightly required** | `native-windows` in `.github/workflows/nightly.yml` |
 | Android `./gradlew testDebugUnitTest` | **Nightly required** | `native-android` in `.github/workflows/nightly.yml` |
 
