@@ -61,7 +61,7 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 | Delete sidecar client code | `remove-sidecar-paths` | **Done** | Dead HTTP paths removed from starter/doc-approval | Shipped |
 | Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **In Progress** (Cursor) | GTK + Android compile fixes; jobs required on nightly | Finish PR |
 | Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Blocked** | Smoke uses App-Refs fixtures; Traverse agents still stubs | Wait Traverse (e.g. #785); then swap fixtures |
-| `registry_ref` adoption | `registry-ref-starter-process` | **Blocked** | Gated on Traverse registry seed | Wait registry + Traverse #542/#548 |
+| `registry_ref` adoption | `registry-ref-starter-process` | **Blocked** | Registry seed + sync Done; Traverse still requires `contract_path` on component manifests (spec 054 FR-007 not wired) | Wait Traverse dual-mode component load |
 | Phase 2 sidecar nightly | `phase2-sidecar-nightly` | **Future** (defer) | Legacy path; low demo value | After Wave 1; optional |
 
 ### Wave 1 — start now (Ready, parallel OK)
