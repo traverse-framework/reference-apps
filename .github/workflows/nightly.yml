@@ -39,15 +39,22 @@ jobs:
           TRAVERSE_RUNTIME_URL: ${{ vars.TRAVERSE_RUNTIME_URL }}
         run: bash scripts/ci/phase1_smoke.sh
 
-  # Tiered native CI (#88) — nightly required: Apple + Windows.
+  # Tiered native CI — nightly required: Apple + Windows + Android + GTK.
   native-macos:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+      - name: Select Xcode 16 (Swift 6 tools for TraverseCore)
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer \
+            || sudo xcode-select -s /Applications/Xcode_16.3.app/Contents/Developer \
+            || sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer \
+            || sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer \
+            || sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer \
+            || sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          xcodebuild -version
 
       - name: Build + test traverse-starter macOS
         working-directory: apps/traverse-starter/macos-swift
@@ -78,17 +85,20 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore + test traverse-starter WinUI
+      # Test projects compile shell logic via linked sources (no WinUI /
+      # WindowsAppSDK ProjectReference) so `dotnet test` stays free of
+      # ExpandPriContent / Msix tooling on windows-latest.
+      - name: Restore + test traverse-starter WinUI logic
         working-directory: apps/traverse-starter/windows-winui
         run: |
-          dotnet restore TraverseStarter.sln
-          dotnet test TraverseStarter.sln -c Release --nologo
+          dotnet restore TraverseStarter.Tests/TraverseStarter.Tests.csproj
+          dotnet test TraverseStarter.Tests/TraverseStarter.Tests.csproj -c Release --nologo
 
-      - name: Restore + test doc-approval WinUI
+      - name: Restore + test doc-approval WinUI logic
         working-directory: apps/doc-approval/windows-winui
         run: |
-          dotnet restore DocApproval.sln
-          dotnet test DocApproval.sln -c Release --nologo
+          dotnet restore DocApproval.Tests/DocApproval.Tests.csproj
+          dotnet test DocApproval.Tests/DocApproval.Tests.csproj -c Release --nologo
 
   # Required: GTK shells (AdwApplicationWindowExt / GString fixes landed).
   native-linux-gtk:

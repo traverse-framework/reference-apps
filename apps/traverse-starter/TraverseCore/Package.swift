@@ -17,7 +17,7 @@ let package = Package(
         .target(
             name: "TraverseCore",
             dependencies: [
-                .product(name: "TraverseEmbedder", package: "TraverseEmbedder"),
+                .product(name: "TraverseEmbedder", package: "traverse-embedder-swift"),
             ]
         ),
         .testTarget(

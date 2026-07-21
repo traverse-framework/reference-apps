@@ -70,7 +70,7 @@ See [`docs/embedded-runtime-plan.md`](embedded-runtime-plan.md) for the Phase 3 
 | iOS (SwiftUI) | `apps/traverse-starter/ios-swift/` | `xcodebuild -scheme TraverseStarter -destination 'platform=iOS Simulator,name=iPhone 16' build test` |
 | macOS (SwiftUI) | `apps/traverse-starter/macos-swift/` | `xcodebuild -scheme TraverseStarterMac -destination 'platform=macOS' build test` |
 | Android (Compose) | `apps/traverse-starter/android-compose/` | `./gradlew :app:assembleDebug :app:testDebugUnitTest` |
-| Windows (WinUI 3) | `apps/traverse-starter/windows-winui/` | `dotnet build TraverseStarter.sln -c Release` and `dotnet test TraverseStarter.sln -c Release` |
+| Windows (WinUI 3) | `apps/traverse-starter/windows-winui/` | Logic tests: `dotnet test TraverseStarter.Tests/TraverseStarter.Tests.csproj -c Release` (linked sources; no WinAppSDK). Full WinUI shell build needs VS / Windows App SDK locally: `dotnet build TraverseStarter.sln -c Release` |
 | Linux (GTK4 + Rust) | `apps/traverse-starter/linux-gtk/` | `cargo build`, `cargo test` |
 | CLI (Rust) | `apps/traverse-starter/cli-rust/` | `cargo build --release`, `cargo test` |
 
@@ -88,7 +88,7 @@ Native CI build gates (#88, tiered):
 |---|---|---|
 | Linux `cargo test` (traverse-starter + doc-approval: **core + CLI**) | **PR merge-blocking** | `native-linux` in `.github/workflows/ci.yml` |
 | Linux GTK `cargo test` | **Nightly required** | `native-linux-gtk` in `.github/workflows/nightly.yml` |
-| macOS `xcodebuild` (TraverseStarterMac + DocApprovalMac) | **Nightly required** | `native-macos` in `.github/workflows/nightly.yml` |
+| macOS `xcodebuild` (TraverseStarterMac + DocApprovalMac) | **Nightly required** (`macos-15` + Xcode 16 / Swift 6) | `native-macos` in `.github/workflows/nightly.yml` |
 | Windows `dotnet test` (WinUI solutions) | **Nightly required** | `native-windows` in `.github/workflows/nightly.yml` |
 | Android `./gradlew testDebugUnitTest` | **Nightly required** | `native-android` in `.github/workflows/nightly.yml` |
 

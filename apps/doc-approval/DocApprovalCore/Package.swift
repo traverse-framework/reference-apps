@@ -17,7 +17,7 @@ let package = Package(
         .target(
             name: "DocApprovalCore",
             dependencies: [
-                .product(name: "TraverseEmbedder", package: "TraverseEmbedder"),
+                .product(name: "TraverseEmbedder", package: "traverse-embedder-swift"),
             ]
         ),
         .testTarget(

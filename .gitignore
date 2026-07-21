@@ -32,3 +32,5 @@ apps/*/web-react/public/bundles/
 
 # Rust / Cargo build output (CLI, GTK, core crates)
 **/target/manifests/meeting-notes/_traverse
+**/target/
+target/
