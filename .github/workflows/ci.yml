@@ -85,9 +85,7 @@ jobs:
           cache: 'npm'
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: '1.94.0'
+        uses: dtolnay/rust-toolchain@1.94.0
 
       - name: Run embedded smoke (Linux-required slices)
         env:
