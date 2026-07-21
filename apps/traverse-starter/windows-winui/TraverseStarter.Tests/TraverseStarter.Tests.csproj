@@ -1,21 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>TraverseStarter.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsTestProject>true</IsTestProject>
-    <!-- WinUI ProjectReference imports WinAppSDK buildTransitive targets.
-         EnableMsixTooling redirects PriGen away from ExpandPriContent
-         (MSB4062 under `dotnet test` without full VS Appx tooling). -->
-    <EnableMsixTooling>true</EnableMsixTooling>
-    <WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.241114003" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,6 +19,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TraverseStarter\TraverseStarter.csproj" />
+    <ProjectReference Include="..\..\..\..\vendor\traverse-embedder-dotnet\TraverseEmbedder\TraverseEmbedder.csproj" />
+  </ItemGroup>
+
+  <!-- Compile UI logic without ProjectReference to the WinUI app (avoids
+       WinAppSDK PriGen / ExpandPriContent under `dotnet test` on CI). -->
+  <ItemGroup>
+    <Compile Include="..\TraverseStarter\AppConstants.cs" Link="AppConstants.cs" />
+    <Compile Include="..\TraverseStarter\Models.cs" Link="Models.cs" />
+    <Compile Include="..\TraverseStarter\ISettingsRepository.cs" Link="ISettingsRepository.cs" />
+    <Compile Include="..\TraverseStarter\EmbeddedHost.cs" Link="EmbeddedHost.cs" />
+    <Compile Include="..\TraverseStarter\ExecutionViewModel.cs" Link="ExecutionViewModel.cs" />
   </ItemGroup>
 </Project>

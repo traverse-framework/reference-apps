@@ -85,17 +85,20 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore + test traverse-starter WinUI
+      # Test projects compile shell logic via linked sources (no WinUI /
+      # WindowsAppSDK ProjectReference) so `dotnet test` stays free of
+      # ExpandPriContent / Msix tooling on windows-latest.
+      - name: Restore + test traverse-starter WinUI logic
         working-directory: apps/traverse-starter/windows-winui
         run: |
-          dotnet restore TraverseStarter.sln
-          dotnet test TraverseStarter.sln -c Release --nologo
+          dotnet restore TraverseStarter.Tests/TraverseStarter.Tests.csproj
+          dotnet test TraverseStarter.Tests/TraverseStarter.Tests.csproj -c Release --nologo
 
-      - name: Restore + test doc-approval WinUI
+      - name: Restore + test doc-approval WinUI logic
         working-directory: apps/doc-approval/windows-winui
         run: |
-          dotnet restore DocApproval.sln
-          dotnet test DocApproval.sln -c Release --nologo
+          dotnet restore DocApproval.Tests/DocApproval.Tests.csproj
+          dotnet test DocApproval.Tests/DocApproval.Tests.csproj -c Release --nologo
 
   # Required: GTK shells (AdwApplicationWindowExt / GString fixes landed).
   native-linux-gtk:

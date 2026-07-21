@@ -2,12 +2,6 @@ using Windows.Storage;
 
 namespace TraverseStarter;
 
-public interface ISettingsRepository
-{
-    string Workspace { get; set; }
-    string BundlePath { get; set; }
-}
-
 public sealed class SettingsRepository : ISettingsRepository
 {
     private const string WorkspaceKey = "workspace";
