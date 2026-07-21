@@ -1,6 +1,6 @@
 # meeting-notes (Web React UI)
 
-**Runtime mode: HTTP sidecar (temporary)** — web-only until the multi-OS embed showcase ([#179](https://github.com/traverse-framework/reference-apps/issues/179)). Not a primary copy-paste shell; see [`docs/production-playbook.md`](../../../docs/production-playbook.md).
+**Runtime mode: HTTP sidecar (temporary)** — web-only until the multi-OS embed showcase ([#179](https://github.com/traverse-framework/reference-apps/issues/179)). This is a **primary product shell** (list-type output); sidecar is interim only — see [`docs/production-playbook.md`](../../../docs/production-playbook.md) and the primary vs secondary table in the root README.
 
 React UI shell for the **meeting-notes** reference application — a second domain app that demonstrates **list-type structured output** from the Traverse runtime.
 

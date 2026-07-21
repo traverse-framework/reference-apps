@@ -35,6 +35,18 @@ npm run dev                              # traverse-starter embedded web shell
 
 Digest-pinned bundle sync (all platforms): [`docs/runtime-bundle-sync.md`](docs/runtime-bundle-sync.md).
 
+## Primary vs secondary apps
+
+This repo has two maintenance tiers. Do **not** treat Expedition demos as the same bar as Phase 3/4 reference shells.
+
+| Tier | Apps | Maintenance bar | `embedded_smoke` (#118) |
+|---|---|---|---|
+| **Primary product shells** | `traverse-starter`, `doc-approval`, `meeting-notes` | Full: embed path, digest pin, SDK doubles, production DoD | Hard-fail targets for Linux-runnable primary platforms |
+| **Adopted / secondary** | `react-demo`, `android-demo`, `macos-demo`, `browser-consumer`, `youaskm3-starter-kit` | Lighter: offline/live demo smokes; not the copy-paste production kit | **Not** merge-blocking smoke targets |
+| **Debugger exception** | `trace-explorer` | Named HTTP client until Traverse embeds a trace API ([#183](https://github.com/traverse-framework/reference-apps/issues/183)) | Not a product shell to copy |
+
+Details: [`docs/adopted-platform-clients.md`](docs/adopted-platform-clients.md) · kit roadmap: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
+
 Open `http://localhost:5173`. Submit a note when the embedded host is ready; confirm title / tags / note type / suggested next action / status come from the runtime.
 
 Other Vite apps (one at a time on port 5173):

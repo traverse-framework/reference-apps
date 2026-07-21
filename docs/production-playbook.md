@@ -32,14 +32,14 @@ Rules:
 |---|---|---|
 | **traverse-starter** | Web, Linux GTK, CLI, Android, Windows, iOS, macOS | Reference kit — start here |
 | **doc-approval** | Same seven platforms | Second domain + pipeline |
+| **meeting-notes** | Web today | Primary product shell; multi-OS embed showcase is [#179](https://github.com/traverse-framework/reference-apps/issues/179) |
 
-**Secondary / exceptions** (not hard-fail smoke targets — see [#186](https://github.com/traverse-framework/reference-apps/issues/186)):
+**Not primary product shells** (do not treat as the production kit bar — [#186](https://github.com/traverse-framework/reference-apps/issues/186)):
 
 | App | Status |
 |---|---|
-| meeting-notes (web) | HTTP client today; multi-OS embed showcase is [#179](https://github.com/traverse-framework/reference-apps/issues/179) |
-| trace-explorer | **Named HTTP exception** until Traverse trace API embeds ([#183](https://github.com/traverse-framework/reference-apps/issues/183)) |
-| react-demo, android-demo, macos-demo, youaskm3-starter-kit, browser-consumer | Adopted demos / kits — see [`adopted-platform-clients.md`](adopted-platform-clients.md) |
+| trace-explorer | **Debugger exception** — named HTTP until Traverse embeds a trace API ([#183](https://github.com/traverse-framework/reference-apps/issues/183)); not a secondary “product” kit |
+| react-demo, android-demo, macos-demo, youaskm3-starter-kit, browser-consumer | **Adopted / secondary** demos & kits — lighter maintenance; not merge-blocking `embedded_smoke` targets — see [`adopted-platform-clients.md`](adopted-platform-clients.md) |
 
 ---
 
