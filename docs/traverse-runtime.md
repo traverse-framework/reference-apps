@@ -1,16 +1,16 @@
 # Traverse Runtime — Dev Sidecar (Deprecated Appendix)
 
 > **Production path is embedded.** Start with [`production-playbook.md`](production-playbook.md) and [`getting-started-embedded.md`](getting-started-embedded.md).  
-> This page is an **appendix** for historical Phase 1/2 HTTP integration, Trace Explorer’s named HTTP exception, and legacy smoke scripts. Do **not** treat sidecar as the default for new primary shells.
+> This page is an **appendix** for historical Phase 1/2 HTTP integration, named HTTP carve-outs, and legacy smoke scripts. Do **not** treat sidecar as the default for new primary shells.
 
 ## Deployment Models
 
 | Model | Status | Use when |
 |---|---|---|
-| **Embedded in-app host (Phase 3)** | **Shipped** on primary platforms | Building/shipping reference apps |
-| **HTTP sidecar `traverse-cli serve` (Phase 1/2)** | **Deprecated interim** | Trace Explorer ([#183](https://github.com/traverse-framework/reference-apps/issues/183)), legacy `phase1_smoke.sh`, historical docs |
+| **Embedded in-app host (Phase 3)** | **Shipped** on traverse-starter + doc-approval (all platforms) | Building/shipping reference apps |
+| **HTTP sidecar `traverse-cli serve` (Phase 1/2)** | **Deprecated interim** | Trace Explorer (`embed-trace-explorer`), meeting-notes web until `meeting-notes-multi-os`, legacy `phase1_smoke.sh` |
 
-End-user **primary** apps must not depend on a separately running sidecar. Sidecar client removal from product shells: [#180](https://github.com/traverse-framework/reference-apps/issues/180).
+End-user **primary** shells that already embed (traverse-starter, doc-approval) must not depend on a separately running sidecar. HTTP client removal: Project 2 `remove-sidecar-paths`. Remaining HTTP carve-outs: Trace Explorer + meeting-notes (until its embed ticket).
 
 ## Pinned Version (sidecar only)
 
@@ -66,7 +66,7 @@ const baseUrl = server.base_url          // http://127.0.0.1:8787
 const workspace = server.workspace_default
 ```
 
-Vite override (legacy / Trace Explorer / meeting-notes until embed):
+Vite override (legacy / Trace Explorer / meeting-notes until `meeting-notes-multi-os`):
 
 ```ts
 const baseUrl = import.meta.env.VITE_TRAVERSE_BASE_URL ?? 'http://127.0.0.1:8787'

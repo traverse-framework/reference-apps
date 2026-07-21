@@ -52,26 +52,6 @@ data class TraceEvent(
     val data: JsonElement? = null,
 )
 
-@kotlinx.serialization.Serializable
-data class ExecuteResponse(
-    val execution_id: String,
-)
-
-@kotlinx.serialization.Serializable
-data class ExecutionPollResponse(
-    val execution_id: String? = null,
-    val status: String,
-    val output: TraverseStarterOutput? = null,
-    val error: String? = null,
-)
-
-data class ExecutionPollResult(
-    val executionId: String,
-    val status: String,
-    val output: TraverseStarterOutput?,
-    val error: String?,
-)
-
 object AppConstants {
     const val CAPABILITY_ID = "traverse-starter.pipeline"
     const val RUNTIME_MODE_EMBEDDED = "Embedded"
