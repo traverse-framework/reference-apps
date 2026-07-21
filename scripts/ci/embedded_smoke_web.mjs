@@ -3,10 +3,8 @@
  * Headless web embedded smoke harness.
  * Uses public BundleEmbedder + NodeFsBundleLoader (no traverse-cli serve).
  *
+ * Requires runtime-owned pipeline output (validate/process/summarize).
  * Exit 0 on pass. Exit 1 on failure.
- * Env:
- *   EMBEDDED_SMOKE_REQUIRE_OUTPUT=1 — fail if pipeline does not yield runtime fields
- *     (default: prove init + workflow invoke; stub example agents skip field assert)
  */
 import { BundleEmbedder, NodeFsBundleLoader } from '../../vendor/traverse-embedder-web/dist/index.js'
 import path from 'node:path'
@@ -19,11 +17,10 @@ const manifest = path.join(
   root,
   'apps/traverse-starter/web-react/public/bundles/traverse-starter/app.manifest.json',
 )
-const requireOutput = process.env.EMBEDDED_SMOKE_REQUIRE_OUTPUT === '1'
 
 function fail(msg) {
   console.error(`FAIL: ${msg}`)
-  process.exit(1)
+  globalThis.process.exit(1)
 }
 
 if (!fs.existsSync(manifest)) {
@@ -62,39 +59,55 @@ if (outcome.status !== 'accepted') {
 }
 
 const invoked = events.filter((e) => e.event_type === 'capability_invoked')
-if (invoked.length === 0) {
-  fail('expected capability_invoked (multi-capability workflow did not start)')
+if (invoked.length < 3) {
+  fail(
+    `expected ≥3 capability_invoked steps for pipeline, got ${invoked.length}. events=${JSON.stringify(events)}`,
+  )
 }
 console.log(
   `OK: web workflow invoked — session=${outcome.sessionId} steps=${invoked.length}`,
 )
 
 const resultEvent = events.find((e) => e.event_type === 'capability_result')
-const errorEvent = events.find((e) => e.event_type === 'error')
-const output =
-  resultEvent?.data && typeof resultEvent.data === 'object'
-    ? resultEvent.data.output ?? resultEvent.data
-    : null
-
-const hasRuntimeFields =
-  output &&
-  typeof output === 'object' &&
-  !Array.isArray(output) &&
-  typeof output.title === 'string' &&
-  output.title.length > 0
-
-if (hasRuntimeFields) {
-  console.log('OK: web pipeline returned runtime-owned output fields (title present)')
-} else if (requireOutput) {
-  fail(
-    `pipeline did not return runtime-owned output fields (EMBEDDED_SMOKE_REQUIRE_OUTPUT=1). events=${JSON.stringify(events)}`,
-  )
-} else {
-  const errCode = errorEvent?.data?.error?.code ?? 'unknown'
-  console.log(
-    `SKIP: web pipeline output fields — Traverse example agents did not yield JSON (${errCode}). Embed path verified via init + workflow invoke. Set EMBEDDED_SMOKE_REQUIRE_OUTPUT=1 to hard-fail.`,
-  )
+if (!resultEvent) {
+  fail(`missing capability_result. events=${JSON.stringify(events)}`)
 }
+
+const data = resultEvent.data && typeof resultEvent.data === 'object' ? resultEvent.data : null
+const output = data?.output ?? data
+if (!output || typeof output !== 'object' || Array.isArray(output)) {
+  fail(`capability_result missing object output: ${JSON.stringify(resultEvent)}`)
+}
+
+const validate = output.validate
+const processOut = output.process
+const summarize = output.summarize
+if (!validate || typeof validate.valid !== 'boolean' || !Array.isArray(validate.issues)) {
+  fail(`missing runtime-owned validate fields: ${JSON.stringify(output)}`)
+}
+if (
+  !processOut ||
+  typeof processOut.title !== 'string' ||
+  !processOut.title ||
+  !Array.isArray(processOut.tags) ||
+  typeof processOut.noteType !== 'string' ||
+  typeof processOut.suggestedNextAction !== 'string' ||
+  typeof processOut.status !== 'string'
+) {
+  fail(`missing runtime-owned process fields: ${JSON.stringify(output)}`)
+}
+if (
+  !summarize ||
+  typeof summarize.summary !== 'string' ||
+  !summarize.summary ||
+  typeof summarize.wordCount !== 'number'
+) {
+  fail(`missing runtime-owned summarize fields: ${JSON.stringify(output)}`)
+}
+
+console.log(
+  `OK: web pipeline runtime-owned output — title=${JSON.stringify(processOut.title)} summary=${JSON.stringify(summarize.summary)}`,
+)
 
 embedder.shutdown()
 console.log('PASS: web embedded smoke')

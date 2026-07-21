@@ -137,7 +137,7 @@ bash scripts/ci/embedded_smoke.sh
 - **Web:** sync bundle → `BundleEmbedder` + `NodeFsBundleLoader` → init + workflow invoke  
 - **CLI:** `phase2_link_traverse.sh` → `cargo run -p traverse-starter-cli -- health --json` → `Embedded` / `Ready`  
 - **Android / Swift / Windows:** digest-check committed `runtime/runtime.wasm`; full SDK tests when tools exist  
-- Set `EMBEDDED_SMOKE_REQUIRE_OUTPUT=1` to hard-fail when pipeline fields are missing (example agents may still be stubs)
+- Hard-fails unless validate/process/summarize runtime-owned fields are present (smoke WASI fixtures under `scripts/ci/fixtures/traverse-starter-smoke-agents/`)
 
 CI runs this with `EMBEDDED_SMOKE_EXPECT=linux` on every PR (see `.github/workflows/ci.yml`).
 
