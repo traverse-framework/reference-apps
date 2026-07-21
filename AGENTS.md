@@ -21,7 +21,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `phase2-sidecar-nightly` | Future | Defer — low demo value |
 | `embed-trace-explorer` | Blocked | Wait Traverse trace API |
 | `registry-ref-starter-process` | Blocked | Wait Traverse dual-mode component manifests (spec 054 FR-007; `contract_path` still required on main) |
-| `consume-product-wasm-agents` | Blocked | Wait Traverse product agents (#785) |
+| `consume-product-wasm-agents` | Blocked | Wait Project 1 `real-wasm-agent-execute` |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
 
