@@ -33,7 +33,8 @@ bash scripts/ci/sync_web_starter_bundle.sh
 npm run dev                              # traverse-starter embedded web shell
 ```
 
-Digest-pinned bundle sync (all platforms): [`docs/runtime-bundle-sync.md`](docs/runtime-bundle-sync.md).
+Digest-pinned bundle sync (all platforms): [`docs/runtime-bundle-sync.md`](docs/runtime-bundle-sync.md).  
+Multi-OS packaging + release evidence: [`docs/production-packaging.md`](docs/production-packaging.md).
 
 ## Primary vs secondary apps
 
