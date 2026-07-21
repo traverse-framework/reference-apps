@@ -32,6 +32,8 @@ bash scripts/ci/sync_web_starter_bundle.sh
 npm run dev                              # traverse-starter embedded web shell
 ```
 
+Digest-pinned bundle sync (all platforms): [`docs/runtime-bundle-sync.md`](docs/runtime-bundle-sync.md).
+
 Open `http://localhost:5173`. Submit a note when the embedded host is ready; confirm title / tags / note type / suggested next action / status come from the runtime.
 
 Other Vite apps (one at a time on port 5173):
