@@ -1,16 +1,28 @@
 # Traverse Runtime — Dev Sidecar (Deprecated Appendix)
 
 > **Production path is embedded.** Start with [`production-playbook.md`](production-playbook.md) and [`getting-started-embedded.md`](getting-started-embedded.md).  
-> This page is an **appendix** for historical Phase 1/2 HTTP integration, Trace Explorer’s named HTTP exception, and legacy smoke scripts. Do **not** treat sidecar as the default for new primary shells.
+> This page is an **appendix** for historical Phase 1/2 HTTP integration, named HTTP carve-outs, and legacy smoke scripts. Do **not** treat sidecar as the default for new primary shells.
+
+## Named HTTP carve-outs (exception list)
+
+Until replaced by embed tickets, these paths may still reference `127.0.0.1:8787` / Runtime URL:
+
+| Path | Ticket / note |
+|---|---|
+| `apps/trace-explorer/**` | `embed-trace-explorer` (Blocked — wait Traverse embedded trace API) |
+| `apps/meeting-notes/**` | `meeting-notes-multi-os` (Ready — multi-OS embed showcase) |
+| This appendix + legacy `phase1_smoke.sh` / nightly sidecar checks | Historical Phase 1/2 only |
+
+All other **primary** shells (traverse-starter, doc-approval on every OS) are **Embedded-only** — no Runtime URL settings, no health polling against a sidecar.
 
 ## Deployment Models
 
 | Model | Status | Use when |
 |---|---|---|
 | **Embedded in-app host (Phase 3)** | **Shipped** on primary platforms | Building/shipping reference apps |
-| **HTTP sidecar `traverse-cli serve` (Phase 1/2)** | **Deprecated interim** | Trace Explorer ([#183](https://github.com/traverse-framework/reference-apps/issues/183)), legacy `phase1_smoke.sh`, historical docs |
+| **HTTP sidecar `traverse-cli serve` (Phase 1/2)** | **Deprecated interim** | Trace Explorer, meeting-notes (until `meeting-notes-multi-os`), legacy `phase1_smoke.sh` |
 
-End-user **primary** apps must not depend on a separately running sidecar. Sidecar client removal from product shells: [#180](https://github.com/traverse-framework/reference-apps/issues/180).
+End-user **primary** apps (except the meeting-notes interim carve-out above) must not depend on a separately running sidecar. Cleanup ticket: Project 2 `remove-sidecar-paths`.
 
 ## Pinned Version (sidecar only)
 

@@ -22,7 +22,7 @@ export TRAVERSE_REPO=/path/to/Traverse
 bash scripts/ci/sync_web_starter_bundle.sh
 ```
 
-Optional **HTTP sidecar** is not used by this client. Sidecar docs (deprecated appendix): [`docs/traverse-runtime.md`](../../../docs/traverse-runtime.md). Production guide: [`docs/production-playbook.md`](../../../docs/production-playbook.md).
+HTTP sidecar is not used by this client. Sidecar appendix (Trace Explorer / meeting-notes interim only): [`docs/traverse-runtime.md`](../../../docs/traverse-runtime.md). Production guide: [`docs/production-playbook.md`](../../../docs/production-playbook.md).
 
 ## Development Commands
 
