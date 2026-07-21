@@ -1,5 +1,7 @@
 # meeting-notes (Web React UI)
 
+**Runtime mode: HTTP sidecar (temporary)** — web-only until the multi-OS embed showcase ([#179](https://github.com/traverse-framework/reference-apps/issues/179)). Not a primary copy-paste shell; see [`docs/production-playbook.md`](../../../docs/production-playbook.md).
+
 React UI shell for the **meeting-notes** reference application — a second domain app that demonstrates **list-type structured output** from the Traverse runtime.
 
 Paste a meeting transcript → the runtime returns action items, decisions, follow-ups, and a summary. The UI renders those fields only; it does not extract or invent them.

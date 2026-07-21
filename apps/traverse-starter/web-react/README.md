@@ -22,7 +22,7 @@ export TRAVERSE_REPO=/path/to/Traverse
 bash scripts/ci/sync_web_starter_bundle.sh
 ```
 
-Optional **HTTP sidecar (Phase 1/2 interim)** is not the production path for this client. Prefer the embedded host above. Sidecar docs live in [`docs/traverse-runtime.md`](../../../docs/traverse-runtime.md) for platforms still blocked on [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116).
+Optional **HTTP sidecar** is not used by this client. Sidecar docs (deprecated appendix): [`docs/traverse-runtime.md`](../../../docs/traverse-runtime.md). Production guide: [`docs/production-playbook.md`](../../../docs/production-playbook.md).
 
 ## Development Commands
 

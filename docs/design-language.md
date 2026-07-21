@@ -10,12 +10,12 @@ Every client presents the same three zones, top to bottom:
 
 | Element | Description |
 |---|---|
-| Runtime mode | `Embedded` (Phase 3) or `Sidecar` (Phase 1/2 dev) |
+| Runtime mode | `Embedded` (primary shells) — `Sidecar` only for named exceptions |
 | Runtime status | `Ready` (green) / `Unavailable` (red) / `Starting` (animated) |
 | Workspace | Workspace ID (e.g. `local-default`) |
 | Workflow / capability | Workflow or capability being invoked (e.g. `traverse-starter.pipeline`) |
 
-Phase 1/2 clients may still show a sidecar URL during dev migration. Phase 3 clients must not expose loopback URL as a required user configuration.
+Primary Phase 3 shells must not expose a loopback URL as required user configuration. Sidecar URL is allowed only for Trace Explorer / temporary HTTP clients (see [`production-playbook.md`](production-playbook.md)).
 
 ### Zone 2 — Input
 

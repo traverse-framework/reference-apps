@@ -6,7 +6,8 @@ Reference UI applications for the [Traverse](https://github.com/traverse-framewo
 
 **Architecture in one sentence:** This repo is UI-only. Each platform ships a **native UI shell** with an **embedded Traverse WASM runtime** (Phase 3 target). Business logic lives in bundled WASM agents; the UI starts workflows and renders runtime-provided output only.
 
-> **Current state:** All seven platform clients embed the WASM runtime (Web, Linux, CLI, Android, Windows, iOS, macOS) — no sidecar required for production. Start with [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md).
+> **Current state:** All seven primary platform clients embed the WASM runtime (Web, Linux, CLI, Android, Windows, iOS, macOS) — no sidecar required for production.  
+> **Start here:** [`docs/production-playbook.md`](docs/production-playbook.md) · hands-on [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md).
 
 
 ## Prerequisites
@@ -106,17 +107,18 @@ Each app also ships native clients (iOS, macOS, Android, Windows, Linux, CLI) wh
 | [`apps/macos-demo/`](apps/macos-demo/) | Expedition macOS demo |
 | [`apps/youaskm3-starter-kit/`](apps/youaskm3-starter-kit/) | youaskm3 browser starter kit |
 | [`docs/adopted-platform-clients.md`](docs/adopted-platform-clients.md) | Canonical homes for adopted Traverse demos |
-| [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md) | Embedded-first onboarding (Web + Linux/CLI) |
+| [`docs/production-playbook.md`](docs/production-playbook.md) | **Production playbook** — embedded-first multi-OS shipping guide |
+| [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md) | Hands-on embedded onboarding (Web + Linux/CLI) |
 | [`docs/embedded-runtime-plan.md`](docs/embedded-runtime-plan.md) | Phase 3 — embedded runtime + multi-capability workflows |
 | [`docs/production-reference-plan.md`](docs/production-reference-plan.md) | Phase 4 — production kit roadmap (CI, packaging, docs, agent ops) |
-| [`docs/traverse-runtime.md`](docs/traverse-runtime.md) | Dev sidecar setup (deprecated interim / debug) |
+| [`docs/traverse-runtime.md`](docs/traverse-runtime.md) | Dev sidecar appendix (deprecated / Trace Explorer) |
 | [`manifests/traverse-starter/`](manifests/traverse-starter/) | App manifest + component manifests (Phase 2) |
 | [`fixtures/`](fixtures/) | Shared UI demo fixtures (e.g. expedition session) |
 | [`scripts/ci/`](scripts/ci/) | Repository checks, smoke tests, coverage gate |
 
 ## Platform clients
 
-All clients are **native UI shells** separated from business logic. Phase 1/2 use an HTTP dev sidecar; **Phase 3 embeds the WASM runtime in every app** ([#109](https://github.com/traverse-framework/reference-apps/issues/109)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)). Web SSE + `sendCommand` shipped in [#43](https://github.com/traverse-framework/reference-apps/issues/43); native platforms can follow that pattern.
+All **primary** clients are **native UI shells** with an **embedded** Traverse WASM host ([#113](https://github.com/traverse-framework/reference-apps/issues/113)–[#118](https://github.com/traverse-framework/reference-apps/issues/118)). Business logic stays in WASM; the UI submits input and renders runtime-owned fields. See [`docs/production-playbook.md`](docs/production-playbook.md).
 
 ### traverse-starter
 
@@ -147,7 +149,7 @@ All clients are **native UI shells** separated from business logic. Phase 1/2 us
 
 | Platform | Status | Path |
 |---|---|---|
-| Web (React + TypeScript) | Shipped | [`apps/meeting-notes/web-react/`](apps/meeting-notes/web-react/) |
+| Web (React + TypeScript) | Shipped (HTTP until [#179](https://github.com/traverse-framework/reference-apps/issues/179) multi-OS embed) | [`apps/meeting-notes/web-react/`](apps/meeting-notes/web-react/) |
 
 ## Development
 
@@ -164,18 +166,18 @@ bash scripts/ci/onboarding_check.sh   # local setup verification (runtime steps 
 
 ### Native clients
 
-Native platforms (iOS, macOS, Android, Windows, Linux, CLI) are built and run from their app directories. Each platform README documents prerequisites, runtime URL configuration, and test commands.
+Native platforms (iOS, macOS, Android, Windows, Linux, CLI) are built and run from their app directories. Each **primary** platform README documents **Runtime mode: Embedded**, bundle sync, and test commands — not a sidecar URL.
 
 | Platform | Typical entry point |
 |---|---|
 | iOS / macOS | Open the `.xcodeproj` in Xcode → Run (⌘R) |
 | Android | `cd apps/<app>/android-compose && ./gradlew test` |
 | Windows | Open the `.sln` in Visual Studio |
-| Linux GTK / CLI | `cargo test` in `apps/<app>/linux-gtk` or `cli-rust` |
+| Linux GTK / CLI | `cargo test` / `cargo run` in `apps/<app>/linux-gtk` or `cli-rust` |
 
-**Runtime URL:** loopback clients use `http://127.0.0.1:8787`. Android emulator uses `http://10.0.2.2:8787` for host loopback.
+**Sidecar URL (deprecated):** only Trace Explorer / meeting-notes (until embed) / legacy Phase 1 scripts use `http://127.0.0.1:8787`. See [`docs/traverse-runtime.md`](docs/traverse-runtime.md).
 
-See [docs/traverse-starter-plan.md](docs/traverse-starter-plan.md) for the full plan and [docs/traverse-runtime.md](docs/traverse-runtime.md) for runtime setup.
+See [`docs/production-playbook.md`](docs/production-playbook.md) for the shipping guide.
 
 ## Verify Your Setup
 
