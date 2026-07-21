@@ -57,7 +57,8 @@ npm run test:coverage    # Run tests with coverage
 bash scripts/ci/repository_checks.sh   # Repo structure gate
 bash scripts/ci/pr_body_check.sh       # PR body validation
 bash scripts/ci/coverage_gate.sh       # Coverage gate
-bash scripts/ci/phase1_smoke.sh        # Phase 1 end-to-end smoke
+bash scripts/ci/embedded_smoke.sh      # Phase 3 embedded smoke (set TRAVERSE_REPO)
+bash scripts/ci/phase1_smoke.sh        # Phase 1 end-to-end smoke (sidecar)
 ```
 
 ## Code Style

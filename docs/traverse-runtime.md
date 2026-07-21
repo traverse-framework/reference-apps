@@ -125,4 +125,4 @@ bash scripts/ci/phase2_link_traverse.sh
 bash scripts/ci/phase2_smoke.sh
 ```
 
-Phase 3 will add `scripts/ci/embedded_smoke.sh` when the embeddable host is available.
+Phase 3 embedded gate: `bash scripts/ci/embedded_smoke.sh` (no sidecar). See [`getting-started-embedded.md`](getting-started-embedded.md).

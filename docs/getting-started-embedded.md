@@ -116,9 +116,27 @@ Checklist for a new shell (or promoting a sidecar client to embedded):
 
 Same matrix for `doc-approval` (embedded Web / Linux / CLI with `doc-approval.pipeline`). Status labels in the root [`README.md`](../README.md) **Platform clients** table remain the source of truth.
 
+## Validation — embedded smoke
+
+Prove the production path without `traverse-cli serve`:
+
+```bash
+export TRAVERSE_REPO=/path/to/Traverse
+export EMBEDDED_SMOKE_EXPECT=linux   # require web + CLI; skip native SDKs with reason
+bash scripts/ci/embedded_smoke.sh
+```
+
+- **Web:** sync bundle → `BundleEmbedder` + `NodeFsBundleLoader` → init + workflow invoke  
+- **CLI:** `phase2_link_traverse.sh` → `cargo run -p traverse-starter-cli -- health --json` → `Embedded` / `Ready`  
+- **Android / Swift / Windows:** digest-check committed `runtime/runtime.wasm`; full SDK tests when tools exist  
+- Set `EMBEDDED_SMOKE_REQUIRE_OUTPUT=1` to hard-fail when pipeline fields are missing (example agents may still be stubs)
+
+CI runs this with `EMBEDDED_SMOKE_EXPECT=linux` on every PR (see `.github/workflows/ci.yml`).
+
 ## Related docs
 
 - [`embedded-runtime-plan.md`](embedded-runtime-plan.md) — Phase 3 architecture
+- [`production-reference-plan.md`](production-reference-plan.md) — Phase 4 kit roadmap
 - [`traverse-starter-plan.md`](traverse-starter-plan.md) — app plan across phases
 - [`traverse-runtime.md`](traverse-runtime.md) — **Dev sidecar (Phase 1/2 interim)** only
 - [`youaskm3-starter-kit.md`](youaskm3-starter-kit.md) — browser consumer adoption path

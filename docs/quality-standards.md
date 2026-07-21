@@ -108,6 +108,14 @@ A change must not merge when any of the following are true:
 - Fake runtime behavior exists in application code
 - The change lacks a GitHub issue + Project 2 item + PR
 
+## Embedded smoke (PR merge-blocking)
+
+Every PR runs `scripts/ci/embedded_smoke.sh` with `EMBEDDED_SMOKE_EXPECT=linux` (`.github/workflows/ci.yml` job `embedded-smoke`):
+
+- Requires Web (`BundleEmbedder` init + workflow invoke) and Rust CLI (`health` → Embedded/Ready)
+- Skips Apple / Windows / Android SDK slices with reason when tools are absent; still digest-checks committed `runtime.wasm`
+- Does **not** start `traverse-cli serve`
+
 ## Nightly CI Gate
 
 A nightly job runs the Phase 1 smoke test independently of any PR activity.
@@ -115,9 +123,10 @@ A nightly job runs the Phase 1 smoke test independently of any PR activity.
 **Schedule**: daily at 06:00 UTC (`.github/workflows/nightly.yml`)
 
 **What it validates**:
-- Phase 1 end-to-end smoke (`scripts/ci/phase1_smoke.sh`)
+- Phase 1 end-to-end smoke (`scripts/ci/phase1_smoke.sh`) — sidecar path (legacy)
 - Repository structure checks (`scripts/ci/repository_checks.sh`)
 - TypeScript, lint, and test suite
+- Embedded smoke is on PR CI (above), not only nightly
 
 **SLA**: any nightly failure must be investigated within 24 hours. A broken nightly sitting more than 24 hours is a P1 issue.
 
