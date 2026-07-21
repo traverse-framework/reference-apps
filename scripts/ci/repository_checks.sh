@@ -84,6 +84,7 @@ check "apps/react-demo/src/main.js"                                     "react-d
 check "apps/youaskm3-starter-kit/README.md"                             "youaskm3 starter kit"
 check "fixtures/expedition-runtime-session.json"                        "expedition runtime fixture"
 check "docs/adopted-platform-clients.md"                                "adopted platform clients doc"
+check "docs/production-playbook.md"                                     "production playbook"
 check "docs/youaskm3-starter-kit.md"                                    "youaskm3 starter guide"
 check "scripts/ci/android_demo_smoke.sh"                                "android demo smoke"
 check "scripts/ci/macos_demo_smoke.sh"                                  "macos demo smoke"

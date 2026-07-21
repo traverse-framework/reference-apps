@@ -53,11 +53,11 @@ The coverage gate is merge-safe before non-trivial logic exists — it passes wh
 
 ## Native Platform Clients
 
-Native clients follow the UI-only boundary: **native UI separated from business logic**. Business fields come from the embedded Traverse host (Phase 3) or dev HTTP sidecar (Phase 1/2 interim).
+Native clients follow the UI-only boundary: **native UI separated from business logic**. Business fields come from the **embedded** Traverse host on primary platforms.
 
-**Runtime boundary (interim):** public HTTP/JSON API ([spec 033](https://github.com/traverse-framework/Traverse/blob/main/docs/specs/033-http-json-api.md)) for dev sidecar only.
+**Runtime boundary (production):** public embedded host SDK — in-process execute, event subscription, bundled manifests + WASM. No `127.0.0.1:8787` in production builds. See [`production-playbook.md`](production-playbook.md).
 
-**Runtime boundary (target):** public embedded host SDK from Traverse — in-process execute, event subscription, bundled manifests + WASM. No `127.0.0.1:8787` in production builds.
+**Runtime boundary (deprecated sidecar):** public HTTP/JSON API ([spec 033](https://github.com/traverse-framework/Traverse/blob/main/docs/specs/033-http-json-api.md)) for Trace Explorer / legacy smoke only ([`traverse-runtime.md`](traverse-runtime.md)).
 
 See [`docs/embedded-runtime-plan.md`](embedded-runtime-plan.md) for the Phase 3 platform matrix.
 
@@ -74,7 +74,7 @@ See [`docs/embedded-runtime-plan.md`](embedded-runtime-plan.md) for the Phase 3 
 | Linux (GTK4 + Rust) | `apps/traverse-starter/linux-gtk/` | `cargo build`, `cargo test` |
 | CLI (Rust) | `apps/traverse-starter/cli-rust/` | `cargo build --release`, `cargo test` |
 
-Each platform README documents runtime setup (`cargo run -p traverse-cli -- serve`) and any platform-specific prerequisites.
+Each primary platform README documents **Runtime mode: Embedded** and sync/test commands (not sidecar URL setup).
 
 **Test expectations**:
 

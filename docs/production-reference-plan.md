@@ -9,8 +9,9 @@ Status of individual tickets lives on [Project 2](https://github.com/orgs/traver
 Related:
 
 - Phase 3 architecture: [`embedded-runtime-plan.md`](embedded-runtime-plan.md)
+- Production playbook: [`production-playbook.md`](production-playbook.md)
 - Hands-on embed path: [`getting-started-embedded.md`](getting-started-embedded.md)
-- Sidecar (deprecated interim): [`traverse-runtime.md`](traverse-runtime.md)
+- Sidecar (deprecated appendix): [`traverse-runtime.md`](traverse-runtime.md)
 
 ## Mission (locked)
 

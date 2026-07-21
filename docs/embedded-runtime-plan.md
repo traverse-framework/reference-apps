@@ -8,9 +8,9 @@ App-References must demonstrate the **production-shaped** Traverse integration m
 2. **Embedded WASM runtime in every app** — the Traverse host runs **inside** the application process/bundle. No separate `traverse-cli serve` step is required for end users.
 3. **Multi-capability showcase workflow** — at least one reference app runs a **single workflow** that chains **multiple WASM capabilities** so developers can see orchestration, not just one-shot execute.
 
-Phase 1 (HTTP sidecar) and Phase 2 (CLI registration into a sidecar) remain valid **developer/integration** paths until Phase 3 lands. They are **not** the target production architecture.
+Phase 3 **shipped** on primary platforms (Web, Linux/CLI, Android, Windows, iOS, macOS). Phase 1/2 HTTP sidecar remains a **deprecated appendix** ([`traverse-runtime.md`](traverse-runtime.md)) for Trace Explorer and legacy smoke only.
 
-**Hands-on onboarding (embedded platforms already shipped):** [`getting-started-embedded.md`](getting-started-embedded.md).
+**Hands-on onboarding:** [`production-playbook.md`](production-playbook.md) · [`getting-started-embedded.md`](getting-started-embedded.md).
 
 ## Architecture Boundary (unchanged)
 
@@ -42,10 +42,10 @@ Phase 1 (HTTP sidecar) and Phase 2 (CLI registration into a sidecar) remain vali
 
 | Mode | When | Runtime location | Discovery |
 |---|---|---|---|
-| **Production (Phase 3 target)** | Shipped apps | Embedded in app bundle | In-process SDK / local workspace path |
-| **Dev sidecar (Phase 1/2)** | Local development, CI smoke | `traverse-cli serve` @ 8787 | `.traverse/server.json` or env vars |
+| **Production (Phase 3)** | Shipped primary apps | Embedded in app bundle | In-process SDK / local workspace path |
+| **Dev sidecar (Phase 1/2)** | Deprecated / Trace Explorer | `traverse-cli serve` @ 8787 | `.traverse/server.json` or env vars |
 
-HTTP to `127.0.0.1:8787` is a **dev convenience**, not the long-term client architecture.
+HTTP to `127.0.0.1:8787` is **not** the production client architecture.
 
 ## Multi-Capability Showcase
 
@@ -109,7 +109,7 @@ Phase 3 is blocked until Traverse ships:
 4. **Additional WASM agents** — [#554](https://github.com/traverse-framework/Traverse/issues/554), [#538](https://github.com/traverse-framework/Traverse/issues/538), [#555](https://github.com/traverse-framework/Traverse/issues/555), [#556](https://github.com/traverse-framework/Traverse/issues/556)
 5. **Registry spec 008** — reference capability publication ([registry spec 008](https://github.com/traverse-framework/registry/blob/main/specs/008-reference-capability-publication/spec.md))
 
-Until (1–2) exist, platform migration tickets stay **Blocked**.
+Platform embeds for traverse-starter / doc-approval are **Done**. Follow-on kit work lives in [`production-reference-plan.md`](production-reference-plan.md).
 
 ## Phase History
 
@@ -117,17 +117,16 @@ Until (1–2) exist, platform migration tickets stay **Blocked**.
 |---|---|---|
 | Phase 1 | ✅ Shipped | HTTP sidecar, single capability execute + poll |
 | Phase 2 | ✅ Shipped | CLI validate/register into sidecar workspace |
-| **Phase 3** | 🎯 Target | Embedded runtime + multi-capability workflow on all platforms |
+| **Phase 3** | ✅ Shipped (primary platforms) | Embedded runtime + multi-capability workflows |
+| Phase 4 | 🎯 In progress | Production kit — CI, packaging, playbooks ([`production-reference-plan.md`](production-reference-plan.md)) |
 
 ## Ticket Index (Phase 3)
 
-| # | Title | Status |
+Live Status/Agent live on [Project 2](https://github.com/orgs/traverse-framework/projects/2) — do not treat this table as a live board.
+
+| # | Title | Outcome |
 |---|---|---|
-| [109](https://github.com/traverse-framework/reference-apps/issues/109) | Land embedded runtime architecture spec | Ready |
-| [Traverse #557](https://github.com/traverse-framework/Traverse/issues/557) | Spec **057** approved — embeddable runtime host | Done (spec merged) |
-| [Traverse #553](https://github.com/traverse-framework/Traverse/issues/553) | Implement spec 057 SDK | Blocked → Ready after 057 PR |
-| [Traverse #558](https://github.com/traverse-framework/Traverse/issues/558) | Implement spec 058 pipeline | Ready |
-| [Traverse #527](https://github.com/traverse-framework/Traverse/issues/527) | Implement spec 059 command dispatch | Blocked |
+| [109](https://github.com/traverse-framework/reference-apps/issues/109) | Land embedded runtime architecture spec | Done |
 | [110](https://github.com/traverse-framework/reference-apps/issues/110) | traverse-starter.pipeline multi-capability workflow | Done |
 | [111](https://github.com/traverse-framework/reference-apps/issues/111) | doc-approval.pipeline multi-capability workflow | Done |
 | [112](https://github.com/traverse-framework/reference-apps/issues/112) | doc-approval manifests | Done |
@@ -135,18 +134,13 @@ Until (1–2) exist, platform migration tickets stay **Blocked**.
 | [114](https://github.com/traverse-framework/reference-apps/issues/114) | Embed runtime — Swift (iOS + macOS) | Done |
 | [115](https://github.com/traverse-framework/reference-apps/issues/115) | Embed runtime — Android | Done |
 | [116](https://github.com/traverse-framework/reference-apps/issues/116) | Embed runtime — Windows | Done |
-
-| [117](https://github.com/traverse-framework/reference-apps/issues/117) | Embed runtime — Linux + CLI | Done (this PR) |
-| [118](https://github.com/traverse-framework/reference-apps/issues/118) | embedded_smoke.sh CI gate | See Project 2 |
-| [58](https://github.com/traverse-framework/reference-apps/issues/58), [72](https://github.com/traverse-framework/reference-apps/issues/72) | Shared Swift embedded host package | Blocked |
-| [59](https://github.com/traverse-framework/reference-apps/issues/59), [73](https://github.com/traverse-framework/reference-apps/issues/73) | Shared Rust embedded host package | Blocked |
+| [117](https://github.com/traverse-framework/reference-apps/issues/117) | Embed runtime — Linux + CLI | Done |
+| [118](https://github.com/traverse-framework/reference-apps/issues/118) | embedded_smoke.sh CI gate | Done |
 
 ## Validation (Phase 3 complete)
 
-When Phase 3 is done:
-
-1. Install/build any platform client **without** starting `traverse-cli serve`
-2. Submit input → multi-capability workflow runs → all output fields render
+1. Install/build any **primary** platform client **without** starting `traverse-cli serve`
+2. Submit input → multi-capability workflow runs → all output fields render (when example agents produce JSON)
 3. `bash scripts/ci/embedded_smoke.sh` passes on CI (`EMBEDDED_SMOKE_EXPECT=linux` merge-blocking; other platforms skip-with-reason until runners exist — see #88)
 4. No business field computation in UI diff review
 5. Manifests in `manifests/` reference WASM digests bundled in app artifacts

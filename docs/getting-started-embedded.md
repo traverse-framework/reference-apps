@@ -2,7 +2,8 @@
 
 Build a Traverse app where **business logic lives once in WASM** and every UI shell only submits input and renders runtime-owned output. This guide uses platforms that already embed successfully today.
 
-> **All platforms embed today.** Sidecar docs remain in [`traverse-runtime.md`](traverse-runtime.md) for historical Phase 1/2 only.
+> **All primary platforms embed today.** Full shipping guide: [`production-playbook.md`](production-playbook.md).  
+> Sidecar docs remain in [`traverse-runtime.md`](traverse-runtime.md) (deprecated appendix only).
 
 ## Mental model
 
@@ -102,7 +103,7 @@ Checklist for a new shell (or promoting a sidecar client to embedded):
 2. Bundle `manifests/<app>/` + WASM artifacts for the host loader
 3. Submit workflow input; subscribe to embedder events; render only runtime-owned fields
 4. Document **Runtime mode: embedded** in that platform’s README
-5. Keep HTTP sidecar docs only as an interim path until cutover
+5. Do **not** add HTTP sidecar URL config to primary shells — appendix only ([`traverse-runtime.md`](traverse-runtime.md))
 
 ## Platform matrix (current)
 
@@ -137,8 +138,9 @@ CI runs this with `EMBEDDED_SMOKE_EXPECT=linux` on every PR (see `.github/workfl
 
 ## Related docs
 
+- [`production-playbook.md`](production-playbook.md) — embedded-first production playbook
 - [`embedded-runtime-plan.md`](embedded-runtime-plan.md) — Phase 3 architecture
 - [`production-reference-plan.md`](production-reference-plan.md) — Phase 4 kit roadmap
 - [`traverse-starter-plan.md`](traverse-starter-plan.md) — app plan across phases
-- [`traverse-runtime.md`](traverse-runtime.md) — **Dev sidecar (Phase 1/2 interim)** only
+- [`traverse-runtime.md`](traverse-runtime.md) — **Dev sidecar appendix** (deprecated)
 - [`youaskm3-starter-kit.md`](youaskm3-starter-kit.md) — browser consumer adoption path
