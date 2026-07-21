@@ -72,7 +72,7 @@ Query Project 2 for current Status / Agent. Intended sequencing:
 |---|---|
 | [#176](https://github.com/traverse-framework/reference-apps/issues/176) | Embedded-first production onboarding; retire sidecar-first narrative |
 | [#181](https://github.com/traverse-framework/reference-apps/issues/181) | This plan doc |
-| [#185](https://github.com/traverse-framework/reference-apps/issues/185) | `registry_ref` consumer contract (docs only) |
+| [#185](https://github.com/traverse-framework/reference-apps/issues/185) | `registry_ref` consumer contract (docs only) — see [`production-packaging.md`](production-packaging.md) |
 | [#186](https://github.com/traverse-framework/reference-apps/issues/186) | Primary vs secondary / adopted apps |
 
 ### D — Agent / dev process
