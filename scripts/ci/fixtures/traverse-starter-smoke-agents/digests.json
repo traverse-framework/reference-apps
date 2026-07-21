@@ -1,0 +1,17 @@
+{
+  "validate": {
+    "file": "validate-agent.wasm",
+    "digest": "sha256:ecc46ac478334adb1dacc2bb36841edf2617fcbfab26e6fecfb3d73440805ce9",
+    "bytes": 154
+  },
+  "process": {
+    "file": "process-agent.wasm",
+    "digest": "sha256:15ae4a7431bb45fca2a4d253d4e24fec4962ce067b012c5d1bfc7b86350c79dd",
+    "bytes": 265
+  },
+  "summarize": {
+    "file": "summarize-agent.wasm",
+    "digest": "sha256:a2e916443233b3346c6ba9211a341f961def495870b77350d2824bba3667440f",
+    "bytes": 184
+  }
+}

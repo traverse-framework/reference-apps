@@ -6,7 +6,7 @@ set -euo pipefail
 
 REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 TARGETS_FILE="$REPO_ROOT/ci/coverage-targets.txt"
-THRESHOLD="${COVERAGE_THRESHOLD:-80}"
+THRESHOLD="${COVERAGE_THRESHOLD:-100}"
 
 echo "=== Coverage gate ==="
 

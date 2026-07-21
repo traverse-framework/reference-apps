@@ -45,3 +45,30 @@ describe('parseOutput', () => {
     expect(parseOutput(42)).toBeNull()
   })
 })
+
+  it('returns null when process fields have wrong types', () => {
+    expect(
+      parseOutput({
+        ...valid,
+        process: { title: 1, tags: [], noteType: 'n', suggestedNextAction: 'x', status: 's' },
+      }),
+    ).toBeNull()
+  })
+
+  it('returns null when validate fields are invalid', () => {
+    expect(parseOutput({ ...valid, validate: { valid: 'yes', issues: [] } })).toBeNull()
+    expect(parseOutput({ ...valid, validate: { valid: true, issues: [1] } })).toBeNull()
+  })
+
+  it('returns null when summarize fields are invalid', () => {
+    expect(parseOutput({ ...valid, summarize: { summary: 1, wordCount: 1 } })).toBeNull()
+    expect(parseOutput({ ...valid, summarize: { summary: 's', wordCount: 'x' } })).toBeNull()
+  })
+
+  it('accepts summarize.wordCount as numeric string', () => {
+    const result = parseOutput({
+      ...valid,
+      summarize: { summary: 's', wordCount: '4' },
+    })
+    expect(result?.summarize.wordCount).toBe(4)
+  })

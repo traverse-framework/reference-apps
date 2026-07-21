@@ -10,8 +10,10 @@
 #                                 linux → web + cli required
 #                                 all   → every slice required (native SDKs must exist)
 #                                 auto  → require a slice only when its tools are present
-#   EMBEDDED_SMOKE_REQUIRE_OUTPUT 1 → fail web/cli if pipeline fields missing (stubs)
 #   EMBEDDED_SMOKE_SKIP=<csv>     force-skip slices (web,cli,gtk,android,swift,windows)
+#
+# Web + CLI always require runtime-owned pipeline output (validate/process/summarize)
+# via scripts/ci/fixtures/traverse-starter-smoke-agents/ (WASI fixtures).
 #
 # Exit 0 on pass (skips allowed). Exit 1 on any required-slice failure.
 set -euo pipefail
@@ -100,6 +102,22 @@ verify_runtime_digest() {
 
 # ─── slices ──────────────────────────────────────────────────────────────────
 
+SMOKE_PREPARED=0
+SMOKE_MANIFEST_PATH=""
+
+prepare_smoke_bundle() {
+  if [ "$SMOKE_PREPARED" = "1" ]; then return 0; fi
+  log "=== prepare smoke agents + digests ==="
+  if ! TRAVERSE_REPO="$TRAVERSE_REPO" bash "$REPO_ROOT/scripts/ci/prepare_embedded_smoke_bundle.sh"; then
+    fail "prepare_embedded_smoke_bundle.sh"
+    return 1
+  fi
+  SMOKE_MANIFEST_PATH="$(cat /tmp/app-refs-smoke-manifest-path.txt)"
+  SMOKE_PREPARED=1
+  ok "smoke agents prepared"
+  return 0
+}
+
 smoke_web() {
   local slice=web
   if forced_skip "$slice"; then skip "web (EMBEDDED_SMOKE_SKIP)"; return; fi
@@ -112,17 +130,14 @@ smoke_web() {
     return
   fi
   if ! require_traverse "web sync"; then return; fi
+  if ! prepare_smoke_bundle; then return; fi
 
-  log "=== web (BundleEmbedder + NodeFsBundleLoader) ==="
-  if ! TRAVERSE_REPO="$TRAVERSE_REPO" bash "$REPO_ROOT/scripts/ci/sync_web_starter_bundle.sh"; then
-    fail "web sync_web_starter_bundle.sh"
-    return
-  fi
+  log "=== web (BundleEmbedder + runtime-owned pipeline output) ==="
   if ! node "$REPO_ROOT/scripts/ci/embedded_smoke_web.mjs"; then
     fail "web embedded_smoke_web.mjs"
     return
   fi
-  ok "web embedded smoke"
+  ok "web embedded smoke (runtime-owned output)"
 }
 
 smoke_cli() {
@@ -133,8 +148,9 @@ smoke_cli() {
     return
   fi
   if ! require_traverse "cli link"; then return; fi
+  if ! prepare_smoke_bundle; then return; fi
 
-  log "=== cli (traverse-starter-cli health) ==="
+  log "=== cli (health + run with runtime-owned output) ==="
   if ! TRAVERSE_REPO="$TRAVERSE_REPO" bash "$REPO_ROOT/scripts/ci/phase2_link_traverse.sh"; then
     fail "cli phase2_link_traverse.sh"
     return
@@ -143,7 +159,8 @@ smoke_cli() {
   local health
   if ! health="$(
     cd "$REPO_ROOT/apps/traverse-starter" &&
-      cargo run -q -p traverse-starter-cli -- health --json 2>/dev/null
+      TRAVERSE_STARTER_MANIFEST="$SMOKE_MANIFEST_PATH" \
+        cargo run -q -p traverse-starter-cli -- health --json 2>/dev/null
   )"; then
     fail "cli health command failed"
     return
@@ -156,6 +173,40 @@ smoke_cli() {
     return
   fi
   ok "cli embedded health Ready"
+
+  local run_json
+  if ! run_json="$(
+    cd "$REPO_ROOT/apps/traverse-starter" &&
+      TRAVERSE_STARTER_MANIFEST="$SMOKE_MANIFEST_PATH" \
+        cargo run -q -p traverse-starter-cli -- run \
+          --note "Meeting with design team about onboarding flow improvements" \
+          --json 2>/dev/null
+  )"; then
+    fail "cli run command failed"
+    return
+  fi
+  if ! printf '%s' "$run_json" | python3 -c '
+import json,sys
+data=json.load(sys.stdin)
+out=data.get("output") or {}
+proc=out.get("process") or {}
+val=out.get("validate") or {}
+summ=out.get("summarize") or {}
+assert isinstance(val.get("valid"), bool), data
+assert isinstance(val.get("issues"), list), data
+assert isinstance(proc.get("title"), str) and proc["title"], data
+assert isinstance(proc.get("tags"), list), data
+assert isinstance(proc.get("noteType"), str), data
+assert isinstance(proc.get("suggestedNextAction"), str), data
+assert isinstance(proc.get("status"), str), data
+assert isinstance(summ.get("summary"), str) and summ["summary"], data
+assert isinstance(summ.get("wordCount"), (int, float)), data
+print("OK: cli runtime-owned output title=%r" % (proc["title"],))
+'; then
+    fail "cli run missing runtime-owned pipeline fields: $run_json"
+    return
+  fi
+  ok "cli embedded run (runtime-owned output)"
 }
 
 # SDK build/test: hard-fail only when the slice is expected for this runner.
