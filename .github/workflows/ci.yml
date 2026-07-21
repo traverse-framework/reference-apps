@@ -93,6 +93,56 @@ jobs:
           EMBEDDED_SMOKE_EXPECT: linux
         run: bash scripts/ci/embedded_smoke.sh
 
+  # Tiered native CI (#88): PR merge-blocking = Linux cargo.
+  # Android gradle is not yet PR-stable (Kotlin embedder API). Apple/Windows = nightly.
+  native-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout App-References
+        uses: actions/checkout@v7
+
+      - name: Checkout Traverse
+        uses: actions/checkout@v7
+        with:
+          repository: traverse-framework/Traverse
+          ref: v0.8.2
+          path: .traverse-checkout
+
+      - name: Install GTK build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libgtk-4-dev \
+            libadwaita-1-dev \
+            libcairo2-dev \
+            libglib2.0-dev \
+            pkg-config
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@1.94.0
+
+      - name: Link Traverse examples
+        env:
+          TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
+        run: bash scripts/ci/phase2_link_traverse.sh
+
+      - name: cargo test traverse-starter (core + cli)
+        working-directory: apps/traverse-starter
+        run: cargo test -p traverse-core-rs -p traverse-starter-cli
+
+      - name: cargo test traverse-starter GTK
+        working-directory: apps/traverse-starter
+        run: cargo test -p traverse-starter-gtk
+
+      - name: cargo test doc-approval (core + cli)
+        working-directory: apps/doc-approval
+        run: cargo test -p doc-approval-core-rs -p doc-approval-cli
+
+      - name: cargo test doc-approval GTK
+        working-directory: apps/doc-approval
+        run: cargo test -p doc-approval-gtk
+
   pr-hygiene:
     if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest

@@ -38,3 +38,79 @@ jobs:
         env:
           TRAVERSE_RUNTIME_URL: ${{ vars.TRAVERSE_RUNTIME_URL }}
         run: bash scripts/ci/phase1_smoke.sh
+
+  # Tiered native CI (#88) — nightly required: Apple + Windows.
+  native-macos:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Build + test traverse-starter macOS
+        working-directory: apps/traverse-starter/macos-swift
+        run: |
+          xcodebuild \
+            -scheme TraverseStarterMac \
+            -destination 'platform=macOS' \
+            build test \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Build + test doc-approval macOS
+        working-directory: apps/doc-approval/macos-swift
+        run: |
+          xcodebuild \
+            -scheme DocApprovalMac \
+            -destination 'platform=macOS' \
+            build test \
+            CODE_SIGNING_ALLOWED=NO
+
+  native-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore + test traverse-starter WinUI
+        working-directory: apps/traverse-starter/windows-winui
+        run: |
+          dotnet restore TraverseStarter.sln
+          dotnet test TraverseStarter.sln -c Release --nologo
+
+      - name: Restore + test doc-approval WinUI
+        working-directory: apps/doc-approval/windows-winui
+        run: |
+          dotnet restore DocApproval.sln
+          dotnet test DocApproval.sln -c Release --nologo
+
+  # Advisory until Kotlin RuntimeTraverseEmbedder public factory is used (compile currently fails).
+  native-android-advisory:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Gradle test traverse-starter (advisory)
+        working-directory: apps/traverse-starter/android-compose
+        run: ./gradlew --no-daemon testDebugUnitTest
+
+      - name: Gradle test doc-approval (advisory)
+        working-directory: apps/doc-approval/android-compose
+        run: ./gradlew --no-daemon testDebugUnitTest

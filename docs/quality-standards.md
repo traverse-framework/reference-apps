@@ -82,7 +82,16 @@ Each primary platform README documents **Runtime mode: Embedded** and sync/test 
 - Tests must not fake runtime business decisions — use HTTP mocks or documented stubs scoped to tests
 - Scaffolds with no non-trivial logic yet may ship with build-only validation until logic lands; add tests in the same PR when non-trivial logic is introduced
 
-Native CI build gates are tracked separately (issue #88); until those land, local build + test commands above are the merge validation bar for native client changes.
+Native CI build gates (#88, tiered):
+
+| Gate | When | Job |
+|---|---|---|
+| Linux `cargo test` (traverse-starter + doc-approval: core, CLI, GTK) | **PR merge-blocking** | `native-linux` in `.github/workflows/ci.yml` |
+| macOS `xcodebuild` (TraverseStarterMac + DocApprovalMac) | **Nightly required** | `native-macos` in `.github/workflows/nightly.yml` |
+| Windows `dotnet test` (WinUI solutions) | **Nightly required** | `native-windows` in `.github/workflows/nightly.yml` |
+| Android `./gradlew testDebugUnitTest` | **Nightly advisory** (`continue-on-error`) until Kotlin embedder public API compiles | `native-android-advisory` |
+
+Local commands above remain the developer validation bar when editing a single platform.
 
 ## Reproducibility Standard
 
@@ -116,21 +125,19 @@ Every PR runs `scripts/ci/embedded_smoke.sh` with `EMBEDDED_SMOKE_EXPECT=linux` 
 - Skips Apple / Windows / Android SDK slices with reason when tools are absent; still digest-checks committed `runtime.wasm`
 - Does **not** start `traverse-cli serve`
 
+## Native Linux cargo (PR merge-blocking)
+
+Every PR runs `cargo test --workspace` for `apps/traverse-starter` and `apps/doc-approval` (job `native-linux`), with GTK/libadwaita packages installed on the runner.
+
 ## Nightly CI Gate
 
-A nightly job runs the Phase 1 smoke test independently of any PR activity.
+Nightly (`.github/workflows/nightly.yml`, 06:00 UTC + `workflow_dispatch`):
 
-**Schedule**: daily at 06:00 UTC (`.github/workflows/nightly.yml`)
+- Phase 1 sidecar smoke (`phase1_smoke.sh`) + Node quality suite (`golden-path`)
+- **Required:** `native-macos`, `native-windows`
+- **Advisory:** `native-android-advisory` (does not fail the workflow until Android compile is fixed)
 
-**What it validates**:
-- Phase 1 end-to-end smoke (`scripts/ci/phase1_smoke.sh`) — sidecar path (legacy)
-- Repository structure checks (`scripts/ci/repository_checks.sh`)
-- TypeScript, lint, and test suite
-- Embedded smoke is on PR CI (above), not only nightly
-
-**SLA**: any nightly failure must be investigated within 24 hours. A broken nightly sitting more than 24 hours is a P1 issue.
-
-**Manual trigger**: the workflow supports `workflow_dispatch`.
+**SLA**: any required nightly failure must be investigated within 24 hours. A broken required nightly sitting more than 24 hours is a P1 issue.
 
 ## Problem Handling Rule
 
