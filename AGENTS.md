@@ -2,138 +2,156 @@
 
 This repo is **UI-only**; canonical agent instructions (scope, structure, stack, commands, style, runtime setup, workflow) live in [CLAUDE.md](CLAUDE.md). This file holds only multi-tool coordination and curated blocker context, per `traverse-framework/.github` `docs/ai-agent-hardening.md`. Platform shipping status lives in README.md and on [Project 2](https://github.com/orgs/traverse-framework/projects/2) — never snapshot it here.
 
+**Backlog rule:** tickets live **only** on Project 2 (Draft items with Spec + DoD). Do not open GitHub Issues to track work. See [`docs/ticket-standard.md`](docs/ticket-standard.md).
+
 ### Ready to claim (query live board)
 
 ```bash
 gh project item-list 2 --owner traverse-framework --format json --limit 300 \
-  --jq '.items[] | select(.status == "Ready") | {number: .content.number, title: .content.title}'
+  --jq '.items[] | select(.status == "Ready") | {id, title: (.title // .content.title), note, agent}'
 ```
 
-### Blocked work summary
+### Blocked / Future backlog (live)
 
-- None. Phase 3 native embeds complete (#113–#117).
+Query Project 2 for `Blocked` and `Future`. Current gaps (ticket-id in Note):
 
-**Phase 4 (production kit):** see [`docs/production-reference-plan.md`](docs/production-reference-plan.md). Ready kit tickets include #118, #88, #174–#178 (query the live board). Showcase #179 and sidecar removal #180 stay Future until the kit lands.
+| Ticket ID | Status | Intent |
+|---|---|---|
+| `meeting-notes-multi-os` | Future | meeting-notes ≥3 OS embed via playbook |
+| `remove-sidecar-paths` | Future | Delete HTTP sidecar paths from primary shells |
+| `native-ci-android-gtk-required` | Future | Android + GTK CI advisory → required |
+| `phase2-sidecar-nightly` | Future | Optional Phase 2 sidecar nightly |
+| `embed-trace-explorer` | Blocked | Needs Traverse embedded trace API |
+| `registry-ref-starter-process` | Blocked | Needs registry seed + Traverse #542/#548 |
+| `consume-product-wasm-agents` | Blocked | Needs Traverse product agents (e.g. #785) |
 
 ### Flip rules (native embeds)
 
-Upstream flip conditions are met (Traverse #750/#751/#647 closed). Embeds #114–#116 are **Done**. Return any platform to Blocked only if Traverse withdraws the certified `runtime/runtime.wasm` artifact or reopens those upstream issues.
+Upstream flip conditions are met (Traverse #750/#751/#647 closed). Embeds are **Done**. Return any platform to Blocked only if Traverse withdraws the certified `runtime/runtime.wasm` artifact or reopens those upstream issues.
 
 ## Multi-Agent Coordination
 
 Multiple LLM coding tools work in parallel on this repo: Codex, Claude Code, Cursor, Antigravity, and others.
 
-**The golden rule: claim before you code. One issue = one agent.**
+**The golden rule: claim before you code. One Project 2 ticket = one agent.**
 
-If you find an issue already claimed, stop immediately and pick a different ticket.
+If you find a ticket already claimed (Agent ≠ Unassigned), stop immediately and pick a different ticket.
 Do not attempt to "help" a claimed ticket or work around an existing claim.
 
 ---
 
 ## Pre-flight Protocol (ALL agents must follow this)
 
-Run these three checks **before starting any work on an issue**. All three must pass.
+Run these three checks **before starting any work on a ticket**. All three must pass.
 
-### Check 1 — No existing agent label
+Identify the ticket by **Ticket ID** (from draft body / Note) and Project 2 `ITEM_ID`.
+
+### Check 1 — Agent is Unassigned
 
 ```bash
-gh issue view <NUMBER> --repo traverse-framework/reference-apps --json labels \
-  --jq '.labels[].name | select(startswith("agent:"))'
+gh project item-list 2 --owner traverse-framework --format json --limit 300 \
+  --jq '.items[] | select((.title // .content.title) | test("<TITLE_OR_TICKET_ID>"; "i")) | {id, agent, status, note}'
 ```
 
-**If any `agent:*` label is returned → STOP.**
+**If Agent is set to another tool → STOP.**
 
-Report: `Issue #<NUMBER> is already claimed by <label>. Choose a different ticket.`
+Report: `Ticket <ticket-id> is already claimed by <agent>. Choose a different ticket.`
 
 ### Check 2 — No existing agent branch
 
 ```bash
-git ls-remote --heads origin | grep "/issue-<NUMBER>-"
+git ls-remote --heads origin | grep "/ticket-<TICKET_ID>-"
 ```
 
-**If any branch matches `*/issue-<NUMBER>-*` → STOP.**
+**If any branch matches `*/ticket-<TICKET_ID>-*` → STOP.**
 
-Report: `A branch already exists for issue #<NUMBER>: <branch>. Choose a different ticket.`
+Report: `A branch already exists for ticket <TICKET_ID>: <branch>. Choose a different ticket.`
 
 ### Check 3 — Status is Ready
 
 ```bash
 gh project item-list 2 --owner traverse-framework --format json --limit 300 \
-  --jq '.items[] | select(.content.number == <NUMBER>) | .status'
+  --jq '.items[] | select(.id == "<ITEM_ID>") | .status'
 ```
 
 **If status is not `Ready` → STOP.**
 
-Report: `Issue #<NUMBER> has status <status>, not Ready. Choose a different ticket.`
+Report: `Ticket <ticket-id> has status <status>, not Ready. Choose a different ticket.`
 
 ---
 
 ## Claim Sequence (only if all three checks pass)
 
-Replace `<AGENT_LABEL>` with your tool's label and `<AGENT_OPTION_ID>` with your Agent field option ID.
+Replace `<AGENT_OPTION_ID>` with your Agent field option ID from the registry below.
 
 ```bash
-# 1. Add your agent label
-gh issue edit <NUMBER> --repo traverse-framework/reference-apps --add-label "<AGENT_LABEL>"
+ITEM_ID="<PROJECT_ITEM_ID>"
 
-# 2. Get the Project 2 item ID for this issue
-ITEM_ID=$(gh project item-list 2 --owner traverse-framework --format json --limit 300 \
-  --jq '.items[] | select(.content.number == <NUMBER>) | .id')
-
-# 3. Set Agent field
+# 1. Set Agent field
 gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz \
   --id "$ITEM_ID" \
   --field-id PVTSSF_lADOEbiBt84BbzAzzhWjEik \
   --single-select-option-id <AGENT_OPTION_ID>
 
-# 4. Set Status → In Progress
+# 2. Set Status → In Progress
 gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz \
   --id "$ITEM_ID" \
   --field-id PVTSSF_lADOEbiBt84BbzAzzhWg5OQ \
   --single-select-option-id 47fc9ee4
 ```
 
+Use branch: `<prefix>/ticket-<TICKET_ID>-*` (see Agent Registry).
+
 ## Agent Registry
 
-| Tool | Label | Branch prefix | Agent field option ID |
-|---|---|---|---|
-| Claude Code | `agent:claude` | `claude/issue-NNN-*` | `8f903ad6` |
-| Codex | `agent:codex` | `codex/issue-NNN-*` | `e428b05e` |
-| Cursor | `agent:cursor` | `cursor/issue-NNN-*` | `a9811389` |
-| Antigravity | `agent:antigravity` | `antigravity/issue-NNN-*` | `77295899` |
-| Continue | `agent:continue` | `continue/issue-NNN-*` | `156c534e` |
+| Tool | Branch prefix | Agent field option ID |
+|---|---|---|
+| Claude Code | `claude/ticket-<id>-*` | `8f903ad6` |
+| Codex | `codex/ticket-<id>-*` | `e428b05e` |
+| Cursor | `cursor/ticket-<id>-*` | `a9811389` |
+| Antigravity | `antigravity/ticket-<id>-*` | `77295899` |
+| Continue | `continue/ticket-<id>-*` | `156c534e` |
 
-To register a new tool: add its label (`gh label create`), add its Agent field option (update Project 2 via GraphQL), and add a row to this table.
+To register a new tool: add its Agent field option (update Project 2 via GraphQL) and add a row to this table. Optional `agent:*` GitHub labels are legacy and not required for claim.
 
 ## Release Sequence
 
 After your work is merged:
 
 ```bash
-# Remove your agent label
-gh issue edit <NUMBER> --repo traverse-framework/reference-apps --remove-label "<AGENT_LABEL>"
-
 # Set Agent → Unassigned, Status → Done
 gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz --id "$ITEM_ID" \
   --field-id PVTSSF_lADOEbiBt84BbzAzzhWjEik --single-select-option-id 8ebf043b
 gh project item-edit --project-id PVT_kwDOEbiBt84BbzAz --id "$ITEM_ID" \
   --field-id PVTSSF_lADOEbiBt84BbzAzzhWg5OQ --single-select-option-id 98236657
-
-# Close the issue
-gh issue close <NUMBER> --repo traverse-framework/reference-apps
 ```
+
+Do **not** open or close GitHub Issues for ticket lifecycle.
 
 ## Board hygiene
 
 When a platform client (or other major slice) ships, update all doc touchpoints in one pass:
 
-1. **Project 2** — set Status → Done; set Agent → Unassigned; remove any `agent:*` label
-2. **Issue** — close the linked GitHub issue
-3. **`AGENTS.md`** — update the Blocked work summary if applicable (platform status lives in README.md only)
-4. **`README.md`** — update the Platform clients table; remove from **What's Blocked** if no longer blocked; add new blockers only when status is Blocked on Project 2
-5. **`docs/design-language.md`** — add or update the row in the Reference implementation table
+1. **Project 2** — set Status → Done; set Agent → Unassigned
+2. **`AGENTS.md`** — update the Blocked/Future summary if applicable (platform status lives in README.md only)
+3. **`README.md`** — update the Platform clients table; remove from **What's Blocked** if no longer blocked; add new blockers only when status is Blocked on Project 2
+4. **`docs/design-language.md`** — add or update the row in the Reference implementation table
 
 Do not leave shipped platforms listed as "in progress" or "blocked" in any doc.
+
+## Creating tickets
+
+```bash
+# Draft ticket (body = full Spec + DoD per docs/ticket-standard.md)
+gh api graphql -f query='
+mutation($projectId: ID!, $title: String!, $body: String!) {
+  addProjectV2DraftIssue(input: {projectId: $projectId, title: $title, body: $body}) {
+    projectItem { id }
+  }
+}' -f projectId='PVT_kwDOEbiBt84BbzAz' -f title='...' -f body='...'
+
+# Then set Status + Note (ticket-id: …) + Agent Unassigned via gh project item-edit
+```
 
 ## Project 2 Field IDs
 

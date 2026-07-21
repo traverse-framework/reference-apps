@@ -44,7 +44,7 @@ This repo has two maintenance tiers. Do **not** treat Expedition demos as the sa
 |---|---|---|---|
 | **Primary product shells** | `traverse-starter`, `doc-approval`, `meeting-notes` | Full: embed path, digest pin, SDK doubles, production DoD | Hard-fail targets for Linux-runnable primary platforms |
 | **Adopted / secondary** | `react-demo`, `android-demo`, `macos-demo`, `browser-consumer`, `youaskm3-starter-kit` | Lighter: offline/live demo smokes; not the copy-paste production kit | **Not** merge-blocking smoke targets |
-| **Debugger exception** | `trace-explorer` | Named HTTP client until Traverse embeds a trace API ([#183](https://github.com/traverse-framework/reference-apps/issues/183)) | Not a product shell to copy |
+| **Debugger exception** | `trace-explorer` | Named HTTP client until Traverse embeds a trace API (Project 2: `embed-trace-explorer`) | Not a product shell to copy |
 
 Details: [`docs/adopted-platform-clients.md`](docs/adopted-platform-clients.md) · kit roadmap: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
 
@@ -163,7 +163,7 @@ All **primary** clients are **native UI shells** with an **embedded** Traverse W
 
 | Platform | Status | Path |
 |---|---|---|
-| Web (React + TypeScript) | Shipped (HTTP until [#179](https://github.com/traverse-framework/reference-apps/issues/179) multi-OS embed) | [`apps/meeting-notes/web-react/`](apps/meeting-notes/web-react/) |
+| Web (React + TypeScript) | Shipped (HTTP until Project 2 `meeting-notes-multi-os` multi-OS embed) | [`apps/meeting-notes/web-react/`](apps/meeting-notes/web-react/) |
 
 ## Development
 
@@ -205,5 +205,5 @@ Checks 1–5 validate Node, install, typecheck, lint, and tests (no runtime requ
 
 ## What's Blocked
 
-No active Project 2 **Blocked** items. Phase 3 embeds shipped. Next work is the **Phase 4 production kit** — see [`docs/production-reference-plan.md`](docs/production-reference-plan.md) and query Project 2 for Ready items (#118, #88, #174–#178, …).
+No active Project 2 **Blocked** items that are App-Refs-only engineering. Upstream-gated tickets (`embed-trace-explorer`, `registry-ref-starter-process`, `consume-product-wasm-agents`) and Future showcase/cleanup tickets live on [Project 2](https://github.com/orgs/traverse-framework/projects/2) — see [`docs/production-reference-plan.md`](docs/production-reference-plan.md) and `AGENTS.md`.
 

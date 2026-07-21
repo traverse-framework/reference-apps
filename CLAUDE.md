@@ -74,7 +74,7 @@ bash scripts/ci/phase1_smoke.sh        # Phase 1 end-to-end smoke (sidecar)
 Read `.specify/memory/constitution.md` before any implementation work. Key rules:
 
 1. UI is a rendering layer — all business decisions come from the Traverse runtime
-2. Every meaningful feature requires a tracked issue + Project 2 item + PR
+2. Every meaningful feature requires a Project 2 ticket (Spec + DoD) + PR — no GitHub Issues backlog
 3. CI gates must pass before merge: lint, typecheck, tests, coverage, PR hygiene
 4. Phase 2 work (app registration) is blocked until the Traverse CLI surface exists
 
@@ -111,8 +111,8 @@ cd $TRAVERSE_REPO && cargo run -p traverse-cli -- serve
 ## Development Workflow
 
 1. Clarify whether the change belongs in the UI layer (if not, it belongs in Traverse)
-2. Claim a Ready Project 2 issue — see `AGENTS.md` for pre-flight checks
-3. Implement the smallest change that satisfies the issue and architecture boundary
+2. Claim a Ready Project 2 ticket — see `AGENTS.md` for pre-flight checks
+3. Implement the smallest change that satisfies the ticket and architecture boundary
 4. Open a PR with the required sections (see `docs/ticket-standard.md`)
 5. Verify all CI gates pass before requesting merge
 

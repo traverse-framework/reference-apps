@@ -1,8 +1,10 @@
 # Ticket Standard
 
-This document defines the minimum quality bar for App-References issues.
+This document defines the minimum quality bar for App-References **tickets**.
 
 ## Core Rule
+
+**Project 2 is the only backlog.** Tickets are [Project 2](https://github.com/orgs/traverse-framework/projects/2) items (prefer **Draft** items). Do **not** open GitHub Issues to track App-Refs work. Closed issues may remain as historical archive for shipped work; they are not tickets.
 
 Every meaningful ticket must be explicit enough that a developer can tell:
 
@@ -12,35 +14,42 @@ Every meaningful ticket must be explicit enough that a developer can tell:
 - how to validate that it is complete
 - whether it touches the UI boundary, the runtime client, or both
 
-## Required Labels
+## Ticket identity
 
-Every active or future ticket should use the relevant labels:
+Each active ticket must include a stable **Ticket ID** slug in the draft body:
 
-- `in-progress` — currently being worked on
-- `blocked` — cannot continue until blocker is resolved
-- `needs-enrico` — waiting on a product or architecture decision
-- `future` — valid backlog work intentionally not active now
-- `ui` — React UI layer work
-- `runtime-client` — Traverse runtime client boundary work
-- `quality` — code quality, coverage, or CI gate work
-- `documentation` — docs-only work
+```markdown
+## Ticket ID
+`meeting-notes-multi-os`
+```
 
-Use an `agent:*` label when claimed by an agent. Registered labels: `agent:claude`, `agent:codex`, `agent:cursor`, `agent:antigravity`, `agent:continue`. See `AGENTS.md` Agent Registry.
+Use that slug in branch names (`<agent>/ticket-<ticket-id>-*`) and in PR `## Project Item` sections. Do not invent GitHub issue numbers for new work.
 
-Use Project 2 status for availability:
+## Where Spec and DoD live
+
+| Field | Purpose |
+|---|---|
+| **Draft body** | Full Spec + Summary / Why / Depends on / Blocked by / Definition of Done / Validation |
+| **Project 2 Note** | One-line board summary + `ticket-id: …` |
+| **Status** | Availability (`Ready`, `In Progress`, `Blocked`, `Future`, `Done`) |
+| **Agent** | Claim lock (`Unassigned` or a registered tool) |
+
+## Project 2 status
 
 - `Ready` — approved and not started yet
-- `In Progress` — currently being worked on
-- `Blocked` — cannot continue; blocker visible in issue body and Project 2 Note
+- `In Progress` — currently being worked on (Agent must be set)
+- `Blocked` — cannot continue; blocker visible in draft body **and** Project 2 Note
 - `Future` — valid work tracked but intentionally not active now
 - `Done` — merged and verified
 
-Do not move work to `In Progress` unless a real dev thread or worker has started it.
+Do not move work to `In Progress` unless a real worker has claimed it via the Agent field.
 
 ## Required Ticket Sections
 
-Every meaningful work ticket should include:
+Every meaningful work ticket body should include:
 
+- `Ticket ID`
+- `Spec` (governing docs / public APIs / architecture boundary)
 - `Summary`
 - `Why`
 - `Depends on`
@@ -101,19 +110,20 @@ If the ticket touches the runtime client boundary, validation should confirm onl
 If a ticket is blocked, the ticket must say why.
 
 Use:
-- label: `blocked`
-- section: `Blocked by`
+
+- Project 2 Status → `Blocked`
+- section: `Blocked by` in the draft body
 - Project 2 `Note` field: short blocker summary visible on the board
 
 Common blockers in this repo:
 
-- depends on a Traverse runtime release (name the feature/CLI command)
-- depends on another issue (link it)
-- waiting on Enrico decision (use `needs-enrico`)
+- depends on a Traverse runtime release (name the feature/CLI command / upstream ticket)
+- depends on another Project 2 ticket (cite **Ticket ID**)
+- waiting on Enrico decision (set Note + Status; do not open a GitHub issue)
 
 ## Architecture Boundary Rule
 
-Every ticket that touches runtime integration must state:
+Every ticket that touches runtime integration must state in **Spec**:
 
 - which public Traverse interface is used
 - that no private Traverse internals are imported
@@ -124,7 +134,7 @@ Every ticket that touches runtime integration must state:
 When a problem is found during active work:
 
 - if it is required for correctness, governance, or mergeability — fix it in the same PR
-- if it is not required — create a `future` ticket instead of silently dropping it
+- if it is not required — create a Project 2 **Future** draft ticket (Spec + DoD) instead of silently dropping it or opening a GitHub issue
 
 ## Merge Candidate Rule
 
@@ -132,5 +142,5 @@ When a ticket's PR is the next candidate to merge:
 
 - do not start unrelated side work ahead of merging
 - update the PR to latest base immediately after any prior merge touches `main`
-- keep the ticket marked active until the merge finishes
+- keep the ticket Status `In Progress` until the merge finishes, then set `Done`
 - if the PR is green but behind base, update it immediately

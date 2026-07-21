@@ -21,7 +21,7 @@ Related:
 
 1. App manifests exist under `manifests/<app>/`
 2. Public platform embedder SDK is available for the OS (vendor or package reference)
-3. Project 2 issue claimed (`AGENTS.md` pre-flight) with production-shaped DoD
+3. Project 2 ticket claimed (`AGENTS.md` pre-flight) with production-shaped DoD
 
 ## Ordered steps
 
@@ -86,10 +86,10 @@ Per [`design-language.md`](design-language.md):
 ### 7. CI
 
 - Linux-runnable slices: ensure `scripts/ci/embedded_smoke.sh` covers or explicitly `SKIP`s with reason
-- Native build gates: follow tiered plan in [#88](https://github.com/traverse-framework/reference-apps/issues/88) (do not invent a sidecar CI path)
+- Native build gates: follow tiered plan in `docs/quality-standards.md` and Project 2 `native-ci-android-gtk-required` (do not invent a sidecar CI path)
 - Local: `npm` gates for Web; `cargo` / `gradle` / `xcodebuild` / `dotnet` as applicable
 
-## Checklist (copy into the issue DoD)
+## Checklist (copy into the Project 2 ticket DoD)
 
 - [ ] Public embedder dependency only
 - [ ] Sync wrapper + pin documented
@@ -97,7 +97,7 @@ Per [`design-language.md`](design-language.md):
 - [ ] SDK double unit tests
 - [ ] README + shipping doc touchpoints
 - [ ] CI / smoke skip-or-fail contract understood
-- [ ] Project 2 issue + PR with production DoD sections
+- [ ] Project 2 ticket + PR with production DoD sections
 
 ## Validation
 

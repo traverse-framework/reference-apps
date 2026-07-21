@@ -4,7 +4,7 @@
 
 Phase 3 delivered **embedded Traverse runtime** on the primary UI shells (Web, Linux/CLI, Windows, Apple, Android). This repo’s next job is to become the **production reference kit**: the copy-paste pattern for shipping real multi-OS Traverse apps — not only demos.
 
-Status of individual tickets lives on [Project 2](https://github.com/orgs/traverse-framework/projects/2). This document is the narrative and decision log; do not treat ticket lists here as live status.
+Status of individual tickets lives on [Project 2](https://github.com/orgs/traverse-framework/projects/2) only (Draft tickets with Spec + DoD). This document is the narrative and decision log; do not treat ticket lists here as live status. See [`ticket-standard.md`](ticket-standard.md).
 
 Related:
 
@@ -24,88 +24,61 @@ Related:
 
 | Topic | Decision | Recorded on |
 |---|---|---|
-| Claim order | Parallel lanes; **#118** is merge-priority | Brainstorm |
-| Native CI (#88) | **Tiered:** PR merge-blocking = Linux (`cargo`, Android `gradle` if stable); Nightly = Apple + Windows must stay green | [#88](https://github.com/traverse-framework/reference-apps/issues/88) |
-| Embedded smoke (#118) | **One script, all platforms**; skip-with-reason when SDK missing; hard-fail when the runner is expected to run that slice | [#118](https://github.com/traverse-framework/reference-apps/issues/118) |
-| HTTP sidecar | **Freeze & archive**, then delete after smoke is green | [#176](https://github.com/traverse-framework/reference-apps/issues/176), [#180](https://github.com/traverse-framework/reference-apps/issues/180) |
-| Trace Explorer | **Named HTTP exception** until Traverse ships embedded trace API; then embed (not a product-shell pattern to copy) | [#183](https://github.com/traverse-framework/reference-apps/issues/183) |
-| Post-kit showcase (#179) | **meeting-notes → multi-OS** via add-platform recipe | [#179](https://github.com/traverse-framework/reference-apps/issues/179) |
-| Plan home | This document | [#181](https://github.com/traverse-framework/reference-apps/issues/181) |
-| Registry | **Docs contract now** ([#185](https://github.com/traverse-framework/reference-apps/issues/185)); **impl Future** ([#97](https://github.com/traverse-framework/reference-apps/issues/97)) | Decision C |
-| Secondary apps | **Explicitly secondary** (demos/kits); not hard-fail smoke targets — see below | [#186](https://github.com/traverse-framework/reference-apps/issues/186) |
-| Repo front door | **Thin pointer now** (embedded banner + plan link); full rewrite in [#176](https://github.com/traverse-framework/reference-apps/issues/176) | Decision B |
-| Digest sync (#174) | **Shared core + thin per-platform wrappers** (keep existing script names) — see [`runtime-bundle-sync.md`](runtime-bundle-sync.md) | Decision B |
-| Sidecar delete (#180) | **Primary shells embedded-only**; Trace Explorer keeps HTTP until [#183](https://github.com/traverse-framework/reference-apps/issues/183) | Decision B |
-| Showcase rollout (#179) | **Wave 1:** Web + Linux/CLI (+ Android if stable); **Wave 2:** Windows + Apple | Decision C |
+| Claim order | Parallel lanes; embedded smoke was merge-priority for the kit | Brainstorm |
+| Native CI | **Tiered:** PR merge-blocking = Linux (`cargo`); Nightly = Apple + Windows required; Android/GTK promote via `native-ci-android-gtk-required` | Project 2 / quality-standards |
+| Embedded smoke | **One script, all platforms**; skip-with-reason when SDK missing; hard-fail when the runner is expected to run that slice | Project 2 (Done) |
+| HTTP sidecar | **Freeze & archive**, then delete (`remove-sidecar-paths`) | Decision C |
+| Trace Explorer | **Named HTTP exception** until Traverse ships embedded trace API; then `embed-trace-explorer` | Decision B |
+| Post-kit showcase | **meeting-notes → multi-OS** (`meeting-notes-multi-os`) via add-platform recipe | Decision A |
+| Plan home | This document | Project 2 (Done) |
+| Registry | **Docs contract** shipped; **impl** `registry-ref-starter-process` (Blocked on upstream) | Decision C |
+| Secondary apps | **Explicitly secondary** (demos/kits); not hard-fail smoke targets | Project 2 (Done) |
+| Repo front door | Embedded-first README + playbook; sidecar appendix-only | Decision B |
+| Digest sync | **Shared core + thin per-platform wrappers** — see [`runtime-bundle-sync.md`](runtime-bundle-sync.md) | Decision B |
+| Showcase rollout | **Wave 1:** Web + Linux/CLI (+ Android if stable); **Wave 2:** Windows + Apple | Decision C |
+| Product agents | Smoke fixtures today; adopt Traverse agents via `consume-product-wasm-agents` | Gap capture |
 
-### Primary vs secondary (locked, #186)
+### Primary vs secondary (locked)
 
 | Tier | Apps | Smoke / CI bar |
 |---|---|---|
 | **Primary product shells** | `traverse-starter`, `doc-approval`, `meeting-notes` | Production DoD; Linux-runnable `embedded_smoke` hard-fail |
 | **Adopted / secondary** | `react-demo`, `android-demo`, `macos-demo`, `browser-consumer`, `youaskm3-starter-kit` | Lighter demo smokes only — **not** merge-blocking `embedded_smoke` targets |
-| **Debugger exception** | `trace-explorer` | Not a product shell; named HTTP until [#183](https://github.com/traverse-framework/reference-apps/issues/183) |
+| **Debugger exception** | `trace-explorer` | Not a product shell; named HTTP until `embed-trace-explorer` |
 
 Canonical narrative: [`adopted-platform-clients.md`](adopted-platform-clients.md) · front door: root `README.md`.
 
-## Ticket map (kit → showcase)
+## Ticket map (kit → remaining)
 
-Query Project 2 for current Status / Agent. Intended sequencing:
+Query Project 2 for current Status / Agent. Kit tickets are **Done**. Remaining open work (by **Ticket ID**):
 
-### A — CI / proof
+### After kit (Future)
 
-| Issue | Intent |
+| Ticket ID | Intent |
 |---|---|
-| [#118](https://github.com/traverse-framework/reference-apps/issues/118) | `scripts/ci/embedded_smoke.sh` — all-platform entrypoint |
-| [#88](https://github.com/traverse-framework/reference-apps/issues/88) | Native CI builds — tiered PR vs nightly |
+| `remove-sidecar-paths` | Remove deprecated HTTP sidecar paths from primary app clients |
+| `meeting-notes-multi-os` | meeting-notes multi-OS showcase |
+| `native-ci-android-gtk-required` | Promote Android + GTK CI from advisory to required |
+| `phase2-sidecar-nightly` | Phase 2 sidecar smoke on nightly (low priority) |
 
-### B — Packaging
+### Blocked (upstream)
 
-| Issue | Intent |
+| Ticket ID | Intent |
 |---|---|
-| [#174](https://github.com/traverse-framework/reference-apps/issues/174) | Unify digest-pinned runtime bundle sync |
-| [#175](https://github.com/traverse-framework/reference-apps/issues/175) | Multi-OS packaging + release-evidence playbook |
-
-### C — Docs / guides
-
-| Issue | Intent |
-|---|---|
-| [#176](https://github.com/traverse-framework/reference-apps/issues/176) | Embedded-first production onboarding; retire sidecar-first narrative |
-| [#181](https://github.com/traverse-framework/reference-apps/issues/181) | This plan doc |
-| [#185](https://github.com/traverse-framework/reference-apps/issues/185) | `registry_ref` consumer contract (docs only) — see [`production-packaging.md`](production-packaging.md) |
-| [#186](https://github.com/traverse-framework/reference-apps/issues/186) | Primary vs secondary / adopted apps |
-
-### D — Agent / dev process
-
-| Issue | Intent |
-|---|---|
-| [#177](https://github.com/traverse-framework/reference-apps/issues/177) | Production-shaped DoD for `/app-refs-ops` + PR template |
-| [#178](https://github.com/traverse-framework/reference-apps/issues/178) | Recipe: add a new OS client from App-Refs |
-
-### After kit (Future until kit lands)
-
-| Issue | Intent |
-|---|---|
-| [#180](https://github.com/traverse-framework/reference-apps/issues/180) | Remove deprecated HTTP sidecar paths from app clients |
-| [#179](https://github.com/traverse-framework/reference-apps/issues/179) | meeting-notes multi-OS showcase |
-
-### Lower priority Future
-
-| Issue | Intent |
-|---|---|
-| [#89](https://github.com/traverse-framework/reference-apps/issues/89) | Phase 2 sidecar smoke on nightly (sidecar path; below #118) |
-| [#97](https://github.com/traverse-framework/reference-apps/issues/97) | `registry_ref` for traverse-starter process (registry-gated) |
+| `embed-trace-explorer` | Embed Trace Explorer when Traverse ships embedded trace API |
+| `registry-ref-starter-process` | `registry_ref` for traverse-starter process |
+| `consume-product-wasm-agents` | Replace App-Refs smoke fixtures with Traverse product agents |
 
 ## Parallel agent lanes (recommended)
 
-| Lane | Tickets | Merge priority |
+| Lane | Tickets | Notes |
 |---|---|---|
-| Proof | #118 → #174 | Highest |
-| Docs | #176 → #186 → #185 → #175 | Medium |
-| Ops | #177 → #178 | Medium |
-| Native CI | #88 (tiered) | After Linux slice of #118 is green |
+| Showcase | `meeting-notes-multi-os` | After flipping Future → Ready |
+| Cleanup | `remove-sidecar-paths` | After flipping Future → Ready |
+| CI harden | `native-ci-android-gtk-required` | Engineering only |
+| Upstream-gated | Blocked tickets above | Flip Ready only when Depends on clear |
 
-One issue per agent (`AGENTS.md` claim rules). Do not claim Future items until their Depends on are Done.
+One Project 2 ticket per agent (`AGENTS.md` claim rules). Do not claim Future/Blocked items until Status is `Ready`.
 
 ## Architecture boundary (unchanged)
 
@@ -116,11 +89,11 @@ One issue per agent (`AGENTS.md` claim rules). Do not claim Future items until t
 
 ## Exit criteria for Phase 4 kit
 
-1. `bash scripts/ci/embedded_smoke.sh` exists and is wired to CI with the skip/fail contract above  
-2. Tiered native CI documented in `docs/quality-standards.md` and implemented for the Linux PR gate  
-3. Digest sync + packaging playbook published  
-4. Getting-started / README are embedded-first; sidecar appendix-only  
-5. Agent DoD + add-platform recipe published  
-6. Then: flip #180 / #179 Ready and execute  
+1. `bash scripts/ci/embedded_smoke.sh` exists and is wired to CI with the skip/fail contract above — **met**
+2. Tiered native CI documented in `docs/quality-standards.md` and implemented for the Linux PR gate — **met** (Android/GTK still advisory → `native-ci-android-gtk-required`)
+3. Digest sync + packaging playbook published — **met**
+4. Getting-started / README are embedded-first; sidecar appendix-only — **met**
+5. Agent DoD + add-platform recipe published — **met**
+6. Next: flip `remove-sidecar-paths` / `meeting-notes-multi-os` to Ready and execute
 
-When the kit exit criteria are met, update this section’s checklist in the PR that closes the last kit ticket — do not invent a separate status field outside Project 2.
+When open tickets complete, update Project 2 Status → Done — do not invent a separate status field outside Project 2.
