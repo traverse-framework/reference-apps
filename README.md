@@ -120,6 +120,7 @@ Each app also ships native clients (iOS, macOS, Android, Windows, Linux, CLI) wh
 | [`apps/youaskm3-starter-kit/`](apps/youaskm3-starter-kit/) | youaskm3 browser starter kit |
 | [`docs/adopted-platform-clients.md`](docs/adopted-platform-clients.md) | Canonical homes for adopted Traverse demos |
 | [`docs/production-playbook.md`](docs/production-playbook.md) | **Production playbook** — embedded-first multi-OS shipping guide |
+| [`docs/add-platform-client.md`](docs/add-platform-client.md) | Recipe: add a new OS / UI shell from the reference pattern |
 | [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md) | Hands-on embedded onboarding (Web + Linux/CLI) |
 | [`docs/embedded-runtime-plan.md`](docs/embedded-runtime-plan.md) | Phase 3 — embedded runtime + multi-capability workflows |
 | [`docs/production-reference-plan.md`](docs/production-reference-plan.md) | Phase 4 — production kit roadmap (CI, packaging, docs, agent ops) |
