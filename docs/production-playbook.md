@@ -32,13 +32,13 @@ Rules:
 |---|---|---|
 | **traverse-starter** | Web, Linux GTK, CLI, Android, Windows, iOS, macOS | Reference kit — start here |
 | **doc-approval** | Same seven platforms | Second domain + pipeline |
-| **meeting-notes** | Web today | Primary product shell; multi-OS embed showcase is [#179](https://github.com/traverse-framework/reference-apps/issues/179) |
+| **meeting-notes** | Web today | Primary product shell; multi-OS embed showcase is Project 2 `meeting-notes-multi-os` |
 
-**Not primary product shells** (do not treat as the production kit bar — [#186](https://github.com/traverse-framework/reference-apps/issues/186)):
+**Not primary product shells** (do not treat as the production kit bar — see primary vs secondary on Project 2 / `docs/adopted-platform-clients.md`):
 
 | App | Status |
 |---|---|
-| trace-explorer | **Debugger exception** — named HTTP until Traverse embeds a trace API ([#183](https://github.com/traverse-framework/reference-apps/issues/183)); not a secondary “product” kit |
+| trace-explorer | **Debugger exception** — named HTTP until Traverse embeds a trace API (Project 2: `embed-trace-explorer`); not a secondary “product” kit |
 | react-demo, android-demo, macos-demo, youaskm3-starter-kit, browser-consumer | **Adopted / secondary** demos & kits — lighter maintenance; not merge-blocking `embedded_smoke` targets — see [`adopted-platform-clients.md`](adopted-platform-clients.md) |
 
 ---
@@ -106,13 +106,13 @@ bash scripts/ci/embedded_smoke.sh
 
 ## 7. Add another OS client
 
-High-level checklist (full recipe: [#178](https://github.com/traverse-framework/reference-apps/issues/178)):
+High-level checklist (full recipe: [`docs/add-platform-client.md`](add-platform-client.md)):
 
 1. Depend on the public embedder for that OS  
 2. Bundle manifests + digest-pinned runtime / components  
 3. Submit workflow input; subscribe to events; render runtime fields only  
 4. Document **Runtime mode: Embedded** in the platform README  
-5. Extend `embedded_smoke.sh` slice (or digest check) when a runner exists (#88)
+5. Extend `embedded_smoke.sh` slice (or digest check) when a runner exists (see `native-ci-android-gtk-required` / quality-standards)
 
 ---
 
@@ -124,7 +124,7 @@ Use [`traverse-runtime.md`](traverse-runtime.md) only for:
 - Trace Explorer (named exception)  
 - Legacy `phase1_smoke.sh` / nightly sidecar checks  
 
-Do **not** copy sidecar URL configuration into new primary product shells. Removal of leftover HTTP clients: [#180](https://github.com/traverse-framework/reference-apps/issues/180) (after smoke stays green).
+Do **not** copy sidecar URL configuration into new primary product shells. Removal of leftover HTTP clients: Project 2 `remove-sidecar-paths` (after smoke stays green).
 
 ---
 

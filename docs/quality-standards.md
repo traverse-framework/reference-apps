@@ -116,7 +116,7 @@ A change must not merge when any of the following are true:
 - Business logic is implemented in the UI layer
 - Private Traverse internals are imported
 - Fake runtime behavior exists in application code
-- The change lacks a GitHub issue + Project 2 item + PR
+- The change lacks a Project 2 ticket (Spec + DoD) + PR
 
 ## Embedded smoke (PR merge-blocking)
 

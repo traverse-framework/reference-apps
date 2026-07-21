@@ -93,13 +93,13 @@ Before tagging or cutting a primary-shell release:
 
 ## Sidecar (optional interim only)
 
-HTTP `traverse-cli serve` is **not** a packaging input for primary shells. Document it only as debug/appendix ([`traverse-runtime.md`](traverse-runtime.md)). Trace Explorer remains a named HTTP exception ([#183](https://github.com/traverse-framework/reference-apps/issues/183)).
+HTTP `traverse-cli serve` is **not** a packaging input for primary shells. Document it only as debug/appendix ([`traverse-runtime.md`](traverse-runtime.md)). Trace Explorer remains a named HTTP exception (Project 2: `embed-trace-explorer`).
 
 ---
 
 ## `registry_ref` consumer contract
 
-Docs-only contract for how primary App-References shells will consume public registry capabilities via `registry_ref` (**implementation is [#97](https://github.com/traverse-framework/reference-apps/issues/97) — Future / gated**).
+Docs-only contract for how primary App-References shells will consume public registry capabilities via `registry_ref` (**implementation is Project 2 `registry-ref-starter-process` — Blocked / gated**).
 
 Governing Traverse specs:
 
@@ -108,11 +108,11 @@ Governing Traverse specs:
 
 ## Status
 
-| Layer | Today | After #97 |
+| Layer | Today | After `registry-ref-starter-process` |
 |---|---|---|
 | Component manifests under `manifests/` | **Local-path** (`contract_path` + `wasm_binary_path` + `wasm_digest`) | Selected components may use `registry_ref` instead |
 | Sync / packaging | [`runtime-bundle-sync.md`](runtime-bundle-sync.md) copies local example trees | Still sync app manifests; capability artifacts come from registry sync + digest-verified cache |
-| Implementation ticket | [#97](https://github.com/traverse-framework/reference-apps/issues/97) remains **Future** until registry seed + Traverse gates clear | Flip Ready only when upstream publish/sync works |
+| Implementation ticket | Project 2 `registry-ref-starter-process` remains **Blocked** until registry seed + Traverse gates clear | Flip Ready only when upstream publish/sync works |
 
 **Do not switch any checked-in manifest to `registry_ref` in this ticket or any PR that only lands this doc.** Premature switches break Phase 3 embedded smoke until registry seed-publish and `traverse-cli registry sync` are available.
 
@@ -120,7 +120,7 @@ Governing Traverse specs:
 
 Exactly one capability source per component (spec 054 FR-007):
 
-**Local (current — keep until #97):**
+**Local (current — keep until `registry-ref-starter-process`):**
 
 ```json
 {
@@ -132,7 +132,7 @@ Exactly one capability source per component (spec 054 FR-007):
 }
 ```
 
-**Registry (target for `traverse-starter.process` in #97):**
+**Registry (target for `traverse-starter.process` in `registry-ref-starter-process`):**
 
 ```json
 {
@@ -166,18 +166,18 @@ If sync has not run, registration must fail with a stable error that `traverse-c
 | Runtime host pin | `$TRAVERSE_REPO/runtime/runtime-release.json` via sync wrappers | Unchanged — host pin is orthogonal to capability `registry_ref` |
 | App identity | `manifests/<app>/app.manifest.json` component digests | App manifest still lists components; capability bytes may come from cache |
 
-## What stays local-path until #97
+## What stays local-path until `registry-ref-starter-process`
 
 - All of `manifests/traverse-starter/components/*` and `manifests/doc-approval/components/*`
 - Web `FetchBundleLoader` trees populated by `sync_web_*_bundle.sh` (example WASM under `_traverse/`)
 - Native digest-pinned `runtime/runtime.wasm` sync ([`runtime-bundle-sync.md`](runtime-bundle-sync.md))
 
-First intended cutover: **`traverse-starter.process` only** (#97). Other components stay local until their registry publish gates exist.
+First intended cutover: **`traverse-starter.process` only** (`registry-ref-starter-process`). Other components stay local until their registry publish gates exist.
 
 ## Agent / playbook rules
 
 - Packaging and production playbooks may **describe** this contract; they must not instruct agents to rewrite manifests to `registry_ref` yet.
-- [#97](https://github.com/traverse-framework/reference-apps/issues/97) owns the code/manifest switch and remains Future until Traverse registry seed + sync CLI gates are met.
+- Project 2 `registry-ref-starter-process` owns the code/manifest switch and remains Blocked until Traverse registry seed + sync CLI gates are met.
 - UI remains a rendering layer — registry adoption does not move business field computation into App-References.
 
 ## Related

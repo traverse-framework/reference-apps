@@ -24,7 +24,7 @@ Phase 2 (app validation and registration via Traverse CLI) is available when the
 Phase 3 (embedded in-app WASM runtime) is the **production target** for all platform clients. Shipped apps must bundle the Traverse host and WASM artifacts; they must not require a separate `traverse-cli serve` process for end users. Phase 1 HTTP sidecar integration is a dev/CI path only until Phase 3 migration completes. See `docs/embedded-runtime-plan.md`.
 
 ### VI. Traceability
-Every meaningful change must be tracked through a GitHub issue, a Project 2 item, and a pull request. These three artifacts are the minimum traceability model.
+Every meaningful change must be tracked through a **Project 2 ticket** (Draft item with Spec + Definition of Done) and a pull request. Project 2 is the only backlog — do not open GitHub Issues to track App-Refs work. See `docs/ticket-standard.md`.
 
 ### VII. Quality Gates Block Merge
 A change must not merge when any of the following are true:
@@ -36,7 +36,7 @@ A change must not merge when any of the following are true:
 - The change lacks the required traceability artifacts
 
 ### VIII. Agent Coordination
-When multiple agents work in parallel, claim before you code. Check for any existing `agent:*` label and any remote `*/issue-NNN-*` branch before starting any issue. If either exists, stop and pick a different ticket. See `AGENTS.md` for the full pre-flight and claim sequence.
+When multiple agents work in parallel, claim before you code. Check Project 2 Agent ≠ Unassigned and any remote `*/ticket-<ticket-id>-*` branch before starting a ticket. If either exists, stop and pick a different ticket. See `AGENTS.md` for the full pre-flight and claim sequence.
 
 ## Non-Functional Requirements
 
@@ -49,8 +49,8 @@ When multiple agents work in parallel, claim before you code. Check for any exis
 ## Development Workflow
 
 1. Confirm the change belongs in the UI layer (not in Traverse)
-2. Claim a Ready Project 2 issue and run pre-flight checks (`AGENTS.md`)
-3. Implement the smallest change that satisfies the issue and the architecture boundary
+2. Claim a Ready Project 2 ticket and run pre-flight checks (`AGENTS.md`)
+3. Implement the smallest change that satisfies the ticket and the architecture boundary
 4. Verify all CI gates pass locally before pushing
 5. Open a PR with the required sections (`docs/ticket-standard.md`)
 
@@ -67,4 +67,4 @@ All reviews must check for:
 
 Amendments require documenting the rule being changed, the reason, and the migration impact.
 
-**Version**: 1.1.0 | **Ratified**: 2026-06-27 | **Amended**: 2026-07-06 — Phase 3 embedded runtime as production target; Phase 1 HTTP sidecar demoted to dev-only path
+**Version**: 1.2.0 | **Ratified**: 2026-06-27 | **Amended**: 2026-07-21 — Traceability is Project 2 ticket + PR only (no GitHub Issues backlog); agent claim uses Agent field + `ticket-<id>` branches

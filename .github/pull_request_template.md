@@ -8,11 +8,11 @@
 
 ## Project Item
 
-<!-- Issue URL + Project 2 status -->
+<!-- Project 2 ticket: Ticket ID + item link/title + Status. Do not open GitHub Issues for tracking. -->
 
 ## Definition of Done
 
-<!-- Check off acceptance criteria from the linked issue -->
+<!-- Check off acceptance criteria from the Project 2 ticket body -->
 
 ## Validation
 
@@ -22,7 +22,7 @@
 
 ### Traceability
 
-- [ ] Issue linked and Project 2 item updated (Agent + Status)
+- [ ] Project 2 ticket updated (Agent + Status); Ticket ID cited above
 - [ ] Updated `README.md` / `docs/design-language.md` platform rows if shipping status changed
 - [ ] Updated `AGENTS.md` blocked-work summary only if Project 2 Blocked set changed
 
