@@ -177,7 +177,7 @@ First intended cutover: **`traverse-starter.process` only** (`registry-ref-start
 ## Agent / playbook rules
 
 - Packaging and production playbooks may **describe** this contract; they must not instruct agents to rewrite manifests to `registry_ref` yet.
-- Project 2 `registry-ref-starter-process` owns the code/manifest switch and remains Blocked until Traverse registry seed + sync CLI gates are met.
+- Project 2 `registry-ref-starter-process` owns the code/manifest switch and remains Blocked until Traverse Project 1 `dual-mode-component-registry-ref` is Done.
 - UI remains a rendering layer — registry adoption does not move business field computation into App-References.
 
 ## Related
