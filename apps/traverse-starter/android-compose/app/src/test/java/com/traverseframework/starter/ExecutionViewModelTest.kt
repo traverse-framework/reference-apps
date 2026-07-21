@@ -31,7 +31,7 @@ class ExecutionViewModelTest {
     @Test
     fun canSubmitWhenReadyWithNote() = runTest(testDispatcher) {
         val host = InMemoryStarterHost.withScriptedOutput(sampleOutput())
-        val vm = ExecutionViewModel(host, FakeRuntimeSettings())
+        val vm = ExecutionViewModel(host, FakeRuntimeSettings(), testDispatcher)
         advanceUntilIdle()
         vm.updateNote("hello")
         assertTrue(vm.uiState.value.canSubmit)
@@ -42,7 +42,7 @@ class ExecutionViewModelTest {
     @Test
     fun submitRendersRuntimeOwnedFields() = runTest(testDispatcher) {
         val host = InMemoryStarterHost.withScriptedOutput(sampleOutput())
-        val vm = ExecutionViewModel(host, FakeRuntimeSettings())
+        val vm = ExecutionViewModel(host, FakeRuntimeSettings(), testDispatcher)
         advanceUntilIdle()
         vm.updateNote("Meeting with Alice")
         vm.submit()
@@ -57,7 +57,7 @@ class ExecutionViewModelTest {
     @Test
     fun resetReturnsToIdle() = runTest(testDispatcher) {
         val host = InMemoryStarterHost.withScriptedOutput(sampleOutput())
-        val vm = ExecutionViewModel(host, FakeRuntimeSettings())
+        val vm = ExecutionViewModel(host, FakeRuntimeSettings(), testDispatcher)
         vm.reset()
         assertEquals(ExecutionPhase.Idle, vm.uiState.value.phase)
     }
