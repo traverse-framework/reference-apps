@@ -7,7 +7,7 @@ Related:
 - Shipping guide: [`production-playbook.md`](production-playbook.md)
 - Bundle pin/sync: [`runtime-bundle-sync.md`](runtime-bundle-sync.md)
 - Packaging / `registry_ref` (docs only): [`production-packaging.md`](production-packaging.md)
-- Primary vs secondary: root [`README.md`](../README.md) · [`adopted-platform-clients.md`](adopted-platform-clients.md)
+- Primary vs secondary apps: [`adopted-platform-clients.md`](adopted-platform-clients.md) · app/OS index: root [`README.md`](../README.md)
 - Production PR DoD: `.github/pull_request_template.md`
 
 ## Non-goals
@@ -80,7 +80,7 @@ Per [`design-language.md`](design-language.md):
 ### 6. Docs + Project 2
 
 - Platform README: **Runtime mode: Embedded**, sync command, build/test commands
-- Update root README platform table + `docs/design-language.md` reference row when shipping
+- Update root README app/OS links + `docs/design-language.md` reference row when shipping
 - PR body uses production checklist (embed, pin/sync, SDK doubles, docs, CI)
 
 ### 7. CI

@@ -122,7 +122,7 @@ Checklist for a new shell (or promoting a sidecar client to embedded):
 | Windows | **Embedded** | [#116](https://github.com/traverse-framework/reference-apps/issues/116) shipped |
 
 
-Same matrix for `doc-approval` (embedded Web / Linux / CLI with `doc-approval.pipeline`). Status labels in the root [`README.md`](../README.md) **Platform clients** table remain the source of truth.
+Same matrix for `doc-approval` (embedded Web / Linux / CLI with `doc-approval.pipeline`). App and OS entry points: root [`README.md`](../README.md).
 
 ## Validation — embedded smoke
 
