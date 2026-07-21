@@ -155,7 +155,8 @@ npm run typecheck
 npm run lint
 npm run test
 bash scripts/ci/repository_checks.sh
-bash scripts/ci/phase1_smoke.sh       # requires running runtime
+bash scripts/ci/embedded_smoke.sh     # embedded path (set TRAVERSE_REPO; no sidecar)
+bash scripts/ci/phase1_smoke.sh       # sidecar path (requires running runtime)
 bash scripts/ci/onboarding_check.sh   # local setup verification (runtime steps skip if offline)
 ```
 

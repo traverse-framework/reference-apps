@@ -137,7 +137,7 @@ Until (1–2) exist, platform migration tickets stay **Blocked**.
 | [116](https://github.com/traverse-framework/reference-apps/issues/116) | Embed runtime — Windows | Done |
 
 | [117](https://github.com/traverse-framework/reference-apps/issues/117) | Embed runtime — Linux + CLI | Done (this PR) |
-| [118](https://github.com/traverse-framework/reference-apps/issues/118) | embedded_smoke.sh CI gate | Future |
+| [118](https://github.com/traverse-framework/reference-apps/issues/118) | embedded_smoke.sh CI gate | See Project 2 |
 | [58](https://github.com/traverse-framework/reference-apps/issues/58), [72](https://github.com/traverse-framework/reference-apps/issues/72) | Shared Swift embedded host package | Blocked |
 | [59](https://github.com/traverse-framework/reference-apps/issues/59), [73](https://github.com/traverse-framework/reference-apps/issues/73) | Shared Rust embedded host package | Blocked |
 
@@ -147,6 +147,6 @@ When Phase 3 is done:
 
 1. Install/build any platform client **without** starting `traverse-cli serve`
 2. Submit input → multi-capability workflow runs → all output fields render
-3. `bash scripts/ci/embedded_smoke.sh` passes (to be added) on CI agents with embedded host support
+3. `bash scripts/ci/embedded_smoke.sh` passes on CI (`EMBEDDED_SMOKE_EXPECT=linux` merge-blocking; other platforms skip-with-reason until runners exist — see #88)
 4. No business field computation in UI diff review
 5. Manifests in `manifests/` reference WASM digests bundled in app artifacts
