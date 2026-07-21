@@ -35,6 +35,7 @@ Related:
 | Repo front door | **Thin pointer now** (embedded banner + plan link); full rewrite in [#176](https://github.com/traverse-framework/reference-apps/issues/176) | Decision B |
 | Digest sync (#174) | **Shared core + thin per-platform wrappers** (keep existing script names) | Decision B |
 | Sidecar delete (#180) | **Primary shells embedded-only**; Trace Explorer keeps HTTP until [#183](https://github.com/traverse-framework/reference-apps/issues/183) | Decision B |
+| Showcase rollout (#179) | **Wave 1:** Web + Linux/CLI (+ Android if stable); **Wave 2:** Windows + Apple | Decision C |
 
 ## Ticket map (kit → showcase)
 
