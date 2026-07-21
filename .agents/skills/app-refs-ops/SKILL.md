@@ -88,6 +88,20 @@ Field/option IDs, the three pre-flight checks, and the claim/release command seq
 
 Every PR must pass the org gates `cla / cla` and `baseline / governance-baseline` plus this repo's CI (`pr-hygiene` checks the body sections). When a governance gate fails, use the failure playbook in `traverse-framework/.github` `docs/runbook.md` (CLA `recheck` comment; re-runs pin stale gate snapshots, push a commit instead).
 
+### Production-baseline gates (platform / runtime-client PRs)
+
+Before queueing auto-merge on a platform or runtime-client PR, confirm the PR body checklist covers:
+
+1. **Embedded mode** — public in-process embedder; no required `traverse-cli serve` for the shipping path
+2. **Digest pin / sync** — followed `docs/runtime-bundle-sync.md`; ran the relevant `scripts/ci/sync_*_bundle.sh`
+3. **SDK test doubles** — tests use public doubles only; no business fields invented in app/UI code
+4. **Docs touchpoints** — platform README Runtime mode + design-language / README shipping rows when status changes
+5. **CI commands** — Validation section lists the commands that prove the slice (`npm` gates, `embedded_smoke`, platform build)
+
+Docs-only PRs still need `## Summary` / `## Definition of Done` / `## Validation` but may mark production-baseline items N/A with a one-line reason.
+
+Dependabot PRs: `@dependabot rebase` + queue auto-merge; never hand-write their bodies. If `pr-hygiene` fails on Dependabot, fix the gate exemption in a dedicated ops ticket — do not paste template sections into Dependabot descriptions.
+
 ## Token Discipline
 
 Org-canon token rules live in `traverse-framework/.github` `docs/ai-agent-hardening.md`

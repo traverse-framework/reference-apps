@@ -63,7 +63,24 @@ Prefer:
 - which commands must pass (`npm run typecheck`, `npm run test`, `bash scripts/ci/...`)
 - which CI checks must be green
 - which runtime events must be handled
-- which UI states must be visible (loading, error, final)
+- which UI states must be visible (loading, progress, error, final)
+
+### Example — production platform client DoD
+
+Use this shape for embedded platform / runtime-client tickets (Web, Linux/CLI, Android, Windows, Apple):
+
+```markdown
+## Definition of Done
+
+- [ ] Production path uses the public platform embedder (embedded mode; no required `traverse-cli serve`)
+- [ ] Digest-pinned `runtime/runtime.wasm` synced via the named `scripts/ci/sync_*_bundle.sh` wrapper; pin matches `runtime-release.json` (`docs/runtime-bundle-sync.md`)
+- [ ] Unit tests inject SDK doubles only (`EmbedderTestDouble` / `InMemoryTraverseEmbedder`); UI never computes title/tags/note type/next action/status
+- [ ] Platform README documents **Runtime mode: Embedded** and sync/build commands
+- [ ] Doc touchpoints updated when shipping status changes (`README.md` platform table, `docs/design-language.md` reference row)
+- [ ] Validation commands listed and green locally / on CI (`npm` gates and/or `bash scripts/ci/embedded_smoke.sh` for Linux-runnable slices)
+```
+
+Docs-only tickets may omit embed/sync/SDK lines but must still name the exact files and the `pr_body_check` / repository-check commands that prove the doc landed.
 
 ## Validation Rule
 
