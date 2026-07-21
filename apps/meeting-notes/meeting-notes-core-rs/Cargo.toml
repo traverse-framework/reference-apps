@@ -1,0 +1,14 @@
+[package]
+name = "meeting-notes-core-rs"
+version = "0.1.0"
+edition = "2021"
+description = "Shared Traverse embedded-runtime client for meeting-notes Rust shells"
+license = "MIT"
+
+[dependencies]
+traverse-embedder = { git = "https://github.com/traverse-framework/Traverse.git", package = "traverse-embedder" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+serde_json = "1"

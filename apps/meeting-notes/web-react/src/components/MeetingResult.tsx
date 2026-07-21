@@ -1,22 +1,26 @@
-import type { ExecutionState } from '../hooks/useExecution'
 import type { ActionItem, Decision } from '../client/traverseOutput'
-import { parseMeetingNotesOutput } from '../client/traverseOutput'
+import type { HostRunResult } from '../host/embeddedHost'
 
 interface MeetingResultProps {
-  state: ExecutionState
-  runtimeOffline: boolean
+  result: HostRunResult | null
+  submitting: boolean
+  runtimeUnavailable: boolean
   onReset: () => void
 }
 
-export function MeetingResult({ state, runtimeOffline, onReset }: MeetingResultProps) {
-  const showReset = state.phase === 'succeeded' || state.phase === 'failed'
+export function MeetingResult({
+  result,
+  submitting,
+  runtimeUnavailable,
+  onReset,
+}: MeetingResultProps) {
+  const showReset = Boolean(result)
+  const output = result?.output ?? null
 
   return (
     <section className="glass-panel" style={{ padding: '24px', minHeight: '180px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>
-          Output
-        </h2>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Output</h2>
         {showReset && (
           <button type="button" className="btn-glow" onClick={onReset} style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
             Reset
@@ -24,49 +28,40 @@ export function MeetingResult({ state, runtimeOffline, onReset }: MeetingResultP
         )}
       </div>
 
-      {runtimeOffline && state.phase === 'idle' && (
+      {runtimeUnavailable && !result && !submitting && (
         <div style={{ color: 'var(--text-muted)', fontSize: '0.95rem', textAlign: 'center', paddingTop: '32px' }}>
-          Connect to the Traverse runtime to see meeting notes output here.
+          Initialize the embedded runtime to see meeting notes output here.
         </div>
       )}
 
-      {!runtimeOffline && state.phase === 'idle' && (
+      {!runtimeUnavailable && !result && !submitting && (
         <div style={{ color: 'var(--text-muted)', fontSize: '0.95rem', textAlign: 'center', paddingTop: '32px' }}>
-          Submit a transcript above to extract action items and decisions.
+          Submit a transcript above to run meeting-notes.process.
         </div>
       )}
 
-      {state.phase === 'loading' && (
-        <div style={{ color: 'var(--text-secondary)' }}>Starting processing…</div>
-      )}
+      {submitting && <div style={{ color: 'var(--text-secondary)' }}>Running embedded workflow…</div>}
 
-      {state.phase === 'polling' && (
-        <div style={{ color: 'var(--text-secondary)' }}>
-          Polling execution <code>{state.executionId}</code>…
-        </div>
-      )}
-
-      {state.phase === 'failed' && (
+      {result?.error && (
         <div style={{ color: '#ef4444' }}>
-          <strong>Error:</strong> {state.error}
+          <strong>Error:</strong> {result.error}
         </div>
       )}
 
-      {state.phase === 'succeeded' && (() => {
-        const output = parseMeetingNotesOutput(state.result.output)
-        return output ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <ActionItemsSection items={output.action_items} />
-            <DecisionsSection items={output.decisions} />
-            <StringListSection label="Follow-ups" items={output.follow_ups} />
-            <OutputField label="Summary" value={output.summary} />
-          </div>
-        ) : (
-          <pre style={{ background: 'rgba(0,0,0,0.4)', padding: '16px', borderRadius: '6px', fontSize: '0.85rem', color: 'var(--text-primary)', overflow: 'auto' }}>
-            {JSON.stringify(state.result.output, null, 2)}
-          </pre>
-        )
-      })()}
+      {output && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <ActionItemsSection items={output.action_items} />
+          <DecisionsSection items={output.decisions} />
+          <StringListSection label="Follow-ups" items={output.follow_ups} />
+          <OutputField label="Summary" value={output.summary} />
+        </div>
+      )}
+
+      {result && !result.error && !output && result.rawOutput != null && (
+        <pre style={{ background: 'rgba(0,0,0,0.4)', padding: '16px', borderRadius: '6px', fontSize: '0.85rem', color: 'var(--text-primary)', overflow: 'auto' }}>
+          {JSON.stringify(result.rawOutput, null, 2)}
+        </pre>
+      )}
     </section>
   )
 }

@@ -10,19 +10,18 @@ Until replaced by embed tickets, these paths may still reference `127.0.0.1:8787
 | Path | Ticket / note |
 |---|---|
 | `apps/trace-explorer/**` | `embed-trace-explorer` (Blocked — wait Traverse embedded trace API) |
-| `apps/meeting-notes/**` | `meeting-notes-multi-os` (Ready — multi-OS embed showcase) |
 | This appendix + legacy `phase1_smoke.sh` / nightly sidecar checks | Historical Phase 1/2 only |
 
-All other **primary** shells (traverse-starter, doc-approval on every OS) are **Embedded-only** — no Runtime URL settings, no health polling against a sidecar.
+Primary shells (traverse-starter, doc-approval, meeting-notes on Web/Linux/CLI) are **Embedded-only** — no Runtime URL settings, no health polling against a sidecar.
 
 ## Deployment Models
 
 | Model | Status | Use when |
 |---|---|---|
 | **Embedded in-app host (Phase 3)** | **Shipped** on primary platforms | Building/shipping reference apps |
-| **HTTP sidecar `traverse-cli serve` (Phase 1/2)** | **Deprecated interim** | Trace Explorer, meeting-notes (until `meeting-notes-multi-os`), legacy `phase1_smoke.sh` |
+| **HTTP sidecar `traverse-cli serve` (Phase 1/2)** | **Deprecated interim** | Trace Explorer, legacy `phase1_smoke.sh` |
 
-End-user **primary** apps (except the meeting-notes interim carve-out above) must not depend on a separately running sidecar. Cleanup ticket: Project 2 `remove-sidecar-paths`.
+End-user **primary** apps must not depend on a separately running sidecar. Sidecar cleanup: Project 2 `remove-sidecar-paths`; Trace Explorer embed: `embed-trace-explorer`.
 
 ## Pinned Version (sidecar only)
 
@@ -78,7 +77,7 @@ const baseUrl = server.base_url          // http://127.0.0.1:8787
 const workspace = server.workspace_default
 ```
 
-Vite override (legacy / Trace Explorer / meeting-notes until embed):
+Vite override (legacy / Trace Explorer):
 
 ```ts
 const baseUrl = import.meta.env.VITE_TRAVERSE_BASE_URL ?? 'http://127.0.0.1:8787'
