@@ -112,7 +112,7 @@ Each app also ships native clients (iOS, macOS, Android, Windows, Linux, CLI) wh
 |---|---|
 | [`apps/traverse-starter/`](apps/traverse-starter/) | traverse-starter clients (all platforms) |
 | [`apps/doc-approval/`](apps/doc-approval/) | doc-approval clients (all platforms) |
-| [`apps/meeting-notes/`](apps/meeting-notes/) | meeting-notes clients (web-react shipped) |
+| [`apps/meeting-notes/`](apps/meeting-notes/) | meeting-notes clients (web, Linux GTK, CLI) |
 | [`apps/trace-explorer/web-react/`](apps/trace-explorer/web-react/) | Trace Explorer — execution timeline debugger |
 | [`apps/react-demo/`](apps/react-demo/) | Expedition React browser demo (adopted from Traverse) |
 | [`apps/browser-consumer/`](apps/browser-consumer/) | Browser consumer façade for downstream apps |
@@ -163,7 +163,9 @@ All **primary** clients are **native UI shells** with an **embedded** Traverse W
 
 | Platform | Status | Path |
 |---|---|---|
-| Web (React + TypeScript) | Shipped (HTTP until Project 2 `meeting-notes-multi-os` multi-OS embed) | [`apps/meeting-notes/web-react/`](apps/meeting-notes/web-react/) |
+| Web (React + TypeScript) | Shipped (embedded) | [`apps/meeting-notes/web-react/`](apps/meeting-notes/web-react/) |
+| Linux (GTK4 + Rust) | Shipped (embedded) | [`apps/meeting-notes/linux-gtk/`](apps/meeting-notes/linux-gtk/) |
+| CLI (Rust) | Shipped (embedded) | [`apps/meeting-notes/cli-rust/`](apps/meeting-notes/cli-rust/) |
 
 ## Development
 
@@ -189,7 +191,7 @@ Native platforms (iOS, macOS, Android, Windows, Linux, CLI) are built and run fr
 | Windows | Open the `.sln` in Visual Studio |
 | Linux GTK / CLI | `cargo test` / `cargo run` in `apps/<app>/linux-gtk` or `cli-rust` |
 
-**Sidecar URL (deprecated carve-outs only):** Trace Explorer (`embed-trace-explorer`), meeting-notes until `meeting-notes-multi-os`, and legacy Phase 1 scripts. See the [exception list](docs/traverse-runtime.md#named-http-carve-outs-exception-list).
+**Sidecar URL (deprecated carve-outs only):** Trace Explorer (`embed-trace-explorer`) and legacy Phase 1 scripts. See the [exception list](docs/traverse-runtime.md#named-http-carve-outs-exception-list).
 
 See [`docs/production-playbook.md`](docs/production-playbook.md) for the shipping guide.
 

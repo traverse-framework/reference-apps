@@ -87,7 +87,9 @@ The UI renders these fields exactly as the runtime provides them — never compu
 
 | Platform | Path | Status |
 |---|---|---|
-| Web (React) | `apps/meeting-notes/web-react/` | Shipped |
+| Web (React) | `apps/meeting-notes/web-react/` | Shipped (embedded) |
+| Linux (GTK4 + Rust) | `apps/meeting-notes/linux-gtk/` | Shipped (embedded) |
+| CLI (Rust) | `apps/meeting-notes/cli-rust/` | Shipped (embedded) |
 
 New platform clients must link to this doc in their issue Definition of Done.
 

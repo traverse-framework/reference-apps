@@ -76,6 +76,14 @@ check "manifests/doc-approval/components/recommend/component.manifest.json" "doc
 # meeting-notes clients
 check "apps/meeting-notes/web-react/package.json"                       "meeting-notes web-react package"
 check "apps/meeting-notes/web-react/README.md"                          "meeting-notes web-react README"
+check "apps/meeting-notes/linux-gtk/Cargo.toml"                         "meeting-notes linux-gtk Cargo project"
+check "apps/meeting-notes/linux-gtk/README.md"                          "meeting-notes linux-gtk README"
+check "apps/meeting-notes/cli-rust/Cargo.toml"                          "meeting-notes cli-rust Cargo project"
+check "apps/meeting-notes/cli-rust/README.md"                           "meeting-notes cli-rust README"
+check "apps/meeting-notes/meeting-notes-core-rs/Cargo.toml"             "meeting-notes-core-rs Cargo crate"
+check "apps/meeting-notes/Cargo.toml"                                   "meeting-notes Cargo workspace"
+check "manifests/meeting-notes/app.manifest.json"                       "meeting-notes app manifest"
+check "manifests/meeting-notes/components/process/component.manifest.json" "meeting-notes process component"
 
 # Adopted Traverse platform demos / starter (issue #151)
 check "apps/android-demo/README.md"                                     "android-demo README"
@@ -110,6 +118,7 @@ check "scripts/ci/fixtures/traverse-starter-smoke-agents/process-agent.wasm" "Sm
 check "scripts/ci/sync_bundle_core.sh"         "Shared bundle sync core"
 check "scripts/ci/sync_web_starter_bundle.sh"  "Web starter bundle sync"
 check "scripts/ci/sync_web_doc_approval_bundle.sh" "Web doc-approval bundle sync"
+check "scripts/ci/sync_web_meeting_notes_bundle.sh" "Web meeting-notes bundle sync"
 check "scripts/ci/sync_winui_starter_bundle.sh" "WinUI starter bundle sync"
 check "scripts/ci/sync_winui_doc_approval_bundle.sh" "WinUI doc-approval bundle sync"
 check "scripts/ci/sync_swift_starter_bundle.sh" "Swift starter bundle sync"

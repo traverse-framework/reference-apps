@@ -124,7 +124,14 @@ Use [`traverse-runtime.md`](traverse-runtime.md) only for:
 - Trace Explorer (named exception)  
 - Legacy `phase1_smoke.sh` / nightly sidecar checks  
 
-Do **not** copy sidecar URL configuration into new primary product shells. Remaining HTTP clients are limited to the [named carve-out list](traverse-runtime.md#named-http-carve-outs-exception-list) (Trace Explorer + meeting-notes until embed).
+Do **not** copy sidecar URL configuration into new primary product shells. Remaining HTTP clients are limited to the [named carve-out list](traverse-runtime.md#named-http-carve-outs-exception-list) (Trace Explorer until embed).
+
+### Lessons from `meeting-notes-multi-os` (Wave 1)
+
+- Clone **doc-approval** structure for a second domain app (web host + `*-core-rs` + CLI + GTK); keep workflow id as upstream `meeting-notes.process` (single-step, `{ transcript }` input).
+- Add `manifests/<app>/` with `_traverse` path rewrites + `phase2_link_traverse.sh` + `sync_web_<app>_bundle.sh` before BundleEmbedder can load.
+- List-type UI fields stay in `traverseOutput` / Rust output structs — never invent action items in the shell.
+- Ship ≥3 OS (Web + Linux + CLI) before expanding Apple/Windows; document each README as **Runtime mode: Embedded**.
 
 ---
 

@@ -3,7 +3,7 @@ interface TranscriptInputProps {
   maxLength: number
   canSubmit: boolean
   isRunning: boolean
-  runtimeOffline: boolean
+  runtimeUnavailable: boolean
   onChange: (value: string) => void
   onSubmit: (e?: React.FormEvent) => void
 }
@@ -13,7 +13,7 @@ export function TranscriptInput({
   maxLength,
   canSubmit,
   isRunning,
-  runtimeOffline,
+  runtimeUnavailable,
   onChange,
   onSubmit,
 }: TranscriptInputProps) {
@@ -67,10 +67,10 @@ export function TranscriptInput({
         >
           {isRunning ? 'Processing…' : 'Process Transcript'}
         </button>
-        {runtimeOffline && (
+        {runtimeUnavailable && (
           <p role="status" style={{ marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            The runtime is offline. Start it with{' '}
-            <code>cargo run -p traverse-cli -- serve</code> before submitting a transcript.
+            Embedded runtime unavailable — sync the meeting-notes bundle (
+            <code>bash scripts/ci/sync_web_meeting_notes_bundle.sh</code>) before submitting.
           </p>
         )}
       </form>

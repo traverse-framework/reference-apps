@@ -1,0 +1,23 @@
+[package]
+name = "meeting-notes-gtk"
+version = "0.1.0"
+edition = "2021"
+description = "Native GTK4 client for meeting-notes (embedded Traverse runtime)"
+license = "MIT"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "meeting-notes-gtk"
+path = "src/main.rs"
+
+[dependencies]
+meeting-notes-core-rs = { path = "../meeting-notes-core-rs" }
+gtk4 = "0.9"
+libadwaita = { version = "0.7", features = ["v1_5"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+directories = "5"
+
+[dev-dependencies]

@@ -8,7 +8,7 @@ REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 if [ -z "${TRAVERSE_REPO:-}" ]; then
   echo "FAIL: TRAVERSE_REPO is not set."
   echo ""
-  echo "Clone Traverse main (with traverse-starter + doc-approval examples) and export:"
+  echo "Clone Traverse main (with traverse-starter + doc-approval + meeting-notes examples) and export:"
   echo "  export TRAVERSE_REPO=/path/to/Traverse"
   exit 1
 fi
@@ -29,6 +29,11 @@ if [ ! -f "$TRAVERSE_REPO/examples/doc-approval/analyze-agent/artifacts/analyze-
   exit 1
 fi
 
+if [ ! -f "$TRAVERSE_REPO/examples/meeting-notes/process-agent/artifacts/process-agent.wasm" ]; then
+  echo "FAIL: meeting-notes WASM not found in TRAVERSE_REPO."
+  exit 1
+fi
+
 link_app() {
   local app="$1"
   local link="$REPO_ROOT/manifests/$app/_traverse"
@@ -39,3 +44,4 @@ link_app() {
 
 link_app "traverse-starter"
 link_app "doc-approval"
+link_app "meeting-notes"
