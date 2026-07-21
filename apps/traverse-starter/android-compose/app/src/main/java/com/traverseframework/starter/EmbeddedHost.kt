@@ -1,11 +1,7 @@
 package com.traverseframework.starter
 
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 import java.io.File
 
@@ -84,14 +80,11 @@ class InMemoryStarterHost(
 }
 
 /**
- * Production host: digest-pinned `runtime/runtime.wasm` via public RuntimeTraverseEmbedder.
- *
- * Drains ordered bridge events from [dev.traverse.embedder.ChicoryBridgeClient] and maps
- * `capability_result` payloads when present.
+ * Production host: digest-pinned `runtime/runtime.wasm` via public [RuntimeTraverseEmbedder]
+ * constructed from [TraverseBundle] (public constructor).
  */
 class ProductionStarterHost private constructor(
     private val embedder: dev.traverse.embedder.RuntimeTraverseEmbedder,
-    private val client: dev.traverse.embedder.ChicoryBridgeClient,
 ) : StarterHost {
     override val runtimeMode: String = AppConstants.RUNTIME_MODE_EMBEDDED
     override val isReady: Boolean = true
@@ -101,27 +94,18 @@ class ProductionStarterHost private constructor(
         val result = embedder.submit(
             dev.traverse.embedder.TraverseSubmission(AppConstants.CAPABILITY_ID, inputJson),
         )
-        val events = mutableListOf<TraceEvent>()
-        var output: TraverseStarterOutput? = null
-        while (true) {
-            val raw = client.nextEvent() ?: break
-            val parsed = try {
-                json.parseToJsonElement(raw).jsonObject
-            } catch (_: Exception) {
-                null
-            }
-            val type = parsed?.get("type")?.jsonPrimitive?.content
-                ?: parsed?.get("status")?.jsonPrimitive?.content
-                ?: "event"
-            events += TraceEvent(event_type = type, timestamp = "", data = null)
-            if (type == "capability_result") {
-                val data = parsed?.get("data") as? JsonObject
-                val outputEl = data?.get("output")
-                if (outputEl != null && outputEl !is JsonNull) {
-                    output = InMemoryStarterHost.parseOutput(outputEl.toString())
-                }
-            }
+        val runtimeEvents = embedder.subscribe()
+        val events = runtimeEvents.map {
+            TraceEvent(
+                event_type = it.eventType ?: it.status,
+                timestamp = it.sequence.toString(),
+                data = null,
+            )
         }
+        val output = runtimeEvents
+            .firstOrNull { it.eventType == "capability_result" || it.output != null }
+            ?.output
+            ?.let { InMemoryStarterHost.parseOutput(it) }
         HostRunResult(
             sessionId = result.sessionId,
             output = output,
@@ -137,8 +121,6 @@ class ProductionStarterHost private constructor(
     }
 
     companion object {
-        private val json = Json { ignoreUnknownKeys = true }
-
         fun createOrNull(bundleRoot: File): ProductionStarterHost? {
             val wasm = File(bundleRoot, "runtime/runtime.wasm")
             val release = File(bundleRoot, "runtime/runtime-release.json")
@@ -153,11 +135,9 @@ class ProductionStarterHost private constructor(
                     rootPath = bundleRoot.absolutePath,
                     runtimeWasmDigest = "sha256:$digestHex",
                 )
-                val bridge = dev.traverse.embedder.ChicoryRuntimeBridge(bundle)
-                val client = dev.traverse.embedder.ChicoryBridgeClient(bridge)
-                val embedder = dev.traverse.embedder.RuntimeTraverseEmbedder(client)
+                val embedder = dev.traverse.embedder.RuntimeTraverseEmbedder(bundle)
                 embedder.initialize("{}")
-                ProductionStarterHost(embedder, client)
+                ProductionStarterHost(embedder)
             } catch (_: Exception) {
                 null
             }

@@ -1,6 +1,6 @@
 use crate::client::{DocApprovalOutput, TraceEvent};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum ExecutionPhase {
     Idle,
     Loading,

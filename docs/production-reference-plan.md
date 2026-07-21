@@ -56,8 +56,10 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 |---|---|---|---|---|
 | meeting-notes multi-OS embed | `meeting-notes-multi-os` | **In Progress** (Cursor) | Web + Linux GTK + CLI embed | Finish PR; Apple/Windows later waves |
 | Trace Explorer embed | `embed-trace-explorer` | **Blocked** | Still HTTP; needs Traverse embedded trace API | Do not start — flip Ready when upstream API exists |
+| meeting-notes multi-OS embed | `meeting-notes-multi-os` | **Done** | Web + Linux GTK + CLI embed | Shipped |
+| Trace Explorer embed | `embed-trace-explorer` | **Blocked** | Still HTTP; needs Traverse embedded trace API | Do not start — flip Ready when upstream API exists |
 | Delete sidecar client code | `remove-sidecar-paths` | **Done** | Dead HTTP paths removed from starter/doc-approval | Shipped |
-| Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **Ready** (#3) | Apple/Windows already nightly-required; Android/GTK still advisory | Harden Android + GTK → required (or document permanent advisory) |
+| Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **In Progress** (Cursor) | GTK + Android compile fixes; jobs required on nightly | Finish PR |
 | Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Blocked** | Smoke uses App-Refs fixtures; Traverse agents still stubs | Wait Traverse (e.g. #785); then swap fixtures |
 | `registry_ref` adoption | `registry-ref-starter-process` | **Blocked** | Gated on Traverse registry seed | Wait registry + Traverse #542/#548 |
 | Phase 2 sidecar nightly | `phase2-sidecar-nightly` | **Future** (defer) | Legacy path; low demo value | After Wave 1; optional |

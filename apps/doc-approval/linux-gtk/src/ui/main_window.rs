@@ -3,6 +3,7 @@ use gtk4::{
     Box as GtkBox, Button, Label, Orientation, ScrolledWindow, TextView, ToggleButton,
 };
 use libadwaita as adw;
+use libadwaita::prelude::*;
 use std::cell::RefCell;
 use std::path::PathBuf;
 use std::rc::Rc;
@@ -230,7 +231,9 @@ impl MainWindow {
             let document_count = document_count.clone();
             let refresh_ui = refresh_ui.clone();
             move |buffer| {
-                let mut text = buffer.text(&buffer.start_iter(), &buffer.end_iter(), true);
+                let mut text = buffer
+                    .text(&buffer.start_iter(), &buffer.end_iter(), true)
+                    .to_string();
                 if text.len() > DOCUMENT_MAX_LENGTH {
                     text.truncate(DOCUMENT_MAX_LENGTH);
                     buffer.set_text(&text);
