@@ -24,3 +24,10 @@ apps/traverse-starter/TraverseCore/.build/
 
 # Vite-served app bundles (run scripts/ci/sync_web_starter_bundle.sh)
 apps/*/web-react/public/bundles/
+
+# Synced Traverse trees / Phase 2 links inside native bundle destinations
+**/bundles/**/_traverse/
+**/bundles/**/manifests/_traverse
+
+# Rust / Cargo build output (CLI, GTK, core crates)
+**/target/

@@ -43,6 +43,8 @@ bash scripts/ci/sync_web_starter_bundle.sh
 npm run dev    # apps/traverse-starter/web-react
 ```
 
+Bundle sync rules (digest pin, shared core, platform wrappers): [`runtime-bundle-sync.md`](runtime-bundle-sync.md).
+
 Open `http://localhost:5173`. When the runtime strip shows the embedded host is ready:
 
 1. Submit a fixed note, e.g. `Meeting with Alice about project X`
