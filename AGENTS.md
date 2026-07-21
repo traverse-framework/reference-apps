@@ -11,19 +11,19 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
   --jq '.items[] | select(.status == "Ready") | {id, title: (.title // .content.title), note, agent}'
 ```
 
-### Blocked / Future backlog (live)
+### Start plan (demo gaps → tickets)
 
-Query Project 2 for `Blocked` and `Future`. Current gaps (ticket-id in Note):
-
-| Ticket ID | Status | Intent |
+| Ticket ID | Status | Start |
 |---|---|---|
-| `meeting-notes-multi-os` | Future | meeting-notes ≥3 OS embed via playbook |
-| `remove-sidecar-paths` | Future | Delete HTTP sidecar paths from primary shells |
-| `native-ci-android-gtk-required` | Future | Android + GTK CI advisory → required |
-| `phase2-sidecar-nightly` | Future | Optional Phase 2 sidecar nightly |
-| `embed-trace-explorer` | Blocked | Needs Traverse embedded trace API |
-| `registry-ref-starter-process` | Blocked | Needs registry seed + Traverse #542/#548 |
-| `consume-product-wasm-agents` | Blocked | Needs Traverse product agents (e.g. #785) |
+| `remove-sidecar-paths` | **Ready** #1 | Start now — delete sidecar paths |
+| `meeting-notes-multi-os` | **Ready** #2 | Start now — multi-OS showcase |
+| `native-ci-android-gtk-required` | **Ready** #3 | Start now — Android/GTK required CI |
+| `phase2-sidecar-nightly` | Future | Defer — low demo value |
+| `embed-trace-explorer` | Blocked | Wait Traverse trace API |
+| `registry-ref-starter-process` | Blocked | Wait registry + Traverse #542/#548 |
+| `consume-product-wasm-agents` | Blocked | Wait Traverse product agents (#785) |
+
+Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
 
 ### Flip rules (native embeds)
 

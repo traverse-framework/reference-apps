@@ -48,37 +48,35 @@ Related:
 
 Canonical narrative: [`adopted-platform-clients.md`](adopted-platform-clients.md) · front door: root `README.md`.
 
-## Ticket map (kit → remaining)
+## Gap → ticket → start plan
 
-Query Project 2 for current Status / Agent. Kit tickets are **Done**. Remaining open work (by **Ticket ID**):
+Live status is always on [Project 2](https://github.com/orgs/traverse-framework/projects/2). Mapping from the demo-gap list:
 
-### After kit (Future)
+| Demo gap | Ticket ID | Board | Why it matters | Start plan |
+|---|---|---|---|---|
+| meeting-notes multi-OS embed | `meeting-notes-multi-os` | **Ready** (#2) | Still HTTP web-only — not a 7-platform showcase | Claim next; Wave 1 Linux/CLI (+ Android if stable), then Wave 2 Apple/Windows |
+| Trace Explorer embed | `embed-trace-explorer` | **Blocked** | Still HTTP; needs Traverse embedded trace API | Do not start — flip Ready when upstream API exists |
+| Delete sidecar client code | `remove-sidecar-paths` | **Ready** (#1) | Dead HTTP paths still in primary shells | **Start first** — one production path for demos |
+| Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **Ready** (#3) | Apple/Windows already nightly-required; Android/GTK still advisory | Harden Android + GTK → required (or document permanent advisory) |
+| Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Blocked** | Smoke uses App-Refs fixtures; Traverse agents still stubs | Wait Traverse (e.g. #785); then swap fixtures |
+| `registry_ref` adoption | `registry-ref-starter-process` | **Blocked** | Gated on Traverse registry seed | Wait registry + Traverse #542/#548 |
+| Phase 2 sidecar nightly | `phase2-sidecar-nightly` | **Future** (defer) | Legacy path; low demo value | After Wave 1; optional |
 
-| Ticket ID | Intent |
-|---|---|
-| `remove-sidecar-paths` | Remove deprecated HTTP sidecar paths from primary app clients |
-| `meeting-notes-multi-os` | meeting-notes multi-OS showcase |
-| `native-ci-android-gtk-required` | Promote Android + GTK CI from advisory to required |
-| `phase2-sidecar-nightly` | Phase 2 sidecar smoke on nightly (low priority) |
+### Wave 1 — start now (Ready, parallel OK)
 
-### Blocked (upstream)
+1. **`remove-sidecar-paths`** — cleanup primary shells  
+2. **`meeting-notes-multi-os`** — showcase embed  
+3. **`native-ci-android-gtk-required`** — CI bar  
 
-| Ticket ID | Intent |
-|---|---|
-| `embed-trace-explorer` | Embed Trace Explorer when Traverse ships embedded trace API |
-| `registry-ref-starter-process` | `registry_ref` for traverse-starter process |
-| `consume-product-wasm-agents` | Replace App-Refs smoke fixtures with Traverse product agents |
+One Project 2 ticket per agent (`AGENTS.md`). Claim only `Ready` + Agent Unassigned.
 
-## Parallel agent lanes (recommended)
+### Wave 2 — after upstream unblocks
 
-| Lane | Tickets | Notes |
-|---|---|---|
-| Showcase | `meeting-notes-multi-os` | After flipping Future → Ready |
-| Cleanup | `remove-sidecar-paths` | After flipping Future → Ready |
-| CI harden | `native-ci-android-gtk-required` | Engineering only |
-| Upstream-gated | Blocked tickets above | Flip Ready only when Depends on clear |
+Flip Status → Ready when Depends on clears, then claim:
 
-One Project 2 ticket per agent (`AGENTS.md` claim rules). Do not claim Future/Blocked items until Status is `Ready`.
+- `embed-trace-explorer`
+- `registry-ref-starter-process`
+- `consume-product-wasm-agents`
 
 ## Architecture boundary (unchanged)
 
@@ -94,6 +92,6 @@ One Project 2 ticket per agent (`AGENTS.md` claim rules). Do not claim Future/Bl
 3. Digest sync + packaging playbook published — **met**
 4. Getting-started / README are embedded-first; sidecar appendix-only — **met**
 5. Agent DoD + add-platform recipe published — **met**
-6. Next: flip `remove-sidecar-paths` / `meeting-notes-multi-os` to Ready and execute
+6. Wave 1 Ready tickets above — execute in start order (#1 → #3)
 
 When open tickets complete, update Project 2 Status → Done — do not invent a separate status field outside Project 2.
