@@ -30,6 +30,7 @@ check "docs/traverse-runtime.md"               "Traverse runtime setup"
 check "docs/design-language.md"                "UI design language"
 check "docs/runtime-bundle-sync.md"            "Runtime bundle sync contract"
 check "docs/add-platform-client.md"            "Add platform client recipe"
+check "docs/production-packaging.md"           "Production packaging / registry_ref contract"
 
 # Platform clients
 check "apps/traverse-starter/ios-swift/TraverseStarter.xcodeproj" "ios-swift Xcode project"
