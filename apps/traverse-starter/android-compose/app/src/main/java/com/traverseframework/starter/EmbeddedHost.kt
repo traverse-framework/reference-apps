@@ -84,13 +84,13 @@ class InMemoryStarterHost(
 }
 
 /**
- * Production host: digest-pinned `runtime/runtime.wasm` via public RuntimeTraverseEmbedder.
+ * Production host: digest-pinned `runtime/runtime.wasm` via public bridge client.
  *
- * Drains ordered bridge events from [dev.traverse.embedder.ChicoryBridgeClient] and maps
- * `capability_result` payloads when present.
+ * Uses [dev.traverse.embedder.ChicoryBridgeClient] (public) so capability_result
+ * payloads remain available. Typed [dev.traverse.embedder.RuntimeTraverseEmbedder]
+ * subscribe currently omits raw output fields needed by the UI shell.
  */
 class ProductionStarterHost private constructor(
-    private val embedder: dev.traverse.embedder.RuntimeTraverseEmbedder,
     private val client: dev.traverse.embedder.ChicoryBridgeClient,
 ) : StarterHost {
     override val runtimeMode: String = AppConstants.RUNTIME_MODE_EMBEDDED
@@ -98,9 +98,15 @@ class ProductionStarterHost private constructor(
 
     override fun submitNote(note: String): HostRunResult = try {
         val inputJson = buildJsonObject { put("note", note) }.toString()
-        val result = embedder.submit(
-            dev.traverse.embedder.TraverseSubmission(AppConstants.CAPABILITY_ID, inputJson),
-        )
+        val accepted = json.parseToJsonElement(
+            client.submit(
+                buildJsonObject {
+                    put("target_id", AppConstants.CAPABILITY_ID)
+                    put("input", json.parseToJsonElement(inputJson))
+                }.toString(),
+            ),
+        ).jsonObject
+        val sessionId = accepted["session_id"]?.jsonPrimitive?.content.orEmpty()
         val events = mutableListOf<TraceEvent>()
         var output: TraverseStarterOutput? = null
         while (true) {
@@ -111,6 +117,7 @@ class ProductionStarterHost private constructor(
                 null
             }
             val type = parsed?.get("type")?.jsonPrimitive?.content
+                ?: parsed?.get("event_type")?.jsonPrimitive?.content
                 ?: parsed?.get("status")?.jsonPrimitive?.content
                 ?: "event"
             events += TraceEvent(event_type = type, timestamp = "", data = null)
@@ -123,7 +130,7 @@ class ProductionStarterHost private constructor(
             }
         }
         HostRunResult(
-            sessionId = result.sessionId,
+            sessionId = sessionId,
             output = output,
             events = events,
             error = if (output == null) {
@@ -153,11 +160,11 @@ class ProductionStarterHost private constructor(
                     rootPath = bundleRoot.absolutePath,
                     runtimeWasmDigest = "sha256:$digestHex",
                 )
-                val bridge = dev.traverse.embedder.ChicoryRuntimeBridge(bundle)
-                val client = dev.traverse.embedder.ChicoryBridgeClient(bridge)
-                val embedder = dev.traverse.embedder.RuntimeTraverseEmbedder(client)
-                embedder.initialize("{}")
-                ProductionStarterHost(embedder, client)
+                val client = dev.traverse.embedder.ChicoryBridgeClient(
+                    dev.traverse.embedder.ChicoryRuntimeBridge(bundle),
+                )
+                client.initialize("{}")
+                ProductionStarterHost(client)
             } catch (_: Exception) {
                 null
             }

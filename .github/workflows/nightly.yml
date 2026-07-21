@@ -90,10 +90,9 @@ jobs:
           dotnet restore DocApproval.sln
           dotnet test DocApproval.sln -c Release --nologo
 
-  # Advisory: GTK shells need AdwApplicationWindowExt / GString fixes before merge-blocking.
-  native-linux-gtk-advisory:
+  # Nightly required: GTK shells (Adwaita + GString fixes).
+  native-linux-gtk:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -120,18 +119,24 @@ jobs:
           TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
         run: bash scripts/ci/phase2_link_traverse.sh
 
-      - name: cargo test GTK shells (advisory)
+      - name: cargo test GTK shells
         run: |
           (cd apps/traverse-starter && cargo test -p traverse-starter-gtk)
           (cd apps/doc-approval && cargo test -p doc-approval-gtk)
 
-  # Advisory until Kotlin RuntimeTraverseEmbedder public factory is used (compile currently fails).
-  native-android-advisory:
+  # Nightly required: Android unit tests (public ChicoryBridgeClient path).
+  native-android:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
+      - name: Checkout Traverse
+        uses: actions/checkout@v7
+        with:
+          repository: traverse-framework/Traverse
+          ref: v0.8.2
+          path: .traverse-checkout
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -142,10 +147,14 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Gradle test traverse-starter (advisory)
+      - name: Gradle test traverse-starter
         working-directory: apps/traverse-starter/android-compose
+        env:
+          TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
         run: ./gradlew --no-daemon testDebugUnitTest
 
-      - name: Gradle test doc-approval (advisory)
+      - name: Gradle test doc-approval
         working-directory: apps/doc-approval/android-compose
+        env:
+          TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
         run: ./gradlew --no-daemon testDebugUnitTest

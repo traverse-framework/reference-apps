@@ -54,10 +54,10 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 
 | Demo gap | Ticket ID | Board | Why it matters | Start plan |
 |---|---|---|---|---|
-| meeting-notes multi-OS embed | `meeting-notes-multi-os` | **Ready** (#2) | Still HTTP web-only — not a 7-platform showcase | Claim next; Wave 1 Linux/CLI (+ Android if stable), then Wave 2 Apple/Windows |
+| meeting-notes multi-OS embed | `meeting-notes-multi-os` | **In Progress** (Cursor) | Still HTTP web-only — not a 7-platform showcase | Wave 1 Linux/CLI (+ Android if stable), then Wave 2 Apple/Windows |
 | Trace Explorer embed | `embed-trace-explorer` | **Blocked** | Still HTTP; needs Traverse embedded trace API | Do not start — flip Ready when upstream API exists |
-| Delete sidecar client code | `remove-sidecar-paths` | **In Progress** (Cursor) | Dead HTTP paths removed from starter/doc-approval; meeting-notes carve-out until embed | Finish PR; then Done |
-| Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **Ready** (#3) | Apple/Windows already nightly-required; Android/GTK still advisory | Harden Android + GTK → required (or document permanent advisory) |
+| Delete sidecar client code | `remove-sidecar-paths` | **Done** (#206) | Dead HTTP paths removed from starter/doc-approval; meeting-notes carve-out until embed | Shipped |
+| Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **In Progress** (Cursor) | Apple/Windows already nightly-required; Android/GTK promoted to required | Land compile fixes + required nightly jobs |
 | Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Blocked** | Smoke uses App-Refs fixtures; Traverse agents still stubs | Wait Traverse (e.g. #785); then swap fixtures |
 | `registry_ref` adoption | `registry-ref-starter-process` | **Blocked** | Gated on Traverse registry seed | Wait registry + Traverse #542/#548 |
 | Phase 2 sidecar nightly | `phase2-sidecar-nightly` | **Future** (defer) | Legacy path; low demo value | After Wave 1; optional |

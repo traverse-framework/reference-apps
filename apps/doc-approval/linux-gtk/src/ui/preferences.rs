@@ -86,7 +86,7 @@ impl PreferencesDialog {
 
         dialog.present();
         while !finished.get() {
-            while glib::MainContext::default().iteration(true) {}
+            while gtk4::glib::MainContext::default().iteration(true) {}
         }
 
         result.take()

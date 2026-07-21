@@ -15,9 +15,9 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 | Ticket ID | Status | Start |
 |---|---|---|
-| `remove-sidecar-paths` | **In Progress** (Cursor) | Delete sidecar paths from primary shells |
-| `meeting-notes-multi-os` | **Ready** #2 | Start now — multi-OS showcase |
-| `native-ci-android-gtk-required` | **Ready** #3 | Start now — Android/GTK required CI |
+| `remove-sidecar-paths` | **Done** (#206) | Embedded-only primary shells |
+| `meeting-notes-multi-os` | **In Progress** (Cursor) | Multi-OS showcase embed |
+| `native-ci-android-gtk-required` | **In Progress** (Cursor) | Android/GTK nightly required |
 | `phase2-sidecar-nightly` | Future | Defer — low demo value |
 | `embed-trace-explorer` | Blocked | Wait Traverse trace API |
 | `registry-ref-starter-process` | Blocked | Wait registry + Traverse #542/#548 |
