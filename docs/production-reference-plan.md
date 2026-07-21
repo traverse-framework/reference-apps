@@ -30,6 +30,8 @@ Related:
 | Trace Explorer | **Named HTTP exception** until Traverse ships embedded trace API; then embed (not a product-shell pattern to copy) | [#183](https://github.com/traverse-framework/reference-apps/issues/183) |
 | Post-kit showcase (#179) | **meeting-notes → multi-OS** via add-platform recipe | [#179](https://github.com/traverse-framework/reference-apps/issues/179) |
 | Plan home | This document | [#181](https://github.com/traverse-framework/reference-apps/issues/181) |
+| Registry | **Docs contract now** ([#185](https://github.com/traverse-framework/reference-apps/issues/185)); **impl Future** ([#97](https://github.com/traverse-framework/reference-apps/issues/97)) | Decision C |
+| Secondary apps | **Explicitly secondary** (demos/kits); not hard-fail smoke targets | [#186](https://github.com/traverse-framework/reference-apps/issues/186) |
 
 ## Ticket map (kit → showcase)
 
@@ -55,6 +57,8 @@ Query Project 2 for current Status / Agent. Intended sequencing:
 |---|---|
 | [#176](https://github.com/traverse-framework/reference-apps/issues/176) | Embedded-first production onboarding; retire sidecar-first narrative |
 | [#181](https://github.com/traverse-framework/reference-apps/issues/181) | This plan doc |
+| [#185](https://github.com/traverse-framework/reference-apps/issues/185) | `registry_ref` consumer contract (docs only) |
+| [#186](https://github.com/traverse-framework/reference-apps/issues/186) | Primary vs secondary / adopted apps |
 
 ### D — Agent / dev process
 
@@ -82,7 +86,7 @@ Query Project 2 for current Status / Agent. Intended sequencing:
 | Lane | Tickets | Merge priority |
 |---|---|---|
 | Proof | #118 → #174 | Highest |
-| Docs | #176 (after #181) → #175 | Medium |
+| Docs | #176 → #186 → #185 → #175 | Medium |
 | Ops | #177 → #178 | Medium |
 | Native CI | #88 (tiered) | After Linux slice of #118 is green |
 
