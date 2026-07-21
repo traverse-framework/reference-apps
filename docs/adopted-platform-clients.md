@@ -2,6 +2,16 @@
 
 This repository is the **canonical home** for checked-in application UI, platform client demos, and starter/reference source previously maintained under Traverse `apps/`.
 
+## Primary vs secondary (maintenance bar)
+
+| Tier | Apps | Bar |
+|---|---|---|
+| **Primary product shells** | `traverse-starter`, `doc-approval` (all platforms); `meeting-notes` (web today → multi-OS in [#179](https://github.com/traverse-framework/reference-apps/issues/179)) | Embedded-first; design-language zones; public embedders; merge-blocking `embedded_smoke` for Linux Web+CLI |
+| **Secondary / adopted** | `react-demo`, `android-demo`, `macos-demo`, `browser-consumer`, `youaskm3-starter-kit` | Lighter maintenance; offline/live smoke scripts below; **not** hard-fail slices of `embedded_smoke.sh` |
+| **Debugger exception** | `trace-explorer` | Named HTTP exception ([#183](https://github.com/traverse-framework/reference-apps/issues/183)) — not a product shell to copy |
+
+Do **not** copy Expedition demo / starter-kit patterns into primary shells without caveats. Shipping guide: [`production-playbook.md`](production-playbook.md).
+
 Ownership boundary (Traverse [#703](https://github.com/traverse-framework/Traverse/issues/703)):
 
 | Former Traverse path | Owner | Destination here |
@@ -15,7 +25,7 @@ Ownership boundary (Traverse [#703](https://github.com/traverse-framework/Traver
 
 Shared fixture for native demos: [`fixtures/expedition-runtime-session.json`](../fixtures/expedition-runtime-session.json).
 
-## Validation commands
+## Validation commands (secondary)
 
 | Artifact | Command |
 |---|---|

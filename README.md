@@ -84,14 +84,22 @@ Developer tool for browsing execution traces — not a domain workflow app.
 
 ## Reference apps
 
-| App | Purpose | Web path | Default capability |
+| Tier | App | Purpose | Notes |
 |---|---|---|---|
-| traverse-starter | Flat string output from a short note | [`apps/traverse-starter/web-react/`](apps/traverse-starter/web-react/) | `traverse-starter.process` |
-| doc-approval | Document analysis submitter | [`apps/doc-approval/web-react/`](apps/doc-approval/web-react/) | `doc-approval.pipeline` |
-| meeting-notes | List-type output from a transcript | [`apps/meeting-notes/web-react/`](apps/meeting-notes/web-react/) | `meeting-notes.process` |
-| trace-explorer | Execution timeline debugger | [`apps/trace-explorer/web-react/`](apps/trace-explorer/web-react/) | — |
+| **Primary** | traverse-starter | Flat string output from a short note | Embedded on all seven platforms |
+| **Primary** | doc-approval | Document analysis submitter | Embedded on all seven platforms |
+| **Primary** | meeting-notes | List-type output from a transcript | Web today; multi-OS showcase [#179](https://github.com/traverse-framework/reference-apps/issues/179) |
+| **Exception** | trace-explorer | Execution timeline debugger | Named HTTP exception [#183](https://github.com/traverse-framework/reference-apps/issues/183) — not a product shell |
+| **Secondary** | react-demo, android-demo, macos-demo, browser-consumer, youaskm3-starter-kit | Adopted Expedition demos / kits | Lighter bar; not `embedded_smoke` hard-fail — [`docs/adopted-platform-clients.md`](docs/adopted-platform-clients.md) |
 
-Each app also ships native clients (iOS, macOS, Android, Windows, Linux, CLI) where listed in [Platform clients](#platform-clients) below. Per-app READMEs under `apps/<app>/<platform>/README.md` cover build, run, and runtime URL settings.
+| App | Web path | Default capability |
+|---|---|---|
+| traverse-starter | [`apps/traverse-starter/web-react/`](apps/traverse-starter/web-react/) | `traverse-starter.process` / `.pipeline` |
+| doc-approval | [`apps/doc-approval/web-react/`](apps/doc-approval/web-react/) | `doc-approval.pipeline` |
+| meeting-notes | [`apps/meeting-notes/web-react/`](apps/meeting-notes/web-react/) | `meeting-notes.process` |
+| trace-explorer | [`apps/trace-explorer/web-react/`](apps/trace-explorer/web-react/) | — |
+
+Per-app READMEs under `apps/<app>/<platform>/README.md` cover build, run, and (for primary shells) embedded runtime setup. Do **not** treat secondary demo patterns as the production kit default.
 
 ## Project Structure
 
@@ -191,5 +199,5 @@ Checks 1–5 validate Node, install, typecheck, lint, and tests (no runtime requ
 
 ## What's Blocked
 
-No active Project 2 **Blocked** items. Phase 3 embeds shipped. Next work is the **Phase 4 production kit** — see [`docs/production-reference-plan.md`](docs/production-reference-plan.md) and query Project 2 for Ready items (#118, #88, #174–#178, …).
+No active Project 2 **Blocked** items. Phase 3 embeds shipped. Next work is the **Phase 4 production kit** — see [`docs/production-reference-plan.md`](docs/production-reference-plan.md) and query Project 2 for Ready items.
 

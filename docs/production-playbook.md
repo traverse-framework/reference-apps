@@ -32,14 +32,16 @@ Rules:
 |---|---|---|
 | **traverse-starter** | Web, Linux GTK, CLI, Android, Windows, iOS, macOS | Reference kit — start here |
 | **doc-approval** | Same seven platforms | Second domain + pipeline |
+| **meeting-notes** | Web today | Multi-OS embed showcase [#179](https://github.com/traverse-framework/reference-apps/issues/179) |
 
-**Secondary / exceptions** (not hard-fail smoke targets — see [#186](https://github.com/traverse-framework/reference-apps/issues/186)):
+**Maintenance bar (primary):** design-language three zones, public embedder only, digest-pinned bundles, `embedded_smoke` coverage for Linux-required slices.
+
+**Secondary / exceptions** (not hard-fail smoke targets — [#186](https://github.com/traverse-framework/reference-apps/issues/186), [`adopted-platform-clients.md`](adopted-platform-clients.md)):
 
 | App | Status |
 |---|---|
-| meeting-notes (web) | HTTP client today; multi-OS embed showcase is [#179](https://github.com/traverse-framework/reference-apps/issues/179) |
-| trace-explorer | **Named HTTP exception** until Traverse trace API embeds ([#183](https://github.com/traverse-framework/reference-apps/issues/183)) |
-| react-demo, android-demo, macos-demo, youaskm3-starter-kit, browser-consumer | Adopted demos / kits — see [`adopted-platform-clients.md`](adopted-platform-clients.md) |
+| react-demo, android-demo, macos-demo, youaskm3-starter-kit, browser-consumer | Adopted demos / kits — lighter bar; own offline smokes |
+| trace-explorer | **Named HTTP exception** until Traverse trace API embeds ([#183](https://github.com/traverse-framework/reference-apps/issues/183)) — debugger, not a product shell |
 
 ---
 
