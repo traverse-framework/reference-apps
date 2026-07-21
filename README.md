@@ -105,8 +105,9 @@ Each app also ships native clients (iOS, macOS, Android, Windows, Linux, CLI) wh
 | [`apps/youaskm3-starter-kit/`](apps/youaskm3-starter-kit/) | youaskm3 browser starter kit |
 | [`docs/adopted-platform-clients.md`](docs/adopted-platform-clients.md) | Canonical homes for adopted Traverse demos |
 | [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md) | Embedded-first onboarding (Web + Linux/CLI) |
-| [`docs/embedded-runtime-plan.md`](docs/embedded-runtime-plan.md) | Phase 3 target — embedded runtime + multi-capability workflows |
-| [`docs/traverse-runtime.md`](docs/traverse-runtime.md) | Dev sidecar setup (Phase 1/2 interim) |
+| [`docs/embedded-runtime-plan.md`](docs/embedded-runtime-plan.md) | Phase 3 — embedded runtime + multi-capability workflows |
+| [`docs/production-reference-plan.md`](docs/production-reference-plan.md) | Phase 4 — production kit roadmap (CI, packaging, docs, agent ops) |
+| [`docs/traverse-runtime.md`](docs/traverse-runtime.md) | Dev sidecar setup (deprecated interim / debug) |
 | [`manifests/traverse-starter/`](manifests/traverse-starter/) | App manifest + component manifests (Phase 2) |
 | [`fixtures/`](fixtures/) | Shared UI demo fixtures (e.g. expedition session) |
 | [`scripts/ci/`](scripts/ci/) | Repository checks, smoke tests, coverage gate |
@@ -185,10 +186,5 @@ Checks 1–5 validate Node, install, typecheck, lint, and tests (no runtime requ
 
 ## What's Blocked
 
-No active Project 2 **Blocked** items. Phase 3 native embeds [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) shipped. Ready on Project 2: none (query the live board).
-
-
-## What's Blocked
-
-No active Project 2 **Blocked** items. Phase 3 native embeds [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) shipped. Ready on Project 2: none (query the live board).
+No active Project 2 **Blocked** items. Phase 3 embeds shipped. Next work is the **Phase 4 production kit** — see [`docs/production-reference-plan.md`](docs/production-reference-plan.md) and query Project 2 for Ready items (#118, #88, #174–#178, …).
 

@@ -11,20 +11,13 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 
 ### Blocked work summary
 
-- None. Phase 3 native embeds complete: Swift [#114](https://github.com/traverse-framework/reference-apps/issues/114), Android [#115](https://github.com/traverse-framework/reference-apps/issues/115), Windows [#116](https://github.com/traverse-framework/reference-apps/issues/116). Web/Linux/CLI already shipped ([#113](https://github.com/traverse-framework/reference-apps/issues/113)/[#117](https://github.com/traverse-framework/reference-apps/issues/117)).
+- None. Phase 3 native embeds complete (#113–#117).
 
-Ready: none (query the live board).
-
+**Phase 4 (production kit):** see [`docs/production-reference-plan.md`](docs/production-reference-plan.md). Ready kit tickets include #118, #88, #174–#178 (query the live board). Showcase #179 and sidecar removal #180 stay Future until the kit lands.
 
 ### Flip rules (native embeds)
 
-Upstream flip conditions are met (Traverse #750/#751/#647 closed). Keep Project 2 in sync:
-
-| App-Refs | Status rule |
-|---|---|
-| [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) | **Ready** until claimed; return to **Blocked** only if Traverse reopens #750/#751/#647 or withdraws the certified artifact |
-
-Update this section when a PR changes platform status (see PR template checklist).
+Upstream flip conditions are met (Traverse #750/#751/#647 closed). Embeds #114–#116 are **Done**. Return any platform to Blocked only if Traverse withdraws the certified `runtime/runtime.wasm` artifact or reopens those upstream issues.
 
 ## Multi-Agent Coordination
 
