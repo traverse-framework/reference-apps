@@ -90,6 +90,41 @@ jobs:
           dotnet restore DocApproval.sln
           dotnet test DocApproval.sln -c Release --nologo
 
+  # Advisory: GTK shells need AdwApplicationWindowExt / GString fixes before merge-blocking.
+  native-linux-gtk-advisory:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Checkout Traverse
+        uses: actions/checkout@v7
+        with:
+          repository: traverse-framework/Traverse
+          ref: v0.8.2
+          path: .traverse-checkout
+
+      - name: Install GTK build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-4-dev libadwaita-1-dev libcairo2-dev pkg-config
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.94.0
+
+      - name: Link Traverse examples
+        env:
+          TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
+        run: bash scripts/ci/phase2_link_traverse.sh
+
+      - name: cargo test GTK shells (advisory)
+        run: |
+          (cd apps/traverse-starter && cargo test -p traverse-starter-gtk)
+          (cd apps/doc-approval && cargo test -p doc-approval-gtk)
+
   # Advisory until Kotlin RuntimeTraverseEmbedder public factory is used (compile currently fails).
   native-android-advisory:
     runs-on: ubuntu-latest

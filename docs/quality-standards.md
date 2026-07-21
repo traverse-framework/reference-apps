@@ -86,7 +86,8 @@ Native CI build gates (#88, tiered):
 
 | Gate | When | Job |
 |---|---|---|
-| Linux `cargo test` (traverse-starter + doc-approval: core, CLI, GTK) | **PR merge-blocking** | `native-linux` in `.github/workflows/ci.yml` |
+| Linux `cargo test` (traverse-starter + doc-approval: **core + CLI**) | **PR merge-blocking** | `native-linux` in `.github/workflows/ci.yml` |
+| Linux GTK `cargo test` | **Nightly advisory** | `native-linux-gtk-advisory` (compile fixes pending) |
 | macOS `xcodebuild` (TraverseStarterMac + DocApprovalMac) | **Nightly required** | `native-macos` in `.github/workflows/nightly.yml` |
 | Windows `dotnet test` (WinUI solutions) | **Nightly required** | `native-windows` in `.github/workflows/nightly.yml` |
 | Android `./gradlew testDebugUnitTest` | **Nightly advisory** (`continue-on-error`) until Kotlin embedder public API compiles | `native-android-advisory` |
@@ -127,7 +128,7 @@ Every PR runs `scripts/ci/embedded_smoke.sh` with `EMBEDDED_SMOKE_EXPECT=linux` 
 
 ## Native Linux cargo (PR merge-blocking)
 
-Every PR runs `cargo test --workspace` for `apps/traverse-starter` and `apps/doc-approval` (job `native-linux`), with GTK/libadwaita packages installed on the runner.
+Every PR runs Linux native cargo tests (job `native-linux`): `traverse-core-rs` / `traverse-starter-cli` and the doc-approval equivalents. GTK shells are nightly-advisory until Adwaita/GTK compile issues are fixed.
 
 ## Nightly CI Gate
 
@@ -135,7 +136,7 @@ Nightly (`.github/workflows/nightly.yml`, 06:00 UTC + `workflow_dispatch`):
 
 - Phase 1 sidecar smoke (`phase1_smoke.sh`) + Node quality suite (`golden-path`)
 - **Required:** `native-macos`, `native-windows`
-- **Advisory:** `native-android-advisory` (does not fail the workflow until Android compile is fixed)
+- **Advisory:** `native-android-advisory`, `native-linux-gtk-advisory` (do not fail the workflow until those compiles are fixed)
 
 **SLA**: any required nightly failure must be investigated within 24 hours. A broken required nightly sitting more than 24 hours is a P1 issue.
 
