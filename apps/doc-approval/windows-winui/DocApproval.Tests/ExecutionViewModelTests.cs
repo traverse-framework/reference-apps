@@ -1,5 +1,7 @@
 namespace DocApproval.Tests;
 
+using Xunit;
+
 internal sealed class InMemorySettingsRepository : ISettingsRepository
 {
     public string Workspace { get; set; } = AppConstants.DefaultWorkspace;
