@@ -99,7 +99,7 @@ HTTP `traverse-cli serve` is **not** a packaging input for primary shells. Docum
 
 ## `registry_ref` consumer contract
 
-Docs-only contract for how primary App-References shells will consume public registry capabilities via `registry_ref` (**implementation is Project 2 `registry-ref-starter-process` — Blocked / gated**).
+Docs-only contract for how primary App-References shells will consume public registry capabilities via `registry_ref` (**implementation is Project 2 `registry-ref-starter-process` — Blocked on Traverse dual-mode component manifests**).
 
 Governing Traverse specs:
 
