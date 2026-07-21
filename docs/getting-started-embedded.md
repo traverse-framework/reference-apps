@@ -97,13 +97,16 @@ Showcase workflow: `traverse-starter.pipeline` (`validate` → `process` → `su
 
 ## 5. Add another platform UI
 
+Follow the ordered recipe: [`add-platform-client.md`](add-platform-client.md).
+
 Checklist for a new shell (or promoting a sidecar client to embedded):
 
-1. Depend on the **public** platform embedder SDK (Web: `traverse-embedder-web`; Rust: `traverse-embedder`; others when [#114](https://github.com/traverse-framework/reference-apps/issues/114)–[#116](https://github.com/traverse-framework/reference-apps/issues/116) ship)
+1. Depend on the **public** platform embedder SDK (Web: `traverse-embedder-web`; Rust: `traverse-embedder`; Swift / .NET / Android vendors as shipped)
 2. Bundle `manifests/<app>/` + WASM artifacts for the host loader
 3. Submit workflow input; subscribe to embedder events; render only runtime-owned fields
-4. Document **Runtime mode: embedded** in that platform’s README
+4. Document **Runtime mode: Embedded** in that platform’s README
 5. Do **not** add HTTP sidecar URL config to primary shells — appendix only ([`traverse-runtime.md`](traverse-runtime.md))
+6. Extend `scripts/ci/embedded_smoke.sh` (or ensure the new slice skips with an explicit reason until its runner exists)
 
 ## Platform matrix (current)
 
