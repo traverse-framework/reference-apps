@@ -1,4 +1,5 @@
 use gtk4::prelude::*;
+use gtk4::glib;
 use gtk4::{Box as GtkBox, Button, Entry, Label, Orientation};
 use libadwaita as adw;
 use std::cell::Cell;
