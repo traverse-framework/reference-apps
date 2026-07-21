@@ -54,31 +54,29 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 
 | Demo gap | Ticket ID | Board | Why it matters | Start plan |
 |---|---|---|---|---|
-| meeting-notes multi-OS embed | `meeting-notes-multi-os` | **In Progress** (Cursor) | Web + Linux GTK + CLI embed | Finish PR; Apple/Windows later waves |
-| Trace Explorer embed | `embed-trace-explorer` | **Blocked** | Still HTTP; needs Traverse embedded trace API | Do not start — flip Ready when upstream API exists |
-| meeting-notes multi-OS embed | `meeting-notes-multi-os` | **Done** | Web + Linux GTK + CLI embed | Shipped |
-| Trace Explorer embed | `embed-trace-explorer` | **Blocked** | Still HTTP; needs Traverse embedded trace API | Do not start — flip Ready when upstream API exists |
-| Delete sidecar client code | `remove-sidecar-paths` | **Done** | Dead HTTP paths removed from starter/doc-approval | Shipped |
-| Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **In Progress** (Cursor) | GTK + Android compile fixes; jobs required on nightly | Finish PR |
-| Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Blocked** | Smoke uses App-Refs fixtures; Traverse agents still stubs | Wait Traverse (e.g. #785); then swap fixtures |
-| `registry_ref` adoption | `registry-ref-starter-process` | **Blocked** | Registry seed + sync Done; Traverse still requires `contract_path` on component manifests (spec 054 FR-007 not wired) | Wait Traverse dual-mode component load |
-| Phase 2 sidecar nightly | `phase2-sidecar-nightly` | **Future** (defer) | Legacy path; low demo value | After Wave 1; optional |
+| meeting-notes multi-OS embed | `meeting-notes-multi-os` | **Done** (#208) | Web + Linux GTK + CLI embed | Shipped |
+| Trace Explorer embed | `embed-trace-explorer` | **Blocked** | Still HTTP; needs Traverse embedded trace API | Flip Ready when Project 1 `embedded-trace-api` is Done |
+| Delete sidecar client code | `remove-sidecar-paths` | **Done** (#206) | Dead HTTP paths removed from starter/doc-approval | Shipped |
+| Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **Done** (#209); nightly green via `fix-nightly-native-required` | Required nightly jobs | Shipped |
+| Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Blocked** | Smoke uses App-Refs fixtures; Traverse agents still stubs | Flip Ready when Project 1 `real-wasm-agent-execute` is Done |
+| `registry_ref` adoption | `registry-ref-starter-process` | **Blocked** | Registry seed + sync Done; Traverse still requires `contract_path` on component manifests (spec 054 FR-007 not wired) | Flip Ready when Project 1 `dual-mode-component-registry-ref` is Done |
+| Phase 2 sidecar nightly | `phase2-sidecar-nightly` | **Future** (defer) | Legacy path; low demo value | Optional; low priority |
 
-### Wave 1 — start now (Ready, parallel OK)
+### Wave 1 — Done
 
-1. **`remove-sidecar-paths`** — cleanup primary shells  
-2. **`meeting-notes-multi-os`** — showcase embed  
-3. **`native-ci-android-gtk-required`** — CI bar  
+1. **`remove-sidecar-paths`** — shipped (#206)  
+2. **`meeting-notes-multi-os`** — shipped (#208)  
+3. **`native-ci-android-gtk-required`** — shipped (#209); required nightly green  
 
-One Project 2 ticket per agent (`AGENTS.md`). Claim only `Ready` + Agent Unassigned.
+No Ready App-Refs work until Wave 2 upstream gates clear (`AGENTS.md`).
 
 ### Wave 2 — after upstream unblocks
 
 Flip Status → Ready when Depends on clears, then claim:
 
-- `embed-trace-explorer`
-- `registry-ref-starter-process`
-- `consume-product-wasm-agents`
+- `embed-trace-explorer` (wait: Project 1 `embedded-trace-api`)
+- `registry-ref-starter-process` (wait: Project 1 `dual-mode-component-registry-ref`)
+- `consume-product-wasm-agents` (wait: Project 1 `real-wasm-agent-execute`)
 
 ## Architecture boundary (unchanged)
 
@@ -90,10 +88,10 @@ Flip Status → Ready when Depends on clears, then claim:
 ## Exit criteria for Phase 4 kit
 
 1. `bash scripts/ci/embedded_smoke.sh` exists and is wired to CI with the skip/fail contract above — **met**
-2. Tiered native CI documented in `docs/quality-standards.md` and implemented for the Linux PR gate — **met** (Android/GTK still advisory → `native-ci-android-gtk-required`)
+2. Tiered native CI documented in `docs/quality-standards.md` — **met** (Linux PR gate + required nightly macOS/Windows/Android/GTK)
 3. Digest sync + packaging playbook published — **met**
 4. Getting-started / README are embedded-first; sidecar appendix-only — **met**
 5. Agent DoD + add-platform recipe published — **met**
-6. Wave 1 Ready tickets above — execute in start order (#1 → #3)
+6. Wave 1 tickets (#1 → #3) — **met**
 
 When open tickets complete, update Project 2 Status → Done — do not invent a separate status field outside Project 2.

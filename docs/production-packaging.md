@@ -112,9 +112,9 @@ Governing Traverse specs:
 |---|---|---|
 | Component manifests under `manifests/` | **Local-path** (`contract_path` + `wasm_binary_path` + `wasm_digest`) | Selected components may use `registry_ref` instead |
 | Sync / packaging | [`runtime-bundle-sync.md`](runtime-bundle-sync.md) copies local example trees | Still sync app manifests; capability artifacts come from registry sync + digest-verified cache |
-| Implementation ticket | Project 2 `registry-ref-starter-process` remains **Blocked** until registry seed + Traverse gates clear | Flip Ready only when upstream publish/sync works |
+| Implementation ticket | Project 2 `registry-ref-starter-process` remains **Blocked** until Traverse dual-mode component manifests land (`dual-mode-component-registry-ref`) | Flip Ready only when `registry_ref`-only component manifests validate/register |
 
-**Do not switch any checked-in manifest to `registry_ref` in this ticket or any PR that only lands this doc.** Premature switches break Phase 3 embedded smoke until registry seed-publish and `traverse-cli registry sync` are available.
+**Do not switch any checked-in manifest to `registry_ref` in this ticket or any PR that only lands this doc.** Premature switches break Phase 3 embedded smoke until Traverse accepts `registry_ref` xor `contract_path` on component manifests (spec 054 FR-007).
 
 ## Intended component shape
 
@@ -177,7 +177,7 @@ First intended cutover: **`traverse-starter.process` only** (`registry-ref-start
 ## Agent / playbook rules
 
 - Packaging and production playbooks may **describe** this contract; they must not instruct agents to rewrite manifests to `registry_ref` yet.
-- Project 2 `registry-ref-starter-process` owns the code/manifest switch and remains Blocked until Traverse registry seed + sync CLI gates are met.
+- Project 2 `registry-ref-starter-process` owns the code/manifest switch and remains Blocked until Traverse Project 1 `dual-mode-component-registry-ref` is Done.
 - UI remains a rendering layer — registry adoption does not move business field computation into App-References.
 
 ## Related
