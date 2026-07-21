@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -79,7 +79,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y rsync
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -87,13 +87,47 @@ jobs:
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: '1.94.0'
+          toolchain: 1.94.0
 
       - name: Run embedded smoke (Linux-required slices)
         env:
           TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
           EMBEDDED_SMOKE_EXPECT: linux
         run: bash scripts/ci/embedded_smoke.sh
+
+  # Tiered native CI (#88): PR merge-blocking = Linux cargo (core + CLI).
+  # GTK / Android not yet PR-stable. Apple/Windows = nightly required.
+  native-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout App-References
+        uses: actions/checkout@v7
+
+      - name: Checkout Traverse
+        uses: actions/checkout@v7
+        with:
+          repository: traverse-framework/Traverse
+          ref: v0.8.2
+          path: .traverse-checkout
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.94.0
+
+      - name: Link Traverse examples
+        env:
+          TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
+        run: bash scripts/ci/phase2_link_traverse.sh
+
+      - name: cargo test traverse-starter (core + cli)
+        working-directory: apps/traverse-starter
+        run: cargo test -p traverse-core-rs -p traverse-starter-cli
+
+      - name: cargo test doc-approval (core + cli)
+        working-directory: apps/doc-approval
+        run: cargo test -p doc-approval-core-rs -p doc-approval-cli
 
   pr-hygiene:
     if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
