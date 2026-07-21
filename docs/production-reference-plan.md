@@ -26,7 +26,8 @@ Related:
 | Claim order | Parallel lanes; **#118** is merge-priority | Brainstorm |
 | Native CI (#88) | **Tiered:** PR merge-blocking = Linux (`cargo`, Android `gradle` if stable); Nightly = Apple + Windows must stay green | [#88](https://github.com/traverse-framework/reference-apps/issues/88) |
 | Embedded smoke (#118) | **One script, all platforms**; skip-with-reason when SDK missing; hard-fail when the runner is expected to run that slice | [#118](https://github.com/traverse-framework/reference-apps/issues/118) |
-| HTTP sidecar | **Freeze & archive**, then delete after smoke is green; Trace Explorer may remain HTTP until an embedded trace API exists | [#176](https://github.com/traverse-framework/reference-apps/issues/176), [#180](https://github.com/traverse-framework/reference-apps/issues/180) |
+| HTTP sidecar | **Freeze & archive**, then delete after smoke is green | [#176](https://github.com/traverse-framework/reference-apps/issues/176), [#180](https://github.com/traverse-framework/reference-apps/issues/180) |
+| Trace Explorer | **Named HTTP exception** until Traverse ships embedded trace API; then embed (not a product-shell pattern to copy) | [#183](https://github.com/traverse-framework/reference-apps/issues/183) |
 | Post-kit showcase (#179) | **meeting-notes → multi-OS** via add-platform recipe | [#179](https://github.com/traverse-framework/reference-apps/issues/179) |
 | Plan home | This document | [#181](https://github.com/traverse-framework/reference-apps/issues/181) |
 
