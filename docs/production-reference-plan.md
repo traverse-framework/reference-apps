@@ -33,6 +33,7 @@ Related:
 | Registry | **Docs contract now** ([#185](https://github.com/traverse-framework/reference-apps/issues/185)); **impl Future** ([#97](https://github.com/traverse-framework/reference-apps/issues/97)) | Decision C |
 | Secondary apps | **Explicitly secondary** (demos/kits); not hard-fail smoke targets | [#186](https://github.com/traverse-framework/reference-apps/issues/186) |
 | Repo front door | **Thin pointer now** (embedded banner + plan link); full rewrite in [#176](https://github.com/traverse-framework/reference-apps/issues/176) | Decision B |
+| Digest sync (#174) | **Shared core + thin per-platform wrappers** (keep existing script names) | Decision B |
 
 ## Ticket map (kit → showcase)
 
