@@ -8,6 +8,10 @@ updates:
       github-actions:
         patterns:
           - "*"
+    ignore:
+      # Action tags are not Rust channel versions — Dependabot mis-resolved
+      # `with.toolchain: 1.94.0` into `uses: dtolnay/rust-toolchain@1.100.0`.
+      - dependency-name: "dtolnay/rust-toolchain"
 
   - package-ecosystem: "npm"
     directory: "/"
