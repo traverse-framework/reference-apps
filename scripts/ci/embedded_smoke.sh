@@ -158,9 +158,25 @@ smoke_cli() {
   ok "cli embedded health Ready"
 }
 
+# SDK build/test: hard-fail only when the slice is expected for this runner.
+# When EXPECT=linux|all scoping excludes a slice, only digests run (below).
+sdk_fail_or_skip() {
+  local slice="$1"
+  local msg="$2"
+  if slice_expected "$slice"; then
+    fail "$msg"
+  else
+    skip "$slice — $msg (advisory; not required for EXPECT=$EXPECT)"
+  fi
+}
+
 smoke_gtk() {
   local slice=gtk
   if forced_skip "$slice"; then skip "gtk (EMBEDDED_SMOKE_SKIP)"; return; fi
+  if ! slice_expected "$slice" && [ "$EXPECT" != "auto" ]; then
+    skip "gtk SDK tests — not required for EXPECT=$EXPECT"
+    return
+  fi
   if ! command -v cargo >/dev/null 2>&1; then
     if slice_expected "$slice"; then fail "gtk expected but cargo missing"; else skip "gtk — cargo not found"; fi
     return
@@ -176,7 +192,7 @@ smoke_gtk() {
   ); then
     ok "gtk unit tests"
   else
-    fail "gtk cargo test"
+    sdk_fail_or_skip "$slice" "gtk cargo test failed"
   fi
 }
 
@@ -186,6 +202,12 @@ smoke_android() {
 
   local assets="$REPO_ROOT/apps/traverse-starter/android-compose/app/src/main/assets/bundles/traverse-starter/runtime"
   verify_runtime_digest "android" "$assets" || true
+
+  # Linux CI often has a partial Android SDK — do not run gradle unless required.
+  if ! slice_expected "$slice" && [ "$EXPECT" != "auto" ]; then
+    skip "android SDK tests — not required for EXPECT=$EXPECT (digest checked)"
+    return
+  fi
 
   if [ ! -x "$REPO_ROOT/apps/traverse-starter/android-compose/gradlew" ]; then
     if slice_expected "$slice"; then fail "android expected but gradlew missing"; else skip "android — gradlew missing"; fi
@@ -198,7 +220,7 @@ smoke_android() {
   if ! require_traverse "android sync"; then return; fi
   log "=== android (sync + unit tests) ==="
   if ! TRAVERSE_REPO="$TRAVERSE_REPO" bash "$REPO_ROOT/scripts/ci/sync_android_starter_bundle.sh"; then
-    fail "android sync"
+    sdk_fail_or_skip "$slice" "android sync failed"
     return
   fi
   if (
@@ -207,7 +229,7 @@ smoke_android() {
   ); then
     ok "android unit tests"
   else
-    fail "android gradle testDebugUnitTest"
+    sdk_fail_or_skip "$slice" "android gradle testDebugUnitTest failed"
   fi
 }
 
@@ -219,6 +241,11 @@ smoke_swift() {
     "$REPO_ROOT/apps/traverse-starter/ios-swift/TraverseStarter/Resources/bundles/traverse-starter/runtime" || true
   verify_runtime_digest "macos" \
     "$REPO_ROOT/apps/traverse-starter/macos-swift/TraverseStarterMac/Resources/bundles/traverse-starter/runtime" || true
+
+  if ! slice_expected "$slice" && [ "$EXPECT" != "auto" ]; then
+    skip "swift SDK tests — not required for EXPECT=$EXPECT (digests checked)"
+    return
+  fi
 
   if ! command -v xcodebuild >/dev/null 2>&1 && ! command -v swift >/dev/null 2>&1; then
     if slice_expected "$slice"; then fail "swift expected but xcodebuild/swift missing"; else skip "swift — Xcode/Swift toolchain not found"; fi
@@ -234,7 +261,7 @@ smoke_swift() {
     if (cd "$pkg" && swift test); then
       ok "swift TraverseCore tests"
     else
-      fail "swift test"
+      sdk_fail_or_skip "$slice" "swift test failed"
     fi
   else
     skip "swift — TraverseCore Package.swift not found for headless test"
@@ -247,6 +274,11 @@ smoke_windows() {
 
   verify_runtime_digest "windows" \
     "$REPO_ROOT/apps/traverse-starter/windows-winui/TraverseStarter/Assets/bundles/traverse-starter/runtime" || true
+
+  if ! slice_expected "$slice" && [ "$EXPECT" != "auto" ]; then
+    skip "windows SDK tests — not required for EXPECT=$EXPECT (digest checked)"
+    return
+  fi
 
   if ! command -v dotnet >/dev/null 2>&1; then
     if slice_expected "$slice"; then fail "windows expected but dotnet missing"; else skip "windows — dotnet not found"; fi
@@ -269,7 +301,7 @@ smoke_windows() {
   if dotnet test "$sln" --nologo; then
     ok "windows dotnet test"
   else
-    fail "windows dotnet test"
+    sdk_fail_or_skip "$slice" "windows dotnet test failed"
   fi
 }
 
