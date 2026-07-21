@@ -32,11 +32,21 @@ Related:
 | Post-kit showcase (#179) | **meeting-notes → multi-OS** via add-platform recipe | [#179](https://github.com/traverse-framework/reference-apps/issues/179) |
 | Plan home | This document | [#181](https://github.com/traverse-framework/reference-apps/issues/181) |
 | Registry | **Docs contract now** ([#185](https://github.com/traverse-framework/reference-apps/issues/185)); **impl Future** ([#97](https://github.com/traverse-framework/reference-apps/issues/97)) | Decision C |
-| Secondary apps | **Explicitly secondary** (demos/kits); not hard-fail smoke targets | [#186](https://github.com/traverse-framework/reference-apps/issues/186) |
+| Secondary apps | **Explicitly secondary** (demos/kits); not hard-fail smoke targets — see below | [#186](https://github.com/traverse-framework/reference-apps/issues/186) |
 | Repo front door | **Thin pointer now** (embedded banner + plan link); full rewrite in [#176](https://github.com/traverse-framework/reference-apps/issues/176) | Decision B |
 | Digest sync (#174) | **Shared core + thin per-platform wrappers** (keep existing script names) — see [`runtime-bundle-sync.md`](runtime-bundle-sync.md) | Decision B |
 | Sidecar delete (#180) | **Primary shells embedded-only**; Trace Explorer keeps HTTP until [#183](https://github.com/traverse-framework/reference-apps/issues/183) | Decision B |
 | Showcase rollout (#179) | **Wave 1:** Web + Linux/CLI (+ Android if stable); **Wave 2:** Windows + Apple | Decision C |
+
+### Primary vs secondary (locked, #186)
+
+| Tier | Apps | Smoke / CI bar |
+|---|---|---|
+| **Primary product shells** | `traverse-starter`, `doc-approval`, `meeting-notes` | Production DoD; Linux-runnable `embedded_smoke` hard-fail |
+| **Adopted / secondary** | `react-demo`, `android-demo`, `macos-demo`, `browser-consumer`, `youaskm3-starter-kit` | Lighter demo smokes only — **not** merge-blocking `embedded_smoke` targets |
+| **Debugger exception** | `trace-explorer` | Not a product shell; named HTTP until [#183](https://github.com/traverse-framework/reference-apps/issues/183) |
+
+Canonical narrative: [`adopted-platform-clients.md`](adopted-platform-clients.md) · front door: root `README.md`.
 
 ## Ticket map (kit → showcase)
 
