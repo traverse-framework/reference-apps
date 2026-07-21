@@ -83,3 +83,36 @@ jobs:
 
       - name: Validate PR body sections
         run: bash scripts/ci/pr_body_check.sh /tmp/pr-body.md
+
+  embedded-smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout App-References
+        uses: actions/checkout@v7
+
+      - name: Checkout Traverse
+        uses: actions/checkout@v7
+        with:
+          repository: traverse-framework/Traverse
+          path: Traverse
+
+      - name: Install rsync
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq rsync
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.94.0'
+
+      - name: Embedded smoke (web + rust-cli required)
+        env:
+          TRAVERSE_REPO: ${{ github.workspace }}/Traverse
+          EMBEDDED_SMOKE_REQUIRED_SLICES: web,rust-cli
+        run: bash scripts/ci/embedded_smoke.sh

@@ -92,7 +92,19 @@ Submit the same note. Zone 1 should show **Embedded**; output fields must match 
 
 Showcase workflow: `traverse-starter.pipeline` (`validate` → `process` → `summarize`). See [`embedded-runtime-plan.md`](embedded-runtime-plan.md).
 
-## 5. Add another platform UI
+## 5. Validate the embedded path (CI smoke)
+
+Prove sync → in-process embedder → workflow submit **without** `traverse-cli serve`:
+
+```bash
+export TRAVERSE_REPO=/path/to/Traverse
+export EMBEDDED_SMOKE_REQUIRED_SLICES=web,rust-cli   # optional; CI sets this
+bash scripts/ci/embedded_smoke.sh
+```
+
+The script attempts every platform slice. Missing SDKs print `SKIP[<slice>]: <reason>`. Required slices hard-fail. See [`embedded-runtime-plan.md`](embedded-runtime-plan.md) Validation for the placeholder-fixture WASM contract.
+
+## 6. Add another platform UI
 
 Checklist for a new shell (or promoting a sidecar client to embedded):
 
@@ -101,7 +113,7 @@ Checklist for a new shell (or promoting a sidecar client to embedded):
 3. Submit workflow input; subscribe to embedder events; render only runtime-owned fields
 4. Document **Runtime mode: embedded** in that platform’s README
 5. Keep HTTP sidecar docs only as an interim path until cutover
-
+6. Extend `scripts/ci/embedded_smoke.sh` (or ensure the new slice skips with an explicit reason until its runner exists)
 ## Platform matrix (current)
 
 | Platform | Runtime mode | Notes |

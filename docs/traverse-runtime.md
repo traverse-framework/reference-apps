@@ -84,6 +84,12 @@ const workspaceId = import.meta.env.VITE_TRAVERSE_WORKSPACE ?? 'local-default'
 
 Phase 3 clients load bundled manifests from the app artifact and initialize an in-process workspace — no URL discovery.
 
+## Validation
+
+Phase 1/2: `bash scripts/ci/phase1_smoke.sh` (sidecar) and `bash scripts/ci/phase2_smoke.sh` (CLI registration).
+
+Phase 3: `bash scripts/ci/embedded_smoke.sh` — sync/link real bundles, init the public embedder, submit `traverse-starter.pipeline` with **no** `traverse-cli serve`. See [`embedded-runtime-plan.md`](embedded-runtime-plan.md).
+
 ## App Registration (Phase 2 — dev sidecar)
 
 Governed by `044-application-bundle-manifest` and `046-public-cli-app-registration` (both approved).
@@ -125,4 +131,10 @@ bash scripts/ci/phase2_link_traverse.sh
 bash scripts/ci/phase2_smoke.sh
 ```
 
-Phase 3 will add `scripts/ci/embedded_smoke.sh` when the embeddable host is available.
+Phase 3:
+
+```bash
+export TRAVERSE_REPO=/path/to/Traverse
+export EMBEDDED_SMOKE_REQUIRED_SLICES=web,rust-cli
+bash scripts/ci/embedded_smoke.sh
+```

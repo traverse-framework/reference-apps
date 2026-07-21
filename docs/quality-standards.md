@@ -35,7 +35,7 @@ The default validation flow includes:
 - Coverage gate for non-trivial UI logic (`npm run test:coverage`)
 - Repository structure check (`bash scripts/ci/repository_checks.sh`)
 - PR body validation (`bash scripts/ci/pr_body_check.sh`)
-
+- Embedded runtime smoke (`bash scripts/ci/embedded_smoke.sh`) — merge-blocking for the Linux-runnable subset (`web` + `rust-cli`); other platform slices skip with reason until #88
 ## Coverage Standard
 
 Required coverage for non-trivial UI logic:
