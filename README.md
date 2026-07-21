@@ -189,7 +189,7 @@ Native platforms (iOS, macOS, Android, Windows, Linux, CLI) are built and run fr
 | Windows | Open the `.sln` in Visual Studio |
 | Linux GTK / CLI | `cargo test` / `cargo run` in `apps/<app>/linux-gtk` or `cli-rust` |
 
-**Sidecar URL (deprecated):** only Trace Explorer / meeting-notes (until embed) / legacy Phase 1 scripts use `http://127.0.0.1:8787`. See [`docs/traverse-runtime.md`](docs/traverse-runtime.md).
+**Sidecar URL (deprecated carve-outs only):** Trace Explorer (`embed-trace-explorer`), meeting-notes until `meeting-notes-multi-os`, and legacy Phase 1 scripts. See the [exception list](docs/traverse-runtime.md#named-http-carve-outs-exception-list).
 
 See [`docs/production-playbook.md`](docs/production-playbook.md) for the shipping guide.
 

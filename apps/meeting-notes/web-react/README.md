@@ -1,6 +1,6 @@
 # meeting-notes (Web React UI)
 
-**Runtime mode: HTTP sidecar (temporary)** — web-only until the multi-OS embed showcase ([#179](https://github.com/traverse-framework/reference-apps/issues/179)). This is a **primary product shell** (list-type output); sidecar is interim only — see [`docs/production-playbook.md`](../../../docs/production-playbook.md) and the primary vs secondary table in the root README.
+**Runtime mode: HTTP sidecar (temporary carve-out)** — web-only until Project 2 `meeting-notes-multi-os`. This is a **primary product shell** (list-type output); sidecar is interim only — see the [named HTTP carve-outs](../../../docs/traverse-runtime.md#named-http-carve-outs-exception-list) and [`docs/production-playbook.md`](../../../docs/production-playbook.md).
 
 React UI shell for the **meeting-notes** reference application — a second domain app that demonstrates **list-type structured output** from the Traverse runtime.
 

@@ -124,7 +124,7 @@ Use [`traverse-runtime.md`](traverse-runtime.md) only for:
 - Trace Explorer (named exception)  
 - Legacy `phase1_smoke.sh` / nightly sidecar checks  
 
-Do **not** copy sidecar URL configuration into new primary product shells. Removal of leftover HTTP clients: Project 2 `remove-sidecar-paths` (after smoke stays green).
+Do **not** copy sidecar URL configuration into new primary product shells. Remaining HTTP clients are limited to the [named carve-out list](traverse-runtime.md#named-http-carve-outs-exception-list) (Trace Explorer + meeting-notes until embed).
 
 ---
 
