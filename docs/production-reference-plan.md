@@ -25,7 +25,7 @@ Related:
 | Topic | Decision | Recorded on |
 |---|---|---|
 | Claim order | Parallel lanes; embedded smoke was merge-priority for the kit | Brainstorm |
-| Native CI | **Tiered:** PR merge-blocking = Linux (`cargo`); Nightly = Apple + Windows required; Android/GTK promote via `native-ci-android-gtk-required` | Project 2 / quality-standards |
+| Native CI | **Tiered:** PR merge-blocking = Linux (`cargo`); Nightly = Apple + Windows + Android + GTK required | Project 2 / quality-standards |
 | Embedded smoke | **One script, all platforms**; skip-with-reason when SDK missing; hard-fail when the runner is expected to run that slice | Project 2 (Done) |
 | HTTP sidecar | **Freeze & archive**, then delete (`remove-sidecar-paths`) | Decision C |
 | Trace Explorer | **Named HTTP exception** until Traverse ships embedded trace API; then `embed-trace-explorer` | Decision B |
@@ -88,7 +88,7 @@ Flip Status → Ready when Depends on clears, then claim:
 ## Exit criteria for Phase 4 kit
 
 1. `bash scripts/ci/embedded_smoke.sh` exists and is wired to CI with the skip/fail contract above — **met**
-2. Tiered native CI documented in `docs/quality-standards.md` and implemented for the Linux PR gate — **met** (Android/GTK still advisory → `native-ci-android-gtk-required`)
+2. Tiered native CI documented in `docs/quality-standards.md` and implemented for the Linux PR gate — **met**; Android/GTK nightly required via `native-ci-android-gtk-required`
 3. Digest sync + packaging playbook published — **met**
 4. Getting-started / README are embedded-first; sidecar appendix-only — **met**
 5. Agent DoD + add-platform recipe published — **met**
