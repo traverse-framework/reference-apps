@@ -36,7 +36,7 @@ Related:
 | Repo front door | Embedded-first README + playbook; sidecar appendix-only | Decision B |
 | Digest sync | **Shared core + thin per-platform wrappers** — see [`runtime-bundle-sync.md`](runtime-bundle-sync.md) | Decision B |
 | Showcase rollout | **Wave 1:** Web + Linux/CLI (+ Android if stable); **Wave 2:** Windows + Apple | Decision C |
-| Product agents | Smoke fixtures today; adopt Traverse agents via `consume-product-wasm-agents` | Gap capture |
+| Product agents | Digest-pinned Traverse-published starter agents (`consume-product-wasm-agents`) | Gap capture |
 
 ### Primary vs secondary (locked)
 
@@ -58,7 +58,7 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 | Trace Explorer embed | `embed-trace-explorer` | **In Progress** | Traverse embedded-trace-api Done (#802); migrate web Trace Explorer | Finish PR |
 | Delete sidecar client code | `remove-sidecar-paths` | **Done** (#206) | Dead HTTP paths removed from starter/doc-approval | Shipped |
 | Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **Done** (#209); nightly green via `fix-nightly-native-required` | Required nightly jobs | Shipped |
-| Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Ready** | Traverse real-wasm-agent-execute Done (#795/#809) | Replace App-Refs smoke fixtures |
+| Product WASM agents (Traverse) | `consume-product-wasm-agents` | **In Progress** (#226) | Traverse real-wasm-agent-execute Done (#795/#809) | Digest-pin Traverse-published starter agents |
 | `registry_ref` adoption | `registry-ref-starter-process` | **In Progress** | Process component uses `registry_ref`; sync materializes for embedders | Finish smoke evidence |
 | Phase 2 sidecar nightly | `phase2-sidecar-nightly` | **Future** (defer) | Legacy path; low demo value | Optional; low priority |
 

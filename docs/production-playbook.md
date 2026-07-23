@@ -99,7 +99,7 @@ bash scripts/ci/embedded_smoke.sh
 ```
 
 - Merge-blocking on PR CI for **Web + CLI** with **runtime-owned pipeline output** required
-- Smoke overlays deterministic WASI fixtures (`scripts/ci/fixtures/traverse-starter-smoke-agents/`) until Traverse example agents ship non-stub WASM
+- Smoke overlays digest-pinned Traverse-published agents (`scripts/ci/fixtures/traverse-starter-smoke-agents/`; see `digests.json` provenance)
 - Other platforms: skip-with-reason when SDK missing; digest-check always
 
 ---

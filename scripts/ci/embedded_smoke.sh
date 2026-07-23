@@ -13,7 +13,8 @@
 #   EMBEDDED_SMOKE_SKIP=<csv>     force-skip slices (web,cli,gtk,android,swift,windows)
 #
 # Web + CLI always require runtime-owned pipeline output (validate/process/summarize)
-# via scripts/ci/fixtures/traverse-starter-smoke-agents/ (WASI fixtures).
+# via digest-pinned Traverse-published agents under
+# scripts/ci/fixtures/traverse-starter-smoke-agents/ (see digests.json provenance).
 #
 # Exit 0 on pass (skips allowed). Exit 1 on any required-slice failure.
 set -euo pipefail

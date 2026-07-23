@@ -123,7 +123,7 @@ A change must not merge when any of the following are true:
 Every PR runs `scripts/ci/embedded_smoke.sh` with `EMBEDDED_SMOKE_EXPECT=linux` (`.github/workflows/ci.yml` job `embedded-smoke`):
 
 - Requires Web (`BundleEmbedder` init + full pipeline → validate/process/summarize fields) and Rust CLI (`health` + `run` with the same output shape)
-- Uses smoke WASI fixtures when Traverse example agents are stubs; still public embedder path only
+- Uses digest-pinned Traverse-published starter agents for pipeline output; still public embedder path only
 - Skips Apple / Windows / Android SDK slices with reason when tools are absent; still digest-checks committed `runtime.wasm`
 - Does **not** start `traverse-cli serve`
 - Coverage gate for `host/embeddedHost.ts` + `client/traverseOutput.ts` is **100%** line coverage
