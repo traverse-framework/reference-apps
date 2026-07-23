@@ -28,7 +28,7 @@ Related:
 | Native CI | **Tiered:** PR merge-blocking = Linux (`cargo`); Nightly = Apple + Windows required; Android/GTK promote via `native-ci-android-gtk-required` | Project 2 / quality-standards |
 | Embedded smoke | **One script, all platforms**; skip-with-reason when SDK missing; hard-fail when the runner is expected to run that slice | Project 2 (Done) |
 | HTTP sidecar | **Freeze & archive**, then delete (`remove-sidecar-paths`) | Decision C |
-| Trace Explorer | **Named HTTP exception** until Traverse ships embedded trace API; then `embed-trace-explorer` | Decision B |
+| Trace Explorer | **Embedded Trace API** (`embed-trace-explorer`) | Decision B |
 | Post-kit showcase | **meeting-notes → multi-OS** (`meeting-notes-multi-os`) via add-platform recipe | Decision A |
 | Plan home | This document | Project 2 (Done) |
 | Registry | **Docs contract** shipped; **impl** `registry-ref-starter-process` (Blocked on upstream) | Decision C |
@@ -44,7 +44,7 @@ Related:
 |---|---|---|
 | **Primary product shells** | `traverse-starter`, `doc-approval`, `meeting-notes` | Production DoD; Linux-runnable `embedded_smoke` hard-fail |
 | **Adopted / secondary** | `react-demo`, `android-demo`, `macos-demo`, `browser-consumer`, `youaskm3-starter-kit` | Lighter demo smokes only — **not** merge-blocking `embedded_smoke` targets |
-| **Debugger exception** | `trace-explorer` | Not a product shell; named HTTP until `embed-trace-explorer` |
+| **Debugger** | `trace-explorer` | Embedded Trace API companion — not a product shell to copy |
 
 Canonical narrative: [`adopted-platform-clients.md`](adopted-platform-clients.md) · front door: root `README.md`.
 
@@ -55,7 +55,7 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 | Demo gap | Ticket ID | Board | Why it matters | Start plan |
 |---|---|---|---|---|
 | meeting-notes multi-OS embed | `meeting-notes-multi-os` | **Done** (#208) | Web + Linux GTK + CLI embed | Shipped |
-| Trace Explorer embed | `embed-trace-explorer` | **Ready** | Traverse embedded-trace-api Done (#802) | Claim for Web no-sidecar Trace Explorer |
+| Trace Explorer embed | `embed-trace-explorer` | **In Progress** | Traverse embedded-trace-api Done (#802); migrate web Trace Explorer | Finish PR |
 | Delete sidecar client code | `remove-sidecar-paths` | **Done** (#206) | Dead HTTP paths removed from starter/doc-approval | Shipped |
 | Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **Done** (#209); nightly green via `fix-nightly-native-required` | Required nightly jobs | Shipped |
 | Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Ready** | Traverse real-wasm-agent-execute Done (#795/#809) | Replace App-Refs smoke fixtures |

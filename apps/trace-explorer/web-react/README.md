@@ -1,25 +1,21 @@
 # trace-explorer (Web React)
 
-Standalone developer tool for inspecting Traverse execution traces via spec 033 `GET /v1/workspaces/{workspace_id}/traces/{execution_id}`.
+**Runtime mode: Embedded** — uses the public `embedded-trace-api/1.0.0` companion on `traverse-embedder-web` (`trace.list` / `trace.get`). No `traverse-cli serve` sidecar.
 
 ## Usage
 
-1. Start the Traverse runtime (`cargo run -p traverse-cli -- serve`)
-2. Run a workflow in traverse-starter and copy the `execution_id` from the polling UI
-3. From repo root: `npm run dev -w apps/trace-explorer/web-react`
-4. Paste the execution ID → **Load Trace**
+1. From repo root: `npm install && npm run dev -w apps/trace-explorer/web-react`
+2. Open the app — it lists safe local traces from the in-process host
+3. Click a trace to view safe detail (no raw payloads)
 
-## URL sharing
+To populate traces in a real session, run an embedded product shell (e.g. traverse-starter) that shares the same host, or inject `EmbedderTestDouble` in tests.
 
+## Tests
+
+```bash
+npm run test -w apps/trace-explorer/web-react
 ```
-http://localhost:5173/?runtime=http://127.0.0.1:8787&workspace=local-default&execution_id=exec_abc123
-```
 
-## Configuration
-
-| Variable | Default |
-|---|---|
-| `VITE_TRAVERSE_BASE_URL` | `http://127.0.0.1:8787` |
-| `VITE_TRAVERSE_WORKSPACE` | `local-default` |
+Tests use `EmbedderTestDouble` only — no fake business fields in the UI.
 
 See [docs/design-language.md](../../../docs/design-language.md) for shared UI zones.

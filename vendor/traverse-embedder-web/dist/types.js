@@ -8,6 +8,12 @@
 export const EMBEDDER_API_VERSION = "1.0.0";
 /** Conformance suite revision this package certifies against (spec 057). */
 export const EMBEDDER_CONFORMANCE_VERSION = "1.0.0";
+/** Implemented additive public Trace API companion version (spec 517). */
+export const EMBEDDED_TRACE_API_VERSION = "1.0.0";
+/** Maximum public trace records retained by one embedded session. */
+export const EMBEDDED_TRACE_RETENTION_LIMIT = 100;
+/** Largest `trace.list` page returned by this package. */
+export const EMBEDDED_TRACE_MAX_PAGE_SIZE = 100;
 /** Application bundle manifest `schema_version` values this package accepts. */
 export const SUPPORTED_BUNDLE_SCHEMA_VERSIONS = ["1.0.0"];
 export const EVENT_SCHEMA_VERSION = "1.0.0";

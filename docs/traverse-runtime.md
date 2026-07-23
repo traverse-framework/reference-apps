@@ -5,12 +5,13 @@
 
 ## Named HTTP carve-outs (exception list)
 
-Until replaced by embed tickets, these paths may still reference `127.0.0.1:8787` / Runtime URL:
+These paths may still reference `127.0.0.1:8787` / Runtime URL:
 
 | Path | Ticket / note |
 |---|---|
-| `apps/trace-explorer/**` | `embed-trace-explorer` (Blocked — wait Traverse embedded trace API) |
 | This appendix + legacy `phase1_smoke.sh` / nightly sidecar checks | Historical Phase 1/2 only |
+
+`apps/trace-explorer/**` is **Embedded** (Project 2 `embed-trace-explorer` — uses `embedded-trace-api/1.0.0`).
 
 Primary shells (traverse-starter, doc-approval, meeting-notes on Web/Linux/CLI) are **Embedded-only** — no Runtime URL settings, no health polling against a sidecar.
 
@@ -19,9 +20,9 @@ Primary shells (traverse-starter, doc-approval, meeting-notes on Web/Linux/CLI) 
 | Model | Status | Use when |
 |---|---|---|
 | **Embedded in-app host (Phase 3)** | **Shipped** on primary platforms | Building/shipping reference apps |
-| **HTTP sidecar `traverse-cli serve` (Phase 1/2)** | **Deprecated interim** | Trace Explorer, legacy `phase1_smoke.sh` |
+| **HTTP sidecar `traverse-cli serve` (Phase 1/2)** | **Deprecated interim** | Legacy `phase1_smoke.sh` / appendix only |
 
-End-user **primary** apps must not depend on a separately running sidecar. Sidecar cleanup: Project 2 `remove-sidecar-paths`; Trace Explorer embed: `embed-trace-explorer`.
+End-user **primary** apps must not depend on a separately running sidecar. Sidecar cleanup: Project 2 `remove-sidecar-paths` (Done).
 
 ## Pinned Version (sidecar only)
 

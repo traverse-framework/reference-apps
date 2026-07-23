@@ -5,7 +5,25 @@
  * boundary behavior — event envelope, deterministic identifiers, and
  * compatible lifecycle — is identical (mirrors the Rust SDK's `EmbedderCore`).
  */
-import { EMBEDDER_API_VERSION, EMBEDDER_CONFORMANCE_VERSION, EVENT_SCHEMA_VERSION, PACKAGE_NAME, PACKAGE_VERSION, SUPPORTED_BUNDLE_SCHEMA_VERSIONS, embedderError, errorValue, paddedId, runtimeStoppedError, } from "./types.js";
+import { EMBEDDER_API_VERSION, EMBEDDER_CONFORMANCE_VERSION, EMBEDDED_TRACE_API_VERSION, EMBEDDED_TRACE_MAX_PAGE_SIZE, EMBEDDED_TRACE_RETENTION_LIMIT, EVENT_SCHEMA_VERSION, PACKAGE_NAME, PACKAGE_VERSION, SUPPORTED_BUNDLE_SCHEMA_VERSIONS, embedderError, errorValue, paddedId, runtimeStoppedError, } from "./types.js";
+let nextEmbeddedTraceSession = 1;
+function logicalCompletionTime(sequence) {
+    const minute = Math.floor(sequence / 60) % 60;
+    const second = sequence % 60;
+    return `1970-01-01T00:${String(minute).padStart(2, "0")}:${String(second).padStart(2, "0")}Z`;
+}
+function traceError(code) {
+    switch (code) {
+        case "invalid_cursor":
+            return { code, message: "the trace cursor is invalid for this embedded session" };
+        case "trace_not_found":
+            return { code, message: "the requested trace is not retained by this embedded session" };
+        case "trace_api_unavailable":
+            return { code, message: "the embedded Trace API is unavailable because the host is stopped" };
+        case "incompatible_version":
+            return { code, message: "the requested embedded Trace API version is not supported" };
+    }
+}
 export class EmbedderCore {
     workspaceId;
     appId;
@@ -19,6 +37,9 @@ export class EmbedderCore {
     nextSession = 0;
     nextRequest = 0;
     nextInstance = 0;
+    traceSession = nextEmbeddedTraceSession++;
+    nextTrace = 0;
+    traces = [];
     stopped = false;
     constructor(workspaceId, appId, appVersion, platform, compatibleTargets) {
         this.workspaceId = workspaceId;
@@ -34,6 +55,80 @@ export class EmbedderCore {
     nextRequestId() {
         this.nextRequest += 1;
         return paddedId("req", this.nextRequest);
+    }
+    recordTrace(input) {
+        this.nextTrace += 1;
+        const completionSequence = this.nextTrace;
+        this.traces.push({
+            summary: {
+                traceId: `embedded-trace-${String(this.traceSession).padStart(8, "0")}-${String(completionSequence).padStart(8, "0")}`,
+                executionId: input.executionId,
+                targetId: input.targetId,
+                completedAt: logicalCompletionTime(completionSequence),
+                completionSequence,
+                outcome: input.outcome,
+            },
+            phases: [...input.phases],
+            selectedTarget: input.selectedTarget,
+            placement: input.placement,
+            failureCode: input.failureCode,
+            stateMachineValid: input.stateMachineValid,
+        });
+        if (this.traces.length > EMBEDDED_TRACE_RETENTION_LIMIT) {
+            this.traces.shift();
+        }
+    }
+    traceList(requestedVersion, pageSize, cursor = null) {
+        const availability = this.traceApiAvailability(requestedVersion);
+        if (availability !== null) {
+            return availability;
+        }
+        const traces = this.newestTraces();
+        const start = cursor === null ? 0 : this.cursorStart(cursor, traces);
+        if (typeof start !== "number") {
+            return start;
+        }
+        const boundedPageSize = Number.isFinite(pageSize)
+            ? Math.max(1, Math.min(EMBEDDED_TRACE_MAX_PAGE_SIZE, Math.floor(pageSize)))
+            : 1;
+        const end = Math.min(start + boundedPageSize, traces.length);
+        const lastSummary = end < traces.length ? traces[end - 1]?.summary : undefined;
+        return {
+            summaries: traces.slice(start, end).map((detail) => detail.summary),
+            nextCursor: lastSummary === undefined ? null : this.cursorFor(lastSummary.traceId),
+            retentionLimit: EMBEDDED_TRACE_RETENTION_LIMIT,
+        };
+    }
+    traceGet(requestedVersion, traceId) {
+        const availability = this.traceApiAvailability(requestedVersion);
+        if (availability !== null) {
+            return availability;
+        }
+        return this.traces.find((detail) => detail.summary.traceId === traceId) ?? traceError("trace_not_found");
+    }
+    traceApiAvailability(requestedVersion) {
+        if (this.stopped) {
+            return traceError("trace_api_unavailable");
+        }
+        if (requestedVersion !== EMBEDDED_TRACE_API_VERSION) {
+            return traceError("incompatible_version");
+        }
+        return null;
+    }
+    newestTraces() {
+        return [...this.traces].sort((left, right) => right.summary.completionSequence - left.summary.completionSequence ||
+            left.summary.traceId.localeCompare(right.summary.traceId));
+    }
+    cursorFor(traceId) {
+        return `embedded-trace-cursor:${this.traceSession}:${traceId}`;
+    }
+    cursorStart(cursor, traces) {
+        const separator = cursor.lastIndexOf(":");
+        if (separator < 0 || cursor.slice(0, separator) !== `embedded-trace-cursor:${this.traceSession}`) {
+            return traceError("invalid_cursor");
+        }
+        const position = traces.findIndex((detail) => detail.summary.traceId === cursor.slice(separator + 1));
+        return position < 0 ? traceError("invalid_cursor") : position + 1;
     }
     nextInstanceId() {
         this.nextInstance += 1;
@@ -168,6 +263,7 @@ export class EmbedderCore {
             this.setInstanceState(id, "killed");
         }
         this.stopped = true;
+        this.traces.length = 0;
         return { killedInstances: running.length };
     }
     evidence(runtimeImplementation, wasmComponents) {
@@ -176,6 +272,7 @@ export class EmbedderCore {
             schema_version: EVENT_SCHEMA_VERSION,
             package: { name: PACKAGE_NAME, version: PACKAGE_VERSION },
             embedder_api_version: EMBEDDER_API_VERSION,
+            companion_apis: { "embedded-trace-api": EMBEDDED_TRACE_API_VERSION },
             conformance_version: EMBEDDER_CONFORMANCE_VERSION,
             runtime: { implementation: runtimeImplementation },
             supported_bundle_schema_versions: [...SUPPORTED_BUNDLE_SCHEMA_VERSIONS],

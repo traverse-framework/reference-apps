@@ -93,7 +93,7 @@ Before tagging or cutting a primary-shell release:
 
 ## Sidecar (optional interim only)
 
-HTTP `traverse-cli serve` is **not** a packaging input for primary shells. Document it only as debug/appendix ([`traverse-runtime.md`](traverse-runtime.md)). Trace Explorer remains a named HTTP exception (Project 2: `embed-trace-explorer`).
+HTTP `traverse-cli serve` is **not** a packaging input for primary shells. Document it only as debug/appendix ([`traverse-runtime.md`](traverse-runtime.md)). Trace Explorer uses the embedded Trace API (`embed-trace-explorer`).
 
 ---
 

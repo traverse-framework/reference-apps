@@ -8,7 +8,7 @@ This repository is the **canonical home** for checked-in application UI, platfor
 |---|---|---|
 | **Primary product shells** | `traverse-starter`, `doc-approval`, `meeting-notes` | Embedded (or showcase-track embed) production path; digest pin; SDK doubles; production DoD on PRs; Linux-runnable slices of `embedded_smoke` are merge-blocking |
 | **Adopted / secondary** | paths in the table below | Lighter maintenance; demo/kit smokes only; **not** hard-fail slices of `embedded_smoke` |
-| **Debugger exception** | `trace-explorer` | Not a product shell and not “secondary kit” — named HTTP exception until [#183](https://github.com/traverse-framework/reference-apps/issues/183) |
+| **Debugger** | `trace-explorer` | Not a product shell — embedded Trace API companion (`embed-trace-explorer`) |
 
 Do **not** copy `react-demo` / Expedition demo patterns into primary shells without an explicit caveat that those apps are secondary kits, not the Phase 3/4 production reference.
 
