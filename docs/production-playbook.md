@@ -121,10 +121,9 @@ High-level checklist (full recipe: [`docs/add-platform-client.md`](add-platform-
 Use [`traverse-runtime.md`](traverse-runtime.md) only for:
 
 - Historical Phase 1/2 integration  
-- Trace Explorer (named exception)  
 - Legacy `phase1_smoke.sh` / nightly sidecar checks  
 
-Do **not** copy sidecar URL configuration into new primary product shells. Remaining HTTP clients are limited to the [named carve-out list](traverse-runtime.md#named-http-carve-outs-exception-list) (Trace Explorer until embed).
+Do **not** copy sidecar URL configuration into new primary product shells. Remaining HTTP clients are limited to the [named carve-out list](traverse-runtime.md#named-http-carve-outs-exception-list).
 
 ### Lessons from `meeting-notes-multi-os` (Wave 1)
 
