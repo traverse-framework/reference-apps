@@ -1,5 +1,5 @@
 import type { BundleLoader } from "./bundleLoader.js";
-import type { CompatibleLifecycleOutcome, CompatibleStartOutcome, EventCallback, JsonValue, ShutdownOutcome, SubmitOutcome, TraverseEmbedderApi } from "./types.js";
+import type { CompatibleLifecycleOutcome, CompatibleStartOutcome, EmbeddedTraceApi, EmbeddedTraceApiError, EmbeddedTraceDetail, EmbeddedTracePage, EventCallback, JsonValue, ShutdownOutcome, SubmitOutcome, TraverseEmbedderApi } from "./types.js";
 /** Configuration for `BundleEmbedder.init` (`runtime.init` input). */
 export interface BundleEmbedderConfig {
     /** Path or URL to the application bundle's `app.manifest.json`. */
@@ -11,7 +11,7 @@ export interface BundleEmbedderConfig {
     /** Platform identity checked against compatible-capability allowlists. */
     readonly platform?: string;
 }
-export declare class BundleEmbedder implements TraverseEmbedderApi {
+export declare class BundleEmbedder implements TraverseEmbedderApi, EmbeddedTraceApi {
     private readonly core;
     private readonly wasmTargets;
     private readonly workflowTargets;
@@ -27,6 +27,9 @@ export declare class BundleEmbedder implements TraverseEmbedderApi {
     private submitCapability;
     private submitWorkflow;
     subscribe(callback: EventCallback): void;
+    embeddedTraceApiVersion(): string;
+    traceList(requestedVersion: string, pageSize: number, cursor?: string | null): EmbeddedTracePage | EmbeddedTraceApiError;
+    traceGet(requestedVersion: string, traceId: string): EmbeddedTraceDetail | EmbeddedTraceApiError;
     startCompatible(capabilityId: string, input: JsonValue): CompatibleStartOutcome;
     stopCompatible(capabilityId: string, instanceId?: string | null): CompatibleLifecycleOutcome;
     killCompatible(capabilityId: string, instanceId?: string | null): CompatibleLifecycleOutcome;

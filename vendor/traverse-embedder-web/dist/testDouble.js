@@ -6,7 +6,7 @@
  * no business logic.
  */
 import { EmbedderCore } from "./core.js";
-import { embedderError, runtimeStoppedError } from "./types.js";
+import { EMBEDDED_TRACE_API_VERSION, embedderError, runtimeStoppedError } from "./types.js";
 export class EmbedderTestDouble {
     core;
     scripted = new Map();
@@ -40,6 +40,16 @@ export class EmbedderTestDouble {
         const sessionId = this.core.nextSessionId();
         const requestId = this.core.nextRequestId();
         const executionId = `exec_${requestId}`;
+        this.core.recordTrace({
+            executionId,
+            targetId,
+            outcome: result.kind === "output" ? "completed" : "error",
+            phases: [{ code: result.kind === "output" ? "completed" : "error" }],
+            selectedTarget: { targetId, targetVersion: "1.0.0" },
+            placement: null,
+            failureCode: result.kind === "error" ? result.code : null,
+            stateMachineValid: true,
+        });
         this.core.emit("capability_invoked", sessionId, {
             execution_id: executionId,
             capability_id: targetId,
@@ -65,6 +75,15 @@ export class EmbedderTestDouble {
     }
     subscribe(callback) {
         this.core.subscribe(callback);
+    }
+    embeddedTraceApiVersion() {
+        return EMBEDDED_TRACE_API_VERSION;
+    }
+    traceList(requestedVersion, pageSize, cursor = null) {
+        return this.core.traceList(requestedVersion, pageSize, cursor);
+    }
+    traceGet(requestedVersion, traceId) {
+        return this.core.traceGet(requestedVersion, traceId);
     }
     startCompatible(capabilityId, input) {
         return this.core.startCompatible(capabilityId, input);

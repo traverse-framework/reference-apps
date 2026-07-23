@@ -38,7 +38,7 @@ Rules:
 
 | App | Status |
 |---|---|
-| trace-explorer | **Debugger exception** — named HTTP until Traverse embeds a trace API (Project 2: `embed-trace-explorer`); not a secondary “product” kit |
+| trace-explorer | **Debugger** — embedded Trace API (`embedded-trace-api/1.0.0`); not a secondary “product” kit |
 | react-demo, android-demo, macos-demo, youaskm3-starter-kit, browser-consumer | **Adopted / secondary** demos & kits — lighter maintenance; not merge-blocking `embedded_smoke` targets — see [`adopted-platform-clients.md`](adopted-platform-clients.md) |
 
 ---
@@ -121,10 +121,9 @@ High-level checklist (full recipe: [`docs/add-platform-client.md`](add-platform-
 Use [`traverse-runtime.md`](traverse-runtime.md) only for:
 
 - Historical Phase 1/2 integration  
-- Trace Explorer (named exception)  
 - Legacy `phase1_smoke.sh` / nightly sidecar checks  
 
-Do **not** copy sidecar URL configuration into new primary product shells. Remaining HTTP clients are limited to the [named carve-out list](traverse-runtime.md#named-http-carve-outs-exception-list) (Trace Explorer until embed).
+Do **not** copy sidecar URL configuration into new primary product shells. Remaining HTTP clients are limited to the [named carve-out list](traverse-runtime.md#named-http-carve-outs-exception-list).
 
 ### Lessons from `meeting-notes-multi-os` (Wave 1)
 

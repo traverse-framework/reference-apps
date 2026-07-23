@@ -14,7 +14,7 @@ Related:
 
 - **No business logic in the UI** — title, tags, note type, next action, status (and domain equivalents) come from the runtime only
 - **No private Traverse imports** — public embedder packages / vendored SDKs only
-- **No sidecar as the shipping path** — embedded host; HTTP is appendix / Trace Explorer only ([`traverse-runtime.md`](traverse-runtime.md))
+- **No sidecar as the shipping path** — embedded host; HTTP is appendix / legacy smoke only ([`traverse-runtime.md`](traverse-runtime.md))
 - Do **not** copy secondary kit patterns (`react-demo`, etc.) into primary shells without caveats
 
 ## Prerequisites

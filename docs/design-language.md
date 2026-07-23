@@ -15,7 +15,7 @@ Every client presents the same three zones, top to bottom:
 | Workspace | Workspace ID (e.g. `local-default`) |
 | Workflow / capability | Workflow or capability being invoked (e.g. `traverse-starter.pipeline`) |
 
-Primary Phase 3 shells must not expose a loopback URL as required user configuration. Sidecar URL is allowed only for Trace Explorer / temporary HTTP clients (see [`production-playbook.md`](production-playbook.md)).
+Primary Phase 3 shells must not expose a loopback URL as required user configuration. Sidecar URL is appendix-only (see [`production-playbook.md`](production-playbook.md)).
 
 ### Zone 2 — Input
 
