@@ -1,17 +1,25 @@
 {
+  "provenance": {
+    "source": "traverse-framework/Traverse",
+    "ref": "b00a5c4fb8f93503932afd52eadda5e2fe8d04d0",
+    "note": "Digest-pinned copies of Traverse-published traverse-starter example agents (stdout-only WASM). Not App-Refs hand-built WASI stand-ins. Refresh with: bash scripts/ci/pin_traverse_starter_smoke_agents.sh"
+  },
   "validate": {
     "file": "validate-agent.wasm",
-    "digest": "sha256:ecc46ac478334adb1dacc2bb36841edf2617fcbfab26e6fecfb3d73440805ce9",
-    "bytes": 154
+    "digest": "sha256:6cf96349ff6af05cb7417561384dccd63b6f92f4bfc197bcc53838f2ae5b8016",
+    "bytes": 588,
+    "traverse_source": "examples/traverse-starter/validate-agent/artifacts/validate-agent.wasm"
   },
   "process": {
     "file": "process-agent.wasm",
-    "digest": "sha256:15ae4a7431bb45fca2a4d253d4e24fec4962ce067b012c5d1bfc7b86350c79dd",
-    "bytes": 265
+    "digest": "sha256:2c6690fd00432f8bff4366d4852395af22a3c766517020532590bab1fba1ab34",
+    "bytes": 727,
+    "traverse_source": "examples/traverse-starter/process-agent/artifacts/process-agent.wasm"
   },
   "summarize": {
     "file": "summarize-agent.wasm",
-    "digest": "sha256:a2e916443233b3346c6ba9211a341f961def495870b77350d2824bba3667440f",
-    "bytes": 184
+    "digest": "sha256:fa5d90f9cbdddc7d81daff0f965650cd34c3fc311d8a312cf79637a1bb2c0b7d",
+    "bytes": 686,
+    "traverse_source": "examples/traverse-starter/summarize-agent/artifacts/summarize-agent.wasm"
   }
 }

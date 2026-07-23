@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-# Overlay functional smoke agents + patch digests for embedded E2E.
-# - Overwrites TRAVERSE_REPO example *.wasm (CI/local Traverse checkout)
+# Overlay digest-pinned Traverse-published smoke agents + patch digests for embedded E2E.
+# - Overwrites TRAVERSE_REPO example *.wasm (CI/local Traverse checkout) with pinned product agents
 # - Writes smoke manifest tree under $SMOKE_MANIFEST_DIR (default /tmp)
 # - Syncs + patches web public bundle (gitignored)
 # Does NOT mutate committed manifests/ in the git worktree.
+#
+# Pins live in scripts/ci/fixtures/traverse-starter-smoke-agents/ (see digests.json provenance).
+# Refresh: bash scripts/ci/pin_traverse_starter_smoke_agents.sh
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -13,7 +16,7 @@ DIGESTS_JSON="$FIXTURE_DIR/digests.json"
 SMOKE_MANIFEST_DIR="${SMOKE_MANIFEST_DIR:-/tmp/app-refs-embedded-smoke-manifests}"
 
 if [ ! -f "$DIGESTS_JSON" ]; then
-  echo "FAIL: missing $DIGESTS_JSON — run: node scripts/ci/fixtures/build_starter_smoke_agents.mjs"
+  echo "FAIL: missing $DIGESTS_JSON — run: bash scripts/ci/pin_traverse_starter_smoke_agents.sh"
   exit 1
 fi
 if [ ! -d "$TRAVERSE_REPO/examples/traverse-starter" ]; then
@@ -24,13 +27,20 @@ fi
 export REPO_ROOT TRAVERSE_REPO FIXTURE_DIR DIGESTS_JSON SMOKE_MANIFEST_DIR
 
 python3 - <<'PY'
-import json, pathlib, shutil, re, os
+import hashlib, json, pathlib, shutil, re, os
 
 repo = pathlib.Path(os.environ["REPO_ROOT"])
 traverse = pathlib.Path(os.environ["TRAVERSE_REPO"])
 fixture = pathlib.Path(os.environ["FIXTURE_DIR"])
-digests = json.loads(pathlib.Path(os.environ["DIGESTS_JSON"]).read_text())
+digests_doc = json.loads(pathlib.Path(os.environ["DIGESTS_JSON"]).read_text())
 smoke_root = pathlib.Path(os.environ["SMOKE_MANIFEST_DIR"])
+
+provenance = digests_doc.get("provenance") or {}
+if provenance:
+    print(
+        "OK: agent provenance source=%s ref=%s"
+        % (provenance.get("source", "?"), provenance.get("ref", "?")[:12])
+    )
 
 mapping = {
     "validate": "validate-agent",
@@ -38,13 +48,26 @@ mapping = {
     "summarize": "summarize-agent",
 }
 
+digests = {}
 for key, artifact_stem in mapping.items():
-    src = fixture / digests[key]["file"]
-    digest = digests[key]["digest"]
+    meta = digests_doc[key]
+    src = fixture / meta["file"]
+    if not src.is_file():
+        raise SystemExit(
+            f"FAIL: missing pinned agent {src} — run: bash scripts/ci/pin_traverse_starter_smoke_agents.sh"
+        )
+    data = src.read_bytes()
+    actual = f"sha256:{hashlib.sha256(data).hexdigest()}"
+    expected = meta["digest"]
+    if actual != expected:
+        raise SystemExit(f"FAIL: digest mismatch for {src}: expected {expected} actual {actual}")
+    if len(data) < 100:
+        raise SystemExit(f"FAIL: pinned agent {src} looks like a stub ({len(data)} bytes)")
+    digests[key] = meta
     dest = traverse / f"examples/traverse-starter/{artifact_stem}/artifacts/{artifact_stem}.wasm"
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(src, dest)
-    print(f"OK: overlay {dest} ({digest})")
+    print(f"OK: overlay {dest} ({expected})")
 
 # Smoke manifest tree (copy then patch; skip existing _traverse link/dir)
 if smoke_root.exists():
@@ -97,7 +120,8 @@ TRAVERSE_REPO="$TRAVERSE_REPO" bash "$REPO_ROOT/scripts/ci/sync_web_starter_bund
 python3 - <<'PY'
 import json, pathlib, re, os
 repo = pathlib.Path(os.environ["REPO_ROOT"])
-digests = json.loads(pathlib.Path(os.environ["DIGESTS_JSON"]).read_text())
+digests_doc = json.loads(pathlib.Path(os.environ["DIGESTS_JSON"]).read_text())
+digests = {k: digests_doc[k] for k in ("validate", "process", "summarize")}
 bundle = repo / "apps/traverse-starter/web-react/public/bundles/traverse-starter"
 for key, component in [("validate", "validate"), ("process", "process"), ("summarize", "summarize")]:
     digest = digests[key]["digest"]
