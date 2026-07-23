@@ -55,11 +55,11 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 | Demo gap | Ticket ID | Board | Why it matters | Start plan |
 |---|---|---|---|---|
 | meeting-notes multi-OS embed | `meeting-notes-multi-os` | **Done** (#208) | Web + Linux GTK + CLI embed | Shipped |
-| Trace Explorer embed | `embed-trace-explorer` | **Blocked** | Still HTTP; needs Traverse embedded trace API | Flip Ready when Project 1 `embedded-trace-api` is Done |
+| Trace Explorer embed | `embed-trace-explorer` | **Ready** | Traverse embedded-trace-api Done (#802) | Claim for Web no-sidecar Trace Explorer |
 | Delete sidecar client code | `remove-sidecar-paths` | **Done** (#206) | Dead HTTP paths removed from starter/doc-approval | Shipped |
 | Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **Done** (#209); nightly green via `fix-nightly-native-required` | Required nightly jobs | Shipped |
-| Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Blocked** | Smoke uses App-Refs fixtures; Traverse agents still stubs | Flip Ready when Project 1 `real-wasm-agent-execute` is Done |
-| `registry_ref` adoption | `registry-ref-starter-process` | **Blocked** | Registry seed + sync Done; Traverse still requires `contract_path` on component manifests (spec 054 FR-007 not wired) | Flip Ready when Project 1 `dual-mode-component-registry-ref` is Done |
+| Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Ready** | Traverse real-wasm-agent-execute Done (#795/#809) | Replace App-Refs smoke fixtures |
+| `registry_ref` adoption | `registry-ref-starter-process` | **In Progress** | Process component uses `registry_ref`; sync materializes for embedders | Finish smoke evidence |
 | Phase 2 sidecar nightly | `phase2-sidecar-nightly` | **Future** (defer) | Legacy path; low demo value | Optional; low priority |
 
 ### Wave 1 — Done
@@ -68,15 +68,13 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 2. **`meeting-notes-multi-os`** — shipped (#208)  
 3. **`native-ci-android-gtk-required`** — shipped (#209); required nightly green  
 
-No Ready App-Refs work until Wave 2 upstream gates clear (`AGENTS.md`).
+### Wave 2 — Ready (upstream unblocked 2026-07-22)
 
-### Wave 2 — after upstream unblocks
+Claim when Agent is Unassigned:
 
-Flip Status → Ready when Depends on clears, then claim:
-
-- `embed-trace-explorer` (wait: Project 1 `embedded-trace-api`)
-- `registry-ref-starter-process` (wait: Project 1 `dual-mode-component-registry-ref`)
-- `consume-product-wasm-agents` (wait: Project 1 `real-wasm-agent-execute`)
+- `embed-trace-explorer` (Traverse #802)
+- `registry-ref-starter-process` (Traverse #811) — in progress
+- `consume-product-wasm-agents` (Traverse #795/#809)
 
 ## Architecture boundary (unchanged)
 

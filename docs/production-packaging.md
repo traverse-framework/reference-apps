@@ -99,7 +99,7 @@ HTTP `traverse-cli serve` is **not** a packaging input for primary shells. Docum
 
 ## `registry_ref` consumer contract
 
-Docs-only contract for how primary App-References shells will consume public registry capabilities via `registry_ref` (**implementation is Project 2 `registry-ref-starter-process` — Blocked on Traverse dual-mode component manifests**).
+Docs-only contract for how primary App-References shells consume public registry capabilities via `registry_ref`. **First cutover landed:** `manifests/traverse-starter/components/process/component.manifest.json` uses `registry_ref` (Project 2 `registry-ref-starter-process`).
 
 Governing Traverse specs:
 
@@ -108,31 +108,31 @@ Governing Traverse specs:
 
 ## Status
 
-| Layer | Today | After `registry-ref-starter-process` |
+| Layer | Today | After further cutovers |
 |---|---|---|
-| Component manifests under `manifests/` | **Local-path** (`contract_path` + `wasm_binary_path` + `wasm_digest`) | Selected components may use `registry_ref` instead |
-| Sync / packaging | [`runtime-bundle-sync.md`](runtime-bundle-sync.md) copies local example trees | Still sync app manifests; capability artifacts come from registry sync + digest-verified cache |
-| Implementation ticket | Project 2 `registry-ref-starter-process` remains **Blocked** until Traverse dual-mode component manifests land (`dual-mode-component-registry-ref`) | Flip Ready only when `registry_ref`-only component manifests validate/register |
+| Component manifests under `manifests/` | **Hybrid** — `traverse-starter.process` is `registry_ref`; validate/summarize (+ other apps) stay local-path | More components may switch when published |
+| Sync / packaging | [`runtime-bundle-sync.md`](runtime-bundle-sync.md) + `sync_bundle_materialize_registry_refs` for embedder trees | Still sync app manifests; capability bytes from registry sync + digest-verified cache at CLI register |
+| Implementation ticket | `registry-ref-starter-process` owns the process flip | Flip Ready→Done when smoke evidence is green |
 
-**Do not switch any checked-in manifest to `registry_ref` in this ticket or any PR that only lands this doc.** Premature switches break Phase 3 embedded smoke until Traverse accepts `registry_ref` xor `contract_path` on component manifests (spec 054 FR-007).
+**Checked-in source of truth** for process is `registry_ref` only (no local `contract_path` / `wasm_*` on that component). Platform sync **materializes** local wasm paths into destination bundles for FetchBundleLoader hosts that still require `wasm_binary_path`.
 
 ## Intended component shape
 
 Exactly one capability source per component (spec 054 FR-007):
 
-**Local (current — keep until `registry-ref-starter-process`):**
+**Local (validate / summarize today):**
 
 ```json
 {
-  "component_id": "traverse-starter.process-component",
-  "capability_id": "traverse-starter.process",
-  "contract_path": "../../_traverse/contracts/examples/traverse-starter/capabilities/process/contract.json",
-  "wasm_binary_path": "../../_traverse/examples/traverse-starter/process-agent/artifacts/process-agent.wasm",
+  "component_id": "traverse-starter.validate-component",
+  "capability_id": "traverse-starter.validate",
+  "contract_path": "../../_traverse/contracts/examples/traverse-starter/capabilities/validate/contract.json",
+  "wasm_binary_path": "../../_traverse/examples/traverse-starter/validate-agent/artifacts/validate-agent.wasm",
   "wasm_digest": "sha256:…"
 }
 ```
 
-**Registry (target for `traverse-starter.process` in `registry-ref-starter-process`):**
+**Registry (process — landed):**
 
 ```json
 {
@@ -166,18 +166,19 @@ If sync has not run, registration must fail with a stable error that `traverse-c
 | Runtime host pin | `$TRAVERSE_REPO/runtime/runtime-release.json` via sync wrappers | Unchanged — host pin is orthogonal to capability `registry_ref` |
 | App identity | `manifests/<app>/app.manifest.json` component digests | App manifest still lists components; capability bytes may come from cache |
 
-## What stays local-path until `registry-ref-starter-process`
+## What stays local-path (for now)
 
-- All of `manifests/traverse-starter/components/*` and `manifests/doc-approval/components/*`
-- Web `FetchBundleLoader` trees populated by `sync_web_*_bundle.sh` (example WASM under `_traverse/`)
+- `manifests/traverse-starter/components/validate` and `summarize`
+- All of `manifests/doc-approval/components/*` and `manifests/meeting-notes/components/*`
 - Native digest-pinned `runtime/runtime.wasm` sync ([`runtime-bundle-sync.md`](runtime-bundle-sync.md))
 
-First intended cutover: **`traverse-starter.process` only** (`registry-ref-starter-process`). Other components stay local until their registry publish gates exist.
+**First cutover (landed):** `traverse-starter.process` via `registry-ref-starter-process`.
 
 ## Agent / playbook rules
 
-- Packaging and production playbooks may **describe** this contract; they must not instruct agents to rewrite manifests to `registry_ref` yet.
-- Project 2 `registry-ref-starter-process` owns the code/manifest switch and remains Blocked until Traverse Project 1 `dual-mode-component-registry-ref` is Done.
+- Do **not** switch additional components to `registry_ref` without a Project 2 ticket and a published registry capability.
+- Platform sync may materialize `registry_ref` → local wasm in **destination** bundles only; do not reintroduce local fields on the checked-in process source manifest.
+- Project 2 `registry-ref-starter-process` owns the process flip (unblocked by Traverse `dual-mode-component-registry-ref` / PR #811).
 - UI remains a rendering layer — registry adoption does not move business field computation into App-References.
 
 ## Related
