@@ -32,6 +32,15 @@ echo ""
 
 # ── 2. Validate manifest ───────────────────────────────────────────────────
 
+echo "Step 0: registry sync (required for registry_ref components)..."
+SYNC_OUT=$(cargo run -p traverse-cli --manifest-path "$TRAVERSE_REPO/Cargo.toml" -- \
+  registry sync --workspace "$WORKSPACE_ID" --json 2>&1) || {
+  echo "WARN: registry sync failed (continuing — validate may still pass for local-only components)"
+  echo "$SYNC_OUT" | tail -20
+}
+echo "OK: registry sync attempted"
+echo ""
+
 echo "Step 1: app validate..."
 VALIDATE=$(cargo run -p traverse-cli --manifest-path "$TRAVERSE_REPO/Cargo.toml" -- \
   app validate --manifest "$MANIFEST" --json 2>&1) || {

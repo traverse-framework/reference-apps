@@ -252,6 +252,87 @@ sync_bundle_destination() {
 
   sync_bundle_copy_runtime "$dest" "$runtime_mode"
   sync_bundle_copy_traverse_assets "$dest" "$app_id" "$traverse_assets"
+  sync_bundle_materialize_registry_refs "$dest" "$app_id"
 
   echo "OK: synced $label → $dest"
+}
+
+# Convert registry_ref-only component manifests in $dest into local wasm_*
+# for FetchBundleLoader / embedded hosts that still require wasm_binary_path.
+# Canonical source under manifests/ stays registry_ref; destinations materialize.
+# Also copies the referenced example WASM + contract into dest/_traverse when missing
+# (Android/Swift sync with --traverse-assets none).
+sync_bundle_materialize_registry_refs() {
+  local dest="$1"
+  local app_id="$2"
+  REPO_ROOT="$REPO_ROOT" TRAVERSE_REPO="$TRAVERSE_REPO" DEST="$dest" APP_ID="$app_id" python3 - <<'PY'
+import hashlib, json, os, pathlib, shutil, sys
+
+dest = pathlib.Path(os.environ["DEST"])
+traverse = pathlib.Path(os.environ["TRAVERSE_REPO"])
+app_id = os.environ["APP_ID"]
+
+KNOWN = {
+    ("traverse-starter", "traverse-starter.process"): {
+        "cap": "process",
+        "stem": "process-agent",
+    },
+}
+
+components_root = dest / "components"
+if not components_root.is_dir():
+    nested = dest / "manifests" / "components"
+    # Android/Swift subdir layout: dest/manifests/{app.manifest,components}
+    if not nested.is_dir():
+        nested = dest / "manifests" / app_id / "components"
+    components_root = nested if nested.is_dir() else components_root
+
+if not components_root.is_dir():
+    sys.exit(0)
+
+# App root that owns components/ and (materialized) _traverse/
+app_root = components_root.parent
+
+for comp_path in sorted(components_root.glob("*/component.manifest.json")):
+    data = json.loads(comp_path.read_text())
+    ref = data.get("registry_ref")
+    if not ref:
+        continue
+    if data.get("contract_path") or data.get("wasm_binary_path") or data.get("wasm_digest"):
+        print(f"FAIL: {comp_path} has registry_ref and local fields (xor violated)", file=sys.stderr)
+        sys.exit(1)
+    key = (ref.get("namespace"), ref.get("id"))
+    mapping = KNOWN.get(key)
+    if mapping is None:
+        print(f"FAIL: no materialize mapping for registry_ref {key} in {comp_path}", file=sys.stderr)
+        sys.exit(1)
+
+    stem = mapping["stem"]
+    cap = mapping["cap"]
+    abs_wasm = traverse / f"examples/{app_id}/{stem}/artifacts/{stem}.wasm"
+    abs_contract = traverse / f"contracts/examples/{app_id}/capabilities/{cap}/contract.json"
+    if not abs_wasm.is_file():
+        print(f"FAIL: cannot materialize {key}: missing {abs_wasm}", file=sys.stderr)
+        sys.exit(1)
+    if not abs_contract.is_file():
+        print(f"FAIL: cannot materialize {key}: missing {abs_contract}", file=sys.stderr)
+        sys.exit(1)
+
+    dest_wasm = app_root / f"_traverse/examples/{app_id}/{stem}/artifacts/{stem}.wasm"
+    dest_contract = app_root / f"_traverse/contracts/examples/{app_id}/capabilities/{cap}/contract.json"
+    dest_wasm.parent.mkdir(parents=True, exist_ok=True)
+    dest_contract.parent.mkdir(parents=True, exist_ok=True)
+    if not dest_wasm.is_file() or dest_wasm.read_bytes() != abs_wasm.read_bytes():
+        shutil.copyfile(abs_wasm, dest_wasm)
+    if not dest_contract.is_file() or dest_contract.read_bytes() != abs_contract.read_bytes():
+        shutil.copyfile(abs_contract, dest_contract)
+
+    digest = "sha256:" + hashlib.sha256(dest_wasm.read_bytes()).hexdigest()
+    data.pop("registry_ref", None)
+    data["contract_path"] = f"../../_traverse/contracts/examples/{app_id}/capabilities/{cap}/contract.json"
+    data["wasm_binary_path"] = f"../../_traverse/examples/{app_id}/{stem}/artifacts/{stem}.wasm"
+    data["wasm_digest"] = digest
+    comp_path.write_text(json.dumps(data, indent=2) + "\n")
+    print(f"OK: materialized registry_ref {key[0]}/{key[1]} → {comp_path} ({digest})")
+PY
 }

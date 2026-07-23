@@ -55,6 +55,23 @@ def _ignore_traverse(_dir, names):
 
 shutil.copytree(repo / "manifests/traverse-starter", smoke_root, ignore=_ignore_traverse)
 
+# Materialize registry_ref process → local wasm for CLI smoke host (xor local fields).
+process_comp = smoke_root / "components/process/component.manifest.json"
+proc = json.loads(process_comp.read_text())
+if "registry_ref" in proc:
+    stem = "process-agent"
+    abs_wasm = traverse / f"examples/traverse-starter/{stem}/artifacts/{stem}.wasm"
+    abs_contract = traverse / "contracts/examples/traverse-starter/capabilities/process/contract.json"
+    assert abs_wasm.is_file(), abs_wasm
+    assert abs_contract.is_file(), abs_contract
+    digest = digests["process"]["digest"]
+    proc.pop("registry_ref", None)
+    proc["contract_path"] = "../../_traverse/contracts/examples/traverse-starter/capabilities/process/contract.json"
+    proc["wasm_binary_path"] = f"../../_traverse/examples/traverse-starter/{stem}/artifacts/{stem}.wasm"
+    proc["wasm_digest"] = digest
+    process_comp.write_text(json.dumps(proc, indent=2) + "\n")
+    print(f"OK: smoke materialized process registry_ref → local ({digest})")
+
 for key, component in [("validate", "validate"), ("process", "process"), ("summarize", "summarize")]:
     digest = digests[key]["digest"]
     comp = smoke_root / f"components/{component}/component.manifest.json"
