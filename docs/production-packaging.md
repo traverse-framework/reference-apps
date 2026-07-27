@@ -4,7 +4,7 @@ How App-References packages **primary** product shells for multi-OS embed: diges
 
 **Architecture boundary:** the UI never computes business fields (title, tags, note type, next action, status, or domain equivalents). Packaging only moves **public** manifests, certified `runtime.wasm`, and capability artifacts.
 
-Related: [`runtime-bundle-sync.md`](runtime-bundle-sync.md) · [`production-playbook.md`](production-playbook.md) · [`add-platform-client.md`](add-platform-client.md) · [`quality-standards.md`](quality-standards.md)
+Related: [`app-manifest-schema.md`](app-manifest-schema.md) · [`runtime-bundle-sync.md`](runtime-bundle-sync.md) · [`production-playbook.md`](production-playbook.md) · [`add-platform-client.md`](add-platform-client.md) · [`quality-standards.md`](quality-standards.md)
 
 ## Pin source (all native embeds)
 

@@ -1,3 +1,6 @@
+# Local CLI scaffold probes (traverse-cli app new)
+.tmp-app-new-probe/
+
 # Dependencies
 node_modules/
 dist/

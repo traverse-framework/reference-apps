@@ -92,7 +92,7 @@ Submit the same note. Zone 1 should show **Embedded**; output fields must match 
 | Want to change… | Edit… | Do not… |
 |---|---|---|
 | Title / tags / next action rules | Traverse WASM agents + `traverse-starter.pipeline` workflow | Hard-code fields in React/Swift/Compose |
-| Which components the app loads | `manifests/traverse-starter/` | Invent fake execute/poll stubs in the UI |
+| Which components the app loads | `manifests/traverse-starter/` ([`app-manifest-schema.md`](app-manifest-schema.md)) | Invent fake execute/poll stubs in the UI |
 | Layout, copy, accessibility | `apps/traverse-starter/<platform>/` | Import private Traverse internals |
 
 Showcase workflow: `traverse-starter.pipeline` (`validate` → `process` → `summarize`). See [`embedded-runtime-plan.md`](embedded-runtime-plan.md).

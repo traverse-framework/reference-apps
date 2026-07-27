@@ -92,6 +92,7 @@ npm run dev -w apps/meeting-notes/web-react
 | Doc | Use when |
 |---|---|
 | [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md) | First full walkthrough |
+| [`docs/app-manifest-schema.md`](docs/app-manifest-schema.md) | `app.manifest.json` fields + `traverse-cli app new` scaffold |
 | [`docs/add-platform-client.md`](docs/add-platform-client.md) | Add another OS shell |
 | [`docs/production-playbook.md`](docs/production-playbook.md) | Ship / packaging guide |
 | [`docs/runtime-bundle-sync.md`](docs/runtime-bundle-sync.md) | Which sync script for which OS |
