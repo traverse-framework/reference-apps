@@ -99,54 +99,45 @@ HTTP `traverse-cli serve` is **not** a packaging input for primary shells. Docum
 
 ## `registry_ref` consumer contract
 
-Docs-only contract for how primary App-References shells consume public registry capabilities via `registry_ref`. **First cutover landed:** `manifests/traverse-starter/components/process/component.manifest.json` uses `registry_ref` (Project 2 `registry-ref-starter-process`).
+Docs-only contract for how primary App-References shells consume public registry capabilities via `registry_ref`. **Full primary cutover landed:** all six kit components under `manifests/{traverse-starter,doc-approval,meeting-notes}/components/` use `registry_ref` (Project 2 `registry-ref-full-kit-cutover`; first slice was `registry-ref-starter-process`).
 
-Governing Traverse specs:
+Governing Traverse / Registry specs:
 
 - [`054-public-scope-registry-ref`](https://github.com/traverse-framework/Traverse/blob/main/specs/054-public-scope-registry-ref/spec.md)
 - [`055-registry-sync`](https://github.com/traverse-framework/Traverse/blob/main/specs/055-registry-sync/spec.md)
+- Registry [`008-reference-capability-publication`](https://github.com/traverse-framework/registry/blob/main/specs/008-reference-capability-publication/spec.md) / [`005-yank-deprecation`](https://github.com/traverse-framework/registry/blob/main/specs/005-yank-deprecation/spec.md) — seeds at `1.0.1`; stub `1.0.0` yanked
 
 ## Status
 
-| Layer | Today | After further cutovers |
+| Layer | Today | Next |
 |---|---|---|
-| Component manifests under `manifests/` | **Hybrid** — `traverse-starter.process` is `registry_ref`; validate/summarize (+ other apps) stay local-path | More components may switch when published |
-| Sync / packaging | [`runtime-bundle-sync.md`](runtime-bundle-sync.md) + `sync_bundle_materialize_registry_refs` for embedder trees | Still sync app manifests; capability bytes from registry sync + digest-verified cache at CLI register |
-| Implementation ticket | `registry-ref-starter-process` owns the process flip | Flip Ready→Done when smoke evidence is green |
+| Component manifests under `manifests/` | **All six primary components** use `registry_ref` (`^1.0.0` → live `1.0.1` when yank-aware) | Keep ranges; no local-path reintroduction |
+| Sync / packaging | [`runtime-bundle-sync.md`](runtime-bundle-sync.md) + `sync_bundle_materialize_registry_refs` for embedder trees | Embedder-native resolve (Traverse) can retire materialize |
+| Implementation ticket | `registry-ref-full-kit-cutover` | Done when smoke evidence is green |
 
-**Checked-in source of truth** for process is `registry_ref` only (no local `contract_path` / `wasm_*` on that component). Platform sync **materializes** local wasm paths into destination bundles for FetchBundleLoader hosts that still require `wasm_binary_path`.
+**Checked-in source of truth** for every primary component is `registry_ref` only (no local `contract_path` / `wasm_*` on source manifests). Platform sync **materializes** local wasm paths into destination bundles for FetchBundleLoader hosts that still require `wasm_binary_path`.
 
 ## Intended component shape
 
-Exactly one capability source per component (spec 054 FR-007):
-
-**Local (validate / summarize today):**
+Exactly one capability source per component (spec 054 FR-007). Primary kit components use **registry only**:
 
 ```json
 {
   "component_id": "traverse-starter.validate-component",
   "capability_id": "traverse-starter.validate",
-  "contract_path": "../../_traverse/contracts/examples/traverse-starter/capabilities/validate/contract.json",
-  "wasm_binary_path": "../../_traverse/examples/traverse-starter/validate-agent/artifacts/validate-agent.wasm",
-  "wasm_digest": "sha256:…"
-}
-```
-
-**Registry (process — landed):**
-
-```json
-{
-  "component_id": "traverse-starter.process-component",
-  "capability_id": "traverse-starter.process",
   "registry_ref": {
     "namespace": "traverse-starter",
-    "id": "traverse-starter.process",
+    "id": "traverse-starter.validate",
     "version_range": "^1.0.0"
   }
 }
 ```
 
+Same shape for `traverse-starter.process` / `summarize`, `doc-approval.analyze` / `recommend`, and `meeting-notes.process`.
+
 `registry_ref` fields (spec 054 FR-008): non-empty `namespace`, `id`, and `version_range`. Do **not** also declare local `contract_path` / `wasm_*` on the same component.
+
+**Destination-only local fields** (after sync materialize) are allowed in platform bundle trees — never on checked-in `manifests/` sources.
 
 ## Resolve / sync flow (intended)
 
@@ -160,25 +151,24 @@ If sync has not run, registration must fail with a stable error that `traverse-c
 
 ## Digests vs registry
 
-| Concern | Local-path today | `registry_ref` later |
+| Concern | Local-path (legacy) | `registry_ref` (primary kit) |
 |---|---|---|
-| WASM integrity | `wasm_digest` on the component manifest | Published digest from the registry record; verified at fetch |
+| WASM integrity | `wasm_digest` on the component manifest | Published digest from the registry record; verified at fetch (destination materialize recomputes from bytes) |
 | Runtime host pin | `$TRAVERSE_REPO/runtime/runtime-release.json` via sync wrappers | Unchanged — host pin is orthogonal to capability `registry_ref` |
-| App identity | `manifests/<app>/app.manifest.json` component digests | App manifest still lists components; capability bytes may come from cache |
+| App identity | `manifests/<app>/app.manifest.json` component digests | App manifest still lists components; capability bytes may come from cache / materialized tree |
 
-## What stays local-path (for now)
+## What stays outside `registry_ref` (for now)
 
-- `manifests/traverse-starter/components/validate` and `summarize`
-- All of `manifests/doc-approval/components/*` and `manifests/meeting-notes/components/*`
-- Native digest-pinned `runtime/runtime.wasm` sync ([`runtime-bundle-sync.md`](runtime-bundle-sync.md))
+- Native digest-pinned `runtime/runtime.wasm` sync ([`runtime-bundle-sync.md`](runtime-bundle-sync.md)) — host pin is orthogonal to capability `registry_ref`
+- Secondary/demo apps that are not primary shells
 
-**First cutover (landed):** `traverse-starter.process` via `registry-ref-starter-process`.
+**Primary cutover (landed):** all six kit components via `registry-ref-starter-process` + `registry-ref-full-kit-cutover`.
 
 ## Agent / playbook rules
 
-- Do **not** switch additional components to `registry_ref` without a Project 2 ticket and a published registry capability.
-- Platform sync may materialize `registry_ref` → local wasm in **destination** bundles only; do not reintroduce local fields on the checked-in process source manifest.
-- Project 2 `registry-ref-starter-process` owns the process flip (unblocked by Traverse `dual-mode-component-registry-ref` / PR #811).
+- Do **not** reintroduce local `contract_path` / `wasm_*` on checked-in primary `manifests/` components.
+- Platform sync may materialize `registry_ref` → local wasm in **destination** bundles only.
+- Prefer `version_range: "^1.0.0"` so yanked stub `1.0.0` is skipped and live `1.0.1` is selected when the resolver is yank-aware (registry spec 005).
 - UI remains a rendering layer — registry adoption does not move business field computation into App-References.
 
 ## Related

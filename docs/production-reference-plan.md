@@ -31,7 +31,7 @@ Related:
 | Trace Explorer | **Embedded Trace API** (`embed-trace-explorer`) | Decision B |
 | Post-kit showcase | **meeting-notes → multi-OS** (`meeting-notes-multi-os`) via add-platform recipe | Decision A |
 | Plan home | This document | Project 2 (Done) |
-| Registry | **Docs contract** shipped; **impl** `registry-ref-starter-process` (Blocked on upstream) | Decision C |
+| Registry | **Docs contract** shipped; primary kit uses `registry_ref` (`registry-ref-full-kit-cutover`) | Decision C |
 | Secondary apps | **Explicitly secondary** (demos/kits); not hard-fail smoke targets | Project 2 (Done) |
 | Repo front door | Embedded-first README + playbook; sidecar appendix-only | Decision B |
 | Digest sync | **Shared core + thin per-platform wrappers** — see [`runtime-bundle-sync.md`](runtime-bundle-sync.md) | Decision B |
@@ -59,7 +59,7 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 | Delete sidecar client code | `remove-sidecar-paths` | **Done** (#206) | Dead HTTP paths removed from starter/doc-approval | Shipped |
 | Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **Done** (#209); nightly green via `fix-nightly-native-required` | Required nightly jobs | Shipped |
 | Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Done** (#227) | Traverse real-wasm-agent-execute Done (#795/#809) | Digest-pinned Traverse-published starter agents |
-| `registry_ref` adoption | `registry-ref-starter-process` | **In Progress** | Process component uses `registry_ref`; sync materializes for embedders | Finish smoke evidence |
+| `registry_ref` adoption | `registry-ref-full-kit-cutover` | **In Progress** | All six primary components use `registry_ref`; sync materializes for embedders | Finish smoke evidence |
 | Phase 2 sidecar nightly | `phase2-sidecar-nightly` | **Future** (defer) | Legacy path; low demo value | Optional; low priority |
 
 ### Wave 1 — Done
@@ -73,8 +73,9 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 Claim when Agent is Unassigned:
 
 - `embed-trace-explorer` (Traverse #802)
-- `registry-ref-starter-process` (Traverse #811) — in progress
-- `consume-product-wasm-agents` (Traverse #795/#809)
+- `registry-ref-starter-process` (Traverse #811) — Done (#224)
+- `registry-ref-full-kit-cutover` — remaining five components → `registry_ref`
+- `consume-product-wasm-agents` (Traverse #795/#809) — Done
 
 ## Architecture boundary (unchanged)
 

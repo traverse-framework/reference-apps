@@ -277,6 +277,26 @@ KNOWN = {
         "cap": "process",
         "stem": "process-agent",
     },
+    ("traverse-starter", "traverse-starter.validate"): {
+        "cap": "validate",
+        "stem": "validate-agent",
+    },
+    ("traverse-starter", "traverse-starter.summarize"): {
+        "cap": "summarize",
+        "stem": "summarize-agent",
+    },
+    ("doc-approval", "doc-approval.analyze"): {
+        "cap": "analyze",
+        "stem": "analyze-agent",
+    },
+    ("doc-approval", "doc-approval.recommend"): {
+        "cap": "recommend",
+        "stem": "recommend-agent",
+    },
+    ("meeting-notes", "meeting-notes.process"): {
+        "cap": "process",
+        "stem": "process-agent",
+    },
 }
 
 components_root = dest / "components"
