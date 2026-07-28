@@ -78,22 +78,31 @@ def _ignore_traverse(_dir, names):
 
 shutil.copytree(repo / "manifests/traverse-starter", smoke_root, ignore=_ignore_traverse)
 
-# Materialize registry_ref process → local wasm for CLI smoke host (xor local fields).
-process_comp = smoke_root / "components/process/component.manifest.json"
-proc = json.loads(process_comp.read_text())
-if "registry_ref" in proc:
-    stem = "process-agent"
-    abs_wasm = traverse / f"examples/traverse-starter/{stem}/artifacts/{stem}.wasm"
-    abs_contract = traverse / "contracts/examples/traverse-starter/capabilities/process/contract.json"
-    assert abs_wasm.is_file(), abs_wasm
-    assert abs_contract.is_file(), abs_contract
-    digest = digests["process"]["digest"]
-    proc.pop("registry_ref", None)
-    proc["contract_path"] = "../../_traverse/contracts/examples/traverse-starter/capabilities/process/contract.json"
-    proc["wasm_binary_path"] = f"../../_traverse/examples/traverse-starter/{stem}/artifacts/{stem}.wasm"
-    proc["wasm_digest"] = digest
-    process_comp.write_text(json.dumps(proc, indent=2) + "\n")
-    print(f"OK: smoke materialized process registry_ref → local ({digest})")
+# Materialize any registry_ref components → local wasm for CLI smoke host (xor local fields).
+smoke_materialize = {
+    "validate": ("validate", "validate-agent"),
+    "process": ("process", "process-agent"),
+    "summarize": ("summarize", "summarize-agent"),
+}
+for key, (cap, stem) in smoke_materialize.items():
+    comp_path = smoke_root / f"components/{cap}/component.manifest.json"
+    data = json.loads(comp_path.read_text())
+    if "registry_ref" in data:
+        abs_wasm = traverse / f"examples/traverse-starter/{stem}/artifacts/{stem}.wasm"
+        abs_contract = traverse / f"contracts/examples/traverse-starter/capabilities/{cap}/contract.json"
+        assert abs_wasm.is_file(), abs_wasm
+        assert abs_contract.is_file(), abs_contract
+        digest = digests[key]["digest"]
+        data.pop("registry_ref", None)
+        data["contract_path"] = (
+            f"../../_traverse/contracts/examples/traverse-starter/capabilities/{cap}/contract.json"
+        )
+        data["wasm_binary_path"] = (
+            f"../../_traverse/examples/traverse-starter/{stem}/artifacts/{stem}.wasm"
+        )
+        data["wasm_digest"] = digest
+        comp_path.write_text(json.dumps(data, indent=2) + "\n")
+        print(f"OK: smoke materialized {cap} registry_ref → local ({digest})")
 
 for key, component in [("validate", "validate"), ("process", "process"), ("summarize", "summarize")]:
     digest = digests[key]["digest"]

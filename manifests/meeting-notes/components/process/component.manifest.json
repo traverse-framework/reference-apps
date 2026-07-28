@@ -4,9 +4,11 @@
   "schema_version": "1.0.0",
   "capability_id": "meeting-notes.process",
   "capability_version": "1.0.0",
-  "contract_path": "../../_traverse/contracts/examples/meeting-notes/capabilities/process/contract.json",
-  "wasm_binary_path": "../../_traverse/examples/meeting-notes/process-agent/artifacts/process-agent.wasm",
-  "wasm_digest": "sha256:5647c39a1d25d8728350f9619025292a62e78a602068a2ad9b6f075751c93d99",
+  "registry_ref": {
+    "namespace": "meeting-notes",
+    "id": "meeting-notes.process",
+    "version_range": "^1.0.0"
+  },
   "runtime_constraints": {
     "host_api_access": "none",
     "network_access": "forbidden",
