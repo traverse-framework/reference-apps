@@ -22,6 +22,9 @@ need apps/llm-mcp-reference/clients/claude-code/README.md
 need apps/llm-mcp-reference/clients/claude-code/.mcp.json.example
 need apps/llm-mcp-reference/clients/cursor/README.md
 need apps/llm-mcp-reference/clients/cursor/mcp.json.example
+need apps/llm-mcp-reference/clients/cursor/evidence/README.md
+need apps/llm-mcp-reference/clients/cursor/evidence/cursor-mcp-stdio-transcript.jsonl
+need apps/llm-mcp-reference/clients/cursor/evidence/cursor-mcp-execute-transcript.jsonl
 need apps/llm-mcp-reference/clients/chatgpt/README.md
 need apps/llm-mcp-reference/clients/grok/README.md
 # Configs must mention traverse-mcp, not invent business fields

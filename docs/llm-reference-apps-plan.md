@@ -87,8 +87,8 @@ v1 documents **Mode A** only. Do not revive HTTP `traverse-cli serve` as the pro
 |---|---|---|
 | `llm-mcp-reference-apps-plan` | Plan + scaffold (this doc + tree) | Done (#238) |
 | `llm-mcp-claude-live-smoke` | Live Claude Desktop/Code path against `traverse-starter` | Ready |
-| `llm-mcp-cursor-live-smoke` | Live Cursor MCP path | Ready |
-| `llm-mcp-meeting-notes-workflow` | Document + config for meeting-notes via MCP | In Progress |
+| `llm-mcp-cursor-live-smoke` | Live Cursor MCP path | In Progress |
+| `llm-mcp-meeting-notes-workflow` | Document + config for meeting-notes via MCP | Done (#239) |
 | `llm-mcp-chatgpt-adapter` | ChatGPT Actions/GPT mapping (or MCP when shipped) | Future / Ready when API stable |
 | `llm-mcp-grok-adapter` | Grok tool-calling mapping | Future / Ready when API stable |
 | `llm-mcp-embedded-host` | Mode B embedded prepare/cache for MCP host | Blocked on Traverse Spec 520 implement |
