@@ -9,7 +9,7 @@ UI examples for [Traverse](https://github.com/traverse-framework/Traverse).
 **You need:** Node.js 24+ (see `.nvmrc`) and a local [Traverse](https://github.com/traverse-framework/Traverse) clone — set `TRAVERSE_REPO` and run the sync script for your platform before the app can load WASM.  
 **Success looks like:** submit a note and see title, tags, note type, next action, and status filled in by the runtime (the UI does not invent those fields).
 
-> **Agents / LLMs:** this repo is UI-only — render runtime fields, never compute business output. Claim work via [`AGENTS.md`](AGENTS.md). For **LLM product façades** that call Traverse workflows via MCP (instead of prompt skills), see [`apps/llm-mcp-reference/`](apps/llm-mcp-reference/) and [`docs/llm-reference-apps-plan.md`](docs/llm-reference-apps-plan.md). Authoring capabilities? See [traverse-framework/claude-skills](https://github.com/traverse-framework/claude-skills).
+> **Agents / LLMs:** this repo is UI-only — render runtime fields, never compute business output. Claim work via [`AGENTS.md`](AGENTS.md). Authoring capabilities? See [traverse-framework/claude-skills](https://github.com/traverse-framework/claude-skills). For **LLM product façades** (Claude / Cursor / ChatGPT / Grok via MCP), see [LLM MCP reference façades](#llm-mcp-reference-façades) below.
 
 ---
 
@@ -21,8 +21,9 @@ UI examples for [Traverse](https://github.com/traverse-framework/Traverse).
 | **doc-approval** | Paste a document → type, parties, amounts, confidence, recommendation | [web](apps/doc-approval/web-react/) |
 | **meeting-notes** | Paste a transcript → action items, decisions, follow-ups, summary | [web](apps/meeting-notes/web-react/) · [all OS](#by-os--target) |
 | **trace-explorer** | Browse execution traces (debugger — not a product shell to copy) | [web](apps/trace-explorer/web-react/) |
+| **LLM MCP façades** | Claude / Cursor / ChatGPT / Grok call the same workflows via MCP (not prompt skills) | [`apps/llm-mcp-reference/`](apps/llm-mcp-reference/) · [section](#llm-mcp-reference-façades) |
 
-**Extra demos / kits** — useful samples, **not** the production pattern to copy (prefer traverse-starter / doc-approval / meeting-notes):
+**Extra demos / kits** — useful samples, **not** the production OS-shell pattern to copy (prefer traverse-starter / doc-approval / meeting-notes):
 
 | Demo | Path |
 |---|---|
@@ -31,7 +32,6 @@ UI examples for [Traverse](https://github.com/traverse-framework/Traverse).
 | macOS demo | [`apps/macos-demo/`](apps/macos-demo/) |
 | Browser consumer façade | [`apps/browser-consumer/`](apps/browser-consumer/) |
 | youaskm3 starter kit | [`apps/youaskm3-starter-kit/`](apps/youaskm3-starter-kit/) |
-| LLM MCP façades (Claude/ChatGPT/Grok/Cursor) | [`apps/llm-mcp-reference/`](apps/llm-mcp-reference/) — plan: [`docs/llm-reference-apps-plan.md`](docs/llm-reference-apps-plan.md) |
 
 ---
 
@@ -88,11 +88,46 @@ npm run dev -w apps/meeting-notes/web-react
 
 ---
 
+## LLM MCP reference façades
+
+Secondary tier beside OS UI shells: **LLM product façades** that invoke Traverse **workflows/capabilities through MCP** instead of encoding business rules in prompt “skills”. Same catalog thesis as the OS apps — the model handles language; **runtime-owned fields** come back from Traverse.
+
+| Piece | Path |
+|---|---|
+| Plan / architecture | [`docs/llm-reference-apps-plan.md`](docs/llm-reference-apps-plan.md) |
+| Client configs + runbooks | [`apps/llm-mcp-reference/`](apps/llm-mcp-reference/) |
+| Clients | Claude Desktop · Claude Code · Cursor · ChatGPT · Grok |
+| Scaffold smoke | `bash scripts/ci/llm_mcp_reference_smoke.sh` |
+
+**Mode A (local MCP stdio) — quick start:**
+
+```bash
+export TRAVERSE_REPO="$(cd ../Traverse && pwd)"   # adjust path
+cd "$TRAVERSE_REPO"
+cargo run -p traverse-mcp -- stdio
+```
+
+Point your LLM client at that command using the example under `apps/llm-mcp-reference/clients/<product>/`, paste `shared/prompts/system-boundary.md` into system instructions, and follow `shared/workflows/traverse-starter.md`. Display **only** runtime JSON fields — do not invent title/tags/recommendations in the prompt.
+
+### Upstream gaps (blocking full kit live path)
+
+Scaffold + configs live here; honest “same catalog as OS apps” still needs upstream work:
+
+| Repo | Issue |
+|---|---|
+| Traverse (runtime / `traverse-mcp`) | [#865](https://github.com/traverse-framework/Traverse/issues/865) — MCP still expedition-shaped; needs kit catalog, inline requests, WASM execute |
+| Registry (workflows / content groups) | [#99](https://github.com/traverse-framework/registry/issues/99) — publish kit workflows + MCP discovery metadata + resolve policy |
+
+Until those land, treat Mode A as **bootstrap against Traverse MCP docs**; App-Refs live-smoke tickets stay gated on the kit path.
+
+---
+
 ## More docs (when you need them)
 
 | Doc | Use when |
 |---|---|
 | [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md) | First full walkthrough |
+| [`docs/llm-reference-apps-plan.md`](docs/llm-reference-apps-plan.md) | LLM façades via MCP (Claude / Cursor / …) |
 | [`docs/app-manifest-schema.md`](docs/app-manifest-schema.md) | `app.manifest.json` fields + `traverse-cli app new` scaffold |
 | [`docs/add-platform-client.md`](docs/add-platform-client.md) | Add another OS shell |
 | [`docs/production-playbook.md`](docs/production-playbook.md) | Ship / packaging guide |
