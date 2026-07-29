@@ -9,7 +9,7 @@ UI examples for [Traverse](https://github.com/traverse-framework/Traverse).
 **You need:** Node.js 24+ (see `.nvmrc`) and a local [Traverse](https://github.com/traverse-framework/Traverse) clone — set `TRAVERSE_REPO` and run the sync script for your platform before the app can load WASM.  
 **Success looks like:** submit a note and see title, tags, note type, next action, and status filled in by the runtime (the UI does not invent those fields).
 
-> **Agents / LLMs:** this repo is UI-only — render runtime fields, never compute business output. Claim work via [`AGENTS.md`](AGENTS.md). Authoring the capability a UI here consumes? See [traverse-framework/claude-skills](https://github.com/traverse-framework/claude-skills) for a Claude Skill covering contract authoring, composition, and validation.
+> **Agents / LLMs:** this repo is UI-only — render runtime fields, never compute business output. Claim work via [`AGENTS.md`](AGENTS.md). For **LLM product façades** that call Traverse workflows via MCP (instead of prompt skills), see [`apps/llm-mcp-reference/`](apps/llm-mcp-reference/) and [`docs/llm-reference-apps-plan.md`](docs/llm-reference-apps-plan.md). Authoring capabilities? See [traverse-framework/claude-skills](https://github.com/traverse-framework/claude-skills).
 
 ---
 
@@ -31,6 +31,7 @@ UI examples for [Traverse](https://github.com/traverse-framework/Traverse).
 | macOS demo | [`apps/macos-demo/`](apps/macos-demo/) |
 | Browser consumer façade | [`apps/browser-consumer/`](apps/browser-consumer/) |
 | youaskm3 starter kit | [`apps/youaskm3-starter-kit/`](apps/youaskm3-starter-kit/) |
+| LLM MCP façades (Claude/ChatGPT/Grok/Cursor) | [`apps/llm-mcp-reference/`](apps/llm-mcp-reference/) — plan: [`docs/llm-reference-apps-plan.md`](docs/llm-reference-apps-plan.md) |
 
 ---
 

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "traverse": {
+      "command": "cargo",
+      "args": ["run", "-p", "traverse-mcp", "--", "stdio"],
+      "cwd": "/ABS/PATH/TO/Traverse",
+      "env": {
+        "TRAVERSE_REPO": "/ABS/PATH/TO/Traverse"
+      }
+    }
+  }
+}
