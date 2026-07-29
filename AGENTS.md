@@ -24,6 +24,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `registry-ref-full-kit-cutover` | **Done** (#235) | All six primary components use `registry_ref` |
 | `meeting-notes-wave2-os-ports` | **Done** (#236) | iOS + macOS + Windows + Android meeting-notes embeds |
 | `consume-product-wasm-agents` | **Done** (#227) | Digest-pinned Traverse-published starter agents |
+| `llm-mcp-reference-apps-plan` | **In Progress** | LLM MCP façades plan + scaffold (`apps/llm-mcp-reference/`) |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
 

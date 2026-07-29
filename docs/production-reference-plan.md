@@ -37,13 +37,14 @@ Related:
 | Digest sync | **Shared core + thin per-platform wrappers** — see [`runtime-bundle-sync.md`](runtime-bundle-sync.md) | Decision B |
 | Showcase rollout | **Wave 1:** Web + Linux/CLI (+ Android if stable); **Wave 2:** Windows + Apple | Decision C |
 | Product agents | Digest-pinned Traverse-published starter agents (`consume-product-wasm-agents` Done) | Gap capture |
+| LLM MCP façades | **Secondary reference tier** — Claude/ChatGPT/Grok/Cursor configs invoke Traverse workflows via MCP; not prompt-skills for business logic — see [`llm-reference-apps-plan.md`](llm-reference-apps-plan.md) | Decision D |
 
 ### Primary vs secondary (locked)
 
 | Tier | Apps | Smoke / CI bar |
 |---|---|---|
 | **Primary product shells** | `traverse-starter`, `doc-approval`, `meeting-notes` | Production DoD; Linux-runnable `embedded_smoke` hard-fail |
-| **Adopted / secondary** | `react-demo`, `android-demo`, `macos-demo`, `browser-consumer`, `youaskm3-starter-kit` | Lighter demo smokes only — **not** merge-blocking `embedded_smoke` targets |
+| **Adopted / secondary** | `react-demo`, `android-demo`, `macos-demo`, `browser-consumer`, `youaskm3-starter-kit`, `llm-mcp-reference` | Lighter demo smokes only — **not** merge-blocking `embedded_smoke` targets |
 | **Debugger** | `trace-explorer` | Embedded Trace API companion — not a product shell to copy |
 
 Canonical narrative: [`adopted-platform-clients.md`](adopted-platform-clients.md) · front door: root `README.md`.
