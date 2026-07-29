@@ -21,7 +21,8 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `phase2-sidecar-nightly` | Future | Defer — low demo value |
 | `embed-trace-explorer` | **Done** (#225) | Embedded Trace API in Trace Explorer web |
 | `registry-ref-starter-process` | **Done** (#224) | Process component uses `registry_ref` |
-| `registry-ref-full-kit-cutover` | **In Progress** | All six primary components use `registry_ref` |
+| `registry-ref-full-kit-cutover` | **Done** (#235) | All six primary components use `registry_ref` |
+| `meeting-notes-wave2-os-ports` | **In Progress** | iOS + macOS + Windows + Android meeting-notes embeds |
 | `consume-product-wasm-agents` | **Done** (#227) | Digest-pinned Traverse-published starter agents |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).

@@ -88,6 +88,10 @@ The UI renders these fields exactly as the runtime provides them — never compu
 | Platform | Path | Status |
 |---|---|---|
 | Web (React) | `apps/meeting-notes/web-react/` | Shipped (embedded) |
+| iOS (SwiftUI) | `apps/meeting-notes/ios-swift/` | Shipped (embedded) |
+| macOS (SwiftUI + AppKit) | `apps/meeting-notes/macos-swift/` | Shipped (embedded) |
+| Android (Jetpack Compose) | `apps/meeting-notes/android-compose/` | Shipped (embedded) |
+| Windows (WinUI 3) | `apps/meeting-notes/windows-winui/` | Shipped (embedded) |
 | Linux (GTK4 + Rust) | `apps/meeting-notes/linux-gtk/` | Shipped (embedded) |
 | CLI (Rust) | `apps/meeting-notes/cli-rust/` | Shipped (embedded) |
 
