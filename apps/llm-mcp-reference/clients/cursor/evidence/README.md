@@ -41,6 +41,8 @@ Implication for App-Refs:
 - Cursor MCP config is correct for Mode A (stdio → `traverse-mcp`).
 - Live product smoke against starter/meeting-notes **IDs** lands when those capabilities are published into the MCP catalog (or a documented catalog override ships upstream). Until then, this evidence proves the Cursor→MCP host path end-to-end on the catalog the server actually serves.
 
+Tracked on App-Refs Project 2 as `llm-mcp-traverse-starter-catalog` (Blocked), mirroring Traverse [#865](https://github.com/traverse-framework/Traverse/issues/865) and registry [#99](https://github.com/traverse-framework/registry/issues/99).
+
 ## Reproduce
 
 ```bash

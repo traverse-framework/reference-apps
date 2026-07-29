@@ -91,6 +91,7 @@ v1 documents **Mode A** only. Do not revive HTTP `traverse-cli serve` as the pro
 | `llm-mcp-meeting-notes-workflow` | Document + config for meeting-notes via MCP | Done (#239) |
 | `llm-mcp-chatgpt-adapter` | ChatGPT Actions/GPT mapping (or MCP when shipped) | Future / Ready when API stable |
 | `llm-mcp-grok-adapter` | Grok tool-calling mapping | Future / Ready when API stable |
+| `llm-mcp-traverse-starter-catalog` | Expose kit (`traverse-starter.*` / meeting-notes) on MCP stdio catalog | Blocked — Traverse [#865](https://github.com/traverse-framework/Traverse/issues/865) / registry [#99](https://github.com/traverse-framework/registry/issues/99) |
 | `llm-mcp-embedded-host` | Mode B embedded prepare/cache for MCP host | Blocked on Traverse Spec 520 implement |
 
 ## Success criteria (plan slice)
