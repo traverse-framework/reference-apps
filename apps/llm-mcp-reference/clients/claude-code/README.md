@@ -7,6 +7,7 @@
 3. Set absolute `cwd` / `TRAVERSE_REPO`.
 4. Load [`../../shared/prompts/system-boundary.md`](../../shared/prompts/system-boundary.md).
 5. Run [`../../shared/workflows/traverse-starter.md`](../../shared/workflows/traverse-starter.md).
+6. For transcripts, follow [`../../shared/workflows/meeting-notes.md`](../../shared/workflows/meeting-notes.md).
 
 Companion authoring skill (contracts only — not product business logic):  
 https://github.com/traverse-framework/claude-skills
