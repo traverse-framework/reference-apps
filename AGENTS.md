@@ -28,6 +28,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `llm-mcp-meeting-notes-workflow` | **Done** (#239) | Meeting-notes MCP tool-sequence runbook |
 | `llm-mcp-cursor-live-smoke` | **Done** (#240) | Cursor MCP Mode A stdio evidence |
 | `llm-mcp-claude-live-smoke` | **Done** (#241) | Claude Desktop/Code MCP Mode A evidence |
+| `llm-mcp-traverse-starter-catalog` | **Blocked** | Kit IDs on MCP stdio — Traverse #865 / registry #99 |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
 
