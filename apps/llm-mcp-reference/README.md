@@ -34,6 +34,7 @@ cargo run -p traverse-mcp -- stdio
 2. Point your LLM client at that command using the example config in `clients/<product>/`.
 3. Paste `shared/prompts/system-boundary.md` into the agent/system instructions.
 4. Follow `shared/workflows/traverse-starter.md` — submit a note via tools; **only display runtime fields**.
+5. For transcripts, follow `shared/workflows/meeting-notes.md` — concrete `describe_server` → `execute_entrypoint` → `render_execution_report` sequence for `meeting-notes.process`.
 
 Optional bearer token (execution commands):
 

@@ -36,6 +36,14 @@ if ! rg -q 'do not invent' "$ROOT/apps/llm-mcp-reference/shared/prompts/system-b
   echo "FAIL: system-boundary.md must forbid inventing fields"
   fail=1
 fi
+# meeting-notes runbook must document concrete MCP tool sequence
+MN="$ROOT/apps/llm-mcp-reference/shared/workflows/meeting-notes.md"
+for needle in 'meeting-notes.process' 'describe_server' 'list_entrypoints' 'execute_entrypoint' 'render_execution_report' 'action_items'; do
+  if ! rg -q "$needle" "$MN"; then
+    echo "FAIL: meeting-notes.md must mention $needle"
+    fail=1
+  fi
+done
 if [ "$fail" -ne 0 ]; then
   echo "llm_mcp_reference_smoke: FAILED"
   exit 1

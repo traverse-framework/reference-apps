@@ -7,5 +7,6 @@
 3. Fix absolute paths.
 4. Apply [`../../shared/prompts/system-boundary.md`](../../shared/prompts/system-boundary.md) in rules/instructions.
 5. Exercise [`../../shared/workflows/traverse-starter.md`](../../shared/workflows/traverse-starter.md).
+6. For meeting transcripts, follow [`../../shared/workflows/meeting-notes.md`](../../shared/workflows/meeting-notes.md) (tool sequence + sample transcript).
 
 Cursor agents working **in this repo** still claim OS tickets via `AGENTS.md`; this façade is for **product** workflows through Traverse MCP, not for replacing Project 2 claim locks.
