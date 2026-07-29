@@ -19,7 +19,7 @@ UI examples for [Traverse](https://github.com/traverse-framework/Traverse).
 |---|---|---|
 | **traverse-starter** | Submit a short note → title, tags, note type, next action, status | [web](apps/traverse-starter/web-react/) · [all OS](#by-os--target) |
 | **doc-approval** | Paste a document → type, parties, amounts, confidence, recommendation | [web](apps/doc-approval/web-react/) |
-| **meeting-notes** | Paste a transcript → action items, decisions, follow-ups, summary | [web](apps/meeting-notes/web-react/) |
+| **meeting-notes** | Paste a transcript → action items, decisions, follow-ups, summary | [web](apps/meeting-notes/web-react/) · [all OS](#by-os--target) |
 | **trace-explorer** | Browse execution traces (debugger — not a product shell to copy) | [web](apps/trace-explorer/web-react/) |
 
 **Extra demos / kits** — useful samples, **not** the production pattern to copy (prefer traverse-starter / doc-approval / meeting-notes):
@@ -54,7 +54,7 @@ Same apps on other platforms (`—` = not shipped yet):
 |---|---|---|---|---|---|---|---|
 | traverse-starter | [link](apps/traverse-starter/web-react/) | [link](apps/traverse-starter/macos-swift/) | [link](apps/traverse-starter/ios-swift/) | [link](apps/traverse-starter/android-compose/) | [link](apps/traverse-starter/windows-winui/) | [link](apps/traverse-starter/linux-gtk/) | [link](apps/traverse-starter/cli-rust/) |
 | doc-approval | [link](apps/doc-approval/web-react/) | [link](apps/doc-approval/macos-swift/) | [link](apps/doc-approval/ios-swift/) | [link](apps/doc-approval/android-compose/) | [link](apps/doc-approval/windows-winui/) | [link](apps/doc-approval/linux-gtk/) | [link](apps/doc-approval/cli-rust/) |
-| meeting-notes | [link](apps/meeting-notes/web-react/) | — | — | — | — | [link](apps/meeting-notes/linux-gtk/) | [link](apps/meeting-notes/cli-rust/) |
+| meeting-notes | [link](apps/meeting-notes/web-react/) | [link](apps/meeting-notes/macos-swift/) | [link](apps/meeting-notes/ios-swift/) | [link](apps/meeting-notes/android-compose/) | [link](apps/meeting-notes/windows-winui/) | [link](apps/meeting-notes/linux-gtk/) | [link](apps/meeting-notes/cli-rust/) |
 
 ---
 

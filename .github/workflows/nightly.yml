@@ -74,6 +74,15 @@ jobs:
             build test \
             CODE_SIGNING_ALLOWED=NO
 
+      - name: Build + test meeting-notes macOS
+        working-directory: apps/meeting-notes/macos-swift
+        run: |
+          xcodebuild \
+            -scheme MeetingNotesMac \
+            -destination 'platform=macOS' \
+            build test \
+            CODE_SIGNING_ALLOWED=NO
+
   native-windows:
     runs-on: windows-latest
     steps:
@@ -99,6 +108,12 @@ jobs:
         run: |
           dotnet restore DocApproval.Tests/DocApproval.Tests.csproj
           dotnet test DocApproval.Tests/DocApproval.Tests.csproj -c Release --nologo
+
+      - name: Restore + test meeting-notes WinUI logic
+        working-directory: apps/meeting-notes/windows-winui
+        run: |
+          dotnet restore MeetingNotes.Tests/MeetingNotes.Tests.csproj
+          dotnet test MeetingNotes.Tests/MeetingNotes.Tests.csproj -c Release --nologo
 
   # Required: GTK shells (AdwApplicationWindowExt / GString fixes landed).
   native-linux-gtk:
@@ -165,6 +180,12 @@ jobs:
 
       - name: Gradle test doc-approval
         working-directory: apps/doc-approval/android-compose
+        env:
+          TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
+        run: ./gradlew --no-daemon testDebugUnitTest
+
+      - name: Gradle test meeting-notes
+        working-directory: apps/meeting-notes/android-compose
         env:
           TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
         run: ./gradlew --no-daemon testDebugUnitTest

@@ -59,7 +59,8 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 | Delete sidecar client code | `remove-sidecar-paths` | **Done** (#206) | Dead HTTP paths removed from starter/doc-approval | Shipped |
 | Nightly Apple/Windows + Android/GTK | `native-ci-android-gtk-required` | **Done** (#209); nightly green via `fix-nightly-native-required` | Required nightly jobs | Shipped |
 | Product WASM agents (Traverse) | `consume-product-wasm-agents` | **Done** (#227) | Traverse real-wasm-agent-execute Done (#795/#809) | Digest-pinned Traverse-published starter agents |
-| `registry_ref` adoption | `registry-ref-full-kit-cutover` | **In Progress** | All six primary components use `registry_ref`; sync materializes for embedders | Finish smoke evidence |
+| `registry_ref` adoption | `registry-ref-full-kit-cutover` | **Done** (#235) | All six primary components use `registry_ref`; sync materializes for embedders | Shipped |
+| meeting-notes Wave 2 OS ports | `meeting-notes-wave2-os-ports` | **In Progress** | Apple + Windows + Android meeting-notes embeds | Finish Wave 2 showcase |
 | Phase 2 sidecar nightly | `phase2-sidecar-nightly` | **Future** (defer) | Legacy path; low demo value | Optional; low priority |
 
 ### Wave 1 — Done
@@ -70,13 +71,11 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 
 ### Wave 2 — Ready (upstream unblocked 2026-07-22)
 
-Claim when Agent is Unassigned:
-
-- `embed-trace-explorer` (Traverse #802)
-- `registry-ref-starter-process` (Traverse #811) — Done (#224)
-- `registry-ref-full-kit-cutover` — remaining five components → `registry_ref`
-- `consume-product-wasm-agents` (Traverse #795/#809) — Done
-
+- `embed-trace-explorer` — Done (#225)
+- `registry-ref-starter-process` — Done (#224)
+- `registry-ref-full-kit-cutover` — Done (#235)
+- `consume-product-wasm-agents` — Done (#227)
+- `meeting-notes-wave2-os-ports` — In Progress (Apple + Windows + Android meeting-notes embeds)
 ## Architecture boundary (unchanged)
 
 - UI shells render runtime-owned fields only — no local business logic  

@@ -1,0 +1,30 @@
+{
+  "component_id": "meeting-notes.process-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "meeting-notes.process",
+  "capability_version": "1.0.0",
+  "registry_ref": {
+    "namespace": "meeting-notes",
+    "id": "meeting-notes.process",
+    "version_range": "^1.0.0"
+  },
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "meeting_notes_example_smoke"
+    }
+  ]
+}

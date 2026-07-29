@@ -254,6 +254,8 @@ smoke_android() {
 
   local assets="$REPO_ROOT/apps/traverse-starter/android-compose/app/src/main/assets/bundles/traverse-starter/runtime"
   verify_runtime_digest "android" "$assets" || true
+  verify_runtime_digest "android-meeting-notes" \
+    "$REPO_ROOT/apps/meeting-notes/android-compose/app/src/main/assets/bundles/meeting-notes/runtime" || true
 
   # Linux CI often has a partial Android SDK — do not run gradle unless required.
   if ! slice_expected "$slice" && [ "$EXPECT" != "auto" ]; then
@@ -293,6 +295,10 @@ smoke_swift() {
     "$REPO_ROOT/apps/traverse-starter/ios-swift/TraverseStarter/Resources/bundles/traverse-starter/runtime" || true
   verify_runtime_digest "macos" \
     "$REPO_ROOT/apps/traverse-starter/macos-swift/TraverseStarterMac/Resources/bundles/traverse-starter/runtime" || true
+  verify_runtime_digest "ios-meeting-notes" \
+    "$REPO_ROOT/apps/meeting-notes/ios-swift/MeetingNotes/Resources/bundles/meeting-notes/runtime" || true
+  verify_runtime_digest "macos-meeting-notes" \
+    "$REPO_ROOT/apps/meeting-notes/macos-swift/MeetingNotesMac/Resources/bundles/meeting-notes/runtime" || true
 
   if ! slice_expected "$slice" && [ "$EXPECT" != "auto" ]; then
     skip "swift SDK tests — not required for EXPECT=$EXPECT (digests checked)"
@@ -307,16 +313,29 @@ smoke_swift() {
     if slice_expected "$slice"; then fail "swift expected but host is not Darwin"; else skip "swift — requires Darwin host"; fi
     return
   fi
-  log "=== swift (swift test TraverseCore) ==="
-  local pkg="$REPO_ROOT/apps/traverse-starter/ios-swift/TraverseCore"
+  log "=== swift (swift test TraverseCore + MeetingNotesCore) ==="
+  local pkg="$REPO_ROOT/apps/traverse-starter/TraverseCore"
+  if [ ! -f "$pkg/Package.swift" ]; then
+    pkg="$REPO_ROOT/apps/traverse-starter/ios-swift/TraverseCore"
+  fi
   if [ -f "$pkg/Package.swift" ]; then
     if (cd "$pkg" && swift test); then
       ok "swift TraverseCore tests"
     else
-      sdk_fail_or_skip "$slice" "swift test failed"
+      sdk_fail_or_skip "$slice" "swift TraverseCore test failed"
     fi
   else
     skip "swift — TraverseCore Package.swift not found for headless test"
+  fi
+  local mn_pkg="$REPO_ROOT/apps/meeting-notes/MeetingNotesCore"
+  if [ -f "$mn_pkg/Package.swift" ]; then
+    if (cd "$mn_pkg" && swift test); then
+      ok "swift MeetingNotesCore tests"
+    else
+      sdk_fail_or_skip "$slice" "swift MeetingNotesCore test failed"
+    fi
+  else
+    skip "swift — MeetingNotesCore Package.swift not found"
   fi
 }
 
@@ -326,6 +345,8 @@ smoke_windows() {
 
   verify_runtime_digest "windows" \
     "$REPO_ROOT/apps/traverse-starter/windows-winui/TraverseStarter/Assets/bundles/traverse-starter/runtime" || true
+  verify_runtime_digest "windows-meeting-notes" \
+    "$REPO_ROOT/apps/meeting-notes/windows-winui/MeetingNotes/Assets/bundles/meeting-notes/runtime" || true
 
   if ! slice_expected "$slice" && [ "$EXPECT" != "auto" ]; then
     skip "windows SDK tests — not required for EXPECT=$EXPECT (digest checked)"
