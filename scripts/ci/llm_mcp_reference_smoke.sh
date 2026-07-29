@@ -18,8 +18,14 @@ need apps/llm-mcp-reference/shared/workflows/traverse-starter.md
 need apps/llm-mcp-reference/shared/workflows/meeting-notes.md
 need apps/llm-mcp-reference/clients/claude-desktop/README.md
 need apps/llm-mcp-reference/clients/claude-desktop/mcp.json.example
+need apps/llm-mcp-reference/clients/claude-desktop/evidence/README.md
+need apps/llm-mcp-reference/clients/claude-desktop/evidence/claude-desktop-mcp-stdio-transcript.jsonl
+need apps/llm-mcp-reference/clients/claude-desktop/evidence/claude-desktop-mcp-execute-transcript.jsonl
 need apps/llm-mcp-reference/clients/claude-code/README.md
 need apps/llm-mcp-reference/clients/claude-code/.mcp.json.example
+need apps/llm-mcp-reference/clients/claude-code/evidence/README.md
+need apps/llm-mcp-reference/clients/claude-code/evidence/claude-code-mcp-stdio-transcript.jsonl
+need apps/llm-mcp-reference/clients/claude-code/evidence/claude-code-mcp-execute-transcript.jsonl
 need apps/llm-mcp-reference/clients/cursor/README.md
 need apps/llm-mcp-reference/clients/cursor/mcp.json.example
 need apps/llm-mcp-reference/clients/cursor/evidence/README.md
