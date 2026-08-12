@@ -10,16 +10,20 @@ It is intentionally small:
 - it points to the browser-targeted consumer package in this repo
 - it points to MCP consumption and compatibility validation docs in Traverse
 - it leaves downstream UI and product behavior to the consuming app
+- it points hosts at Specs 001/002 presentation-state vocabulary (do not invent business fields in UI)
 
 ## What It Is For
 
 Use this starter kit as the first place a downstream app developer looks when wiring Traverse into a browser-hosted app such as `youaskm3`.
+
+Prefer primary product shells (`traverse-starter`, `doc-approval`, `meeting-notes`) when you want the multi-OS embedded reference pattern — not expedition sample apps.
 
 ## Included References
 
 - [Embedded getting started (this repo)](../../docs/getting-started-embedded.md) — WASM-once / UI-shell model on Web + Linux/CLI
 - [Consumer bundle (Traverse)](https://github.com/traverse-framework/Traverse/blob/main/docs/app-consumable-consumer-bundle.md)
 - [Starter kit guide (this repo)](../../docs/youaskm3-starter-kit.md)
+- [Event UI conformance harness](../../docs/event-ui-conformance-harness.md) — Specs 001/002 fixtures + mappers
 - [Integration validation (Traverse)](https://github.com/traverse-framework/Traverse/blob/main/docs/youaskm3-integration-validation.md)
 - [Compatibility suite (Traverse)](https://github.com/traverse-framework/Traverse/blob/main/docs/youaskm3-compatibility-conformance-suite.md)
 - Local consumer package: [`apps/browser-consumer/`](../browser-consumer/)
@@ -29,6 +33,7 @@ Use this starter kit as the first place a downstream app developer looks when wi
 - The consuming app is browser-hosted.
 - The consuming app uses the published Traverse consumer bundle.
 - The consuming app depends on the browser-targeted consumer package rather than Traverse internals.
+- Session chrome uses Spec 001 states (`idle|loading|loaded|blocked|ended|error`) from public subscribe evidence.
 - The consuming app validates paths using the documented commands in this repository and Traverse.
 
 ## Validation

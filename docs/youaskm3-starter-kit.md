@@ -18,6 +18,18 @@ Downstream apps should adopt the versioned Traverse consumer bundle and the brow
 
 - Traverse consumer-bundle docs: [app-consumable-consumer-bundle.md](https://github.com/traverse-framework/Traverse/blob/main/docs/app-consumable-consumer-bundle.md)
 - Local façade: [`apps/browser-consumer/`](../apps/browser-consumer/)
+- Event → UI contract: [`event-ui-conformance-harness.md`](event-ui-conformance-harness.md) (Specs 001/002)
+
+## UI event contract
+
+Hosts must:
+
+1. Subscribe through public consumer / embedder surfaces (replay-safe ordered events).
+2. Map evidence to Spec 001 presentation states: `idle | loading | loaded | blocked | ended | error`.
+3. For multi-capability progress, follow Spec 002 — show invoke/result order from the stream.
+4. Render only runtime-provided fields (no invented titles, tags, recommendations, or scores).
+
+`apps/browser-consumer` exposes `presentationState` for Spec 001 chrome. Prefer primary shells when you need the full multi-OS embedded pattern.
 
 ## Setup
 
@@ -32,15 +44,12 @@ Offline (always available in this repo):
 
 ```bash
 bash scripts/ci/youaskm3_starter_kit_smoke.sh
-bash scripts/ci/react_demo_smoke.sh
-bash scripts/ci/browser_consumer_package_smoke.sh  # requires TRAVERSE_REPO for live path
 ```
 
-Live adapter path (requires `TRAVERSE_REPO`):
+Live adapter path (requires `TRAVERSE_REPO`; talks to `browser-adapter serve` via browser-consumer — no expedition demo proxy):
 
 ```bash
 export TRAVERSE_REPO=/path/to/Traverse
-bash scripts/ci/react_demo_live_adapter_smoke.sh
 bash scripts/ci/browser_consumer_package_smoke.sh
 ```
 
