@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Live smoke for apps/browser-consumer (requires Traverse CLI + react-demo proxy).
+# Live smoke for apps/browser-consumer (requires Traverse CLI browser-adapter).
 # Usage: TRAVERSE_REPO=/path/to/Traverse bash scripts/ci/browser_consumer_package_smoke.sh
 set -euo pipefail
 
@@ -13,15 +13,9 @@ fi
 
 tmpdir="$(mktemp -d)"
 adapter_log="${tmpdir}/browser-adapter.log"
-demo_log="${tmpdir}/react-demo.log"
 adapter_pid=""
-demo_pid=""
 
 cleanup() {
-  if [[ -n "${demo_pid}" ]] && kill -0 "${demo_pid}" 2>/dev/null; then
-    kill "${demo_pid}" 2>/dev/null || true
-    wait "${demo_pid}" 2>/dev/null || true
-  fi
   if [[ -n "${adapter_pid}" ]] && kill -0 "${adapter_pid}" 2>/dev/null; then
     kill "${adapter_pid}" 2>/dev/null || true
     wait "${adapter_pid}" 2>/dev/null || true
@@ -48,24 +42,6 @@ for _ in $(seq 1 400); do
   sleep 0.05
 done
 
-(
-  cd "${repo_root}"
-  node apps/react-demo/server.mjs --adapter http://127.0.0.1:4174 --port 4173
-) >"${demo_log}" 2>&1 &
-demo_pid=$!
-
-for _ in $(seq 1 200); do
-  if grep -q "Traverse React demo serving on http://127.0.0.1:4173" "${demo_log}" 2>/dev/null; then
-    break
-  fi
-  if ! kill -0 "${demo_pid}" 2>/dev/null; then
-    cat "${demo_log}" >&2
-    echo "react demo server exited before it reported a listening address" >&2
-    exit 1
-  fi
-  sleep 0.05
-done
-
 cd "${repo_root}"
 node <<'NODE'
 const assert = require('node:assert/strict');
@@ -76,9 +52,11 @@ const consumer = require('./apps/browser-consumer');
     consumer.APPROVED_BROWSER_CONSUMER_SESSION.title,
     'Traverse Browser Consumer',
   );
+  assert.ok(consumer.PRESENTATION_STATES.includes('loading'));
+  assert.equal(consumer.createBrowserConsumerState().presentationState, 'idle');
 
   const createAndStream = await consumer.runBrowserConsumerSubscription({
-    baseUrl: 'http://127.0.0.1:4173',
+    baseUrl: 'http://127.0.0.1:4174',
   });
 
   assert.ok(createAndStream.created.subscription_id);
@@ -106,6 +84,12 @@ const consumer = require('./apps/browser-consumer');
   assert.ok(summary);
   assert.equal(summary.selection.capability, 'expedition.planning.plan-expedition');
   assert.equal(summary.output.planId, 'plan-objective-skypilot');
+
+  let state = consumer.createBrowserConsumerState();
+  for (const message of createAndStream.messages) {
+    state = consumer.applyBrowserConsumerMessage(state, message, createAndStream.created);
+  }
+  assert.equal(state.presentationState, 'loaded');
 })().catch((error) => {
   console.error(error);
   process.exit(1);
