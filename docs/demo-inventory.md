@@ -10,7 +10,7 @@ Reconciled against `find apps -maxdepth 1 -type d` on 2026-08-11. Primaries are 
 | `apps/meeting-notes` | already-primary | Production multi-OS product shell | — |
 | `apps/doc-approval` | already-primary | Production multi-OS product shell | — |
 | `apps/trace-explorer` | already-primary | Debugger companion (web-only by design) | — |
-| `apps/react-demo` | retire | Expedition browser sample; Spec 004 non-goal as production pattern; primaries own Web UX | `retire-react-demo` |
+| `apps/react-demo` | retire (done) | Removed 2026-08-12; primaries own Web UX; browser-consumer owns browser façade | `retire-react-demo` |
 | `apps/android-demo` | retire (done) | Removed 2026-08-12; superseded by primary Android Compose shells | `retire-android-demo` |
 | `apps/macos-demo` | retire (done) | Removed 2026-08-12; superseded by primary SwiftUI shells | `retire-macos-demo` |
 | `apps/android-demo` | retire | Expedition Android sample; superseded by primary Android Compose shells | `retire-android-demo` |
