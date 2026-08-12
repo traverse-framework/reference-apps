@@ -34,7 +34,7 @@ UI examples for [Traverse](https://github.com/traverse-framework/Traverse).
 
 | Path | Retired | Notes |
 |---|---|---|
-| `apps/react-demo` | 2026-08-12 | Spec 004 retire (`retire-react-demo`); use primary Web shells / browser-consumer |
+| `apps/react-demo` | 2026-08-12 | Spec 004 retire ([#255](https://github.com/traverse-framework/reference-apps/pull/255)); use primary Web shells / browser-consumer |
 | `apps/android-demo` | 2026-08-12 | Spec 004 retire ([#251](https://github.com/traverse-framework/reference-apps/pull/251)); use primary Android Compose shells |
 | `apps/macos-demo` | 2026-08-12 | Spec 004 retire ([#252](https://github.com/traverse-framework/reference-apps/pull/252)); use primary SwiftUI shells |
 
