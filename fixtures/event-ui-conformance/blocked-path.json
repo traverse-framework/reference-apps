@@ -1,0 +1,40 @@
+{
+  "id": "blocked-path",
+  "description": "Runtime state_changed with waiting-for-human → blocked",
+  "expected_presentation_state": "blocked",
+  "expected_error_message": null,
+  "events": [
+    {
+      "kind": "embedder_event",
+      "schema_version": "1.0.0",
+      "embedder_api_version": "embedder-api/1.0.0",
+      "event_id": "evt-0001",
+      "sequence": 1,
+      "event_type": "capability_invoked",
+      "workspace_id": "local-default",
+      "app_id": "fixture-app",
+      "session_id": "sess-blocked",
+      "data": {
+        "execution_id": "exec_blocked",
+        "capability_id": "fixture.approve",
+        "capability_version": "1.0.0"
+      }
+    },
+    {
+      "kind": "embedder_event",
+      "schema_version": "1.0.0",
+      "embedder_api_version": "embedder-api/1.0.0",
+      "event_id": "evt-0002",
+      "sequence": 2,
+      "event_type": "state_changed",
+      "workspace_id": "local-default",
+      "app_id": "fixture-app",
+      "session_id": "sess-blocked",
+      "data": {
+        "state": "waiting_for_human",
+        "previous_state": "running",
+        "capability_id": "fixture.approve"
+      }
+    }
+  ]
+}

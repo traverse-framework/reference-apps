@@ -5,7 +5,8 @@
     "apps/traverse-starter/web-react",
     "apps/trace-explorer/web-react",
     "apps/doc-approval/web-react",
-    "apps/meeting-notes/web-react"
+    "apps/meeting-notes/web-react",
+    "packages/event-ui-conformance"
   ],
   "scripts": {
     "dev": "npm run dev -w apps/traverse-starter/web-react",

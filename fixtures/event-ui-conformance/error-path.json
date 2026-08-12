@@ -1,0 +1,45 @@
+{
+  "id": "error-path",
+  "description": "capability_invoked then embedder error → error with payload message",
+  "expected_presentation_state": "error",
+  "expected_error_message": "capability failed under runtime governance",
+  "events": [
+    {
+      "kind": "embedder_event",
+      "schema_version": "1.0.0",
+      "embedder_api_version": "embedder-api/1.0.0",
+      "event_id": "evt-0001",
+      "sequence": 1,
+      "event_type": "capability_invoked",
+      "workspace_id": "local-default",
+      "app_id": "fixture-app",
+      "session_id": "sess-error",
+      "data": {
+        "execution_id": "exec_error",
+        "capability_id": "fixture.process",
+        "capability_version": "1.0.0"
+      }
+    },
+    {
+      "kind": "embedder_event",
+      "schema_version": "1.0.0",
+      "embedder_api_version": "embedder-api/1.0.0",
+      "event_id": "evt-0002",
+      "sequence": 2,
+      "event_type": "error",
+      "workspace_id": "local-default",
+      "app_id": "fixture-app",
+      "session_id": "sess-error",
+      "data": {
+        "execution_id": "exec_error",
+        "capability_id": "fixture.process",
+        "status": "error",
+        "error": {
+          "code": "execution_failed",
+          "message": "capability failed under runtime governance",
+          "details": {}
+        }
+      }
+    }
+  ]
+}
