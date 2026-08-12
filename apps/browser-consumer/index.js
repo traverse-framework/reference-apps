@@ -13,14 +13,14 @@
 
   if (typeof require === "function") {
     try {
-      baseClient = require("../react-demo/src/browser-adapter-client.js");
+      baseClient = require("./src/browser-adapter-client.js");
     } catch {
       baseClient = null;
     }
   }
 
-  if (!baseClient && typeof globalThis !== "undefined" && globalThis.TraverseReactDemoClient) {
-    baseClient = globalThis.TraverseReactDemoClient;
+  if (!baseClient && typeof globalThis !== "undefined" && globalThis.TraverseBrowserAdapterClient) {
+    baseClient = globalThis.TraverseBrowserAdapterClient;
   }
 
   if (!baseClient) {
@@ -29,6 +29,16 @@
     );
   }
 
+  /** Spec 001 presentation states for session chrome. */
+  const PRESENTATION_STATES = Object.freeze([
+    "idle",
+    "loading",
+    "loaded",
+    "blocked",
+    "ended",
+    "error",
+  ]);
+
   const APPROVED_BROWSER_CONSUMER_SESSION = {
     ...baseClient.APPROVED_BROWSER_DEMO_SESSION,
     title: "Traverse Browser Consumer",
@@ -36,8 +46,27 @@
       "Traverse's browser-targeted consumer facade for downstream browser-hosted apps like youaskm3.",
   };
 
+  function presentationStateFromPhase(phase) {
+    switch (phase) {
+      case "idle":
+        return "idle";
+      case "streaming":
+        return "loading";
+      case "completed":
+        return "loaded";
+      case "error":
+        return "error";
+      default:
+        return "loading";
+    }
+  }
+
   function createBrowserConsumerState() {
-    return baseClient.createLiveDemoState();
+    const state = baseClient.createLiveDemoState();
+    return {
+      ...state,
+      presentationState: presentationStateFromPhase(state.phase),
+    };
   }
 
   function buildBrowserConsumerSubscriptionRequest() {
@@ -49,7 +78,11 @@
   }
 
   function applyBrowserConsumerMessage(state, message, created) {
-    return baseClient.applyBrowserSubscriptionMessage(state, message, created);
+    const next = baseClient.applyBrowserSubscriptionMessage(state, message, created);
+    return {
+      ...next,
+      presentationState: presentationStateFromPhase(next.phase),
+    };
   }
 
   function browserConsumerTraceSummary(trace, terminalResult) {
@@ -58,10 +91,12 @@
 
   return {
     APPROVED_BROWSER_CONSUMER_SESSION,
+    PRESENTATION_STATES,
     applyBrowserConsumerMessage,
     browserConsumerTraceSummary,
     buildBrowserConsumerSubscriptionRequest,
     createBrowserConsumerState,
+    presentationStateFromPhase,
     runBrowserConsumerSubscription,
   };
 });
