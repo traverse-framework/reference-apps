@@ -28,10 +28,15 @@ UI examples for [Traverse](https://github.com/traverse-framework/Traverse).
 | Demo | Path |
 |---|---|
 | React browser demo | [`apps/react-demo/`](apps/react-demo/) |
-| Android demo | [`apps/android-demo/`](apps/android-demo/) |
 | macOS demo | [`apps/macos-demo/`](apps/macos-demo/) |
 | Browser consumer façade | [`apps/browser-consumer/`](apps/browser-consumer/) |
 | youaskm3 starter kit | [`apps/youaskm3-starter-kit/`](apps/youaskm3-starter-kit/) |
+
+### Retired demos
+
+| Path | Retired | Notes |
+|---|---|---|
+| `apps/android-demo` | 2026-08-12 | Spec 004 retire (`retire-android-demo`); use primary Android Compose shells |
 
 ---
 
