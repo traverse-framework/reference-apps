@@ -16,7 +16,7 @@ Ownership boundary (Traverse [#703](https://github.com/traverse-framework/Traver
 
 | Former Traverse path | Owner | Destination here |
 |---|---|---|
-| `apps/android-demo/` | Reference Apps | [`apps/android-demo/`](../apps/android-demo/) |
+| `apps/android-demo/` | Reference Apps | **Retired** 2026-08-12 (`retire-android-demo`) — use primary Android Compose shells |
 | `apps/browser-consumer/` | Reference Apps | [`apps/browser-consumer/`](../apps/browser-consumer/) |
 | `apps/macos-demo/` | Reference Apps | [`apps/macos-demo/`](../apps/macos-demo/) |
 | `apps/react-demo/` | Reference Apps | [`apps/react-demo/`](../apps/react-demo/) |
@@ -24,13 +24,12 @@ Ownership boundary (Traverse [#703](https://github.com/traverse-framework/Traver
 | `apps/llm-mcp-reference/` (new) | Reference Apps | [`apps/llm-mcp-reference/`](../apps/llm-mcp-reference/) — LLM MCP façades; [`llm-reference-apps-plan.md`](llm-reference-apps-plan.md) |
 | Runtime fixtures / manifests | Traverse | `examples/` in Traverse (not adopted) |
 
-Shared fixture for native demos: [`fixtures/expedition-runtime-session.json`](../fixtures/expedition-runtime-session.json).
+Shared fixture for remaining native demos: [`fixtures/expedition-runtime-session.json`](../fixtures/expedition-runtime-session.json).
 
 ## Validation commands (secondary / adopted)
 
 | Artifact | Command |
 |---|---|
-| Android demo | `bash scripts/ci/android_demo_smoke.sh` |
 | macOS demo | `bash scripts/ci/macos_demo_smoke.sh` |
 | React demo | `bash scripts/ci/react_demo_smoke.sh` |
 | youaskm3 starter | `bash scripts/ci/youaskm3_starter_kit_smoke.sh` |

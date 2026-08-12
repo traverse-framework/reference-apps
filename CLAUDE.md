@@ -24,7 +24,6 @@ apps/
     web-react/           # Trace Explorer — execution timeline debugger
   react-demo/            # Expedition React browser demo (adopted from Traverse)
   browser-consumer/      # Browser consumer façade
-  android-demo/          # Expedition Android demo
   macos-demo/            # Expedition macOS demo
   youaskm3-starter-kit/  # Downstream browser starter kit
 fixtures/                # Shared UI demo fixtures

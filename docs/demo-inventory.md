@@ -11,7 +11,7 @@ Reconciled against `find apps -maxdepth 1 -type d` on 2026-08-11. Primaries are 
 | `apps/doc-approval` | already-primary | Production multi-OS product shell | — |
 | `apps/trace-explorer` | already-primary | Debugger companion (web-only by design) | — |
 | `apps/react-demo` | retire | Expedition browser sample; Spec 004 non-goal as production pattern; primaries own Web UX | `retire-react-demo` |
-| `apps/android-demo` | retire | Expedition Android sample; superseded by primary Android Compose shells | `retire-android-demo` |
+| `apps/android-demo` | retire (done) | Removed 2026-08-12; superseded by primary Android Compose shells | `retire-android-demo` |
 | `apps/macos-demo` | retire | Expedition macOS sample; superseded by primary SwiftUI shells | `retire-macos-demo` |
 | `apps/browser-consumer` | upgrade | Keep as downstream browser façade; align to Specs 001/002 and stop depending on `react-demo` once that path retires | `upgrade-browser-consumer-events` |
 | `apps/youaskm3-starter-kit` | upgrade | Keep as downstream getting-started kit; point at embedded/public surfaces + Specs 001/002 vocabulary | `upgrade-youaskm3-starter-kit-events` |
