@@ -15,6 +15,8 @@ OS twins: [`apps/meeting-notes/`](../../../meeting-notes/) (Web / iOS / macOS / 
 
 Discover this entrypoint through `traverse-mcp` — do **not** hard-code private crate paths. Prefer the **governed workflow/entrypoint** the server lists for `meeting-notes.process`.
 
+Presentation chrome (Specs 001/002): keep the session at `loading` while tools run; move to `loaded` only when runtime output fields are present; use `error` on tool/runtime failure. If the workflow exposes multiple capabilities, narrate invoke/result order from evidence only.
+
 ## Prerequisites (Mode A)
 
 1. Traverse checkout with working `traverse-mcp` (see [MCP stdio server](https://github.com/traverse-framework/Traverse/blob/main/docs/mcp-stdio-server.md)).

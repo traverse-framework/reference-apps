@@ -2,6 +2,8 @@
 
 Secondary App-References tier: **LLM product façades** that call Traverse **workflows/capabilities** through MCP instead of encoding business logic in prompt “skills”.
 
+Shared prompts/workflows follow Specs 001/002 presentation vocabulary (`idle|loading|loaded|blocked|ended|error`) and still forbid inventing business fields — see [`shared/prompts/system-boundary.md`](shared/prompts/system-boundary.md).
+
 Plan: [`docs/llm-reference-apps-plan.md`](../../docs/llm-reference-apps-plan.md)
 
 ## Layout
