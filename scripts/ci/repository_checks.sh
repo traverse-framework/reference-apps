@@ -105,7 +105,6 @@ check "fixtures/expedition-runtime-session.json"                        "expedit
 check "docs/adopted-platform-clients.md"                                "adopted platform clients doc"
 check "docs/production-playbook.md"                                     "production playbook"
 check "docs/youaskm3-starter-kit.md"                                    "youaskm3 starter guide"
-check "scripts/ci/android_demo_smoke.sh"                                "android demo smoke"
 check "scripts/ci/react_demo_smoke.sh"                                  "react demo smoke"
 check "scripts/ci/youaskm3_starter_kit_smoke.sh"                        "youaskm3 starter smoke"
 check "scripts/ci/llm_mcp_reference_smoke.sh"                           "LLM MCP reference smoke"
