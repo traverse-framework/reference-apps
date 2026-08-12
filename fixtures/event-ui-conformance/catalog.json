@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Shared embedder event streams for UI presentation-state + capability-progress conformance (Specs 001/002).",
+  "cases": [
+    {
+      "id": "happy-path",
+      "file": "happy-path.json",
+      "expected_presentation_state": "loaded"
+    },
+    {
+      "id": "error-path",
+      "file": "error-path.json",
+      "expected_presentation_state": "error"
+    },
+    {
+      "id": "blocked-path",
+      "file": "blocked-path.json",
+      "expected_presentation_state": "blocked"
+    },
+    {
+      "id": "ended-path",
+      "file": "ended-path.json",
+      "expected_presentation_state": "ended"
+    },
+    {
+      "id": "multi-capability",
+      "file": "multi-capability.json",
+      "expected_presentation_state": "loaded"
+    },
+    {
+      "id": "replay-late-subscriber",
+      "file": "replay-late-subscriber.json",
+      "expected_presentation_state": "loaded",
+      "notes": "Same ordered stream is mapped fully and via prefix replay; both must agree."
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "id": "multi-capability",
+  "description": "Two capabilities invoke→result in order; terminal output from B only",
+  "expected_presentation_state": "loaded",
+  "expected_error_message": null,
+  "expected_capability_order": [
+    { "capability_id": "fixture.analyze", "phase": "invoked" },
+    { "capability_id": "fixture.analyze", "phase": "result" },
+    { "capability_id": "fixture.recommend", "phase": "invoked" },
+    { "capability_id": "fixture.recommend", "phase": "result" }
+  ],
+  "events": [
+    {
+      "kind": "embedder_event",
+      "schema_version": "1.0.0",
+      "embedder_api_version": "embedder-api/1.0.0",
+      "event_id": "evt-0001",
+      "sequence": 1,
+      "event_type": "capability_invoked",
+      "workspace_id": "local-default",
+      "app_id": "fixture-app",
+      "session_id": "sess-multi",
+      "data": {
+        "execution_id": "exec_a",
+        "capability_id": "fixture.analyze",
+        "capability_version": "1.0.0"
+      }
+    },
+    {
+      "kind": "embedder_event",
+      "schema_version": "1.0.0",
+      "embedder_api_version": "embedder-api/1.0.0",
+      "event_id": "evt-0002",
+      "sequence": 2,
+      "event_type": "capability_result",
+      "workspace_id": "local-default",
+      "app_id": "fixture-app",
+      "session_id": "sess-multi",
+      "data": {
+        "execution_id": "exec_a",
+        "capability_id": "fixture.analyze",
+        "status": "completed",
+        "output": {
+          "analysis": "runtime-owned analysis"
+        }
+      }
+    },
+    {
+      "kind": "embedder_event",
+      "schema_version": "1.0.0",
+      "embedder_api_version": "embedder-api/1.0.0",
+      "event_id": "evt-0003",
+      "sequence": 3,
+      "event_type": "capability_invoked",
+      "workspace_id": "local-default",
+      "app_id": "fixture-app",
+      "session_id": "sess-multi",
+      "data": {
+        "execution_id": "exec_b",
+        "capability_id": "fixture.recommend",
+        "capability_version": "1.0.0"
+      }
+    },
+    {
+      "kind": "embedder_event",
+      "schema_version": "1.0.0",
+      "embedder_api_version": "embedder-api/1.0.0",
+      "event_id": "evt-0004",
+      "sequence": 4,
+      "event_type": "capability_result",
+      "workspace_id": "local-default",
+      "app_id": "fixture-app",
+      "session_id": "sess-multi",
+      "data": {
+        "execution_id": "exec_b",
+        "capability_id": "fixture.recommend",
+        "status": "completed",
+        "output": {
+          "recommendation": "runtime-owned recommendation"
+        }
+      }
+    }
+  ]
+}

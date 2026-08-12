@@ -1,0 +1,58 @@
+{
+  "id": "replay-late-subscriber",
+  "description": "Full recorded stream; late subscriber mapping prefixes must match full map",
+  "expected_presentation_state": "loaded",
+  "expected_error_message": null,
+  "events": [
+    {
+      "kind": "embedder_event",
+      "schema_version": "1.0.0",
+      "embedder_api_version": "embedder-api/1.0.0",
+      "event_id": "evt-0001",
+      "sequence": 1,
+      "event_type": "state_changed",
+      "workspace_id": "local-default",
+      "app_id": "fixture-app",
+      "session_id": "sess-replay",
+      "data": {
+        "state": "running",
+        "previous_state": "idle"
+      }
+    },
+    {
+      "kind": "embedder_event",
+      "schema_version": "1.0.0",
+      "embedder_api_version": "embedder-api/1.0.0",
+      "event_id": "evt-0002",
+      "sequence": 2,
+      "event_type": "capability_invoked",
+      "workspace_id": "local-default",
+      "app_id": "fixture-app",
+      "session_id": "sess-replay",
+      "data": {
+        "execution_id": "exec_replay",
+        "capability_id": "fixture.process",
+        "capability_version": "1.0.0"
+      }
+    },
+    {
+      "kind": "embedder_event",
+      "schema_version": "1.0.0",
+      "embedder_api_version": "embedder-api/1.0.0",
+      "event_id": "evt-0003",
+      "sequence": 3,
+      "event_type": "capability_result",
+      "workspace_id": "local-default",
+      "app_id": "fixture-app",
+      "session_id": "sess-replay",
+      "data": {
+        "execution_id": "exec_replay",
+        "capability_id": "fixture.process",
+        "status": "completed",
+        "output": {
+          "title": "replay-safe title"
+        }
+      }
+    }
+  ]
+}
