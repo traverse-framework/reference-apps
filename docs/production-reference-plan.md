@@ -44,8 +44,7 @@ Related:
 | Tier | Apps | Smoke / CI bar |
 |---|---|---|
 | **Primary product shells** | `traverse-starter`, `doc-approval`, `meeting-notes` | Production DoD; Linux-runnable `embedded_smoke` hard-fail |
-| **Adopted / secondary** | `react-demo`, `browser-consumer`, `youaskm3-starter-kit`, `llm-mcp-reference` | Lighter demo smokes only — **not** merge-blocking `embedded_smoke` targets (`android-demo`/`macos-demo` retired) |
-| **Adopted / secondary** | `react-demo`, `browser-consumer`, `youaskm3-starter-kit`, `llm-mcp-reference` | Lighter demo smokes only — **not** merge-blocking `embedded_smoke` targets |
+| **Adopted / secondary** | `browser-consumer`, `youaskm3-starter-kit`, `llm-mcp-reference` | Lighter demo smokes only — **not** merge-blocking `embedded_smoke` targets (`android-demo`/`macos-demo`/`react-demo` retired) |
 | **Debugger** | `trace-explorer` | Embedded Trace API companion — not a product shell to copy |
 
 Canonical narrative: [`adopted-platform-clients.md`](adopted-platform-clients.md) · front door: root `README.md`.

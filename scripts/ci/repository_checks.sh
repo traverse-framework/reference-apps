@@ -97,7 +97,6 @@ check "manifests/meeting-notes/components/process/component.manifest.json" "meet
 
 # Adopted Traverse platform demos / starter (issue #151)
 check "apps/browser-consumer/index.js"                                  "browser-consumer package"
-check "apps/react-demo/src/main.js"                                     "react-demo main"
 check "apps/youaskm3-starter-kit/README.md"                             "youaskm3 starter kit"
 check "apps/llm-mcp-reference/README.md"                                "LLM MCP reference façades"
 check "docs/llm-reference-apps-plan.md"                                 "LLM reference apps plan"
@@ -105,10 +104,8 @@ check "fixtures/expedition-runtime-session.json"                        "expedit
 check "docs/adopted-platform-clients.md"                                "adopted platform clients doc"
 check "docs/production-playbook.md"                                     "production playbook"
 check "docs/youaskm3-starter-kit.md"                                    "youaskm3 starter guide"
-check "scripts/ci/react_demo_smoke.sh"                                  "react demo smoke"
 check "scripts/ci/youaskm3_starter_kit_smoke.sh"                        "youaskm3 starter smoke"
 check "scripts/ci/llm_mcp_reference_smoke.sh"                           "LLM MCP reference smoke"
-check "scripts/ci/react_demo_live_adapter_smoke.sh"                     "react demo live smoke"
 check "scripts/ci/browser_consumer_package_smoke.sh"                    "browser consumer live smoke"
 
 # CI scripts
