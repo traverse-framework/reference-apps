@@ -18,7 +18,7 @@ Ownership boundary (Traverse [#703](https://github.com/traverse-framework/Traver
 |---|---|---|
 | `apps/android-demo/` | Reference Apps | **Retired** 2026-08-12 (`retire-android-demo`) — use primary Android Compose shells |
 | `apps/browser-consumer/` | Reference Apps | [`apps/browser-consumer/`](../apps/browser-consumer/) |
-| `apps/macos-demo/` | Reference Apps | [`apps/macos-demo/`](../apps/macos-demo/) |
+| `apps/macos-demo/` | Reference Apps | **Retired** 2026-08-12 (`retire-macos-demo`) — use primary SwiftUI shells |
 | `apps/react-demo/` | Reference Apps | [`apps/react-demo/`](../apps/react-demo/) |
 | `apps/youaskm3-starter-kit/` | Reference Apps | [`apps/youaskm3-starter-kit/`](../apps/youaskm3-starter-kit/) |
 | `apps/llm-mcp-reference/` (new) | Reference Apps | [`apps/llm-mcp-reference/`](../apps/llm-mcp-reference/) — LLM MCP façades; [`llm-reference-apps-plan.md`](llm-reference-apps-plan.md) |
@@ -30,7 +30,7 @@ Shared fixture for remaining native demos: [`fixtures/expedition-runtime-session
 
 | Artifact | Command |
 |---|---|
-| macOS demo | `bash scripts/ci/macos_demo_smoke.sh` |
+| Android demo | `bash scripts/ci/android_demo_smoke.sh` |
 | React demo | `bash scripts/ci/react_demo_smoke.sh` |
 | youaskm3 starter | `bash scripts/ci/youaskm3_starter_kit_smoke.sh` |
 | LLM MCP reference | `bash scripts/ci/llm_mcp_reference_smoke.sh` |

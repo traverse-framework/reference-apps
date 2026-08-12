@@ -39,7 +39,8 @@ Rules:
 | App | Status |
 |---|---|
 | trace-explorer | **Debugger** — embedded Trace API (`embedded-trace-api/1.0.0`); not a secondary “product” kit |
-| react-demo, macos-demo, youaskm3-starter-kit, browser-consumer | **Adopted / secondary** demos & kits — lighter maintenance; not merge-blocking `embedded_smoke` targets — see [`adopted-platform-clients.md`](adopted-platform-clients.md) (`android-demo` retired) |
+| react-demo, youaskm3-starter-kit, browser-consumer | **Adopted / secondary** demos & kits — lighter maintenance; not merge-blocking `embedded_smoke` targets — see [`adopted-platform-clients.md`](adopted-platform-clients.md) (`android-demo`/`macos-demo` retired) (`android-demo` retired) |
+| react-demo, youaskm3-starter-kit, browser-consumer | **Adopted / secondary** demos & kits — lighter maintenance; not merge-blocking `embedded_smoke` targets — see [`adopted-platform-clients.md`](adopted-platform-clients.md) (`android-demo`/`macos-demo` retired) |
 
 ---
 
