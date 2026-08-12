@@ -23,7 +23,7 @@ UI examples for [Traverse](https://github.com/traverse-framework/Traverse).
 | **trace-explorer** | Browse execution traces (debugger — not a product shell to copy) | [web](apps/trace-explorer/web-react/) |
 | **LLM MCP façades** | Claude / Cursor / ChatGPT / Grok call the same workflows via MCP (not prompt skills) | [`apps/llm-mcp-reference/`](apps/llm-mcp-reference/) · [section](#llm-mcp-reference-façades) |
 
-**Extra demos / kits** — useful samples, **not** the production OS-shell pattern to copy (prefer traverse-starter / doc-approval / meeting-notes):
+**Extra demos / kits** — useful samples, **not** the production OS-shell pattern to copy (prefer traverse-starter / doc-approval / meeting-notes). Upgrade-or-retire classifications (Spec 004): [`docs/demo-inventory.md`](docs/demo-inventory.md).
 
 | Demo | Path |
 |---|---|
