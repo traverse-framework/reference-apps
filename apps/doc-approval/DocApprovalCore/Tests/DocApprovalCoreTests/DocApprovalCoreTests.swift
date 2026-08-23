@@ -80,13 +80,18 @@ final class AppStateViewModelTests: XCTestCase {
         XCTAssertNotNil(vm.sessionId)
     }
 
-    func testResetReturnsToIdle() throws {
+    func testResetReturnsToIdle() async throws {
         let host = try EmbeddedHost.createTestHost(output: sampleOutput)
         let vm = AppStateViewModel(host: host, workspaceId: "local-default")
-        vm.errorMessage = "boom"
+        vm.document = "document text"
+        vm.submit()
+        try await Task.sleep(nanoseconds: 200_000_000)
+        XCTAssertEqual(vm.currentState, "completed")
         vm.reset()
         XCTAssertEqual(vm.currentState, "idle")
         XCTAssertNil(vm.errorMessage)
+        XCTAssertNil(vm.output)
+        XCTAssertEqual(vm.presentationState, .idle)
     }
 }
 
