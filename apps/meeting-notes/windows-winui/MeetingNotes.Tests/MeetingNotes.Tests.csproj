@@ -28,6 +28,7 @@
     <Compile Include="..\MeetingNotes\AppConstants.cs" Link="AppConstants.cs" />
     <Compile Include="..\MeetingNotes\Models.cs" Link="Models.cs" />
     <Compile Include="..\MeetingNotes\ISettingsRepository.cs" Link="ISettingsRepository.cs" />
+    <Compile Include="..\MeetingNotes\PresentationMapper.cs" Link="PresentationMapper.cs" />
     <Compile Include="..\MeetingNotes\EmbeddedHost.cs" Link="EmbeddedHost.cs" />
     <Compile Include="..\MeetingNotes\ExecutionViewModel.cs" Link="ExecutionViewModel.cs" />
   </ItemGroup>

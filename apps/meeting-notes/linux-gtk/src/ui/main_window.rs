@@ -189,8 +189,17 @@ impl MainWindow {
                         output_label.set_text(&format!("Error: {error}"));
                         output_label.remove_css_class("dim-label");
                     }
-                    ExecutionPhase::Succeeded { output, trace } => {
-                        let mut body = format!("Summary\n{}\n\nAction items\n", output.summary);
+                    ExecutionPhase::Succeeded {
+                        output,
+                        trace,
+                        presentation_state,
+                        active_capability_id,
+                    } => {
+                        let active = active_capability_id.as_deref().unwrap_or("—");
+                        let mut body = format!(
+                            "Presentation: {presentation_state}\nActive capability: {active}\n\nSummary\n{}\n\nAction items\n",
+                            output.summary
+                        );
                         for item in &output.action_items {
                             body.push_str(&format!(
                                 "- {} (owner: {}, due: {})\n",
@@ -289,6 +298,8 @@ impl MainWindow {
                         state.lock().unwrap().phase = ExecutionPhase::Succeeded {
                             output: run.output,
                             trace: run.events,
+                            presentation_state: run.presentation_state.as_str().to_string(),
+                            active_capability_id: run.active_capability_id,
                         };
                     }
                     Err(err) => {

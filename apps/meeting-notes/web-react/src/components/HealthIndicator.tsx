@@ -1,12 +1,24 @@
+import type { CapabilityProgressStep, PresentationState } from 'event-ui-conformance'
+
 type RuntimeStatus = 'starting' | 'ready' | 'unavailable'
 
 interface HealthIndicatorProps {
   workspace: string
   workflowId: string
   status: RuntimeStatus
+  presentationState?: PresentationState | null
+  activeCapabilityId?: string | null
+  capabilityProgress?: CapabilityProgressStep[]
 }
 
-export function HealthIndicator({ workspace, workflowId, status }: HealthIndicatorProps) {
+export function HealthIndicator({
+  workspace,
+  workflowId,
+  status,
+  presentationState = null,
+  activeCapabilityId = null,
+  capabilityProgress = [],
+}: HealthIndicatorProps) {
   const label =
     status === 'ready' ? 'Ready' : status === 'unavailable' ? 'Unavailable' : 'Starting'
   return (
@@ -68,6 +80,35 @@ export function HealthIndicator({ workspace, workflowId, status }: HealthIndicat
       >
         Workspace: <strong>{workspace}</strong> · Workflow: <strong>{workflowId}</strong>
       </div>
+      {presentationState && (
+        <div
+          role="status"
+          style={{
+            marginTop: '12px',
+            fontSize: '0.85rem',
+            color: 'var(--text-secondary)',
+          }}
+        >
+          Session presentation: <strong>{presentationState}</strong>
+          {activeCapabilityId ? (
+            <>
+              {' '}
+              · Active capability: <strong>{activeCapabilityId}</strong>
+            </>
+          ) : null}
+          {capabilityProgress.length > 0 ? (
+            <>
+              {' '}
+              · Capability steps:{' '}
+              <strong>
+                {capabilityProgress
+                  .map((step) => `${step.capabilityId}:${step.phase}`)
+                  .join(' → ')}
+              </strong>
+            </>
+          ) : null}
+        </div>
+      )}
     </section>
   )
 }
