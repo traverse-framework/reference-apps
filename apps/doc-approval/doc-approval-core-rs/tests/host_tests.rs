@@ -25,4 +25,9 @@ fn test_double_submits_pipeline_output() {
     let result = host.submit_document("Invoice").expect("submit");
     assert_eq!(result.output.recommendation.recommendation, "approve");
     assert_eq!(result.output.analysis.doc_type, "invoice");
+    assert_eq!(
+        result.presentation_state,
+        doc_approval_core_rs::PresentationState::Loaded
+    );
+    assert!(!result.capability_progress.is_empty());
 }

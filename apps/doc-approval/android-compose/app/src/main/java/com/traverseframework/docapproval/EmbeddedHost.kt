@@ -24,7 +24,28 @@ data class HostRunResult(
     val output: DocApprovalOutput?,
     val events: List<TraceEvent>,
     val error: String?,
-)
+    val presentationState: PresentationState = PresentationState.Idle,
+    val presentationError: String? = null,
+    val capabilityProgress: List<CapabilityProgressStep> = emptyList(),
+    val activeCapabilityId: String? = null,
+) {
+    fun withPresentation(likes: List<EmbedderEventLike>): HostRunResult {
+        val snap = PresentationMapper.mapPresentationState(likes)
+        val state =
+            if (error != null && snap.state == PresentationState.Idle) {
+                PresentationState.Error
+            } else {
+                snap.state
+            }
+        return copy(
+            presentationState = state,
+            presentationError = snap.errorMessage
+                ?: if (error != null && snap.state == PresentationState.Idle) error else null,
+            capabilityProgress = PresentationMapper.mapCapabilityProgress(likes),
+            activeCapabilityId = PresentationMapper.activeCapabilityId(likes),
+        )
+    }
+}
 
 /** Deterministic test double wrapping [dev.traverse.embedder.InMemoryTraverseEmbedder]. */
 class InMemoryDocApprovalHost(
@@ -63,7 +84,7 @@ class InMemoryDocApprovalHost(
                 )
             },
             error = if (output == null) "embedder emitted no capability_result output" else null,
-        )
+        ).withPresentation(emptyList())
     }
 
     companion object {
@@ -116,9 +137,10 @@ class ProductionDocApprovalHost private constructor(
             } else {
                 null
             },
-        )
+        ).withPresentation(emptyList())
     } catch (e: Exception) {
         HostRunResult("", null, emptyList(), e.message ?: "submit failed")
+            .withPresentation(emptyList())
     }
 
     companion object {

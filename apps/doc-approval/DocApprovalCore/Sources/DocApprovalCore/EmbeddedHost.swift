@@ -7,17 +7,46 @@ public struct HostRunResult: Equatable, Sendable {
     public let output: DocApprovalOutput?
     public let events: [TraceEvent]
     public let error: String?
+    public let presentationState: PresentationState
+    public let presentationError: String?
+    public let capabilityProgress: [CapabilityProgressStep]
+    public let activeCapabilityId: String?
 
     public init(
         sessionId: String,
         output: DocApprovalOutput?,
         events: [TraceEvent],
-        error: String?
+        error: String?,
+        presentationState: PresentationState = .idle,
+        presentationError: String? = nil,
+        capabilityProgress: [CapabilityProgressStep] = [],
+        activeCapabilityId: String? = nil
     ) {
         self.sessionId = sessionId
         self.output = output
         self.events = events
         self.error = error
+        self.presentationState = presentationState
+        self.presentationError = presentationError
+        self.capabilityProgress = capabilityProgress
+        self.activeCapabilityId = activeCapabilityId
+    }
+
+    /// Attaches Spec 001/002 presentation fields derived from public embedder events.
+    public func withPresentation(from likes: [EmbedderEventLike]) -> HostRunResult {
+        let snap = PresentationMapper.mapPresentationState(likes)
+        let presentationState: PresentationState =
+            (error != nil && snap.state == .idle) ? .error : snap.state
+        return HostRunResult(
+            sessionId: sessionId,
+            output: output,
+            events: events,
+            error: error,
+            presentationState: presentationState,
+            presentationError: snap.errorMessage ?? (error != nil && snap.state == .idle ? error : nil),
+            capabilityProgress: PresentationMapper.mapCapabilityProgress(likes),
+            activeCapabilityId: PresentationMapper.activeCapabilityId(likes)
+        )
     }
 }
 
@@ -137,7 +166,7 @@ private final class ProductionEmbeddedHost: EmbeddedHostProtocol, @unchecked Sen
                 output: nil,
                 events: [],
                 error: "submit \(accepted.status)"
-            )
+            ).withPresentation(from: [])
         }
         return try drainEvents(sessionId: accepted.sessionID)
     }
@@ -171,8 +200,10 @@ private final class ProductionEmbeddedHost: EmbeddedHostProtocol, @unchecked Sen
             }
         }
 
+        let likes = embedderEventLikes(from: events)
         if let error {
             return HostRunResult(sessionId: sessionId, output: nil, events: events, error: error)
+                .withPresentation(from: likes)
         }
         if output == nil, events.isEmpty {
             return HostRunResult(
@@ -180,14 +211,14 @@ private final class ProductionEmbeddedHost: EmbeddedHostProtocol, @unchecked Sen
                 output: nil,
                 events: events,
                 error: "embedder emitted no capability_result"
-            )
+            ).withPresentation(from: likes)
         }
         return HostRunResult(
             sessionId: sessionId,
             output: output ?? .empty,
             events: events,
             error: nil
-        )
+        ).withPresentation(from: likes)
     }
 
     deinit {
@@ -235,15 +266,17 @@ private final class TestEmbeddedHost: EmbeddedHostProtocol, @unchecked Sendable 
             }
         }
 
+        let likes = embedderEventLikes(from: events)
         if let error {
             return HostRunResult(sessionId: accepted.sessionID, output: nil, events: events, error: error)
+                .withPresentation(from: likes)
         }
         return HostRunResult(
             sessionId: accepted.sessionID,
             output: output ?? .empty,
             events: events,
             error: output == nil ? "embedder emitted no capability_result" : nil
-        )
+        ).withPresentation(from: likes)
     }
 
     deinit {
@@ -275,6 +308,16 @@ private func extractError(_ raw: Any?) -> String? {
         return message
     }
     return nil
+}
+
+private func embedderEventLikes(from events: [TraceEvent]) -> [EmbedderEventLike] {
+    events.enumerated().map { index, event in
+        EmbedderEventLike(
+            eventType: event.event_type,
+            sequence: UInt64(index + 1),
+            data: event.data?.asDictionary ?? [:]
+        )
+    }
 }
 
 private extension JSONValue {

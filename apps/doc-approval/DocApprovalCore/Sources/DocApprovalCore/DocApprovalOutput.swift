@@ -188,6 +188,23 @@ public enum JSONValue: Equatable, Sendable, Codable {
         case .null: try container.encodeNil()
         }
     }
+
+    /// Dictionary mapping (object payloads only).
+    public var asDictionary: [String: Any] {
+        guard case .object(let object) = self else { return [:] }
+        return object.mapValues { $0.asAny }
+    }
+
+    public var asAny: Any {
+        switch self {
+        case .string(let value): return value
+        case .number(let value): return value
+        case .bool(let value): return value
+        case .object(let value): return value.mapValues { $0.asAny }
+        case .array(let value): return value.map { $0.asAny }
+        case .null: return NSNull()
+        }
+    }
 }
 
 public enum DocApprovalOutputParser {

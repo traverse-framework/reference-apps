@@ -1,4 +1,18 @@
-import type { JsonValue, TraverseEmbedderApi } from 'traverse-embedder-web'
+import type {
+  CapabilityProgressStep,
+  EmbedderEventLike,
+  PresentationState,
+} from 'event-ui-conformance'
+import {
+  activeCapabilityId,
+  mapCapabilityProgress,
+  mapPresentationState,
+} from 'event-ui-conformance'
+import type {
+  EmbedderEvent,
+  JsonValue,
+  TraverseEmbedderApi,
+} from 'traverse-embedder-web'
 import { BundleEmbedder, EmbedderTestDouble, FetchBundleLoader } from 'traverse-embedder-web'
 import { parseAnalysisOutput, type DocApprovalOutput } from '../client/traverseOutput'
 
@@ -22,9 +36,17 @@ export interface HostRunResult {
   rawOutput: unknown
   events: TraceEvent[]
   error: string | null
+  /** Spec 001 presentation state from the public embedder event stream. */
+  presentationState: PresentationState
+  /** Spec 001 error text from event payloads (never invented). */
+  presentationError: string | null
+  /** Spec 002 ordered capability invoke/result progress. */
+  capabilityProgress: CapabilityProgressStep[]
+  /** Spec 002 active capability id when an invoke is still open. */
+  activeCapabilityId: string | null
 }
 
-export type { TraverseEmbedderApi }
+export type { TraverseEmbedderApi, EmbedderEvent, PresentationState, CapabilityProgressStep }
 
 export function createTestEmbedder(output: DocApprovalOutput): TraverseEmbedderApi {
   return new EmbedderTestDouble({
@@ -62,23 +84,56 @@ function errorMessageFromData(data: JsonValue): string | null {
   return null
 }
 
+function toEventLikes(events: readonly EmbedderEvent[]): EmbedderEventLike[] {
+  return events.map((event) => ({
+    event_type: event.event_type,
+    sequence: event.sequence,
+    session_id: event.session_id,
+    data: event.data,
+  }))
+}
+
+function withPresentation(
+  base: Omit<
+    HostRunResult,
+    'presentationState' | 'presentationError' | 'capabilityProgress' | 'activeCapabilityId'
+  >,
+  collected: readonly EmbedderEvent[],
+): HostRunResult {
+  const likes = toEventLikes(collected)
+  const snap = mapPresentationState(likes)
+  const presentationState: PresentationState =
+    base.error && snap.state === 'idle' ? 'error' : snap.state
+  return {
+    ...base,
+    presentationState,
+    presentationError:
+      snap.errorMessage ?? (base.error && snap.state === 'idle' ? base.error : null),
+    capabilityProgress: mapCapabilityProgress(likes),
+    activeCapabilityId: activeCapabilityId(likes),
+  }
+}
+
 export function submitDocument(embedder: TraverseEmbedderApi, document: string): HostRunResult {
-  const collected: import('traverse-embedder-web').EmbedderEvent[] = []
+  const collected: EmbedderEvent[] = []
   embedder.subscribe((event) => {
     collected.push(event)
   })
 
   const outcome = embedder.submit(DEFAULT_WORKFLOW_ID, { document })
   if (outcome.status === 'rejected') {
-    return {
-      sessionId: outcome.sessionId ?? 'sess-unknown',
-      output: null,
-      rawOutput: null,
-      events: [],
-      error: outcome.error
-        ? `${outcome.error.code}: ${outcome.error.message}`
-        : 'submit rejected',
-    }
+    return withPresentation(
+      {
+        sessionId: outcome.sessionId ?? 'sess-unknown',
+        output: null,
+        rawOutput: null,
+        events: [],
+        error: outcome.error
+          ? `${outcome.error.code}: ${outcome.error.message}`
+          : 'submit rejected',
+      },
+      [],
+    )
   }
 
   const sessionId = outcome.sessionId ?? 'sess-unknown'
@@ -91,13 +146,16 @@ export function submitDocument(embedder: TraverseEmbedderApi, document: string):
   for (const event of collected) {
     if (event.session_id && event.session_id !== sessionId) continue
     if (event.event_type === 'error') {
-      return {
-        sessionId,
-        output: null,
-        rawOutput: null,
-        events,
-        error: errorMessageFromData(event.data) ?? 'execution failed',
-      }
+      return withPresentation(
+        {
+          sessionId,
+          output: null,
+          rawOutput: null,
+          events,
+          error: errorMessageFromData(event.data) ?? 'execution failed',
+        },
+        collected,
+      )
     }
     if (event.event_type === 'capability_result') {
       const data =
@@ -105,21 +163,27 @@ export function submitDocument(embedder: TraverseEmbedderApi, document: string):
           ? (event.data as Record<string, JsonValue>)
           : null
       const rawOutput = data?.output ?? null
-      return {
-        sessionId,
-        output: parseAnalysisOutput(rawOutput),
-        rawOutput,
-        events,
-        error: null,
-      }
+      return withPresentation(
+        {
+          sessionId,
+          output: parseAnalysisOutput(rawOutput),
+          rawOutput,
+          events,
+          error: null,
+        },
+        collected,
+      )
     }
   }
 
-  return {
-    sessionId,
-    output: null,
-    rawOutput: null,
-    events,
-    error: 'embedder emitted no capability_result',
-  }
+  return withPresentation(
+    {
+      sessionId,
+      output: null,
+      rawOutput: null,
+      events,
+      error: 'embedder emitted no capability_result',
+    },
+    collected,
+  )
 }

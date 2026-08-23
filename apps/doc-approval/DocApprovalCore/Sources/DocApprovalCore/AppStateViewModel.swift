@@ -18,6 +18,9 @@ public final class AppStateViewModel: ObservableObject {
     @Published public private(set) var trace: [TraceEvent] = []
     @Published public private(set) var runtimeStatus: RuntimeStatus = .starting
     @Published public private(set) var submitting: Bool = false
+    @Published public private(set) var presentationState: PresentationState = .idle
+    @Published public private(set) var activeCapabilityId: String?
+    @Published public private(set) var capabilityProgress: [CapabilityProgressStep] = []
     @Published public var document: String = ""
     @Published public var showTrace: Bool = false
 
@@ -84,6 +87,9 @@ public final class AppStateViewModel: ObservableObject {
                     self.trace = result.events
                     self.showTrace = !result.events.isEmpty
                     self.submitting = false
+                    self.presentationState = result.presentationState
+                    self.activeCapabilityId = result.activeCapabilityId
+                    self.capabilityProgress = result.capabilityProgress
                     if let error = result.error {
                         self.currentState = "error"
                         self.errorMessage = error
@@ -110,6 +116,9 @@ public final class AppStateViewModel: ObservableObject {
         trace = []
         errorMessage = nil
         showTrace = false
+        presentationState = .idle
+        activeCapabilityId = nil
+        capabilityProgress = []
     }
 
     /// Compatibility alias for shell call sites.
