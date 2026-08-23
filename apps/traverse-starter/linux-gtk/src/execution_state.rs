@@ -7,6 +7,8 @@ pub enum ExecutionPhase {
     Succeeded {
         output: TraverseStarterOutput,
         trace: Vec<TraceEvent>,
+        presentation_state: String,
+        active_capability_id: Option<String>,
     },
     Failed { error: String },
 }

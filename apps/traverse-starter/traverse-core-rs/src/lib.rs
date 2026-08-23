@@ -7,6 +7,7 @@
 
 mod client;
 mod host;
+mod presentation;
 mod state;
 
 pub use client::{
@@ -15,6 +16,10 @@ pub use client::{
 pub use host::{
     resolve_manifest_path, EmbeddedRuntime, HostError, HostRunResult, TestEmbeddedRuntime,
     DEFAULT_WORKFLOW_ID, MANIFEST_ENV, RUNTIME_MODE_EMBEDDED,
+};
+pub use presentation::{
+    active_capability_id, map_capability_progress, map_presentation_state, CapabilityPhase,
+    CapabilityProgressStep, EmbedderEventLike, PresentationSnapshot, PresentationState,
 };
 pub use state::{AppState, StateEvent};
 

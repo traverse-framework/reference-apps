@@ -13,6 +13,9 @@ use traverse_embedder::{
 };
 
 use crate::client::{TraceEvent, TraverseStarterOutput};
+use crate::presentation::{
+    active_capability_id, map_capability_progress, map_presentation_state, EmbedderEventLike,
+};
 use crate::state::StateEvent;
 
 /// Workflow id invoked by traverse-starter shells.
@@ -51,6 +54,10 @@ pub struct HostRunResult {
     pub session_id: String,
     pub output: TraverseStarterOutput,
     pub events: Vec<TraceEvent>,
+    pub presentation_state: crate::PresentationState,
+    pub presentation_error: Option<String>,
+    pub capability_progress: Vec<crate::CapabilityProgressStep>,
+    pub active_capability_id: Option<String>,
 }
 
 /// Resolves the application bundle manifest path.
@@ -119,6 +126,20 @@ fn collect_submit<E: TraverseEmbedderApi>(
         })
         .collect();
 
+    let likes: Vec<EmbedderEventLike> = raw_events
+        .iter()
+        .filter_map(|event| {
+            Some(EmbedderEventLike {
+                event_type: event.get("event_type")?.as_str()?.to_string(),
+                sequence: event.get("sequence")?.as_u64().unwrap_or(0),
+                data: event.get("data").cloned().unwrap_or(Value::Null),
+            })
+        })
+        .collect();
+    let snap = map_presentation_state(&likes);
+    let progress = map_capability_progress(&likes);
+    let active = active_capability_id(&likes);
+
     for event in &raw_events {
         let Some(parsed) = StateEvent::from_embedder_event(event) else {
             continue;
@@ -151,6 +172,10 @@ fn collect_submit<E: TraverseEmbedderApi>(
                 session_id,
                 output,
                 events: trace,
+                presentation_state: snap.state,
+                presentation_error: snap.error_message,
+                capability_progress: progress,
+                active_capability_id: active,
             });
         }
     }

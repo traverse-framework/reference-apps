@@ -9,6 +9,9 @@ pub struct RunResultJson {
     pub execution_id: String,
     pub output: TraverseStarterOutput,
     pub trace: Vec<TraceEvent>,
+    pub presentation_state: String,
+    pub presentation_error: Option<String>,
+    pub active_capability_id: Option<String>,
 }
 
 pub fn print_json(value: &Value) {
@@ -41,6 +44,13 @@ pub fn print_run_result(result: &RunResultJson, json: bool) {
     println!("Tags: {}", output.process.tags.join(", "));
     println!("Summary: {}", output.summarize.summary);
     println!("Word count: {}", output.summarize.word_count);
+    println!("Presentation: {}", result.presentation_state.bold());
+    if let Some(active) = &result.active_capability_id {
+        println!("Active capability: {active}");
+    }
+    if let Some(err) = &result.presentation_error {
+        println!("Presentation error: {err}");
+    }
     if !result.trace.is_empty() {
         println!("Trace ({} events):", result.trace.len());
         for event in &result.trace {
