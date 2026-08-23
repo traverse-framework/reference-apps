@@ -14,9 +14,9 @@ Loop clients consume digest-pinned agents/workflows published to the Traverse re
 
 ## Consequences
 
-- `loop-wf1-multi-os` remains `Blocked` until registry digests exist (`loop-wf1-registry-deps`).
+- Capability digests for WF1 are inventoried in `docs/loop-registry-deps.md` (ticket `loop-wf1-registry-deps`); `loop-wf1-multi-os` may proceed with in-app workflow composition over those `registry_ref`s.
 - Matches prior `consume-product-wasm-agents` pattern.
-- UI work can scaffold hosts/tests against fixtures while blocked on publish.
+- A first-party registry-hosted `workflows/loop/...` publish remains optional Future work.
 
 ## Alternatives considered
 
