@@ -22,7 +22,7 @@ describe('App', () => {
       render(<App host={host} />)
     })
     await waitFor(() => {
-      expect(screen.getByText(/fixture\.success/)).toBeInTheDocument()
+      expect(screen.getAllByText(/fixture\.success/).length).toBeGreaterThan(0)
     })
   })
 })

@@ -4,23 +4,38 @@ import {
   type EmbeddedTraceApi,
   type EmbeddedTraceDetail,
   type EmbeddedTraceSummary,
+  type TraverseEmbedderApi,
 } from 'traverse-embedder-web'
 import {
   createEmbeddedTraceClient,
   summaryPreview,
 } from './client/traceClient'
+import {
+  observeSessionPresentation,
+  type SessionPresentation,
+} from './host/sessionPresentation'
+
+/** Host must expose Trace API + subscribe (product shells share EmbedderTestDouble / BundleEmbedder). */
+export type TraceHost = TraverseEmbedderApi & EmbeddedTraceApi
 
 /** Injected host for tests; production uses EmbedderTestDouble until a session host is wired. */
-export type TraceHostFactory = () => EmbeddedTraceApi
+export type TraceHostFactory = () => TraceHost
 
 const defaultHostFactory: TraceHostFactory = () => new EmbedderTestDouble()
+
+const idlePresentation: SessionPresentation = {
+  presentationState: 'idle',
+  presentationError: null,
+  capabilityProgress: [],
+  activeCapabilityId: null,
+}
 
 function App({
   hostFactory = defaultHostFactory,
   host,
 }: {
   hostFactory?: TraceHostFactory
-  host?: EmbeddedTraceApi
+  host?: TraceHost
 }) {
   const api = useMemo(() => host ?? hostFactory(), [host, hostFactory])
   const client = useMemo(() => createEmbeddedTraceClient(api), [api])
@@ -30,6 +45,12 @@ function App({
   const [loadState, setLoadState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [error, setError] = useState('')
   const [apiVersion, setApiVersion] = useState('')
+  const [presentation, setPresentation] =
+    useState<SessionPresentation>(idlePresentation)
+
+  useEffect(() => {
+    observeSessionPresentation(api, setPresentation)
+  }, [api])
 
   const refreshList = useCallback(() => {
     setLoadState('loading')
@@ -92,6 +113,31 @@ function App({
             Refresh
           </button>
         </div>
+        <p style={{ marginTop: '12px', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+          Session presentation: <strong>{presentation.presentationState}</strong>
+          {presentation.activeCapabilityId
+            ? ` · active capability ${presentation.activeCapabilityId}`
+            : null}
+          {presentation.presentationError
+            ? ` · ${presentation.presentationError}`
+            : null}
+        </p>
+        {presentation.capabilityProgress.length > 0 ? (
+          <ol
+            style={{
+              margin: '8px 0 0',
+              paddingLeft: '1.25rem',
+              color: 'var(--text-muted)',
+              fontSize: '0.85rem',
+            }}
+          >
+            {presentation.capabilityProgress.map((step) => (
+              <li key={`${step.capabilityId}-${step.phase}-${step.sequence}`}>
+                {step.capabilityId} · {step.phase}
+              </li>
+            ))}
+          </ol>
+        ) : null}
       </section>
 
       <section className="glass-panel" style={{ padding: '24px', minHeight: '200px' }}>
