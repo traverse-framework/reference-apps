@@ -1,0 +1,163 @@
+{
+  "app_id": "loop",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "local-default",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "loop.process-component",
+      "version": "1.0.0",
+      "digest": "sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2",
+      "manifest_path": "components/process/component.manifest.json"
+    },
+    {
+      "component_id": "loop.extract-component",
+      "version": "1.0.0",
+      "digest": "sha256:1f815c8debd26d9f17cc895e49154e204b05b637df6d66760c59002f1ef0a503",
+      "manifest_path": "components/extract/component.manifest.json"
+    },
+    {
+      "component_id": "loop.normalize-component",
+      "version": "1.0.0",
+      "digest": "sha256:6bb5c6300710de6090c4b5f25d611a6a6af7d2dd9e1bacb3bdb01b166110b5ad",
+      "manifest_path": "components/normalize/component.manifest.json"
+    },
+    {
+      "component_id": "loop.authorize-component",
+      "version": "1.0.0",
+      "digest": "sha256:0c318fff56a74eddfbc1ab850c25c1ba191744309984a07bd503b8cd9cb92e40",
+      "manifest_path": "components/authorize/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "loop.wf1",
+      "workflow_version": "1.0.0",
+      "path": "_traverse/workflows/examples/loop/wf1/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "processing_mode": {
+        "type": "string",
+        "enum": [
+          "deterministic"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "local-default",
+    "processing_mode": "deterministic"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli",
+    "http_json"
+  ],
+  "state_machine": {
+    "initial_state": "idle",
+    "list_context_fields": [
+      "output.ingest.action_items",
+      "output.ingest.decisions",
+      "output.ingest.follow_ups",
+      "output.ingest.summary",
+      "output.extract.action_items",
+      "output.extract.needs_human_review",
+      "output.extract.reason_code",
+      "output.normalize",
+      "output.authorize.decision",
+      "output.authorize.reason",
+      "output.authorize.reason_code"
+    ],
+    "states": [
+      {
+        "id": "idle",
+        "transitions": [
+          {
+            "on": "submit",
+            "to": "processing"
+          }
+        ]
+      },
+      {
+        "id": "processing",
+        "invoke": {
+          "capability_id": "loop.wf1",
+          "input_from": "command.payload"
+        },
+        "transitions": [
+          {
+            "on": "capability_succeeded",
+            "to": "review"
+          },
+          {
+            "on": "waiting_for_human",
+            "to": "review"
+          },
+          {
+            "on": "capability_failed",
+            "to": "error"
+          }
+        ]
+      },
+      {
+        "id": "review",
+        "transitions": [
+          {
+            "on": "accept",
+            "to": "results"
+          },
+          {
+            "on": "reject",
+            "to": "idle"
+          },
+          {
+            "on": "reset",
+            "to": "idle"
+          }
+        ]
+      },
+      {
+        "id": "results",
+        "transitions": [
+          {
+            "on": "reset",
+            "to": "idle"
+          }
+        ]
+      },
+      {
+        "id": "error",
+        "transitions": [
+          {
+            "on": "retry",
+            "to": "processing",
+            "with_last_payload": true
+          },
+          {
+            "on": "reset",
+            "to": "idle"
+          }
+        ]
+      }
+    ]
+  }
+}

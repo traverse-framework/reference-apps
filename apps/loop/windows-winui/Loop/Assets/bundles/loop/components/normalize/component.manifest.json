@@ -1,0 +1,28 @@
+{
+  "component_id": "loop.normalize-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "core.normalize-participants",
+  "capability_version": "1.1.0",
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "loop_wf1_registry_deps"
+    }
+  ],
+  "contract_path": "../../_traverse/examples/core-normalize-participants/contract.json",
+  "wasm_binary_path": "../../_traverse/examples/core-normalize-participants/artifacts/core-normalize-participants.wasm",
+  "wasm_digest": "sha256:6bb5c6300710de6090c4b5f25d611a6a6af7d2dd9e1bacb3bdb01b166110b5ad"
+}

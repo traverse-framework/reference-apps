@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Loop.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\vendor\traverse-embedder-dotnet\TraverseEmbedder\TraverseEmbedder.csproj" />
+  </ItemGroup>
+
+  <!-- Compile UI logic without referencing the WinUI app (avoids
+       WinAppSDK PriGen / ExpandPriContent under `dotnet test` on CI). -->
+  <ItemGroup>
+    <Compile Include="..\Loop\AppConstants.cs" Link="AppConstants.cs" />
+    <Compile Include="..\Loop\Models.cs" Link="Models.cs" />
+    <Compile Include="..\Loop\ISettingsRepository.cs" Link="ISettingsRepository.cs" />
+    <Compile Include="..\Loop\PresentationMapper.cs" Link="PresentationMapper.cs" />
+    <Compile Include="..\Loop\EmbeddedHost.cs" Link="EmbeddedHost.cs" />
+    <Compile Include="..\Loop\ExecutionViewModel.cs" Link="ExecutionViewModel.cs" />
+  </ItemGroup>
+</Project>

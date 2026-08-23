@@ -1,0 +1,149 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "loop.wf1",
+  "name": "wf1",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "traverse-core",
+    "contact": "enrico.piovesan10@gmail.com"
+  },
+  "summary": "Loop WF1 \u2014 ingest transcript, extract action items, normalize participants, authorize follow-through.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "transcript"
+      ],
+      "properties": {
+        "transcript": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "ingest",
+      "capability_id": "meeting-notes.process",
+      "capability_version": "1.3.2",
+      "input": {
+        "from_workflow_input": [
+          "transcript"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "action_items",
+          "decisions",
+          "follow_ups",
+          "summary"
+        ],
+        "publish_to_state_as": "ingest"
+      }
+    },
+    {
+      "node_id": "extract",
+      "capability_id": "core.extract-action-items",
+      "capability_version": "1.2.0",
+      "input": {
+        "from_workflow_input": [
+          "transcript"
+        ],
+        "from_workflow_state": [
+          "ingest"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "action_items",
+          "needs_human_review",
+          "rejected_candidates",
+          "reason_code",
+          "evaluation_trace"
+        ],
+        "publish_to_state_as": "extract"
+      }
+    },
+    {
+      "node_id": "normalize",
+      "capability_id": "core.normalize-participants",
+      "capability_version": "1.1.0",
+      "input": {
+        "from_workflow_state": [
+          "extract",
+          "ingest"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [],
+        "publish_to_state_as": "normalize"
+      }
+    },
+    {
+      "node_id": "authorize",
+      "capability_id": "core.authorize",
+      "capability_version": "1.2.0",
+      "input": {
+        "from_workflow_state": [
+          "extract",
+          "normalize"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "decision",
+          "reason",
+          "reason_code",
+          "matched_rules",
+          "obligations",
+          "break_glass_used"
+        ],
+        "publish_to_state_as": "authorize"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "ingest_to_extract",
+      "from": "ingest",
+      "to": "extract",
+      "trigger": "direct"
+    },
+    {
+      "edge_id": "extract_to_normalize",
+      "from": "extract",
+      "to": "normalize",
+      "trigger": "direct"
+    },
+    {
+      "edge_id": "normalize_to_authorize",
+      "from": "normalize",
+      "to": "authorize",
+      "trigger": "direct"
+    }
+  ],
+  "start_node": "ingest",
+  "terminal_nodes": [
+    "authorize"
+  ],
+  "output_projection": [
+    "ingest",
+    "extract",
+    "normalize",
+    "authorize"
+  ],
+  "tags": [
+    "loop",
+    "wf1"
+  ],
+  "governing_spec": "003-loop-wf1-reference-app"
+}

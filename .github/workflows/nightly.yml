@@ -83,6 +83,15 @@ jobs:
             build test \
             CODE_SIGNING_ALLOWED=NO
 
+      - name: Build + test loop macOS
+        working-directory: apps/loop/macos-swift
+        run: |
+          xcodebuild \
+            -scheme LoopMac \
+            -destination 'platform=macOS' \
+            build test \
+            CODE_SIGNING_ALLOWED=NO
+
   native-windows:
     runs-on: windows-latest
     steps:
@@ -114,6 +123,12 @@ jobs:
         run: |
           dotnet restore MeetingNotes.Tests/MeetingNotes.Tests.csproj
           dotnet test MeetingNotes.Tests/MeetingNotes.Tests.csproj -c Release --nologo
+
+      - name: Restore + test loop WinUI logic
+        working-directory: apps/loop/windows-winui
+        run: |
+          dotnet restore Loop.Tests/Loop.Tests.csproj
+          dotnet test Loop.Tests/Loop.Tests.csproj -c Release --nologo
 
   # Required: GTK shells (AdwApplicationWindowExt / GString fixes landed).
   native-linux-gtk:
@@ -148,6 +163,7 @@ jobs:
         run: |
           (cd apps/traverse-starter && cargo test -p traverse-starter-gtk)
           (cd apps/doc-approval && cargo test -p doc-approval-gtk)
+          (cd apps/loop && cargo test -p loop-gtk)
 
   # Required: Android unit tests via public RuntimeTraverseEmbedder(TraverseBundle).
   native-android:
@@ -186,6 +202,12 @@ jobs:
 
       - name: Gradle test meeting-notes
         working-directory: apps/meeting-notes/android-compose
+        env:
+          TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
+        run: ./gradlew --no-daemon testDebugUnitTest
+
+      - name: Gradle test loop
+        working-directory: apps/loop/android-compose
         env:
           TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
         run: ./gradlew --no-daemon testDebugUnitTest

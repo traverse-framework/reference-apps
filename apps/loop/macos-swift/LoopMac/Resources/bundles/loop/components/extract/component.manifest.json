@@ -1,0 +1,28 @@
+{
+  "component_id": "loop.extract-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "core.extract-action-items",
+  "capability_version": "1.2.0",
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "loop_wf1_registry_deps"
+    }
+  ],
+  "contract_path": "../../_traverse/examples/core-extract-action-items/contract.json",
+  "wasm_binary_path": "../../_traverse/examples/core-extract-action-items/artifacts/core-extract-action-items.wasm",
+  "wasm_digest": "sha256:1f815c8debd26d9f17cc895e49154e204b05b637df6d66760c59002f1ef0a503"
+}
