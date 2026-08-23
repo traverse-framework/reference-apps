@@ -28,6 +28,7 @@
     <Compile Include="..\DocApproval\AppConstants.cs" Link="AppConstants.cs" />
     <Compile Include="..\DocApproval\Models.cs" Link="Models.cs" />
     <Compile Include="..\DocApproval\ISettingsRepository.cs" Link="ISettingsRepository.cs" />
+    <Compile Include="..\DocApproval\PresentationMapper.cs" Link="PresentationMapper.cs" />
     <Compile Include="..\DocApproval\EmbeddedHost.cs" Link="EmbeddedHost.cs" />
     <Compile Include="..\DocApproval\ExecutionViewModel.cs" Link="ExecutionViewModel.cs" />
   </ItemGroup>

@@ -95,6 +95,9 @@ function App({ embedder: injectedEmbedder }: AppProps = {}) {
           workspace={DEFAULT_WORKSPACE}
           workflowId={DEFAULT_WORKFLOW_ID}
           status={runtimeStatus}
+          presentationState={result?.presentationState ?? null}
+          activeCapabilityId={result?.activeCapabilityId ?? null}
+          capabilityProgress={result?.capabilityProgress ?? []}
         />
 
         <DocumentInput

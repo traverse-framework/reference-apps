@@ -9,6 +9,9 @@ pub struct SubmitResultJson {
     pub execution_id: String,
     pub output: DocApprovalOutput,
     pub trace: Vec<TraceEvent>,
+    pub presentation_state: String,
+    pub presentation_error: Option<String>,
+    pub active_capability_id: Option<String>,
 }
 
 pub fn print_json(value: &Value) {
@@ -33,6 +36,13 @@ pub fn print_submit_result(result: &SubmitResultJson, json: bool) {
     );
     println!("Rationale: {}", output.recommendation.rationale);
     println!("Recommend confidence: {}", output.recommendation.confidence);
+    println!("Presentation: {}", result.presentation_state.bold());
+    if let Some(active) = &result.active_capability_id {
+        println!("Active capability: {active}");
+    }
+    if let Some(err) = &result.presentation_error {
+        println!("Presentation error: {err}");
+    }
     if !result.trace.is_empty() {
         println!("Trace ({} events):", result.trace.len());
         for event in &result.trace {

@@ -189,9 +189,15 @@ impl MainWindow {
                         output_label.set_text(&format!("Error: {error}"));
                         output_label.remove_css_class("dim-label");
                     }
-                    ExecutionPhase::Succeeded { output, trace } => {
+                    ExecutionPhase::Succeeded {
+                        output,
+                        trace,
+                        presentation_state,
+                        active_capability_id,
+                    } => {
+                        let active = active_capability_id.as_deref().unwrap_or("—");
                         output_label.set_text(&format!(
-                            "Analysis\nDocument type: {}\nParties: {}\nAmounts: {}\nAnalyze confidence: {}\nAnalyze recommendation: {}\n\nRecommendation\nDecision: {}\nRationale: {}\nConfidence: {}",
+                            "Presentation: {presentation_state}\nActive capability: {active}\n\nAnalysis\nDocument type: {}\nParties: {}\nAmounts: {}\nAnalyze confidence: {}\nAnalyze recommendation: {}\n\nRecommendation\nDecision: {}\nRationale: {}\nConfidence: {}",
                             output.analysis.doc_type,
                             output.analysis.parties.join(", "),
                             output.analysis.amounts.join(", "),
@@ -278,6 +284,8 @@ impl MainWindow {
                         state.lock().unwrap().phase = ExecutionPhase::Succeeded {
                             output: run.output,
                             trace: run.events,
+                            presentation_state: run.presentation_state.as_str().to_string(),
+                            active_capability_id: run.active_capability_id,
                         };
                     }
                     Err(err) => {
