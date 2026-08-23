@@ -30,7 +30,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `llm-mcp-claude-live-smoke` | **Done** (#241) | Claude Desktop/Code MCP Mode A evidence |
 | `llm-mcp-traverse-starter-catalog` | **Blocked** | Kit IDs on MCP stdio — Traverse #865 / registry #99 |
 | `loop-wf1-registry-deps` | **Done** (#263) | Digest inventory in `docs/loop-registry-deps.md` |
-| `loop-wf1-multi-os` | **In Progress** | Scaffolding `apps/loop/` WF1 × 7 OS |
+| `loop-wf1-multi-os` | **Done** (#265) | `apps/loop/` WF1 × 7 OS; compose via `registry_ref` |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
 
