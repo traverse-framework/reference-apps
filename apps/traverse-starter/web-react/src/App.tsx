@@ -81,6 +81,9 @@ function App({ embedder: injectedEmbedder }: AppProps = {}) {
   const parsed: TraverseStarterOutput | null = result?.output ?? null
   const displayError = result?.error ?? null
   const trace: TraceEvent[] = result?.events ?? []
+  const presentationState = result?.presentationState ?? null
+  const activeCapability = result?.activeCapabilityId ?? null
+  const capabilityProgress = result?.capabilityProgress ?? []
   const statusLabel =
     runtimeStatus === 'ready' ? 'Ready' : runtimeStatus === 'unavailable' ? 'Unavailable' : 'Starting'
 
@@ -171,6 +174,35 @@ function App({ embedder: injectedEmbedder }: AppProps = {}) {
             Workspace: <strong>{DEFAULT_WORKSPACE}</strong> · Workflow:{' '}
             <strong>{DEFAULT_WORKFLOW_ID}</strong> · App: <strong>{DEFAULT_APP_ID}</strong>
           </div>
+          {presentationState && (
+            <div
+              role="status"
+              style={{
+                marginTop: '12px',
+                fontSize: '0.85rem',
+                color: 'var(--text-secondary)',
+              }}
+            >
+              Session presentation: <strong>{presentationState}</strong>
+              {activeCapability ? (
+                <>
+                  {' '}
+                  · Active capability: <strong>{activeCapability}</strong>
+                </>
+              ) : null}
+              {capabilityProgress.length > 0 ? (
+                <>
+                  {' '}
+                  · Capability steps:{' '}
+                  <strong>
+                    {capabilityProgress
+                      .map((step) => `${step.capabilityId}:${step.phase}`)
+                      .join(' → ')}
+                  </strong>
+                </>
+              ) : null}
+            </div>
+          )}
         </section>
 
         <section className="glass-panel" style={{ padding: '24px' }}>

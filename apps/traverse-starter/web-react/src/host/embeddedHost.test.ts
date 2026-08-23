@@ -48,6 +48,8 @@ describe('embeddedHost', () => {
     expect(result.error).toBeNull()
     expect(result.output?.process.title).toBe('Hello')
     expect(result.events.length).toBeGreaterThan(0)
+    expect(result.presentationState).toBe('loaded')
+    expect(result.capabilityProgress.length).toBeGreaterThan(0)
   })
 
   it('submitNote surfaces scripted execution errors', () => {
@@ -58,6 +60,7 @@ describe('embeddedHost', () => {
     const result = submitNote(embedder, 'x')
     expect(result.error).toContain('boom')
     expect(result.output).toBeNull()
+    expect(result.presentationState).toBe('error')
   })
 
   it('submitNote surfaces rejected unknown targets', () => {

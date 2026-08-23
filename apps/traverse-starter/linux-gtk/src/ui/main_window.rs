@@ -191,9 +191,17 @@ impl MainWindow {
                         output_label.set_text(&format!("Error: {error}"));
                         output_label.remove_css_class("dim-label");
                     }
-                    ExecutionPhase::Succeeded { output, trace } => {
+                    ExecutionPhase::Succeeded {
+                        output,
+                        trace,
+                        presentation_state,
+                        active_capability_id,
+                    } => {
+                        let active = active_capability_id
+                            .as_deref()
+                            .unwrap_or("—");
                         output_label.set_text(&format!(
-                            "Valid: {}\nIssues: {}\nTitle: {}\nNote type: {}\nStatus: {}\nNext action: {}\nTags: {}\nSummary: {}\nWord count: {}",
+                            "Presentation: {presentation_state}\nActive capability: {active}\nValid: {}\nIssues: {}\nTitle: {}\nNote type: {}\nStatus: {}\nNext action: {}\nTags: {}\nSummary: {}\nWord count: {}",
                             if output.validate.valid { "yes" } else { "no" },
                             if output.validate.issues.is_empty() {
                                 "None".to_string()
@@ -285,6 +293,8 @@ impl MainWindow {
                         state.lock().unwrap().phase = ExecutionPhase::Succeeded {
                             output: run.output,
                             trace: run.events,
+                            presentation_state: run.presentation_state.as_str().to_string(),
+                            active_capability_id: run.active_capability_id,
                         };
                     }
                     Err(err) => {

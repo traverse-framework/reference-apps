@@ -9,7 +9,31 @@ public sealed record HostRunResult(
     string SessionId,
     TraverseStarterOutput? Output,
     IReadOnlyList<TraceEvent> Events,
-    string? Error);
+    string? Error,
+    PresentationState PresentationState = PresentationState.Idle,
+    string? PresentationError = null,
+    IReadOnlyList<CapabilityProgressStep>? CapabilityProgress = null,
+    string? ActiveCapabilityId = null)
+{
+    public IReadOnlyList<CapabilityProgressStep> CapabilityProgressSteps =>
+        CapabilityProgress ?? Array.Empty<CapabilityProgressStep>();
+
+    public HostRunResult WithPresentation(IReadOnlyList<EmbedderEventLike> likes)
+    {
+        var snap = PresentationMapper.MapPresentationState(likes);
+        var state = Error is not null && snap.State == PresentationState.Idle
+            ? PresentationState.Error
+            : snap.State;
+        return this with
+        {
+            PresentationState = state,
+            PresentationError = snap.ErrorMessage
+                ?? (Error is not null && snap.State == PresentationState.Idle ? Error : null),
+            CapabilityProgress = PresentationMapper.MapCapabilityProgress(likes),
+            ActiveCapabilityId = PresentationMapper.ActiveCapabilityId(likes),
+        };
+    }
+}
 
 /// <summary>
 /// Embedded Traverse host boundary for WinUI shells.
@@ -233,7 +257,8 @@ public static class EmbeddedHost
 
             if (error is not null)
             {
-                return new HostRunResult(sessionId, null, events, error);
+                return new HostRunResult(sessionId, null, events, error)
+                    .WithPresentation(Array.Empty<EmbedderEventLike>());
             }
 
             if (output is null && events.Count == 0)
@@ -242,10 +267,12 @@ public static class EmbeddedHost
                     sessionId,
                     null,
                     events,
-                    "embedder emitted no capability_result");
+                    "embedder emitted no capability_result")
+                    .WithPresentation(Array.Empty<EmbedderEventLike>());
             }
 
-            return new HostRunResult(sessionId, output ?? TraverseStarterOutput.Empty, events, null);
+            return new HostRunResult(sessionId, output ?? TraverseStarterOutput.Empty, events, null)
+                .WithPresentation(Array.Empty<EmbedderEventLike>());
         }
 
         public void Dispose()
@@ -332,14 +359,16 @@ public static class EmbeddedHost
 
             if (error is not null)
             {
-                return new HostRunResult(accepted.SessionId, null, events, error);
+                return new HostRunResult(accepted.SessionId, null, events, error)
+                    .WithPresentation(Array.Empty<EmbedderEventLike>());
             }
 
             return new HostRunResult(
                 accepted.SessionId,
                 output ?? TraverseStarterOutput.Empty,
                 events,
-                output is null ? "embedder emitted no capability_result" : null);
+                output is null ? "embedder emitted no capability_result" : null)
+                .WithPresentation(Array.Empty<EmbedderEventLike>());
         }
 
         public void Dispose() => _harness.Shutdown();
