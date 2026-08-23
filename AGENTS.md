@@ -29,6 +29,8 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `llm-mcp-cursor-live-smoke` | **Done** (#240) | Cursor MCP Mode A stdio evidence |
 | `llm-mcp-claude-live-smoke` | **Done** (#241) | Claude Desktop/Code MCP Mode A evidence |
 | `llm-mcp-traverse-starter-catalog` | **Blocked** | Kit IDs on MCP stdio — Traverse #865 / registry #99 |
+| `loop-wf1-registry-deps` | **In Progress** | PR [#263](https://github.com/traverse-framework/reference-apps/pull/263) digest inventory |
+| `loop-wf1-multi-os` | **Ready** | `apps/loop/` WF1 × 7 OS; compose via `registry_ref` |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
 

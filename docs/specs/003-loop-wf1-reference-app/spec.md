@@ -43,9 +43,9 @@ Same bar as `traverse-starter` / `doc-approval`:
 - **FR-005**: README + platform table + design-language reference row updated when shipping.
 - **FR-006**: Unit tests use embedder test doubles only for host logic; conformance fixtures reused from the shared harness.
 
-## Blocked until
+## Registry dependencies
 
-Digest-pinned WF1 capabilities/workflow are published to the Traverse registry (at minimum the contracts referenced by Loop package WF1, including `core.extract-action-items` 1.1.0 path, normalize, authorize, and meeting ingest dependency as applicable). Tracked by Project 2 ticket `loop-wf1-registry-deps`.
+Digest pins for the WF1 capability set are inventoried in [`docs/loop-registry-deps.md`](../../loop-registry-deps.md) (ticket `loop-wf1-registry-deps`). As of 2026-08-23 the four WF1 capabilities are published with consumable digests; Loop may compose WF1 in-app via `registry_ref` until a first-party `workflows/loop/...` publish exists.
 
 ## Non-goals
 

@@ -194,7 +194,7 @@ Append-only record of design decisions for App-References. Newest sessions at th
 | **1a** | Shared event-fixture harness + docs | One contract for runtime + capability event → UI state mapping; CI-ready helpers |
 | **1b** | Apply harness to primary apps | starter, meeting-notes, doc-approval, trace-explorer green on existing platforms |
 | **1c** | Demo inventory | Each demo `upgrade` or `retire`; retire tickets scrub code/CI/docs; README “Retired demos” |
-| **1d** | Registry dependency tracker | List WF1 capabilities / digests required from Traverse; Blocked notes until published |
+| **1d** | Registry dependency tracker | `docs/loop-registry-deps.md` — WF1 capability digests published (2026-08-23); in-app workflow compose OK |
 | **2** | `apps/loop/` WF1, all seven OS | Digest-pinned agents; subscribe to state machine + capability events; same CI bar as starter |
 | **Follow-up** | meeting-notes remaining natives | iOS / macOS / Android / Windows clients |
 | **Later** | Loop WF3 (nudge hero) | After WF1 ref app is green |
