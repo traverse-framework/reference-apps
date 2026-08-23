@@ -129,6 +129,10 @@ jobs:
         working-directory: apps/doc-approval
         run: cargo test -p doc-approval-core-rs -p doc-approval-cli
 
+      - name: cargo test loop (core + cli)
+        working-directory: apps/loop
+        run: cargo test -p loop-core-rs -p loop-cli
+
   pr-hygiene:
     if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest

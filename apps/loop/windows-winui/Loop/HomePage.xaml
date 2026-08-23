@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Loop.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="20" MaxWidth="960">
+            <TextBlock Text="Process Transcript" Style="{ThemeResource SubtitleTextBlockStyle}" />
+
+            <TextBox
+                x:Name="TranscriptBox"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"
+                PlaceholderText="Paste meeting transcript..."
+                MaxLength="5000"
+                MinHeight="140" />
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button x:Name="SubmitButton" Content="Submit Transcript" Click="SubmitButton_Click" />
+                <Button Content="Reset" Click="ResetButton_Click" />
+            </StackPanel>
+
+            <TextBlock
+                x:Name="OfflineHint"
+                Text="Embedded runtime unavailable - run scripts/ci/sync_winui_loop_bundle.sh with TRAVERSE_REPO set."
+                FontSize="12"
+                TextWrapping="Wrap"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Visibility="Collapsed" />
+
+            <TextBlock Text="Output" Style="{ThemeResource SubtitleTextBlockStyle}" />
+
+            <StackPanel x:Name="OutputPanel" Spacing="8">
+                <TextBlock
+                    x:Name="IdleText"
+                    Text="Submit a transcript above to run loop.wf1."
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBlock x:Name="LoadingText" Text="Running embedded workflow..." Visibility="Collapsed" />
+                <TextBlock x:Name="ErrorText" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap" />
+
+                <StackPanel x:Name="OutputGrid" Visibility="Collapsed" Spacing="12">
+                    <TextBlock Text="Summary" FontWeight="SemiBold" />
+                    <TextBlock x:Name="SummaryValue" TextWrapping="Wrap" />
+
+                    <TextBlock Text="Action Items" FontWeight="SemiBold" Margin="0,8,0,0" />
+                    <ItemsControl x:Name="ActionItemsList" />
+
+                    <TextBlock Text="Decisions" FontWeight="SemiBold" Margin="0,8,0,0" />
+                    <ItemsControl x:Name="DecisionsList" />
+
+                    <TextBlock Text="Follow-ups" FontWeight="SemiBold" Margin="0,8,0,0" />
+                    <ItemsControl x:Name="FollowUpsList" />
+                </StackPanel>
+
+                <Expander x:Name="TraceExpander" Header="Trace" Visibility="Collapsed">
+                    <ItemsControl x:Name="TraceList" />
+                </Expander>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

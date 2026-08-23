@@ -36,18 +36,26 @@ export TRAVERSE_REPO=/path/to/Traverse
 # Web (FetchBundleLoader — examples/workflows/contracts)
 bash scripts/ci/sync_web_starter_bundle.sh
 bash scripts/ci/sync_web_doc_approval_bundle.sh
+bash scripts/ci/sync_web_meeting_notes_bundle.sh
+bash scripts/ci/sync_web_loop_bundle.sh
 
 # Android (runtime.wasm + manifests/)
 bash scripts/ci/sync_android_starter_bundle.sh
 bash scripts/ci/sync_android_doc_approval_bundle.sh
+bash scripts/ci/sync_android_meeting_notes_bundle.sh
+bash scripts/ci/sync_android_loop_bundle.sh
 
 # Swift iOS + macOS (runtime.wasm + root manifests)
 bash scripts/ci/sync_swift_starter_bundle.sh
 bash scripts/ci/sync_swift_doc_approval_bundle.sh
+bash scripts/ci/sync_swift_meeting_notes_bundle.sh
+bash scripts/ci/sync_swift_loop_bundle.sh
 
 # WinUI (runtime.wasm + root manifests + optional Traverse trees)
 bash scripts/ci/sync_winui_starter_bundle.sh
 bash scripts/ci/sync_winui_doc_approval_bundle.sh
+bash scripts/ci/sync_winui_meeting_notes_bundle.sh
+bash scripts/ci/sync_winui_loop_bundle.sh
 ```
 
 After sync, assert the pin:

@@ -136,14 +136,15 @@ sync_bundle_copy_traverse_assets() {
   local examples="$TRAVERSE_REPO/examples/$app_id"
   local workflows="$TRAVERSE_REPO/workflows/examples/$app_id"
   local contracts="$TRAVERSE_REPO/contracts/examples/$app_id"
+  local app_workflows="$REPO_ROOT/manifests/$app_id/workflows"
 
   if [ "$mode" = "required" ]; then
     if [ ! -d "$examples" ]; then
       echo "FAIL: TRAVERSE_REPO examples missing: $examples" >&2
       return 1
     fi
-    if [ ! -d "$workflows" ]; then
-      echo "FAIL: TRAVERSE_REPO workflows missing: $workflows" >&2
+    if [ ! -d "$workflows" ] && [ ! -d "$app_workflows" ]; then
+      echo "FAIL: TRAVERSE_REPO workflows missing: $workflows (and no manifests/$app_id/workflows overlay)" >&2
       return 1
     fi
     if [ ! -d "$contracts" ]; then
@@ -174,7 +175,7 @@ sync_bundle_copy_traverse_assets() {
     else
       cp -a "$workflows/." "$dest/_traverse/workflows/examples/$app_id/"
     fi
-  elif [ "$mode" = "required" ]; then
+  elif [ "$mode" = "required" ] && [ ! -d "$app_workflows" ]; then
     echo "FAIL: workflows directory vanished: $workflows" >&2
     return 1
   fi
@@ -188,6 +189,19 @@ sync_bundle_copy_traverse_assets() {
   elif [ "$mode" = "required" ]; then
     echo "FAIL: contracts directory vanished: $contracts" >&2
     return 1
+  fi
+
+  # App-Refs may ship in-app workflows under manifests/<app>/workflows/ when
+  # Traverse has no workflows/examples/<app> yet (Loop WF1 compose pattern).
+  local app_workflows="$REPO_ROOT/manifests/$app_id/workflows"
+  if [ -d "$app_workflows" ]; then
+    mkdir -p "$dest/_traverse/workflows/examples/$app_id"
+    if command -v rsync >/dev/null 2>&1; then
+      rsync -a "$app_workflows/" "$dest/_traverse/workflows/examples/$app_id/"
+    else
+      cp -a "$app_workflows/." "$dest/_traverse/workflows/examples/$app_id/"
+    fi
+    echo "OK: overlaid App-Refs workflows from manifests/$app_id/workflows"
   fi
 }
 
@@ -296,6 +310,29 @@ KNOWN = {
     ("meeting-notes", "meeting-notes.process"): {
         "cap": "process",
         "stem": "process-agent",
+        # Loop (and other apps) may registry_ref this capability while app_id != meeting-notes.
+        "wasm": "examples/meeting-notes/process-agent/artifacts/process-agent.wasm",
+        "contract": "contracts/examples/meeting-notes/capabilities/process/contract.json",
+        "dest_wasm": "_traverse/examples/meeting-notes/process-agent/artifacts/process-agent.wasm",
+        "dest_contract": "_traverse/contracts/examples/meeting-notes/capabilities/process/contract.json",
+    },
+    ("core", "core.extract-action-items"): {
+        "wasm": "examples/core-extract-action-items/artifacts/core-extract-action-items.wasm",
+        "contract": "examples/core-extract-action-items/contract.json",
+        "dest_wasm": "_traverse/examples/core-extract-action-items/artifacts/core-extract-action-items.wasm",
+        "dest_contract": "_traverse/examples/core-extract-action-items/contract.json",
+    },
+    ("core", "core.normalize-participants"): {
+        "wasm": "examples/core-normalize-participants/artifacts/core-normalize-participants.wasm",
+        "contract": "examples/core-normalize-participants/contract.json",
+        "dest_wasm": "_traverse/examples/core-normalize-participants/artifacts/core-normalize-participants.wasm",
+        "dest_contract": "_traverse/examples/core-normalize-participants/contract.json",
+    },
+    ("core", "core.authorize"): {
+        "wasm": "examples/core-authorize/artifacts/core-authorize.wasm",
+        "contract": "examples/core-authorize/contract.json",
+        "dest_wasm": "_traverse/examples/core-authorize/artifacts/core-authorize.wasm",
+        "dest_contract": "_traverse/examples/core-authorize/contract.json",
     },
 }
 
@@ -327,10 +364,23 @@ for comp_path in sorted(components_root.glob("*/component.manifest.json")):
         print(f"FAIL: no materialize mapping for registry_ref {key} in {comp_path}", file=sys.stderr)
         sys.exit(1)
 
-    stem = mapping["stem"]
-    cap = mapping["cap"]
-    abs_wasm = traverse / f"examples/{app_id}/{stem}/artifacts/{stem}.wasm"
-    abs_contract = traverse / f"contracts/examples/{app_id}/capabilities/{cap}/contract.json"
+    if "wasm" in mapping and "contract" in mapping:
+        abs_wasm = traverse / mapping["wasm"]
+        abs_contract = traverse / mapping["contract"]
+        dest_wasm = app_root / mapping["dest_wasm"]
+        dest_contract = app_root / mapping["dest_contract"]
+        contract_path = f"../../{mapping['dest_contract']}"
+        wasm_path = f"../../{mapping['dest_wasm']}"
+    else:
+        stem = mapping["stem"]
+        cap = mapping["cap"]
+        abs_wasm = traverse / f"examples/{app_id}/{stem}/artifacts/{stem}.wasm"
+        abs_contract = traverse / f"contracts/examples/{app_id}/capabilities/{cap}/contract.json"
+        dest_wasm = app_root / f"_traverse/examples/{app_id}/{stem}/artifacts/{stem}.wasm"
+        dest_contract = app_root / f"_traverse/contracts/examples/{app_id}/capabilities/{cap}/contract.json"
+        contract_path = f"../../_traverse/contracts/examples/{app_id}/capabilities/{cap}/contract.json"
+        wasm_path = f"../../_traverse/examples/{app_id}/{stem}/artifacts/{stem}.wasm"
+
     if not abs_wasm.is_file():
         print(f"FAIL: cannot materialize {key}: missing {abs_wasm}", file=sys.stderr)
         sys.exit(1)
@@ -338,8 +388,6 @@ for comp_path in sorted(components_root.glob("*/component.manifest.json")):
         print(f"FAIL: cannot materialize {key}: missing {abs_contract}", file=sys.stderr)
         sys.exit(1)
 
-    dest_wasm = app_root / f"_traverse/examples/{app_id}/{stem}/artifacts/{stem}.wasm"
-    dest_contract = app_root / f"_traverse/contracts/examples/{app_id}/capabilities/{cap}/contract.json"
     dest_wasm.parent.mkdir(parents=True, exist_ok=True)
     dest_contract.parent.mkdir(parents=True, exist_ok=True)
     if not dest_wasm.is_file() or dest_wasm.read_bytes() != abs_wasm.read_bytes():
@@ -349,8 +397,8 @@ for comp_path in sorted(components_root.glob("*/component.manifest.json")):
 
     digest = "sha256:" + hashlib.sha256(dest_wasm.read_bytes()).hexdigest()
     data.pop("registry_ref", None)
-    data["contract_path"] = f"../../_traverse/contracts/examples/{app_id}/capabilities/{cap}/contract.json"
-    data["wasm_binary_path"] = f"../../_traverse/examples/{app_id}/{stem}/artifacts/{stem}.wasm"
+    data["contract_path"] = contract_path
+    data["wasm_binary_path"] = wasm_path
     data["wasm_digest"] = digest
     comp_path.write_text(json.dumps(data, indent=2) + "\n")
     print(f"OK: materialized registry_ref {key[0]}/{key[1]} → {comp_path} ({digest})")

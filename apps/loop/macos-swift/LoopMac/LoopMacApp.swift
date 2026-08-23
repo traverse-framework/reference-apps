@@ -1,0 +1,68 @@
+import SwiftUI
+import LoopCore
+
+private struct AppStateViewModelKey: FocusedValueKey {
+    typealias Value = AppStateViewModel
+}
+
+extension FocusedValues {
+    var appStateViewModel: AppStateViewModel? {
+        get { self[AppStateViewModelKey.self] }
+        set { self[AppStateViewModelKey.self] = newValue }
+    }
+}
+
+struct WorkflowCommands: Commands {
+    @FocusedValue(\.appStateViewModel) private var viewModel
+
+    var body: some Commands {
+        CommandMenu("Transcript") {
+            Button("Process Transcript") { viewModel?.submit() }
+                .keyboardShortcut(.return, modifiers: .command)
+                .disabled(viewModel?.canSubmit != true)
+            Button("Reset") { viewModel?.resetLocal() }
+                .keyboardShortcut("r", modifiers: .command)
+        }
+    }
+}
+
+@main
+struct LoopMacApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @StateObject private var settings = AppSettings()
+    @StateObject private var viewModel: AppStateViewModel
+
+    init() {
+        let settings = AppSettings()
+        _settings = StateObject(wrappedValue: settings)
+        let host = EmbeddedHost.tryCreateProduction(
+            bundleRoot: settings.bundleURL,
+            workspaceId: settings.workspace
+        )
+        _viewModel = StateObject(wrappedValue: AppStateViewModel(
+            host: host,
+            workspaceId: settings.workspace,
+            appId: AppSettings.appId,
+            transcriptMaxLength: AppSettings.transcriptMaxLength
+        ))
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(settings)
+                .environmentObject(viewModel)
+                .focusedValue(\.appStateViewModel, viewModel)
+                .onChange(of: settings.workspace) { _, workspace in
+                    viewModel.updateWorkspace(workspace)
+                }
+        }
+        .commands {
+            WorkflowCommands()
+        }
+        Settings {
+            PreferencesView()
+                .environmentObject(settings)
+        }
+    }
+}

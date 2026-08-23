@@ -1,0 +1,28 @@
+{
+  "component_id": "loop.authorize-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "core.authorize",
+  "capability_version": "1.2.0",
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "loop_wf1_registry_deps"
+    }
+  ],
+  "contract_path": "../../_traverse/examples/core-authorize/contract.json",
+  "wasm_binary_path": "../../_traverse/examples/core-authorize/artifacts/core-authorize.wasm",
+  "wasm_digest": "sha256:0c318fff56a74eddfbc1ab850c25c1ba191744309984a07bd503b8cd9cb92e40"
+}

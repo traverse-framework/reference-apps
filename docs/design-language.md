@@ -95,6 +95,18 @@ The UI renders these fields exactly as the runtime provides them — never compu
 | Linux (GTK4 + Rust) | `apps/meeting-notes/linux-gtk/` | Shipped (embedded) |
 | CLI (Rust) | `apps/meeting-notes/cli-rust/` | Shipped (embedded) |
 
+### loop (WF1 — ingest / extract / normalize / authorize)
+
+| Platform | Path | Status |
+|---|---|---|
+| Web (React) | `apps/loop/web-react/` | Shipped (embedded) |
+| iOS (SwiftUI) | `apps/loop/ios-swift/` | Shipped (embedded) |
+| macOS (SwiftUI + AppKit) | `apps/loop/macos-swift/` | Shipped (embedded) |
+| Android (Jetpack Compose) | `apps/loop/android-compose/` | Shipped (embedded) |
+| Windows (WinUI 3) | `apps/loop/windows-winui/` | Shipped (embedded) |
+| Linux (GTK4 + Rust) | `apps/loop/linux-gtk/` | Shipped (embedded) |
+| CLI (Rust) | `apps/loop/cli-rust/` | Shipped (embedded) |
+
 New platform clients must link to this doc in their issue Definition of Done.
 
 ## Governance
