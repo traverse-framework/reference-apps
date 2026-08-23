@@ -28,9 +28,11 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `llm-mcp-meeting-notes-workflow` | **Done** (#239) | Meeting-notes MCP tool-sequence runbook |
 | `llm-mcp-cursor-live-smoke` | **Done** (#240) | Cursor MCP Mode A stdio evidence |
 | `llm-mcp-claude-live-smoke` | **Done** (#241) | Claude Desktop/Code MCP Mode A evidence |
-| `llm-mcp-traverse-starter-catalog` | **Blocked** | Kit IDs on MCP stdio — Traverse #865 / registry #99 |
+| `llm-mcp-traverse-starter-catalog` | **Blocked** | Traverse #865 (registry #99 closed) |
 | `loop-wf1-registry-deps` | **Done** (#263) | Digest inventory in `docs/loop-registry-deps.md` |
 | `loop-wf1-multi-os` | **Done** (#265) | `apps/loop/` WF1 × 7 OS; compose via `registry_ref` |
+| `retire-registry-ref-materialize` | **In Progress** | Phase A gate/docs; full delete blocked on Traverse BundleEmbedder + Spec 107 |
+| `llm-mcp-embedded-host` | **Ready** | Mode B host on Spec 520 cache (#860 closed) |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
 
