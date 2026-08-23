@@ -34,4 +34,9 @@ fn test_double_submit_transcript_returns_scripted_output() {
     assert_eq!(result.output.summary, "We agreed to ship Wave 1.");
     assert_eq!(result.output.action_items[0].task, "Send notes");
     assert_eq!(result.output.decisions[0].text, "Ship Wave 1");
+    assert_eq!(
+        result.presentation_state,
+        meeting_notes_core_rs::PresentationState::Loaded
+    );
+    assert!(!result.capability_progress.is_empty());
 }

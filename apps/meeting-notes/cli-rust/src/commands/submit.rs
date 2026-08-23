@@ -32,6 +32,9 @@ fn finish(result: Result<HostRunResult, HostError>, json: bool) -> i32 {
                     execution_id: result.session_id,
                     output: result.output,
                     trace: result.events,
+                    presentation_state: result.presentation_state.as_str().to_string(),
+                    presentation_error: result.presentation_error,
+                    active_capability_id: result.active_capability_id,
                 },
                 json,
             );
