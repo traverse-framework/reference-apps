@@ -28,12 +28,13 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `llm-mcp-meeting-notes-workflow` | **Done** (#239) | Meeting-notes MCP tool-sequence runbook |
 | `llm-mcp-cursor-live-smoke` | **Done** (#240) | Cursor MCP Mode A stdio evidence |
 | `llm-mcp-claude-live-smoke` | **Done** (#241) | Claude Desktop/Code MCP Mode A evidence |
-| `llm-mcp-traverse-starter-catalog` | **Blocked** | Traverse #865 (registry #99 closed) |
+| `llm-mcp-traverse-starter-catalog` | **Blocked** | Traverse #865; Specs 114/115 ratified; Mode A implement gated on #1132 then #876 |
 | `loop-wf1-registry-deps` | **Done** (#263) | Digest inventory in `docs/loop-registry-deps.md` |
 | `loop-wf1-multi-os` | **Done** (#265) | `apps/loop/` WF1 × 7 OS; compose via `registry_ref` |
 | `retire-registry-ref-materialize` | **Done** (#267) | Phase A gate; host cutover → Future `retire-registry-ref-materialize-hosts` |
 | `retire-registry-ref-materialize-hosts` | **Future** | Full materialize delete after BundleEmbedder + Spec 107 |
-| `llm-mcp-embedded-host` | **In Progress** | Mode B scaffold on Spec 520 cache; live host → Traverse #865 |
+| `meeting-notes-remaining-natives` | **Done** (#236) | Shipped via `meeting-notes-wave2-os-ports` |
+| `llm-mcp-embedded-host` | **Blocked** | Scaffold Done (#268); live Mode B host → Traverse #865 |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
 

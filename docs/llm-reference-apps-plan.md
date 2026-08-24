@@ -91,8 +91,8 @@ v1 documents **Mode A** only. Do not revive HTTP `traverse-cli serve` as the pro
 | `llm-mcp-meeting-notes-workflow` | Document + config for meeting-notes via MCP | Done (#239) |
 | `llm-mcp-chatgpt-adapter` | ChatGPT Actions/GPT mapping (or MCP when shipped) | Future / Ready when API stable |
 | `llm-mcp-grok-adapter` | Grok tool-calling mapping | Future / Ready when API stable |
-| `llm-mcp-traverse-starter-catalog` | Expose kit (`traverse-starter.*` / meeting-notes) on MCP stdio catalog | Blocked — Traverse [#865](https://github.com/traverse-framework/Traverse/issues/865) / registry [#99](https://github.com/traverse-framework/registry/issues/99) |
-| `llm-mcp-embedded-host` | Mode B embedded prepare/cache for MCP host | Scaffold Done (this slice); live Mode B host waits on Traverse #865 |
+| `llm-mcp-traverse-starter-catalog` | Expose kit (`traverse-starter.*` / meeting-notes) on MCP stdio catalog | Blocked — Traverse [#865](https://github.com/traverse-framework/Traverse/issues/865); Specs [114](https://github.com/traverse-framework/Traverse/blob/main/specs/114-mcp-capability-search/spec.md)/[115](https://github.com/traverse-framework/Traverse/blob/main/specs/115-browser-verified-entrypoint-execution/spec.md) ratified; Mode A implement gated on Traverse [#1132](https://github.com/traverse-framework/Traverse/issues/1132) then [#876](https://github.com/traverse-framework/Traverse/issues/876). Registry [#99](https://github.com/traverse-framework/registry/issues/99) closed |
+| `llm-mcp-embedded-host` | Mode B embedded prepare/cache for MCP host | Scaffold Done (#268); live Mode B host blocked on Traverse [#865](https://github.com/traverse-framework/Traverse/issues/865) (Mode B out of Mode A spec #1125) |
 
 ## Success criteria (plan slice)
 
