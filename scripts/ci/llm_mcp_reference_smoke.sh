@@ -33,6 +33,27 @@ need apps/llm-mcp-reference/clients/cursor/evidence/cursor-mcp-stdio-transcript.
 need apps/llm-mcp-reference/clients/cursor/evidence/cursor-mcp-execute-transcript.jsonl
 need apps/llm-mcp-reference/clients/chatgpt/README.md
 need apps/llm-mcp-reference/clients/grok/README.md
+# Mode B scaffold (Spec 520 prepare/cache — fail-closed until Traverse host ships)
+need apps/llm-mcp-reference/mode-b/README.md
+need apps/llm-mcp-reference/mode-b/mcp.json.example
+need apps/llm-mcp-reference/mode-b/prepare-cache.sh
+need apps/llm-mcp-reference/mode-b/serve.sh
+if ! rg -q 'TRAVERSE_MCP_CACHE_ROOT' "$ROOT/apps/llm-mcp-reference/mode-b/mcp.json.example"; then
+  echo "FAIL: mode-b mcp example must set TRAVERSE_MCP_CACHE_ROOT"
+  fail=1
+fi
+if ! rg -q 'HostRegistryCache|prepare_registry_dependency|Spec 520' "$ROOT/apps/llm-mcp-reference/mode-b/README.md"; then
+  echo "FAIL: mode-b README must document Spec 520 prepare/cache APIs"
+  fail=1
+fi
+if ! rg -qi 'not yet shipped|Mode B host not yet|fail' "$ROOT/apps/llm-mcp-reference/mode-b/serve.sh"; then
+  echo "FAIL: mode-b serve.sh must fail closed until Traverse Mode B host ships"
+  fail=1
+fi
+if rg -q 'APP_REFS_MATERIALIZE_REGISTRY_REFS|sync_bundle_materialize_registry_refs' "$ROOT/apps/llm-mcp-reference/mode-b"; then
+  echo "FAIL: mode-b must not depend on App-Refs materialize rewrite"
+  fail=1
+fi
 # Configs must mention traverse-mcp, not invent business fields
 if ! rg -q 'traverse-mcp' "$ROOT/apps/llm-mcp-reference/clients/claude-desktop/mcp.json.example"; then
   echo "FAIL: claude-desktop mcp example must reference traverse-mcp"
