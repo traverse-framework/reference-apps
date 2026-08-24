@@ -31,8 +31,9 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `llm-mcp-traverse-starter-catalog` | **Blocked** | Traverse #865 (registry #99 closed) |
 | `loop-wf1-registry-deps` | **Done** (#263) | Digest inventory in `docs/loop-registry-deps.md` |
 | `loop-wf1-multi-os` | **Done** (#265) | `apps/loop/` WF1 × 7 OS; compose via `registry_ref` |
-| `retire-registry-ref-materialize` | **In Progress** | Phase A gate/docs; full delete blocked on Traverse BundleEmbedder + Spec 107 |
-| `llm-mcp-embedded-host` | **Ready** | Mode B host on Spec 520 cache (#860 closed) |
+| `retire-registry-ref-materialize` | **Done** (#267) | Phase A gate; host cutover → Future `retire-registry-ref-materialize-hosts` |
+| `retire-registry-ref-materialize-hosts` | **Future** | Full materialize delete after BundleEmbedder + Spec 107 |
+| `llm-mcp-embedded-host` | **In Progress** | Mode B scaffold on Spec 520 cache; live host → Traverse #865 |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
 

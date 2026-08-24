@@ -11,6 +11,7 @@ Plan: [`docs/llm-reference-apps-plan.md`](../../docs/llm-reference-apps-plan.md)
 ```text
 apps/llm-mcp-reference/
   README.md                 ← this file
+  mode-b/                   ← Spec 520 prepare/cache scaffold (fail-closed serve)
   shared/
     prompts/system-boundary.md
     workflows/traverse-starter.md
@@ -37,6 +38,14 @@ cargo run -p traverse-mcp -- stdio
 3. Paste `shared/prompts/system-boundary.md` into the agent/system instructions.
 4. Follow `shared/workflows/traverse-starter.md` — submit a note via tools; **only display runtime fields**.
 5. For transcripts, follow `shared/workflows/meeting-notes.md` — concrete `describe_server` → `execute_entrypoint` → `render_execution_report` sequence for `meeting-notes.process`.
+
+## Mode B (scaffold — Spec 520 prepare / verified cache)
+
+Stronger isolation path: prepare registry deps into a **host-owned verified cache**, then serve MCP from that cache — **no App-Refs materialize rewrite**.
+
+See [`mode-b/README.md`](mode-b/README.md), [`mode-b/mcp.json.example`](mode-b/mcp.json.example), and fail-closed [`mode-b/serve.sh`](mode-b/serve.sh).
+
+**Honest status:** Spec 520 library APIs shipped in Traverse (#860). The Mode B MCP host process is **not** upstream yet (Traverse #865). Mode A remains the only runnable LLM path; Mode B launcher exits non-zero until that host exists.
 
 Optional bearer token (execution commands):
 
