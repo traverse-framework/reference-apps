@@ -28,6 +28,8 @@ Wrappers only choose destination, app id, component list, and which optional lay
 | `--traverse-assets` | `required` / `optional` / `none` | Web required; WinUI optional; Swift/Android none |
 | `--manifest-layout` | `root` / `subdir` | Android uses `subdir` (`manifests/` under bundle); others `root` |
 
+`registry_ref` destination rewrite is gated by `APP_REFS_MATERIALIZE_REGISTRY_REFS` (default `1`). See [`production-packaging.md`](production-packaging.md) and ticket `retire-registry-ref-materialize`.
+
 ## Commands
 
 ```bash

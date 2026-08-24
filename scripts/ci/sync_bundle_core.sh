@@ -276,9 +276,23 @@ sync_bundle_destination() {
 # Canonical source under manifests/ stays registry_ref; destinations materialize.
 # Also copies the referenced example WASM + contract into dest/_traverse when missing
 # (Android/Swift sync with --traverse-assets none).
+#
+# Interim gate (ticket retire-registry-ref-materialize / Spec 520):
+#   APP_REFS_MATERIALIZE_REGISTRY_REFS=1 (default) — rewrite destination manifests
+#   APP_REFS_MATERIALIZE_REGISTRY_REFS=0 — leave registry_ref intact (hosts must
+#     resolve via Traverse HostRegistryCache / prepare+offline APIs). Full
+#     retirement waits on BundleEmbedder accepting registry_ref without wasm_*
+#     (web) and Spec 107 native adopt tickets.
 sync_bundle_materialize_registry_refs() {
   local dest="$1"
   local app_id="$2"
+  local materialize_mode="${APP_REFS_MATERIALIZE_REGISTRY_REFS:-1}"
+  case "$materialize_mode" in
+    0|false|off|no|NO|False|Off)
+      echo "OK: skipping registry_ref materialize (APP_REFS_MATERIALIZE_REGISTRY_REFS=$materialize_mode)"
+      return 0
+      ;;
+  esac
   REPO_ROOT="$REPO_ROOT" TRAVERSE_REPO="$TRAVERSE_REPO" DEST="$dest" APP_ID="$app_id" python3 - <<'PY'
 import hashlib, json, os, pathlib, shutil, sys
 

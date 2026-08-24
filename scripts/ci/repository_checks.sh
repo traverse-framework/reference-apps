@@ -149,6 +149,7 @@ check "scripts/ci/fixtures/traverse-starter-smoke-agents/process-agent.wasm" "Pi
 check "scripts/ci/fixtures/traverse-starter-smoke-agents/validate-agent.wasm" "Pinned Traverse validate agent wasm"
 check "scripts/ci/fixtures/traverse-starter-smoke-agents/summarize-agent.wasm" "Pinned Traverse summarize agent wasm"
 check "scripts/ci/sync_bundle_core.sh"         "Shared bundle sync core"
+check "scripts/ci/sync_bundle_materialize_registry_refs_gate_test.sh" "registry_ref materialize gate test"
 check "scripts/ci/sync_web_starter_bundle.sh"  "Web starter bundle sync"
 check "scripts/ci/sync_web_doc_approval_bundle.sh" "Web doc-approval bundle sync"
 check "scripts/ci/sync_web_meeting_notes_bundle.sh" "Web meeting-notes bundle sync"

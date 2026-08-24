@@ -111,11 +111,12 @@ Governing Traverse / Registry specs:
 
 | Layer | Today | Next |
 |---|---|---|
-| Component manifests under `manifests/` | **All six primary components** use `registry_ref` (`^1.0.0` → live `1.0.1` when yank-aware) | Keep ranges; no local-path reintroduction |
-| Sync / packaging | [`runtime-bundle-sync.md`](runtime-bundle-sync.md) + `sync_bundle_materialize_registry_refs` for embedder trees | Embedder-native resolve (Traverse) can retire materialize |
-| Implementation ticket | `registry-ref-full-kit-cutover` | Done when smoke evidence is green |
+| Component manifests under `manifests/` | **All six primary components** (+ Loop WF1) use `registry_ref` | Keep ranges; no local-path reintroduction |
+| Sync / packaging | [`runtime-bundle-sync.md`](runtime-bundle-sync.md) + **gated** `sync_bundle_materialize_registry_refs` (default **on**) | Retire rewrite once hosts resolve `registry_ref` offline from Spec 520 cache |
+| Spec 520 (Traverse) | `#860` closed — Rust `HostRegistryCache` + web standalone prepare/resolve APIs | Web `BundleEmbedder` still requires `wasm_binary_path`; native Spec 107 adopt incomplete |
+| App-Refs ticket | `retire-registry-ref-materialize` | Phase A: gate/tests/docs; full delete blocked on Traverse BundleEmbedder + Spec 107 |
 
-**Checked-in source of truth** for every primary component is `registry_ref` only (no local `contract_path` / `wasm_*` on source manifests). Platform sync **materializes** local wasm paths into destination bundles for FetchBundleLoader hosts that still require `wasm_binary_path`.
+**Checked-in source of truth** for every primary component is `registry_ref` only (no local `contract_path` / `wasm_*` on source manifests). Platform sync **materializes** local wasm paths into destination bundles by default (`APP_REFS_MATERIALIZE_REGISTRY_REFS=1`) for FetchBundleLoader / native bridges that still require `wasm_binary_path`. Set `APP_REFS_MATERIALIZE_REGISTRY_REFS=0` to leave destination `registry_ref` intact (hosts must use Traverse prepare + verified cache — not production-ready for all App-Refs shells yet).
 
 ## Intended component shape
 
@@ -167,7 +168,7 @@ If sync has not run, registration must fail with a stable error that `traverse-c
 ## Agent / playbook rules
 
 - Do **not** reintroduce local `contract_path` / `wasm_*` on checked-in primary `manifests/` components.
-- Platform sync may materialize `registry_ref` → local wasm in **destination** bundles only.
+- Platform sync may materialize `registry_ref` → local wasm in **destination** bundles only (default on). Do not flip `APP_REFS_MATERIALIZE_REGISTRY_REFS=0` for primary shells until BundleEmbedder / native adopt paths are proven in smoke.
 - Prefer `version_range: "^1.0.0"` so yanked stub `1.0.0` is skipped and live `1.0.1` is selected when the resolver is yank-aware (registry spec 005).
 - UI remains a rendering layer — registry adoption does not move business field computation into App-References.
 
