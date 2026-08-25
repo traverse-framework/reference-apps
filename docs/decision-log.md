@@ -206,3 +206,63 @@ Append-only record of design decisions for App-References. Newest sessions at th
 - Using recorded fixtures as the primary Loop demo path
 - Filling meeting-notes native gaps inside Phase 1
 - Expanding Trace Explorer beyond web
+
+---
+
+## 2026-08-24 — Next App-Refs slice after Traverse Specs 114/115
+
+**Context:** Project 2 Ready was empty. Traverse ratified Specs 114 (MCP capability search) and 115 (browser-verified entrypoint execution), closed Mode A spec ticket #1125, and opened Ready spec #1132 (verified public contract-metadata cache). App-Refs asked what to do next.
+
+### Next slice
+
+**Question:** Where should the next App-References slice go?
+
+**Options considered:**
+- Board hygiene + park MCP consumer work as Blocked — pros: honest board; no fake Ready; tracks Traverse without implementing against unshipped hosts; cons: no new App-Refs code this turn
+- Promote Loop WF3 to Ready and implement — pros: independent product work now that WF1 is Done; cons: ignores the Traverse progress that prompted the question
+- Wait with no board/docs changes until Traverse #1132 + Mode A implement are Ready — pros: zero extra tickets; cons: Project 2 stays stale (In Progress Mode B scaffold, leftover Future natives)
+- File Spec 114/115 consumer tickets as Ready and start docs/smoke now — pros: looks like progress; cons: would fake catalog/browser behavior the runtime does not serve yet
+
+**Recommendation:** Board hygiene + park MCP consumer work as Blocked.
+
+**Decision:** Board hygiene + park MCP consumer work as Blocked.
+
+**Why:** Ready is empty for a real reason; the next honest consumer work is Mode A kit catalog after Traverse lands #1132 and implement children. Keep Loop WF3 Future.
+
+### Ticket shape
+
+**Question:** How should Spec 114/115 consumer work be parked without fake-Ready tickets?
+
+**Options considered:**
+- Retarget existing tickets only — pros: no duplicate backlog; catalog + Mode B tickets already exist; cons: Spec 115 browser path is only implied, not a dedicated App-Refs ticket
+- One new Blocked umbrella for Spec 114/115 consumers — pros: visible new work; cons: overlaps `llm-mcp-traverse-starter-catalog`
+- Two new Blocked tickets (MCP search façade + browser Spec 115) — pros: precise DoD later; cons: over-filing before Traverse implement exists
+
+**Recommendation:** Retarget existing tickets only.
+
+**Decision:** Retarget existing tickets only.
+
+**Why:** `llm-mcp-traverse-starter-catalog` already is the Mode A kit-catalog consumer; Mode B stays on `llm-mcp-embedded-host`. Do not invent Ready work.
+
+### Stale meeting-notes Future ticket
+
+**Question:** Wave 2 already shipped meeting-notes iOS/macOS/Android/Windows. What should happen to `meeting-notes-remaining-natives`?
+
+**Options considered:**
+- Mark Done with a note pointing at #236 — pros: Future ticket intent is satisfied; single Done record; cons: two ticket IDs point at the same ship
+- Cancel as duplicate of `meeting-notes-wave2-os-ports` — pros: no double-count; cons: Future item disappears without a Done trail
+- Keep Future (treat Wave 2 as incomplete) — pros: none; cons: contradicts the tree and README all-OS matrix
+
+**Recommendation:** Mark Done, note #236.
+
+**Decision:** Mark Done, note #236.
+
+**Why:** The leftover Future item’s DoD (add the missing natives) is met by `meeting-notes-wave2-os-ports` (#236).
+
+### Spec 119 Mode A host (2026-08-25)
+
+**Question:** Is Traverse spec `119-verified-registry-mcp-mode-a` approved for App-Refs to treat as the Mode A consumer contract?
+
+**Decision:** Approved. Artifact is on Traverse main (PR #1146); status **Approved (2026-08-25)**.
+
+**Why:** User confirmed approval. App-Refs catalog ticket stays Blocked until the Mode A binary/implement lands; v1 discovery is public registry entries, not hardcoded kit content groups (FR-007).
