@@ -258,3 +258,11 @@ Append-only record of design decisions for App-References. Newest sessions at th
 **Decision:** Mark Done, note #236.
 
 **Why:** The leftover Future item’s DoD (add the missing natives) is met by `meeting-notes-wave2-os-ports` (#236).
+
+### Spec 119 Mode A host (2026-08-25)
+
+**Question:** Is Traverse spec `119-verified-registry-mcp-mode-a` approved for App-Refs to treat as the Mode A consumer contract?
+
+**Decision:** Approved. Artifact is on Traverse main (PR #1146); status **Approved (2026-08-25)**.
+
+**Why:** User confirmed approval. App-Refs catalog ticket stays Blocked until the Mode A binary/implement lands; v1 discovery is public registry entries, not hardcoded kit content groups (FR-007).
