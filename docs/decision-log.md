@@ -365,3 +365,5 @@ Append-only record of design decisions for App-References. Newest sessions at th
 **Decision:** Ship `docs/new-app-author.md`, `scripts/ci/remap_app_new_to_kit.sh`, and `scripts/ci/new_app_author_check.sh`. First slice reuses `traverse-starter.pipeline` / `registry_ref`. Won’t Fix: renaming Traverse `app new` output in this repo.
 
 **Why:** Constitution: no invented business fields. Empty `app new` is not a product app. Web is the one OS in this slice; more OS uses add-platform-client after Web works.
+
+Shipped as [#275](https://github.com/traverse-framework/reference-apps/pull/275). Upstream filename: [Traverse #1170](https://github.com/traverse-framework/Traverse/issues/1170).
