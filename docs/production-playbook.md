@@ -5,7 +5,7 @@
 **Default path:** embedded WASM runtime in every UI shell.  
 **Not the default:** `traverse-cli serve` HTTP sidecar (appendix only — [`traverse-runtime.md`](traverse-runtime.md)).
 
-Related plans: [`production-reference-plan.md`](production-reference-plan.md) (Phase 4 kit), [`embedded-runtime-plan.md`](embedded-runtime-plan.md) (Phase 3 architecture), [`getting-started-embedded.md`](getting-started-embedded.md) (hands-on).
+Related plans: [`production-reference-plan.md`](production-reference-plan.md) (Phase 4 kit), [`embedded-runtime-plan.md`](embedded-runtime-plan.md) (Phase 3 architecture), [`getting-started-embedded.md`](getting-started-embedded.md) (hands-on), [`kit-runner-persona.md`](kit-runner-persona.md) (persona OS bar).
 
 ---
 
@@ -32,7 +32,8 @@ Rules:
 |---|---|---|
 | **traverse-starter** | Web, Linux GTK, CLI, Android, Windows, iOS, macOS | Reference kit — start here |
 | **doc-approval** | Same seven platforms | Second domain + pipeline |
-| **meeting-notes** | Web today | Primary product shell; multi-OS embed showcase is Project 2 `meeting-notes-multi-os` |
+| **meeting-notes** | Web, Linux GTK, CLI, Android, Windows, iOS, macOS | Same seven platforms (Wave 2 shipped) |
+| **loop** | Same seven platforms | WF1 ingest → extract → normalize → authorize |
 
 **Not primary product shells** (do not treat as the production kit bar — see primary vs secondary on Project 2 / `docs/adopted-platform-clients.md`):
 
@@ -59,7 +60,8 @@ npm run dev    # traverse-starter embedded web shell @ :5173
 
 Do **not** start `traverse-cli serve`. Confirm the UI shows **Embedded** / ready, then submit a note and check runtime-owned fields.
 
-Full walkthrough: [`getting-started-embedded.md`](getting-started-embedded.md).
+Persona kit-runner (existing starter on each OS): [`kit-runner-persona.md`](kit-runner-persona.md).
+
 
 ---
 
@@ -130,7 +132,7 @@ Do **not** copy sidecar URL configuration into new primary product shells. Remai
 - Clone **doc-approval** structure for a second domain app (web host + `*-core-rs` + CLI + GTK); keep workflow id as upstream `meeting-notes.process` (single-step, `{ transcript }` input).
 - Add `manifests/<app>/` with `_traverse` path rewrites + `phase2_link_traverse.sh` + `sync_web_<app>_bundle.sh` before BundleEmbedder can load.
 - List-type UI fields stay in `traverseOutput` / Rust output structs — never invent action items in the shell.
-- Ship ≥3 OS (Web + Linux + CLI) before expanding Apple/Windows; document each README as **Runtime mode: Embedded**.
+- Wave 2 completed Apple / Windows / Android; all seven OS now ship. Persona walkthrough: [`kit-runner-persona.md`](kit-runner-persona.md).
 
 ---
 

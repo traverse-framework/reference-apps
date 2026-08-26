@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
-# Local onboarding verification — run after setup to confirm repo + runtime wiring.
+# Local onboarding verification — repo wiring + embedded kit bar.
 # Not a CI gate. Does not start or stop processes.
 #
-# Checks 1–5: local (no runtime required)
-# Checks 6–10: runtime probes — SKIP (not FAIL) when runtime unreachable
+# Checks 1–5: local npm (no Traverse checkout required)
+# Checks 6–8 and 10: always (manifest / registry_ref / runbook)
+# Check 9: SKIP (not FAIL) when TRAVERSE_REPO unset
 #
 # Exit 0 on pass or skip-only. Exit 1 only on FAIL.
+# Do NOT treat traverse-cli serve / 127.0.0.1:8787 as the production path.
 set -uo pipefail
 
 REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
-SERVER_JSON="${TRAVERSE_SERVER_JSON:-$REPO_ROOT/.traverse/server.json}"
 TIMEOUT="${ONBOARDING_TIMEOUT:-30}"
-CAPABILITY_ID="${TRAVERSE_CAPABILITY_ID:-traverse-starter.process}"
-WORKSPACE_ID="${TRAVERSE_WORKSPACE_ID:-local-default}"
-BASE_URL="${VITE_TRAVERSE_BASE_URL:-http://127.0.0.1:8787}"
+MANIFEST="$REPO_ROOT/manifests/traverse-starter/app.manifest.json"
+PROCESS_COMP="$REPO_ROOT/manifests/traverse-starter/components/process/component.manifest.json"
 
 FAIL=0
 
@@ -23,7 +23,7 @@ fail() { echo "[FAIL] $1"; echo "       Fix: $2"; FAIL=1; }
 
 cd "$REPO_ROOT"
 
-echo "=== Onboarding check ==="
+echo "=== Onboarding check (embedded kit) ==="
 echo ""
 
 # [1] Node version
@@ -68,118 +68,60 @@ else
   fail "tests failed" "Run: npm run test"
 fi
 
-# Discover runtime for checks 6–10
-if [ -n "${TRAVERSE_RUNTIME_URL:-}" ]; then
-  BASE_URL="$TRAVERSE_RUNTIME_URL"
-elif [ -f "$SERVER_JSON" ]; then
-  BASE_URL="$(jq -r '.base_url' "$SERVER_JSON")"
-  WORKSPACE_ID="$(jq -r '.workspace_default' "$SERVER_JSON")"
-fi
-
-RUNTIME_OK=0
-if curl -sf --max-time 3 "$BASE_URL/healthz" >/dev/null 2>&1; then
-  RUNTIME_OK=1
-fi
-
-if [ "$RUNTIME_OK" -eq 0 ]; then
-  skip "[6–10] Runtime not reachable at $BASE_URL — start with: cargo run -p traverse-cli -- serve"
-  echo ""
-  if [ "$FAIL" -eq 1 ]; then
-    echo "FAIL: one or more local checks failed."
-    exit 1
-  fi
-  echo "PASS: local checks OK (runtime steps skipped)."
-  exit 0
-fi
-
-# [6] Runtime reachable
-echo "[6] Runtime reachable..."
-pass "Runtime at $BASE_URL"
-
-# [7] /healthz
-echo "[7] /healthz..."
-HEALTH=$(curl -sf --max-time 5 "$BASE_URL/healthz" 2>&1) || {
-  fail "/healthz unreachable" "Start runtime: cargo run -p traverse-cli -- serve"
-  echo ""; [ "$FAIL" -eq 1 ] && exit 1; exit 0
-}
-HEALTH_STATUS=$(echo "$HEALTH" | jq -r '.status' 2>/dev/null || echo "unknown")
-if [ "$HEALTH_STATUS" = "ok" ]; then
-  pass "/healthz status=ok"
+# [6–10] Embedded kit — no sidecar
+echo ""
+echo "Embedded kit probes (docs: docs/kit-runner-persona.md)"
+echo "[6] traverse-starter app.manifest.json kit fields..."
+if [ ! -f "$MANIFEST" ]; then
+  fail "missing $MANIFEST" "Restore manifests/traverse-starter/app.manifest.json"
 else
-  fail "/healthz status=$HEALTH_STATUS" "Check runtime logs at $BASE_URL"
-fi
-
-# [8] POST execute
-echo "[8] POST execute..."
-FIXTURE='{"note": "onboarding check"}'
-EXEC_RESPONSE=$(curl -sf --max-time 15 \
-  -X POST "$BASE_URL/v1/workspaces/$WORKSPACE_ID/execute" \
-  -H "Content-Type: application/json" \
-  -d "{\"capability_id\": \"$CAPABILITY_ID\", \"input\": $FIXTURE}" \
-  2>&1) || {
-  fail "execute request failed" "Verify capability $CAPABILITY_ID is registered; run phase2_smoke.sh or register app"
-  echo ""; exit 1
-}
-
-EXECUTION_ID=$(echo "$EXEC_RESPONSE" | jq -r '.execution_id // empty' 2>/dev/null || echo "")
-EXEC_STATUS=$(echo "$EXEC_RESPONSE" | jq -r '.status' 2>/dev/null || echo "unknown")
-RESULT=""
-
-if [ -n "$EXECUTION_ID" ]; then
-  pass "execute accepted — execution_id=$EXECUTION_ID"
-elif [ "$EXEC_STATUS" = "succeeded" ]; then
-  RESULT="$EXEC_RESPONSE"
-  pass "execute returned synchronous succeeded"
-else
-  fail "execute missing execution_id" "Check capability_id=$CAPABILITY_ID and runtime logs"
-  echo ""; exit 1
-fi
-
-# [9] Poll
-if [ -z "$RESULT" ]; then
-  echo "[9] Poll for completion..."
-  ELAPSED=0
-  while [ "$ELAPSED" -lt "$TIMEOUT" ]; do
-    POLL=$(curl -sf --max-time 5 \
-      "$BASE_URL/v1/workspaces/$WORKSPACE_ID/executions/$EXECUTION_ID" 2>&1) || {
-      sleep 2; ELAPSED=$((ELAPSED + 2)); continue
-    }
-    POLL_STATUS=$(echo "$POLL" | jq -r '.status' 2>/dev/null || echo "unknown")
-    case "$POLL_STATUS" in
-      succeeded) RESULT="$POLL"; break ;;
-      failed|error)
-        fail "execution failed" "Inspect: curl $BASE_URL/v1/workspaces/$WORKSPACE_ID/executions/$EXECUTION_ID"
-        echo ""; exit 1
-        ;;
-      *) sleep 2; ELAPSED=$((ELAPSED + 2)) ;;
-    esac
-  done
-  if [ -z "$RESULT" ]; then
-    fail "execution timed out after ${TIMEOUT}s" "Check runtime execution logs"
-    echo ""; exit 1
-  fi
-  pass "execution succeeded"
-else
-  echo "[9] Poll..."
-  skip "synchronous execute — no poll needed"
-fi
-
-# [10] Output fields
-echo "[10] Output fields..."
-ASSERT_FAIL=0
-for field in title tags noteType suggestedNextAction status; do
-  value=$(echo "$RESULT" | jq -r ".output.$field // empty" 2>/dev/null || echo "")
-  if [ -n "$value" ] && [ "$value" != "null" ]; then
-    pass "output.$field present"
+  sm=$(jq -e '.state_machine' "$MANIFEST" >/dev/null 2>&1; echo $?)
+  wf=$(jq -e '.workflows | length > 0' "$MANIFEST" >/dev/null 2>&1; echo $?)
+  cs=$(jq -e '.config_schema' "$MANIFEST" >/dev/null 2>&1; echo $?)
+  dc=$(jq -e '.default_config' "$MANIFEST" >/dev/null 2>&1; echo $?)
+  if [ "$sm" -eq 0 ] && [ "$wf" -eq 0 ] && [ "$cs" -eq 0 ] && [ "$dc" -eq 0 ]; then
+    pass "state_machine + workflows + config_schema + default_config"
   else
-    fail "output.$field missing" "Runtime must provide all five fields; check traverse-starter capability"
-    ASSERT_FAIL=1
+    fail "app.manifest.json missing kit fields" "Need state_machine, workflows[], config_schema, default_config"
   fi
-done
+fi
+
+echo "[7] process component registry_ref..."
+if [ ! -f "$PROCESS_COMP" ]; then
+  fail "missing process component manifest" "Restore manifests/traverse-starter/components/process/component.manifest.json"
+elif jq -e '.registry_ref.namespace and .registry_ref.id' "$PROCESS_COMP" >/dev/null 2>&1; then
+  pass "process component uses registry_ref"
+else
+  fail "process component has no registry_ref" "Kit caps must be registry_ref (see docs/production-packaging.md)"
+fi
+
+echo "[8] persona runbook + sync wrapper..."
+if [ -f "$REPO_ROOT/docs/kit-runner-persona.md" ] && [ -f "$REPO_ROOT/scripts/ci/sync_web_starter_bundle.sh" ]; then
+  pass "kit-runner-persona.md + sync_web_starter_bundle.sh"
+else
+  fail "missing runbook or web sync wrapper" "Need docs/kit-runner-persona.md and scripts/ci/sync_web_starter_bundle.sh"
+fi
+
+echo "[9] TRAVERSE_REPO (optional live embed)..."
+if [ -z "${TRAVERSE_REPO:-}" ]; then
+  skip "TRAVERSE_REPO unset — set it and run bash scripts/ci/sync_web_starter_bundle.sh then embedded_smoke (linux)"
+elif [ ! -d "$TRAVERSE_REPO" ]; then
+  fail "TRAVERSE_REPO is not a directory" "export TRAVERSE_REPO=/absolute/path/to/Traverse"
+else
+  pass "TRAVERSE_REPO=$TRAVERSE_REPO"
+fi
+
+echo "[10] production path reminder..."
+if grep -Fq 'Do **not** start `traverse-cli serve`' "$REPO_ROOT/docs/kit-runner-persona.md"; then
+  pass "persona runbook forbids traverse-cli serve for OS shells"
+else
+  fail "persona runbook missing serve prohibition" "docs/kit-runner-persona.md must tell personas not to start traverse-cli serve"
+fi
 
 echo ""
-if [ "$FAIL" -eq 1 ] || [ "$ASSERT_FAIL" -eq 1 ]; then
+if [ "$FAIL" -eq 1 ]; then
   echo "FAIL: onboarding check failed."
   exit 1
 fi
 echo "PASS: onboarding check complete."
+echo "Next: docs/kit-runner-persona.md — do not start traverse-cli serve for OS shells."

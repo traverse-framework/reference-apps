@@ -1,6 +1,6 @@
 # Recipe: add a new OS client from App-References
 
-Step-by-step pattern for adding (or promoting) a **primary** product-shell UI on a new OS, cloned from the shipped Phase 3 embeds. Use **traverse-starter** as the reference kit; mirror the same steps for `doc-approval` / `meeting-notes`.
+Step-by-step pattern for adding (or promoting) a **primary** product-shell UI on a new OS, cloned from the shipped Phase 3 embeds. Use **traverse-starter** as the reference kit; mirror the same steps for `doc-approval` / `meeting-notes` / `loop`.
 
 Related:
 

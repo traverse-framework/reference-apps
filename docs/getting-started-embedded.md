@@ -122,7 +122,7 @@ Checklist for a new shell (or promoting a sidecar client to embedded):
 | Windows | **Embedded** | [#116](https://github.com/traverse-framework/reference-apps/issues/116) shipped |
 
 
-Same matrix for `doc-approval` (embedded Web / Linux / CLI with `doc-approval.pipeline`). App and OS entry points: root [`README.md`](../README.md).
+Same matrix for `doc-approval`, `meeting-notes`, and `loop` (all seven OS). App and OS entry points: root [`README.md`](../README.md). Kit-runner personas: [`kit-runner-persona.md`](kit-runner-persona.md).
 
 ## Validation — embedded smoke
 
@@ -143,6 +143,7 @@ CI runs this with `EMBEDDED_SMOKE_EXPECT=linux` on every PR (see `.github/workfl
 
 ## Related docs
 
+- [`kit-runner-persona.md`](kit-runner-persona.md) — persona kit-runner bar (each OS)
 - [`production-playbook.md`](production-playbook.md) — embedded-first production playbook
 - [`embedded-runtime-plan.md`](embedded-runtime-plan.md) — Phase 3 architecture
 - [`production-reference-plan.md`](production-reference-plan.md) — Phase 4 kit roadmap
