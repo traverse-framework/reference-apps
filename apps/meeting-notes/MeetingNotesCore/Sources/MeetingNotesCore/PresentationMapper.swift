@@ -10,7 +10,7 @@ public enum PresentationState: String, Equatable, Sendable {
     case error
 }
 
-public struct PresentationSnapshot: Equatable, Sendable {
+public struct PresentationSnapshot: Equatable, @unchecked Sendable {
     public let state: PresentationState
     public let errorMessage: String?
     public let output: Any?
@@ -31,7 +31,7 @@ public enum CapabilityPhase: String, Equatable, Sendable {
     case result
 }
 
-public struct CapabilityProgressStep: Equatable, Sendable {
+public struct CapabilityProgressStep: Equatable, @unchecked Sendable {
     public let capabilityId: String
     public let phase: CapabilityPhase
     public let sequence: UInt64
@@ -61,7 +61,7 @@ public struct CapabilityProgressStep: Equatable, Sendable {
 }
 
 /// Minimal embedder event fields required by the mapper.
-public struct EmbedderEventLike: Equatable, Sendable {
+public struct EmbedderEventLike: Equatable, @unchecked Sendable {
     public let eventType: String
     public let sequence: UInt64
     public let data: [String: Any]
