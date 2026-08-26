@@ -60,7 +60,7 @@ npm run dev    # traverse-starter embedded web shell @ :5173
 
 Do **not** start `traverse-cli serve`. Confirm the UI shows **Embedded** / ready, then submit a note and check runtime-owned fields.
 
-Persona kit-runner (existing starter on each OS): [`kit-runner-persona.md`](kit-runner-persona.md).
+Persona kit-runner (existing starter on each OS): [`kit-runner-persona.md`](kit-runner-persona.md). New app id: [`new-app-author.md`](new-app-author.md).
 
 
 ---

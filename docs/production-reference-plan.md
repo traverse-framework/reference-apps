@@ -79,7 +79,7 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 - `meeting-notes-wave2-os-ports` — Done (#236)
 - `loop-wf1-multi-os` — Done (#265)
 
-Kit-runner persona bar (run existing starter on each OS): [`kit-runner-persona.md`](kit-runner-persona.md). New-app author E2E is Future `new-app-author-e2e`.
+Kit-runner persona bar (run existing starter on each OS): [`kit-runner-persona.md`](kit-runner-persona.md). New-app author E2E: [`new-app-author.md`](new-app-author.md).
 
 ## Architecture boundary (unchanged)
 
