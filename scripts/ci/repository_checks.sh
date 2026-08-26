@@ -29,7 +29,7 @@ check "docs/traverse-starter-plan.md"          "traverse-starter plan"
 check "docs/traverse-runtime.md"               "Traverse runtime setup"
 check "docs/design-language.md"                "UI design language"
 check "docs/runtime-bundle-sync.md"            "Runtime bundle sync contract"
-check "docs/add-platform-client.md"            "Add platform client recipe"
+check "docs/kit-runner-persona.md"             "Kit-runner persona bar"
 check "docs/production-packaging.md"           "Production packaging / registry_ref contract"
 check "docs/app-manifest-schema.md"            "Application bundle manifest schema"
 

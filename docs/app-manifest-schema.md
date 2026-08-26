@@ -6,7 +6,7 @@
 
 Governing Traverse spec: [`044-application-bundle-manifest`](https://github.com/traverse-framework/Traverse/blob/main/specs/044-application-bundle-manifest/spec.md) (schema `1.0.0`).
 
-Related App-Refs docs: [`production-packaging.md`](production-packaging.md) · [`runtime-bundle-sync.md`](runtime-bundle-sync.md) · [`getting-started-embedded.md`](getting-started-embedded.md)
+Related App-Refs docs: [`production-packaging.md`](production-packaging.md) · [`runtime-bundle-sync.md`](runtime-bundle-sync.md) · [`getting-started-embedded.md`](getting-started-embedded.md) · [`kit-runner-persona.md`](kit-runner-persona.md)
 
 ---
 
@@ -34,7 +34,7 @@ Without this file, `BundleEmbedder` / `traverse-embedder` have nothing to load.
 | Traverse examples | `$TRAVERSE_REPO/examples/applications/<app>/app.manifest.json` | Upstream reference copies |
 | CLI scaffold (see below) | `apps/<app-id>/manifest.json` | Different **filename** and directory |
 
-Reference implementations in this repo: `manifests/traverse-starter/`, `manifests/doc-approval/`, `manifests/meeting-notes/`.
+Reference implementations in this repo: `manifests/traverse-starter/`, `manifests/doc-approval/`, `manifests/meeting-notes/`, `manifests/loop/`.
 
 ---
 

@@ -302,3 +302,47 @@ Append-only record of design decisions for App-References. Newest sessions at th
 **Decision:** Scaffold Spec 119 Mode A consumer now, fail-closed (`llm-mcp-mode-a-spec119-scaffold`).
 
 **Why:** Same pattern as Mode B: document the contract, refuse expedition fallback, keep catalog execute Blocked until implement.
+
+---
+
+## 2026-08-25 — Persona E2E bar (kit-runner first)
+
+**Context:** User asked whether each OS/target has a ref app with state machine, capability load, configuration, and workflow; whether docs are current; and how to test end-to-end with multiple personas who want to **create** Traverse apps using App-References.
+
+### First bar vs create-new-app
+
+**Question:** Is the first E2E proof “run the existing kit on each OS” or “author a brand-new app id”?
+
+**Options considered:**
+- Kit-runner first (existing `traverse-starter` / siblings on each OS) — pros: apps already exist; finds doc/onboarding bugs immediately; cons: does not prove `traverse-cli app new` → App-Refs layout
+- Greenfield author E2E first — pros: matches “create apps” wording; cons: blocked by CLI scaffold vs `manifests/<app>/app.manifest.json` mismatch; delays catching stale docs
+- Full N apps × 7 OS matrix in one wave — pros: complete coverage; cons: PR CI cannot prove Apple/Windows/Android; too large for one ticket
+
+**Recommendation:** Kit-runner first.
+
+**Decision:** First bar is **kit-runner**: existing primary shells on each OS (state machine, `registry_ref` caps, workspace config, workflow). New-app author E2E is Future `new-app-author-e2e`.
+
+**Why:** Primaries already ship 7 OS. The honest gap is stale docs + sidecar onboarding, not missing shells. Creating a new app is a second product path.
+
+### How to prove it
+
+**Question:** What is the proof method?
+
+**Options considered:**
+- Docs + persona runbook + make `onboarding_check.sh` embedded-first; keep CI as web+CLI PR smoke + native nightly — pros: matches existing CI truth; cons: humans still dogfood natives
+- Require all-OS live CI on every PR — pros: strongest gate; cons: not how this repo’s runners work
+- Only automated web+CLI — pros: cheapest; cons: does not answer “multiple OS personas”
+
+**Recommendation:** Docs + runbook + embedded onboarding; keep existing CI split.
+
+**Decision:** Proof = stale-doc scrub + [`kit-runner-persona.md`](kit-runner-persona.md) + rewrite `onboarding_check.sh` so it does not treat `traverse-cli serve` / `:8787` as the production path. PR gate stays `embedded_smoke` (web+CLI); natives stay nightly + human runbook.
+
+**Why:** CI already encodes the split. Pretending every merge proves seven OS would be a false bar.
+
+### Ticket scope
+
+**Question:** What lands in `kit-runner-persona-docs` vs later?
+
+**Decision:** This ticket is docs + onboarding rewrite + repository_checks for the runbook. App code changes only if a persona step is broken in a way docs cannot fix. File Project 2 drafts for real bugs found during dogfood. `new-app-author-e2e` stays Future until kit-runner lands.
+
+**Why:** Smallest change that makes the persona test runnable and the docs honest.

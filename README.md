@@ -24,7 +24,7 @@ UI examples for [Traverse](https://github.com/traverse-framework/Traverse).
 | **trace-explorer** | Browse execution traces (debugger — not a product shell to copy) | [web](apps/trace-explorer/web-react/) |
 | **LLM MCP façades** | Claude / Cursor / ChatGPT / Grok call the same workflows via MCP (not prompt skills) | [`apps/llm-mcp-reference/`](apps/llm-mcp-reference/) · [section](#llm-mcp-reference-façades) |
 
-**Extra demos / kits** — useful samples, **not** the production OS-shell pattern to copy (prefer traverse-starter / doc-approval / meeting-notes). Upgrade-or-retire classifications (Spec 004): [`docs/demo-inventory.md`](docs/demo-inventory.md).
+**Extra demos / kits** — useful samples, **not** the production OS-shell pattern to copy (prefer traverse-starter / doc-approval / meeting-notes / loop). Upgrade-or-retire classifications (Spec 004): [`docs/demo-inventory.md`](docs/demo-inventory.md).
 
 | Demo | Path |
 |---|---|
@@ -135,6 +135,7 @@ Spec 119 v1 has **no kit content groups**. Discovery is public registry entries.
 | Doc | Use when |
 |---|---|
 | [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md) | First full walkthrough |
+| [`docs/kit-runner-persona.md`](docs/kit-runner-persona.md) | Persona kit-runner bar (each OS) |
 | [`docs/llm-reference-apps-plan.md`](docs/llm-reference-apps-plan.md) | LLM façades via MCP (Claude / Cursor / …) |
 | [`docs/app-manifest-schema.md`](docs/app-manifest-schema.md) | `app.manifest.json` fields + `traverse-cli app new` scaffold |
 | [`docs/add-platform-client.md`](docs/add-platform-client.md) | Add another OS shell |

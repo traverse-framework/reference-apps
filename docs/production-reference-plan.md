@@ -70,13 +70,17 @@ Live status is always on [Project 2](https://github.com/orgs/traverse-framework/
 2. **`meeting-notes-multi-os`** — shipped (#208)  
 3. **`native-ci-android-gtk-required`** — shipped (#209); required nightly green  
 
-### Wave 2 — Ready (upstream unblocked 2026-07-22)
+### Wave 2 — Done
 
 - `embed-trace-explorer` — Done (#225)
 - `registry-ref-starter-process` — Done (#224)
 - `registry-ref-full-kit-cutover` — Done (#235)
 - `consume-product-wasm-agents` — Done (#227)
-- `meeting-notes-wave2-os-ports` — In Progress (Apple + Windows + Android meeting-notes embeds)
+- `meeting-notes-wave2-os-ports` — Done (#236)
+- `loop-wf1-multi-os` — Done (#265)
+
+Kit-runner persona bar (run existing starter on each OS): [`kit-runner-persona.md`](kit-runner-persona.md). New-app author E2E is Future `new-app-author-e2e`.
+
 ## Architecture boundary (unchanged)
 
 - UI shells render runtime-owned fields only — no local business logic  

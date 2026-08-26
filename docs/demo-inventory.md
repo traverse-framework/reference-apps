@@ -10,26 +10,27 @@ Reconciled against `find apps -maxdepth 1 -type d` on 2026-08-11. Primaries are 
 | `apps/meeting-notes` | already-primary | Production multi-OS product shell | — |
 | `apps/doc-approval` | already-primary | Production multi-OS product shell | — |
 | `apps/trace-explorer` | already-primary | Debugger companion (web-only by design) | — |
+| `apps/loop` | already-primary | WF1 seven-OS product shell | — |
 | `apps/react-demo` | retire (done) | Removed 2026-08-12; primaries own Web UX; browser-consumer owns browser façade | `retire-react-demo` |
 | `apps/android-demo` | retire (done) | Removed 2026-08-12; superseded by primary Android Compose shells | `retire-android-demo` |
 | `apps/macos-demo` | retire (done) | Removed 2026-08-12; superseded by primary SwiftUI shells | `retire-macos-demo` |
-| `apps/android-demo` | retire | Expedition Android sample; superseded by primary Android Compose shells | `retire-android-demo` |
-| `apps/macos-demo` | retire (done) | Removed 2026-08-12; superseded by primary SwiftUI shells | `retire-macos-demo` |
-| `apps/browser-consumer` | upgrade | Keep as downstream browser façade; align to Specs 001/002 and stop depending on `react-demo` once that path retires | `upgrade-browser-consumer-events` |
-| `apps/youaskm3-starter-kit` | upgrade | Keep as downstream getting-started kit; point at embedded/public surfaces + Specs 001/002 vocabulary | `upgrade-youaskm3-starter-kit-events` |
-| `apps/llm-mcp-reference` | upgrade | Active secondary LLM MCP façades; keep and align workflow docs to event presentation contract | `upgrade-llm-mcp-reference-events` |
+| `apps/browser-consumer` | upgrade (done) | Specs 001/002; no `react-demo` dependency | `upgrade-browser-consumer-events` |
+| `apps/youaskm3-starter-kit` | upgrade (done) | Embedded path + Specs 001/002 vocabulary | `upgrade-youaskm3-starter-kit-events` |
+| `apps/llm-mcp-reference` | upgrade (done) | Spec 001/002 presentation vocabulary in workflow docs | `upgrade-llm-mcp-reference-events` |
 
-## Follow-up board items (Future until inventory merges)
+## Follow-up board items
 
-| ticket-id | Project 2 item |
+Shipped. Do not treat this table as live status — Project 2 is SoT.
+
+| ticket-id | Outcome |
 |---|---|
-| `retire-react-demo` | `PVTI_lADOEbiBt84BbzAzzg2Lkhk` |
-| `retire-android-demo` | `PVTI_lADOEbiBt84BbzAzzg2Lkik` |
-| `retire-macos-demo` | `PVTI_lADOEbiBt84BbzAzzg2Lkjg` |
-| `upgrade-browser-consumer-events` | `PVTI_lADOEbiBt84BbzAzzg2LklM` |
-| `upgrade-youaskm3-starter-kit-events` | `PVTI_lADOEbiBt84BbzAzzg2Lkms` |
-| `upgrade-llm-mcp-reference-events` | `PVTI_lADOEbiBt84BbzAzzg2Lkno` |
+| `retire-react-demo` | Done |
+| `retire-android-demo` | Done |
+| `retire-macos-demo` | Done |
+| `upgrade-browser-consumer-events` | Done |
+| `upgrade-youaskm3-starter-kit-events` | Done |
+| `upgrade-llm-mcp-reference-events` | Done |
 
 ## Status
 
-Inventory only — no apps removed in this document’s landing PR. Follow-up Project 2 tickets start as `Future` until this inventory merges (Spec 004 validation). Retire PRs must scrub CI/docs in the same change and add a README **Retired demos** note (ADR-0004).
+Inventory plus follow-up tickets are complete. New-app author E2E is Future `new-app-author-e2e`. Kit-runner personas: [`kit-runner-persona.md`](kit-runner-persona.md).
