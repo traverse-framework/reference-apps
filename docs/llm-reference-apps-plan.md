@@ -91,7 +91,7 @@ v1 documents **Mode A** only. Do not revive HTTP `traverse-cli serve` as the pro
 | `llm-mcp-meeting-notes-workflow` | Document + config for meeting-notes via MCP | Done (#239) |
 | `llm-mcp-chatgpt-adapter` | ChatGPT Actions/GPT mapping (or MCP when shipped) | Future / Ready when API stable |
 | `llm-mcp-grok-adapter` | Grok tool-calling mapping | Future / Ready when API stable |
-| `llm-mcp-mode-a-spec119-scaffold` | Spec 119 Mode A consumer (fail-closed serve + prepare + MCP example) | In Progress (this slice) |
+| `llm-mcp-mode-a-spec119-scaffold` | Spec 119 Mode A consumer (fail-closed serve + prepare + MCP example) | Done (#271) |
 | `llm-mcp-traverse-starter-catalog` | Discover/execute kit capabilities (`traverse-starter.*` / meeting-notes) via Mode A public registry discovery | Blocked — Spec [`119-verified-registry-mcp-mode-a`](https://github.com/traverse-framework/Traverse/blob/main/specs/119-verified-registry-mcp-mode-a/spec.md) **Approved**; wait on Mode A `traverse-mcp` **implement**. First release has no kit content groups (FR-007). Registry [#99](https://github.com/traverse-framework/registry/issues/99) closed |
 | `llm-mcp-embedded-host` | Mode B embedded prepare/cache for MCP host | Scaffold Done (#268); live Mode B host blocked on Traverse [#865](https://github.com/traverse-framework/Traverse/issues/865) (Mode B out of Mode A spec #1125) |
 
