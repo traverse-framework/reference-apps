@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "traverse-mode-a": {
+      "command": "bash",
+      "args": [
+        "/ABS/PATH/TO/App-References/apps/llm-mcp-reference/mode-a/serve.sh"
+      ],
+      "env": {
+        "TRAVERSE_REPO": "/ABS/PATH/TO/Traverse",
+        "TRAVERSE_MCP_CACHE_ROOT": "/ABS/PATH/TO/host-owned-verified-state",
+        "TRAVERSE_WORKSPACE": "local-default"
+      }
+    }
+  }
+}

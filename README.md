@@ -118,14 +118,15 @@ Point your LLM client at that command using the example under `apps/llm-mcp-refe
 
 ### Upstream gaps (blocking full kit live path)
 
-Scaffold + configs live here; honest “same catalog as OS apps” still needs upstream work:
+OS shells do **not** speak MCP (they embed WASM). Registry MCP is the LLM façade path.
 
-| Repo | Issue |
+| Path | Status |
 |---|---|
-| Traverse (runtime / `traverse-mcp`) | [#865](https://github.com/traverse-framework/Traverse/issues/865) — MCP still expedition-shaped; needs kit catalog, inline requests, WASM execute |
-| Registry (workflows / content groups) | [#99](https://github.com/traverse-framework/registry/issues/99) — publish kit workflows + MCP discovery metadata + resolve policy |
+| Expedition `traverse-mcp -- stdio` | Runnable bootstrap — **not** kit catalog |
+| Spec 119 Mode A consumer scaffold | [`apps/llm-mcp-reference/mode-a/`](apps/llm-mcp-reference/mode-a/) — fail-closed until the host ships |
+| Live `traverse-starter.*` / `meeting-notes.process` via MCP | Project 2 `llm-mcp-traverse-starter-catalog` (**Blocked**) — needs Traverse Mode A **implement** (spec is Approved) |
 
-Until those land, treat Mode A as **bootstrap against Traverse MCP docs**; App-Refs live-smoke tickets stay gated on the kit path.
+Spec 119 v1 has **no kit content groups**. Discovery is public registry entries. Registry umbrella [#99](https://github.com/traverse-framework/registry/issues/99) is closed.
 
 ---
 

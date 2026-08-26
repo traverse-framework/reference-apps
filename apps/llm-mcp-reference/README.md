@@ -11,6 +11,7 @@ Plan: [`docs/llm-reference-apps-plan.md`](../../docs/llm-reference-apps-plan.md)
 ```text
 apps/llm-mcp-reference/
   README.md                 ← this file
+  mode-a/                   ← Spec 119 public-registry MCP scaffold (fail-closed serve)
   mode-b/                   ← Spec 520 prepare/cache scaffold (fail-closed serve)
   shared/
     prompts/system-boundary.md
@@ -24,9 +25,9 @@ apps/llm-mcp-reference/
     grok/
 ```
 
-## Quick start (Mode A — local MCP stdio)
+## Quick start (expedition bootstrap — not Spec 119)
 
-1. Clone Traverse next to this repo and build/run the MCP server:
+Today’s default `traverse-mcp -- stdio` catalog is still **expedition**. Use it only as a host-path smoke:
 
 ```bash
 export TRAVERSE_REPO="$(cd ../Traverse && pwd)"   # adjust path
@@ -34,10 +35,15 @@ cd "$TRAVERSE_REPO"
 cargo run -p traverse-mcp -- stdio
 ```
 
-2. Point your LLM client at that command using the example config in `clients/<product>/`.
-3. Paste `shared/prompts/system-boundary.md` into the agent/system instructions.
-4. Follow `shared/workflows/traverse-starter.md` — submit a note via tools; **only display runtime fields**.
-5. For transcripts, follow `shared/workflows/meeting-notes.md` — concrete `describe_server` → `execute_entrypoint` → `render_execution_report` sequence for `meeting-notes.process`.
+Point `clients/<product>/` at that command, paste `shared/prompts/system-boundary.md`, and follow the workflow runbooks. Display **only** runtime fields.
+
+## Mode A (scaffold — Spec 119 public registry)
+
+Registry-MCP path for the same capabilities OS shells load via `registry_ref`. OS apps stay embedded; this is Claude/Cursor MCP only.
+
+See [`mode-a/README.md`](mode-a/README.md), [`mode-a/mcp.json.example`](mode-a/mcp.json.example), and fail-closed [`mode-a/serve.sh`](mode-a/serve.sh).
+
+**Honest status:** Spec 119 is Approved. The Mode A host is **not** upstream yet. `mode-a/serve.sh` exits non-zero until `traverse-mcp` exposes public-only discovery + inline `RuntimeRequest` + digest-verified WASM (no expedition fallback, no kit content groups in v1).
 
 ## Mode B (scaffold — Spec 520 prepare / verified cache)
 

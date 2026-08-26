@@ -266,3 +266,39 @@ Append-only record of design decisions for App-References. Newest sessions at th
 **Decision:** Approved. Artifact is on Traverse main (PR #1146); status **Approved (2026-08-25)**.
 
 **Why:** User confirmed approval. App-Refs catalog ticket stays Blocked until the Mode A binary/implement lands; v1 discovery is public registry entries, not hardcoded kit content groups (FR-007).
+
+---
+
+## 2026-08-25 — Registry MCP on reference apps (question 4)
+
+**Context:** User asked whether each OS/target has a demo that uses registry MCP. Answer was no. Follow-up: work on that gap.
+
+### What “use registry MCP” means
+
+**Question:** OS shells embed WASM; MCP is a separate LLM façade; Spec 119 Mode A is approved but not implemented. What should we build?
+
+**Options considered:**
+- Keep OS apps embedded-only; prove registry MCP via Claude/Cursor façades — pros: matches constitution Phase 3 and the LLM plan; cons: not a per-OS MCP UI
+- Keep embed as the app; add a per-OS MCP companion README/config — pros: visible on every OS folder; cons: duplicates Mode A without a host
+- Change OS apps to call `traverse-mcp` — pros: literal reading of “each OS”; cons: replaces embedded production path; constitution violation
+
+**Recommendation:** Keep OS apps embedded-only; prove registry MCP via Claude/Cursor façades.
+
+**Decision:** Keep OS apps embedded-only; prove registry MCP via Claude/Cursor façades.
+
+**Why:** MCP is the LLM façade, not the OS-shell production path.
+
+### App-Refs slice now vs wait
+
+**Question:** Spec 119 is Approved but `traverse-mcp` does not serve Mode A yet. What should App-Refs do now?
+
+**Options considered:**
+- Scaffold Spec 119 Mode A consumer now, fail-closed until the host ships — pros: honest consumer contract in-tree; cons: launcher exits non-zero
+- Wait until Traverse ships the host — pros: no extra scaffold; cons: App-Refs stays silent on the consumer shape
+- Implement Mode A in the Traverse repo — pros: unblocks live kit execute; cons: wrong repo for this thread
+
+**Recommendation:** Scaffold Spec 119 Mode A consumer now, fail-closed.
+
+**Decision:** Scaffold Spec 119 Mode A consumer now, fail-closed (`llm-mcp-mode-a-spec119-scaffold`).
+
+**Why:** Same pattern as Mode B: document the contract, refuse expedition fallback, keep catalog execute Blocked until implement.
