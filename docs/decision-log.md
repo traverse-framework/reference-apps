@@ -346,3 +346,13 @@ Append-only record of design decisions for App-References. Newest sessions at th
 **Decision:** This ticket is docs + onboarding rewrite + repository_checks for the runbook. App code changes only if a persona step is broken in a way docs cannot fix. File Project 2 drafts for real bugs found during dogfood. `new-app-author-e2e` stays Future until kit-runner lands.
 
 **Why:** Smallest change that makes the persona test runnable and the docs honest.
+
+---
+
+## 2026-08-26 — kit-runner shipped; new-app-author Ready
+
+**Context:** `kit-runner-persona-docs` merged as [#273](https://github.com/traverse-framework/reference-apps/pull/273). Duplicate Future card `PVTI_lADOEbiBt84BbzAzzg4DHAM` closed; canonical `new-app-author-e2e` is `PVTI_lADOEbiBt84BbzAzzg4DGRk`.
+
+**Decision:** Promote `new-app-author-e2e` to **Ready**. Kit-runner remains the run-existing-starter bar; this ticket is the create-new-app persona (CLI `app new` vs `manifests/<app>/app.manifest.json`).
+
+**Why:** The user’s E2E request was personas creating Traverse apps with App-Refs. First bar (docs + onboarding) is Done; the remaining product gap is authoring a new app id, not another OS port of starter.
