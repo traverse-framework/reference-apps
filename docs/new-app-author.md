@@ -26,7 +26,7 @@ Do **not** start `traverse-cli serve`. Production path is embedded.
 | No `state_machine` | Required for primary shells |
 | `workspace_id: <id>-local` | Primaries use `local-default` until you change config |
 
-App-Refs will **not** rename Traverse’s scaffold. Remap with `scripts/ci/remap_app_new_to_kit.sh`. Upstream: ask Traverse to emit `app.manifest.json` from `app new` (examples already use that name). Until then, treat CLI output as a stub, not a product app.
+App-Refs will **not** rename Traverse’s scaffold. Remap with `scripts/ci/remap_app_new_to_kit.sh`. Upstream: [Traverse #1170](https://github.com/traverse-framework/Traverse/issues/1170) (`app new` should emit `app.manifest.json`). Until then, treat CLI output as a stub, not a product app.
 
 ## Recipe (Web)
 

@@ -173,7 +173,7 @@ Schema-valid **empty** bundle:
 | no state machine | add `state_machine` + `list_context_fields` for UI shells |
 | `workspace_id: "<id>-local"` | Primaries use `local-default` (kit seed) |
 
-**Won’t Fix in App-Refs:** renaming Traverse `app new` output. Helper: `scripts/ci/remap_app_new_to_kit.sh`. Persona recipe (Web proven): [`new-app-author.md`](new-app-author.md).
+**Won’t Fix in App-Refs:** renaming Traverse `app new` output. Helper: `scripts/ci/remap_app_new_to_kit.sh`. Persona recipe (Web proven): [`new-app-author.md`](new-app-author.md). Upstream: [Traverse #1170](https://github.com/traverse-framework/Traverse/issues/1170).
 
 Then sync into platform bundles with `scripts/ci/sync_*_bundle.sh` ([`runtime-bundle-sync.md`](runtime-bundle-sync.md)).
 
