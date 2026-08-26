@@ -6,7 +6,7 @@
 
 Governing Traverse spec: [`044-application-bundle-manifest`](https://github.com/traverse-framework/Traverse/blob/main/specs/044-application-bundle-manifest/spec.md) (schema `1.0.0`).
 
-Related App-Refs docs: [`production-packaging.md`](production-packaging.md) · [`runtime-bundle-sync.md`](runtime-bundle-sync.md) · [`getting-started-embedded.md`](getting-started-embedded.md) · [`kit-runner-persona.md`](kit-runner-persona.md)
+Related App-Refs docs: [`production-packaging.md`](production-packaging.md) · [`runtime-bundle-sync.md`](runtime-bundle-sync.md) · [`getting-started-embedded.md`](getting-started-embedded.md) · [`kit-runner-persona.md`](kit-runner-persona.md) · [`new-app-author.md`](new-app-author.md)
 
 ---
 
@@ -171,6 +171,9 @@ Schema-valid **empty** bundle:
 | empty `components/` | real `components/<name>/component.manifest.json` + digests |
 | empty `workflows/` | workflow JSON under `_traverse/…` (or synced Traverse tree) |
 | no state machine | add `state_machine` + `list_context_fields` for UI shells |
+| `workspace_id: "<id>-local"` | Primaries use `local-default` (kit seed) |
+
+**Won’t Fix in App-Refs:** renaming Traverse `app new` output. Helper: `scripts/ci/remap_app_new_to_kit.sh`. Persona recipe (Web proven): [`new-app-author.md`](new-app-author.md).
 
 Then sync into platform bundles with `scripts/ci/sync_*_bundle.sh` ([`runtime-bundle-sync.md`](runtime-bundle-sync.md)).
 

@@ -136,6 +136,7 @@ Spec 119 v1 has **no kit content groups**. Discovery is public registry entries.
 |---|---|
 | [`docs/getting-started-embedded.md`](docs/getting-started-embedded.md) | First full walkthrough |
 | [`docs/kit-runner-persona.md`](docs/kit-runner-persona.md) | Persona kit-runner bar (each OS) |
+| [`docs/new-app-author.md`](docs/new-app-author.md) | Create a new app id (`app new` → App-Refs layout) |
 | [`docs/llm-reference-apps-plan.md`](docs/llm-reference-apps-plan.md) | LLM façades via MCP (Claude / Cursor / …) |
 | [`docs/app-manifest-schema.md`](docs/app-manifest-schema.md) | `app.manifest.json` fields + `traverse-cli app new` scaffold |
 | [`docs/add-platform-client.md`](docs/add-platform-client.md) | Add another OS shell |

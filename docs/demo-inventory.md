@@ -33,4 +33,4 @@ Shipped. Do not treat this table as live status — Project 2 is SoT.
 
 ## Status
 
-Inventory plus follow-up tickets are complete. New-app author E2E is Future `new-app-author-e2e`. Kit-runner personas: [`kit-runner-persona.md`](kit-runner-persona.md).
+Inventory plus follow-up tickets are complete. New-app author: [`new-app-author.md`](new-app-author.md). Kit-runner personas: [`kit-runner-persona.md`](kit-runner-persona.md).

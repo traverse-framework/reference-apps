@@ -144,6 +144,7 @@ CI runs this with `EMBEDDED_SMOKE_EXPECT=linux` on every PR (see `.github/workfl
 ## Related docs
 
 - [`kit-runner-persona.md`](kit-runner-persona.md) — persona kit-runner bar (each OS)
+- [`new-app-author.md`](new-app-author.md) — create a new app id from `app new`
 - [`production-playbook.md`](production-playbook.md) — embedded-first production playbook
 - [`embedded-runtime-plan.md`](embedded-runtime-plan.md) — Phase 3 architecture
 - [`production-reference-plan.md`](production-reference-plan.md) — Phase 4 kit roadmap

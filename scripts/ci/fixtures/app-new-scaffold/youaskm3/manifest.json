@@ -1,0 +1,23 @@
+{
+  "app_id": "youaskm3",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "youaskm3-local",
+    "config_path": "workspace.config.json"
+  },
+  "components": [],
+  "workflows": [],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  },
+  "default_config": {},
+  "placement_policy": {
+    "preferred_targets": ["local"],
+    "allow_fallback": false
+  },
+  "public_surfaces": ["cli"]
+}

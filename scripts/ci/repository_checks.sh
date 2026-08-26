@@ -30,6 +30,7 @@ check "docs/traverse-runtime.md"               "Traverse runtime setup"
 check "docs/design-language.md"                "UI design language"
 check "docs/runtime-bundle-sync.md"            "Runtime bundle sync contract"
 check "docs/kit-runner-persona.md"             "Kit-runner persona bar"
+check "docs/new-app-author.md"                 "New-app author persona"
 check "docs/production-packaging.md"           "Production packaging / registry_ref contract"
 check "docs/app-manifest-schema.md"            "Application bundle manifest schema"
 
@@ -167,6 +168,9 @@ check "scripts/ci/sync_android_doc_approval_bundle.sh" "Android doc-approval bun
 check "scripts/ci/sync_android_meeting_notes_bundle.sh" "Android meeting-notes bundle sync"
 check "scripts/ci/sync_android_loop_bundle.sh" "Android loop bundle sync"
 check "scripts/ci/onboarding_check.sh"         "Onboarding check"
+check "scripts/ci/remap_app_new_to_kit.sh"     "app new → kit remap"
+check "scripts/ci/new_app_author_check.sh"     "New-app author check"
+check "scripts/ci/fixtures/app-new-scaffold/youaskm3/manifest.json" "app new scaffold fixture"
 
 # GitHub Actions
 check ".github/workflows/ci.yml"               "CI workflow"

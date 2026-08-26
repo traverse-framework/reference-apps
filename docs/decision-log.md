@@ -346,3 +346,22 @@ Append-only record of design decisions for App-References. Newest sessions at th
 **Decision:** This ticket is docs + onboarding rewrite + repository_checks for the runbook. App code changes only if a persona step is broken in a way docs cannot fix. File Project 2 drafts for real bugs found during dogfood. `new-app-author-e2e` stays Future until kit-runner lands.
 
 **Why:** Smallest change that makes the persona test runnable and the docs honest.
+
+---
+
+## 2026-08-26 — New-app author E2E
+
+**Context:** Personas want to **create** Traverse apps with App-Refs. Kit-runner (#273) covers running existing shells. `traverse-cli app new` still emits `apps/<id>/manifest.json` (empty); embedders load `manifests/<id>/app.manifest.json`.
+
+**Question:** Change Traverse CLI in this ticket, check in a throwaway product app, or remap + prove Web?
+
+**Options considered:**
+- Implement `app new` filename change in Traverse — pros: one layout; cons: wrong repo for this thread
+- Check in `apps/persona-demo` as a fifth primary — pros: visible app; cons: duplicate starter WASM; CI/workspace cost
+- Remap helper + fixture CI + Web host rewrite; seed from traverse-starter; no new product app in tree — pros: honest layout proof; cons: live `app new` still needs TRAVERSE_REPO locally
+
+**Recommendation:** Remap helper + Web proof in CI.
+
+**Decision:** Ship `docs/new-app-author.md`, `scripts/ci/remap_app_new_to_kit.sh`, and `scripts/ci/new_app_author_check.sh`. First slice reuses `traverse-starter.pipeline` / `registry_ref`. Won’t Fix: renaming Traverse `app new` output in this repo.
+
+**Why:** Constitution: no invented business fields. Empty `app new` is not a product app. Web is the one OS in this slice; more OS uses add-platform-client after Web works.

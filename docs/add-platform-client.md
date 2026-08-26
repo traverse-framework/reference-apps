@@ -19,7 +19,7 @@ Related:
 
 ## Prerequisites
 
-1. App manifests exist under `manifests/<app>/`
+1. App manifests exist under `manifests/<app>/` (new app id: [`new-app-author.md`](new-app-author.md))
 2. Public platform embedder SDK is available for the OS (vendor or package reference)
 3. Project 2 ticket claimed (`AGENTS.md` pre-flight) with production-shaped DoD
 

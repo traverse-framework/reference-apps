@@ -17,6 +17,9 @@ jobs:
       - name: Run repository checks
         run: bash scripts/ci/repository_checks.sh
 
+      - name: New-app author remap
+        run: bash scripts/ci/new_app_author_check.sh
+
   quality:
     runs-on: ubuntu-latest
 
