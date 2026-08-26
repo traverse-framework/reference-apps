@@ -33,6 +33,31 @@ need apps/llm-mcp-reference/clients/cursor/evidence/cursor-mcp-stdio-transcript.
 need apps/llm-mcp-reference/clients/cursor/evidence/cursor-mcp-execute-transcript.jsonl
 need apps/llm-mcp-reference/clients/chatgpt/README.md
 need apps/llm-mcp-reference/clients/grok/README.md
+# Mode A scaffold (Spec 119 public-registry host — fail-closed until Traverse ships it)
+need apps/llm-mcp-reference/mode-a/README.md
+need apps/llm-mcp-reference/mode-a/mcp.json.example
+need apps/llm-mcp-reference/mode-a/prepare.sh
+need apps/llm-mcp-reference/mode-a/serve.sh
+if ! rg -q 'TRAVERSE_MCP_CACHE_ROOT' "$ROOT/apps/llm-mcp-reference/mode-a/mcp.json.example"; then
+  echo "FAIL: mode-a mcp example must set TRAVERSE_MCP_CACHE_ROOT"
+  fail=1
+fi
+if ! rg -q '119-verified-registry-mcp-mode-a|Spec 119' "$ROOT/apps/llm-mcp-reference/mode-a/README.md"; then
+  echo "FAIL: mode-a README must cite Spec 119"
+  fail=1
+fi
+if ! rg -qi 'not yet shipped|Mode A host not yet|fail' "$ROOT/apps/llm-mcp-reference/mode-a/serve.sh"; then
+  echo "FAIL: mode-a serve.sh must fail closed until Traverse Mode A host ships"
+  fail=1
+fi
+if rg -qi 'stdio' "$ROOT/apps/llm-mcp-reference/mode-a/serve.sh" && ! rg -q 'Do NOT silently fall back to expedition stdio' "$ROOT/apps/llm-mcp-reference/mode-a/serve.sh"; then
+  echo "FAIL: mode-a serve.sh must not silently fall back to expedition stdio"
+  fail=1
+fi
+if rg -q 'APP_REFS_MATERIALIZE_REGISTRY_REFS|sync_bundle_materialize_registry_refs' "$ROOT/apps/llm-mcp-reference/mode-a"; then
+  echo "FAIL: mode-a must not depend on App-Refs materialize rewrite"
+  fail=1
+fi
 # Mode B scaffold (Spec 520 prepare/cache — fail-closed until Traverse host ships)
 need apps/llm-mcp-reference/mode-b/README.md
 need apps/llm-mcp-reference/mode-b/mcp.json.example
