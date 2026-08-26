@@ -28,6 +28,7 @@
     <Compile Include="..\TraverseStarter\AppConstants.cs" Link="AppConstants.cs" />
     <Compile Include="..\TraverseStarter\Models.cs" Link="Models.cs" />
     <Compile Include="..\TraverseStarter\ISettingsRepository.cs" Link="ISettingsRepository.cs" />
+    <Compile Include="..\TraverseStarter\PresentationMapper.cs" Link="PresentationMapper.cs" />
     <Compile Include="..\TraverseStarter\EmbeddedHost.cs" Link="EmbeddedHost.cs" />
     <Compile Include="..\TraverseStarter\ExecutionViewModel.cs" Link="ExecutionViewModel.cs" />
   </ItemGroup>
