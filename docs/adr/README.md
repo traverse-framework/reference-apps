@@ -18,5 +18,6 @@ ADRs for material UI-layer and reference-app choices in this repo.
 | [0003](0003-loop-wasm-from-registry-only.md) | Loop WASM only from Traverse registry | Accepted |
 | [0004](0004-demo-retire-delete-with-scrub.md) | Retire demos by delete + docs/CI scrub | Accepted |
 | [0005](0005-platform-bar-loop-all-os.md) | Loop all-OS bar; meeting-notes natives follow-up | Accepted |
+| [0006](0006-two-app-reuse-contract.md) | Shared `meeting-notes.process` 1.3.2 for meeting-notes + Loop | Accepted |
 
 Related: [`../decision-log.md`](../decision-log.md), [`../specs/README.md`](../specs/README.md).

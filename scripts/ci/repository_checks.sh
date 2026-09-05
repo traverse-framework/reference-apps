@@ -33,6 +33,9 @@ check "docs/kit-runner-persona.md"             "Kit-runner persona bar"
 check "docs/new-app-author.md"                 "New-app author persona"
 check "docs/production-packaging.md"           "Production packaging / registry_ref contract"
 check "docs/app-manifest-schema.md"            "Application bundle manifest schema"
+check "docs/two-app-reuse-contract.md"         "Two-app reuse contract"
+check "docs/adr/0006-two-app-reuse-contract.md" "ADR 0006 two-app reuse contract"
+check "scripts/ci/two_app_reuse_contract_check.sh" "Two-app reuse contract check"
 
 # Platform clients
 check "apps/traverse-starter/ios-swift/TraverseStarter.xcodeproj" "ios-swift Xcode project"
