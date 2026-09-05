@@ -39,8 +39,8 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `retire-registry-ref-materialize-hosts` | **Future** | Full materialize delete after BundleEmbedder + Spec 107 |
 | `meeting-notes-remaining-natives` | **Done** (#236) | Shipped via `meeting-notes-wave2-os-ports` |
 | `llm-mcp-embedded-host` | **Blocked** | Scaffold Done (#268); live Mode B host → Traverse #865 |
-| `two-app-reuse-contract` | **In Progress** (#281) | Pin `meeting-notes.process` 1.3.2 for meeting-notes + loop |
-| `two-app-reuse-execute` | **Blocked** | Wait on `#281` merge — align pins + execution evidence (Traverse #1168) |
+| `two-app-reuse-contract` | **Done** (#285) | Pin `meeting-notes.process` 1.3.2 for meeting-notes + loop |
+| `two-app-reuse-execute` | **In Progress** (#282) | Align pins + CLI execute evidence (Traverse #1168) |
 | `two-app-reuse-lifecycle` | **Blocked** | After `#282` — upgrade/deprecation outcomes |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).

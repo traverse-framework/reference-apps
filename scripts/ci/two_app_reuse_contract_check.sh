@@ -73,12 +73,23 @@ for name, comp in (("meeting-notes", mn_comp), ("loop", loop_comp)):
         if comp.get(local):
             fail(f"{name} source component has local {local}")
 
-loop_digest = None
-for component in loop_app.get("components") or []:
-    if component.get("component_id") == "loop.process-component":
-        loop_digest = component.get("digest")
-if loop_digest != "$PIN_DIGEST":
-    fail(f"loop app digest {loop_digest!r} != required pin")
+def component_digest(app: dict, component_id: str):
+    for component in app.get("components") or []:
+        if component.get("component_id") == component_id:
+            return component.get("digest")
+    return None
+
+for name, app, component_id, ref in (
+    ("meeting-notes", mn_app, "meeting-notes.process-component", mn_comp),
+    ("loop", loop_app, "loop.process-component", loop_comp),
+):
+    digest = component_digest(app, component_id)
+    if digest != "$PIN_DIGEST":
+        fail(f"{name} app digest {digest!r} != required pin")
+    if ref.get("capability_version") != "1.3.2":
+        fail(f"{name} capability_version={ref.get('capability_version')!r}")
+    if (ref.get("registry_ref") or {}).get("version_range") != "1.3.2":
+        fail(f"{name} version_range={(ref.get('registry_ref') or {}).get('version_range')!r}")
 
 if failed:
     sys.exit(1)

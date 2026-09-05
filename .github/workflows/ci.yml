@@ -139,6 +139,16 @@ jobs:
         working-directory: apps/loop
         run: cargo test -p loop-core-rs -p loop-cli
 
+      - name: Install wasmtime
+        uses: bytecodealliance/actions/wasmtime/setup@v1
+        with:
+          version: "25.0.3"
+
+      - name: Two-app reuse execute evidence
+        env:
+          TRAVERSE_REPO: ${{ github.workspace }}/.traverse-checkout
+        run: bash scripts/ci/two_app_reuse_execute.sh
+
   pr-hygiene:
     if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest

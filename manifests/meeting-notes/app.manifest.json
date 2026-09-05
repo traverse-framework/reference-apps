@@ -10,7 +10,7 @@
     {
       "component_id": "meeting-notes.process-component",
       "version": "1.0.0",
-      "digest": "sha256:5647c39a1d25d8728350f9619025292a62e78a602068a2ad9b6f075751c93d99",
+      "digest": "sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2",
       "manifest_path": "components/process/component.manifest.json"
     }
   ],
@@ -18,7 +18,7 @@
     {
       "workflow_id": "meeting-notes.process",
       "workflow_version": "1.0.0",
-      "path": "_traverse/workflows/examples/meeting-notes/process/workflow.json"
+      "path": "workflows/process/workflow.json"
     }
   ],
   "model_dependencies": [],

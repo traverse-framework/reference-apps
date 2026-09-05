@@ -45,3 +45,4 @@ link_app() {
 link_app "traverse-starter"
 link_app "doc-approval"
 link_app "meeting-notes"
+link_app "loop"

@@ -7,7 +7,7 @@
   "registry_ref": {
     "namespace": "meeting-notes",
     "id": "meeting-notes.process",
-    "version_range": "^1.3.0"
+    "version_range": "1.3.2"
   },
   "runtime_constraints": {
     "host_api_access": "none",
