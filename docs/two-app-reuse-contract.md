@@ -86,11 +86,10 @@ Source manifests now carry the exact pin (`version_range` `1.3.2`, app digest `s
 
 ```bash
 bash scripts/ci/two_app_reuse_contract_check.sh
-export TRAVERSE_REPO=/path/to/Traverse
 bash scripts/ci/two_app_reuse_execute.sh
 ```
 
-`two_app_reuse_execute.sh` prepares both dest trees from the published 1.3.2 fixture (not the Traverse 1.0.1 example wasm) and executes those bytes with wasmtime. BundleEmbedder 0.8.1 still reports `registered artifact execution failed` for this WASI `proc_exit(0)` agent — host `cargo run -p meeting-notes-cli -- submit` is not the evidence path until Traverse treats successful `proc_exit` as success.
+`two_app_reuse_execute.sh` prepares both dest trees from the published 1.3.2 fixture only (no `$TRAVERSE_REPO` example trees — CI’s Traverse v0.8.2 checkout has no `examples/core-*` WASM). It then executes those bytes with wasmtime. BundleEmbedder 0.8.1 still reports `registered artifact execution failed` for this WASI `proc_exit(0)` agent — host `cargo run -p meeting-notes-cli -- submit` is not the evidence path until Traverse treats successful `proc_exit` as success.
 
 ## Downstream
 

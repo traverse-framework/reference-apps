@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Execute meeting-notes + loop against the same pinned meeting-notes.process 1.3.2 artifact.
-# Ticket: two-app-reuse-execute (Traverse #1168).
+# Ticket: two-app-reuse-execute / two-app-reuse-execute-ci (Traverse #1168).
 #
-# Prepare (may use TRAVERSE_REPO + the checked-in published fixture) then execute
-# both CLI hosts with no further network. Fails closed if the verified pin is missing
+# Prepare from the checked-in published fixture only — do not require TRAVERSE_REPO
+# example trees (CI native-linux checks out Traverse v0.8.2, which has no core-* WASM).
+# Then execute both dest copies with wasmtime. Fails closed if the pin is missing
 # or the two consumers disagree.
 set -euo pipefail
 
 REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
-TRAVERSE_REPO="${TRAVERSE_REPO:-$REPO_ROOT/../Traverse}"
 PREP="${TWO_APP_REUSE_PREP:-/tmp/app-refs-two-app-reuse}"
 FIXTURE_DIR="$REPO_ROOT/scripts/ci/fixtures/two-app-reuse"
 PIN_JSON="$FIXTURE_DIR/pin.json"
@@ -19,30 +19,27 @@ if [ ! -f "$PIN_JSON" ]; then
   echo "FAIL: missing $PIN_JSON" >&2
   exit 1
 fi
-if [ ! -d "$TRAVERSE_REPO/examples/meeting-notes" ]; then
-  echo "FAIL: TRAVERSE_REPO missing meeting-notes examples: $TRAVERSE_REPO" >&2
-  echo "      export TRAVERSE_REPO=/path/to/Traverse (CI checks out v0.8.2+)." >&2
-  exit 1
-fi
 if ! command -v wasmtime >/dev/null 2>&1; then
   echo "FAIL: wasmtime is required to execute the published WASI artifact" >&2
   echo "      install: https://wasmtime.dev/ (CI uses bytecodealliance/actions/wasmtime/setup)" >&2
   exit 1
 fi
 
-export REPO_ROOT TRAVERSE_REPO PREP FIXTURE_DIR PIN_JSON TRANSCRIPT EVIDENCE_OUT
+export REPO_ROOT PREP FIXTURE_DIR PIN_JSON TRANSCRIPT EVIDENCE_OUT
 
 python3 - <<'PY'
 import hashlib, json, os, shutil, pathlib
 
 repo = pathlib.Path(os.environ["REPO_ROOT"])
-traverse = pathlib.Path(os.environ["TRAVERSE_REPO"])
 prep = pathlib.Path(os.environ["PREP"])
 fixture_dir = pathlib.Path(os.environ["FIXTURE_DIR"])
 pin = json.loads(pathlib.Path(os.environ["PIN_JSON"]).read_text())
 wasm_src = fixture_dir / pin["file"]
+contract_src = fixture_dir / pin.get("contract_file", "meeting-notes.process-1.3.2.contract.json")
 if not wasm_src.is_file():
     raise SystemExit(f"FAIL: missing fixture {wasm_src}")
+if not contract_src.is_file():
+    raise SystemExit(f"FAIL: missing contract fixture {contract_src}")
 data = wasm_src.read_bytes()
 digest = "sha256:" + hashlib.sha256(data).hexdigest()
 if digest != pin["digest"]:
@@ -54,67 +51,42 @@ if prep.exists():
     shutil.rmtree(prep)
 prep.mkdir(parents=True)
 
-KNOWN = {
-    ("meeting-notes", "meeting-notes.process"): {
-        "wasm": "examples/meeting-notes/process-agent/artifacts/process-agent.wasm",
-        "contract": "contracts/examples/meeting-notes/capabilities/process/contract.json",
-        "overlay": wasm_src,
-        "overlay_contract": fixture_dir / "meeting-notes.process-1.3.2.contract.json",
-    },
-    ("core", "core.extract-action-items"): {
-        "wasm": "examples/core-extract-action-items/artifacts/core-extract-action-items.wasm",
-        "contract": "examples/core-extract-action-items/contract.json",
-    },
-    ("core", "core.normalize-participants"): {
-        "wasm": "examples/core-normalize-participants/artifacts/core-normalize-participants.wasm",
-        "contract": "examples/core-normalize-participants/contract.json",
-    },
-    ("core", "core.authorize"): {
-        "wasm": "examples/core-authorize/artifacts/core-authorize.wasm",
-        "contract": "examples/core-authorize/contract.json",
-    },
-}
+SHARED = ("meeting-notes", "meeting-notes.process")
+
 
 def materialize(app_id: str) -> pathlib.Path:
     dest = prep / app_id
     shutil.copytree(repo / "manifests" / app_id, dest, ignore=shutil.ignore_patterns("_traverse"))
-    (dest / "_traverse").symlink_to(traverse)
     components_root = dest / "components"
+    prepared = 0
     for comp_path in sorted(components_root.glob("*/component.manifest.json")):
         payload = json.loads(comp_path.read_text())
-        ref = payload.get("registry_ref")
-        if not ref:
-            continue
+        ref = payload.get("registry_ref") or {}
         key = (ref.get("namespace"), ref.get("id"))
-        mapping = KNOWN.get(key)
-        if mapping is None:
-            raise SystemExit(f"FAIL: no prepare mapping for {key} in {comp_path}")
-        abs_contract = mapping.get("overlay_contract") or (traverse / mapping["contract"])
-        if not pathlib.Path(abs_contract).is_file():
-            raise SystemExit(f"FAIL: missing contract {abs_contract}")
-        dest_rel_wasm = f"_traverse-cache/{key[1]}.wasm"
-        dest_rel_contract = f"_traverse-cache/{key[1]}.contract.json"
+        if key != SHARED:
+            continue
+        dest_rel_wasm = "_traverse-cache/meeting-notes.process.wasm"
+        dest_rel_contract = "_traverse-cache/meeting-notes.process.contract.json"
         dest_wasm = dest / dest_rel_wasm
         dest_contract = dest / dest_rel_contract
         dest_wasm.parent.mkdir(parents=True, exist_ok=True)
-        src_wasm = mapping.get("overlay") or (traverse / mapping["wasm"])
-        if not pathlib.Path(src_wasm).is_file():
-            raise SystemExit(f"FAIL: missing wasm {src_wasm}")
-        shutil.copyfile(src_wasm, dest_wasm)
-        shutil.copyfile(abs_contract, dest_contract)
+        shutil.copyfile(wasm_src, dest_wasm)
+        shutil.copyfile(contract_src, dest_contract)
         wasm_digest = "sha256:" + hashlib.sha256(dest_wasm.read_bytes()).hexdigest()
-        if key == ("meeting-notes", "meeting-notes.process") and wasm_digest != pin["digest"]:
+        if wasm_digest != pin["digest"]:
             raise SystemExit(f"FAIL: {app_id} shared wasm digest {wasm_digest} != pin")
-        # Embedder resolves contract/wasm paths relative to the component manifest.
         rel_from_comp = pathlib.Path(os.path.relpath(dest_wasm, comp_path.parent)).as_posix()
         rel_contract_from_comp = pathlib.Path(os.path.relpath(dest_contract, comp_path.parent)).as_posix()
         payload.pop("registry_ref", None)
         payload["contract_path"] = rel_contract_from_comp
         payload["wasm_binary_path"] = rel_from_comp
         payload["wasm_digest"] = wasm_digest
-        payload["capability_version"] = payload.get("capability_version") or pin["release_version"]
+        payload["capability_version"] = pin["release_version"]
         comp_path.write_text(json.dumps(payload, indent=2) + "\n")
+        prepared += 1
         print(f"OK: prepared {app_id} {key[1]} {wasm_digest}")
+    if prepared != 1:
+        raise SystemExit(f"FAIL: {app_id} expected 1 shared component, prepared {prepared}")
     return dest
 
 mn = materialize("meeting-notes")
@@ -130,13 +102,9 @@ loop = materialize("loop")
     )
     + "\n"
 )
-print("OK: prepare complete (offline after this point)")
+print("OK: prepare complete (fixture-only; no TRAVERSE_REPO examples)")
 PY
 
-# Execute the prepared published artifact for each consumer (stdin JSON → stdout JSON).
-# BundleEmbedder 0.8.1 still maps WASI proc_exit(0) to "registered artifact execution failed";
-# wasmtime is the same WASI engine family the embedder uses and is the fail-closed proof
-# that both dest trees hold a runnable copy of the pin.
 echo "=== execute prepared meeting-notes.process (meeting-notes dest) ==="
 printf '%s' "{\"transcript\":$(python3 -c 'import json,os; print(json.dumps(os.environ["TRANSCRIPT"]))')}" \
   | wasmtime run "$PREP/meeting-notes/_traverse-cache/meeting-notes.process.wasm" \
@@ -168,7 +136,6 @@ loop_digest = wasm_digest("loop")
 if mn_digest != pin["digest"] or loop_digest != pin["digest"]:
     raise SystemExit(f"FAIL: digest mismatch mn={mn_digest} loop={loop_digest} pin={pin['digest']}")
 
-# 1.3.2 reads the transcript; 1.0.1 fixture does not mention Bob.
 mn_blob = json.dumps(mn)
 if "Bob" not in mn_blob:
     raise SystemExit("FAIL: output does not reflect transcript (possible 1.0.1 fixture)")
