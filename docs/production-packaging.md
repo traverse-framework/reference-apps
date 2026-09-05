@@ -165,6 +165,8 @@ If sync has not run, registration must fail with a stable error that `traverse-c
 
 **Primary cutover (landed):** all six kit components via `registry-ref-starter-process` + `registry-ref-full-kit-cutover`.
 
+**Two-app reuse pin (Traverse #1168):** `meeting-notes` and `loop` share exact `meeting-notes.process` `1.3.2` — see [`two-app-reuse-contract.md`](two-app-reuse-contract.md). Do not use a floating `^` range for that shared pin.
+
 ## Agent / playbook rules
 
 - Do **not** reintroduce local `contract_path` / `wasm_*` on checked-in primary `manifests/` components.

@@ -365,3 +365,22 @@ Append-only record of design decisions for App-References. Newest sessions at th
 **Decision:** Ship `docs/new-app-author.md`, `scripts/ci/remap_app_new_to_kit.sh`, and `scripts/ci/new_app_author_check.sh`. First slice reuses `traverse-starter.pipeline` / `registry_ref`. Won’t Fix: renaming Traverse `app new` output in this repo.
 
 **Why:** Constitution: no invented business fields. Empty `app new` is not a product app. Web is the one OS in this slice; more OS uses add-platform-client after Web works.
+
+---
+
+## 2026-09-05 — Two-app reuse contract (Traverse #1168)
+
+**Context:** Traverse #1168 needs evidence that a published capability is a reusable platform unit. App-References already has two independent apps that name `meeting-notes.process`, but they can resolve different artifacts.
+
+**Question:** Which published capability and which two apps should the immutable-release proof use?
+
+**Options considered:**
+- `meeting-notes.process` consumed by `meeting-notes` + `loop` — pros: distinct product workflows; Loop already pins 1.3.2; I/O schema compatible; cons: meeting-notes still on the 1.0.0 digest until `#282`
+- `traverse-starter.process` + a second kit shell — pros: familiar kit; cons: no second independent product purpose
+- `core.extract-action-items` + meeting-notes — pros: published core cap; cons: meeting-notes has no extract step
+
+**Recommendation:** `meeting-notes.process` 1.3.2 for meeting-notes + Loop.
+
+**Decision:** Exact pin `1.3.2` / digest `sha256:ec192a0c…` for both apps. Record in [`two-app-reuse-contract.md`](two-app-reuse-contract.md) and ADR [`0006`](adr/0006-two-app-reuse-contract.md). No manifest alignment in this ticket.
+
+**Why:** Same capability already sits on two `app_id` boundaries with different user-facing purposes. Floating `^` ranges are exactly what #1168 forbids.

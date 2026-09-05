@@ -20,6 +20,9 @@ jobs:
       - name: New-app author remap
         run: bash scripts/ci/new_app_author_check.sh
 
+      - name: Two-app reuse contract
+        run: bash scripts/ci/two_app_reuse_contract_check.sh
+
   quality:
     runs-on: ubuntu-latest
 
