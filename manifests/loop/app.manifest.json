@@ -36,7 +36,7 @@
     {
       "workflow_id": "loop.wf1",
       "workflow_version": "1.0.0",
-      "path": "_traverse/workflows/examples/loop/wf1/workflow.json"
+      "path": "workflows/wf1/workflow.json"
     }
   ],
   "model_dependencies": [],

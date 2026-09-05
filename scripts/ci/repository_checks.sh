@@ -36,6 +36,10 @@ check "docs/app-manifest-schema.md"            "Application bundle manifest sche
 check "docs/two-app-reuse-contract.md"         "Two-app reuse contract"
 check "docs/adr/0006-two-app-reuse-contract.md" "ADR 0006 two-app reuse contract"
 check "scripts/ci/two_app_reuse_contract_check.sh" "Two-app reuse contract check"
+check "scripts/ci/two_app_reuse_execute.sh"        "Two-app reuse execute evidence"
+check "scripts/ci/fixtures/two-app-reuse/pin.json" "Two-app reuse pin fixture"
+check "scripts/ci/fixtures/two-app-reuse/meeting-notes.process-1.3.2.wasm" "Two-app reuse published wasm"
+check "scripts/ci/fixtures/two-app-reuse/meeting-notes.process-1.3.2.contract.json" "Two-app reuse published contract"
 
 # Platform clients
 check "apps/traverse-starter/ios-swift/TraverseStarter.xcodeproj" "ios-swift Xcode project"
@@ -98,6 +102,7 @@ check "apps/meeting-notes/meeting-notes-core-rs/Cargo.toml"             "meeting
 check "apps/meeting-notes/Cargo.toml"                                   "meeting-notes Cargo workspace"
 check "manifests/meeting-notes/app.manifest.json"                       "meeting-notes app manifest"
 check "manifests/meeting-notes/components/process/component.manifest.json" "meeting-notes process component"
+check "manifests/meeting-notes/workflows/process/workflow.json"         "meeting-notes process workflow"
 
 # loop clients (WF1 — Spec 003)
 check "apps/loop/web-react/package.json"                       "loop web-react package"

@@ -80,16 +80,17 @@ Host pin (`runtime/runtime.wasm`) is orthogonal — follow [`runtime-bundle-sync
 
 Platform sync may still rewrite destination bundles from `$TRAVERSE_REPO` example paths (`scripts/ci/sync_bundle_core.sh` `KNOWN` map for `("meeting-notes", "meeting-notes.process")`). That is a packaging workaround (`retire-registry-ref-materialize-hosts`, Future — BundleEmbedder + Spec 107). It is **not** permission to treat the Traverse example tree as a different capability. Execution evidence (`#282`) must assert the published digest above after prepare, and fail if a consumer runs a different artifact.
 
-## Current drift (this ticket does not change manifests)
+## Manifest alignment (`two-app-reuse-execute`)
 
-| Consumer | Today | Required by this contract |
-|---|---|---|
-| Loop component | `capability_version` `1.3.2`, `version_range` `^1.3.0`, app digest `sha256:ec192a0c…` | Exact `1.3.2` + same digest (tighten range only) |
-| meeting-notes component | `capability_version` `1.0.0`, `version_range` `^1.0.0`, app digest `sha256:5647c39a…` (registry **1.0.0** artifact) | Realign to `1.3.2` + `sha256:ec192a0c…` |
+Source manifests now carry the exact pin (`version_range` `1.3.2`, app digest `sha256:ec192a0c…`) on both apps. Traverse example `process-agent.wasm` is still the 1.0.1 fixture (`sha256:bddc4423…`); do **not** execute that. The evidence command overlays the published 1.3.2 fixture from `scripts/ci/fixtures/two-app-reuse/`.
 
-I/O schema is compatible (`transcript` in; `action_items` / `decisions` / `follow_ups` / `summary` out). Meeting-notes UI does not need new business fields to consume 1.3.2.
+```bash
+bash scripts/ci/two_app_reuse_contract_check.sh
+export TRAVERSE_REPO=/path/to/Traverse
+bash scripts/ci/two_app_reuse_execute.sh
+```
 
-`1.0.1` is a fixed-output fixture (does not read the transcript). Do not use it for this proof.
+`two_app_reuse_execute.sh` prepares both dest trees from the published 1.3.2 fixture (not the Traverse 1.0.1 example wasm) and executes those bytes with wasmtime. BundleEmbedder 0.8.1 still reports `registered artifact execution failed` for this WASI `proc_exit(0)` agent — host `cargo run -p meeting-notes-cli -- submit` is not the evidence path until Traverse treats successful `proc_exit` as success.
 
 ## Downstream
 
