@@ -40,7 +40,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `meeting-notes-remaining-natives` | **Done** (#236) | Shipped via `meeting-notes-wave2-os-ports` |
 | `llm-mcp-embedded-host` | **Blocked** | Scaffold Done (#268); live Mode B host → Traverse #865 |
 | `two-app-reuse-contract` | **Done** (#285) | Pin `meeting-notes.process` 1.3.2 for meeting-notes + loop |
-| `two-app-reuse-execute` | **In Progress** (#282) | Align pins + CLI execute evidence (Traverse #1168) |
+| `two-app-reuse-execute` | **Done** (#286) | Align pins + wasmtime evidence; CI fixture-only follow-up `two-app-reuse-execute-ci` |
 | `two-app-reuse-lifecycle` | **Blocked** | After `#282` — upgrade/deprecation outcomes |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
