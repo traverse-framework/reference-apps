@@ -94,7 +94,7 @@ v1 documents **Mode A** only. Do not revive HTTP `traverse-cli serve` as the pro
 | `llm-mcp-mode-a-spec119-scaffold` | Spec 119 Mode A consumer (fail-closed serve + prepare + MCP example) | Done (#271) |
 | `llm-mcp-traverse-starter-catalog` | Discover/execute kit capabilities (`traverse-starter.*` / meeting-notes) via Mode A public registry discovery | Blocked — Spec [`119-verified-registry-mcp-mode-a`](https://github.com/traverse-framework/Traverse/blob/main/specs/119-verified-registry-mcp-mode-a/spec.md) **Approved**; implement Traverse [#1241](https://github.com/traverse-framework/Traverse/issues/1241). v0.10.0 remains expedition-only. First release has no kit content groups (FR-007). Registry [#99](https://github.com/traverse-framework/registry/issues/99) closed |
 | `llm-mcp-embedded-host` | Mode B embedded prepare/cache for MCP host | Scaffold Done (#268); live Mode B host blocked on Traverse [#1242](https://github.com/traverse-framework/Traverse/issues/1242) (Spec 520 host CLI; Mode B out of Mode A spec #1125) |
-| `llm-mcp-0-10-live-cutover` | Re-verify Mode A kit execute + Mode B host after Traverse v0.10.0 pin | **Done** — pin (#292); no live kit/Mode B on tag; blockers [#1241](https://github.com/traverse-framework/Traverse/issues/1241) / [#1242](https://github.com/traverse-framework/Traverse/issues/1242) |
+| `llm-mcp-0-10-live-cutover` | Re-verify Mode A kit execute + Mode B host after Traverse v0.10.0 pin | **Blocked** — pin Done (#292); Mode A kit execute missing on tag → [#1241](https://github.com/traverse-framework/Traverse/issues/1241); Mode B host → [#1242](https://github.com/traverse-framework/Traverse/issues/1242) |
 
 ## Success criteria (plan slice)
 
