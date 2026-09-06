@@ -13,7 +13,7 @@ Traverse #1168 requires proof that a published capability is a reusable platform
 
 Pin **both** `meeting-notes` and `loop` to public `meeting-notes.process` **1.3.2** (`registry_ref.version_range` exactly `1.3.2`, artifact digest `sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2`). Full pin, host routes, and current drift: [`../two-app-reuse-contract.md`](../two-app-reuse-contract.md).
 
-This ADR does not implement alignment or execution. `#286` applies the pin and produces evidence. `#283` (`two-app-reuse-lifecycle`) covers fixture-level upgrade/deprecation outcomes (Ready — see decision-log 2026-09-05).
+This ADR does not implement alignment or execution. `#286` applies the pin and produces evidence. `#283` (`two-app-reuse-lifecycle`) covers fixture-level upgrade/deprecation outcomes (Done — fixture-only; not production release-train; not BundleEmbedder — see decision-log 2026-09-05 and `docs/two-app-reuse-contract.md` Lifecycle section).
 
 ## Consequences
 

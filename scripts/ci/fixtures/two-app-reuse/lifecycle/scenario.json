@@ -1,0 +1,38 @@
+{
+  "ticket_id": "two-app-reuse-lifecycle",
+  "upstream": "https://github.com/traverse-framework/Traverse/issues/1168",
+  "baseline_pin": "1.3.2",
+  "target_pin": "1.4.0-fixture",
+  "apps": ["meeting-notes", "loop"],
+  "pin_flip": {
+    "meeting-notes": {
+      "choice": "advance",
+      "from": "1.3.2",
+      "to": "1.4.0-fixture",
+      "compatibility_rationale": "Standalone meeting-notes adopts the fixture next exact pin when the stand-in release is digest-compatible with the shared baseline (same sha256 as 1.3.2)."
+    },
+    "loop": {
+      "choice": "remain",
+      "from": "1.3.2",
+      "to": "1.3.2",
+      "compatibility_rationale": "Loop WF1 keeps the validated shared 1.3.2 pin until a real registry next release and BundleEmbedder host proof exist; remain is an explicit per-app choice, not a floating range."
+    }
+  },
+  "deprecation": {
+    "deprecated_release": "1.3.2",
+    "fixture_lifecycle_after": "deprecated",
+    "supported_responses": ["migrate", "continue_pinning", "fail_closed"],
+    "responses": {
+      "meeting-notes": {
+        "response": "migrate",
+        "resolved_pin": "1.4.0-fixture",
+        "rationale": "When the baseline pin is fixture-deprecated, meeting-notes migrates to the stand-in next pin already chosen at pin-flip."
+      },
+      "loop": {
+        "response": "continue_pinning",
+        "resolved_pin": "1.3.2",
+        "rationale": "Loop continues pinning the immutable digest while recording fixture deprecation; continue_pinning is a supported consumer response (not invented registry policy)."
+      }
+    }
+  }
+}
