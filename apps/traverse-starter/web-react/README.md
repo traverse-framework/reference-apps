@@ -39,3 +39,5 @@ npm run test:coverage
 ```
 
 Open `http://localhost:5173`. When the embedded host is ready, submit a note and confirm runtime-owned fields render in the output panel.
+
+**Session presentation:** Spec 001/002 fields update from each subscribed embedder event during submit (not a local timer). Because `submit` is synchronous, React may batch paints — a visible `loading` flash is not guaranteed; unit tests assert mid-stream `loading` via the presentation callback.

@@ -8,12 +8,20 @@ import {
   submitNote,
   type HostRunResult,
   type RuntimeStatus,
+  type SessionPresentation,
   type TraceEvent,
   type TraverseEmbedderApi,
 } from './host/embeddedHost'
 import { type TraverseStarterOutput } from './client/traverseOutput'
 
 const NOTE_MAX_LENGTH = 2000
+
+const IDLE_PRESENTATION: SessionPresentation = {
+  presentationState: 'idle',
+  presentationError: null,
+  capabilityProgress: [],
+  activeCapabilityId: null,
+}
 
 export interface AppProps {
   /** Injected embedder for tests; when omitted, production BundleEmbedder.init runs. */
@@ -27,6 +35,7 @@ function App({ embedder: injectedEmbedder }: AppProps = {}) {
   const [prodEmbedder, setProdEmbedder] = useState<TraverseEmbedderApi | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<HostRunResult | null>(null)
+  const [livePresentation, setLivePresentation] = useState<SessionPresentation | null>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
   const embedder = injected ? injectedEmbedder : prodEmbedder
@@ -58,8 +67,13 @@ function App({ embedder: injectedEmbedder }: AppProps = {}) {
       if (!canSubmit || !embedder) return
       setSubmitting(true)
       setResult(null)
+      setLivePresentation(IDLE_PRESENTATION)
       try {
-        setResult(submitNote(embedder, note))
+        setResult(
+          submitNote(embedder, note, (presentation) => {
+            setLivePresentation(presentation)
+          }),
+        )
       } finally {
         setSubmitting(false)
       }
@@ -79,11 +93,14 @@ function App({ embedder: injectedEmbedder }: AppProps = {}) {
   }
 
   const parsed: TraverseStarterOutput | null = result?.output ?? null
-  const displayError = result?.error ?? null
+  const displayError = result?.error ?? livePresentation?.presentationError ?? null
   const trace: TraceEvent[] = result?.events ?? []
-  const presentationState = result?.presentationState ?? null
-  const activeCapability = result?.activeCapabilityId ?? null
-  const capabilityProgress = result?.capabilityProgress ?? []
+  const presentationState =
+    livePresentation?.presentationState ?? result?.presentationState ?? null
+  const activeCapability =
+    livePresentation?.activeCapabilityId ?? result?.activeCapabilityId ?? null
+  const capabilityProgress =
+    livePresentation?.capabilityProgress ?? result?.capabilityProgress ?? []
   const statusLabel =
     runtimeStatus === 'ready' ? 'Ready' : runtimeStatus === 'unavailable' ? 'Unavailable' : 'Starting'
 

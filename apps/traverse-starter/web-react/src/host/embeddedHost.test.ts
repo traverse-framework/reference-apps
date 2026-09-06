@@ -4,6 +4,7 @@ import {
   createTestEmbedder,
   submitNote,
   initProductionEmbedder,
+  observeSessionPresentation,
   DEFAULT_WORKFLOW_ID,
   RUNTIME_MODE_EMBEDDED,
 } from './embeddedHost'
@@ -50,6 +51,51 @@ describe('embeddedHost', () => {
     expect(result.events.length).toBeGreaterThan(0)
     expect(result.presentationState).toBe('loaded')
     expect(result.capabilityProgress.length).toBeGreaterThan(0)
+  })
+
+  it('submitNote notifies presentation after each subscribed event', () => {
+    const output = {
+      validate: { valid: true, issues: [] as string[] },
+      process: {
+        title: 'Hello',
+        tags: ['a'],
+        noteType: 'note',
+        suggestedNextAction: 'next',
+        status: 'ok',
+      },
+      summarize: { summary: 'Sum', wordCount: 1 },
+    }
+    const embedder = createTestEmbedder(output)
+    const states: string[] = []
+    const result = submitNote(embedder, 'note text', (presentation) => {
+      states.push(presentation.presentationState)
+    })
+    expect(states).toContain('loading')
+    expect(states.at(-1)).toBe('loaded')
+    expect(result.presentationState).toBe('loaded')
+  })
+
+  it('observeSessionPresentation starts idle and updates after submit', () => {
+    const output = {
+      validate: { valid: true, issues: [] as string[] },
+      process: {
+        title: 'Hello',
+        tags: ['a'],
+        noteType: 'note',
+        suggestedNextAction: 'next',
+        status: 'ok',
+      },
+      summarize: { summary: 'Sum', wordCount: 1 },
+    }
+    const embedder = createTestEmbedder(output)
+    const states: string[] = []
+    observeSessionPresentation(embedder, (presentation) => {
+      states.push(presentation.presentationState)
+    })
+    expect(states.at(-1)).toBe('idle')
+    submitNote(embedder, 'note text')
+    expect(states).toContain('loading')
+    expect(states.at(-1)).toBe('loaded')
   })
 
   it('submitNote surfaces scripted execution errors', () => {
