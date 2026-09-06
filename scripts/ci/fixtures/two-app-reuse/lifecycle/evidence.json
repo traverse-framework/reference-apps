@@ -1,0 +1,83 @@
+{
+  "ticket_id": "two-app-reuse-lifecycle",
+  "upstream": "https://github.com/traverse-framework/Traverse/issues/1168",
+  "scope": "fixture-only",
+  "non_claims": [
+    "Not a production registry release-train proof.",
+    "Not a BundleEmbedder / host-CLI execute proof (see two-app-reuse-host-execute / Traverse #1240).",
+    "App-References does not author meeting-notes.process WASM or invent registry deprecation policy."
+  ],
+  "shared_capability_id": "meeting-notes.process",
+  "baseline": {
+    "release_version": "1.3.2",
+    "digest": "sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2",
+    "lifecycle_before": "active",
+    "lifecycle_after_deprecation_step": "deprecated"
+  },
+  "fixture_target": {
+    "release_version": "1.4.0-fixture",
+    "digest": "sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2",
+    "stand_in": true,
+    "note": "Fixture-only stand-in next exact pin. Same published artifact digest as 1.3.2 (registry 1.1.0\u20131.3.2 share that digest). Demonstrates consumer pin-flip without a new public publish."
+  },
+  "pin_flip": [
+    {
+      "app_id": "meeting-notes",
+      "choice": "advance",
+      "before": {
+        "release_version": "1.3.2",
+        "digest": "sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2"
+      },
+      "after": {
+        "release_version": "1.4.0-fixture",
+        "digest": "sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2"
+      },
+      "compatibility_rationale": "Standalone meeting-notes adopts the fixture next exact pin when the stand-in release is digest-compatible with the shared baseline (same sha256 as 1.3.2)."
+    },
+    {
+      "app_id": "loop",
+      "choice": "remain",
+      "before": {
+        "release_version": "1.3.2",
+        "digest": "sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2"
+      },
+      "after": {
+        "release_version": "1.3.2",
+        "digest": "sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2"
+      },
+      "compatibility_rationale": "Loop WF1 keeps the validated shared 1.3.2 pin until a real registry next release and BundleEmbedder host proof exist; remain is an explicit per-app choice, not a floating range."
+    }
+  ],
+  "deprecation": [
+    {
+      "app_id": "meeting-notes",
+      "response": "migrate",
+      "deprecated_release": "1.3.2",
+      "resolved_pin": {
+        "release_version": "1.4.0-fixture",
+        "digest": "sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2",
+        "lifecycle": "active"
+      },
+      "rationale": "When the baseline pin is fixture-deprecated, meeting-notes migrates to the stand-in next pin already chosen at pin-flip."
+    },
+    {
+      "app_id": "loop",
+      "response": "continue_pinning",
+      "deprecated_release": "1.3.2",
+      "resolved_pin": {
+        "release_version": "1.3.2",
+        "digest": "sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2",
+        "lifecycle": "deprecated"
+      },
+      "rationale": "Loop continues pinning the immutable digest while recording fixture deprecation; continue_pinning is a supported consumer response (not invented registry policy)."
+    }
+  ],
+  "assert": {
+    "both_apps_start_on_baseline": true,
+    "per_app_advance_or_remain_recorded": true,
+    "deprecation_responses_recorded": true,
+    "fixture_only": true,
+    "not_production_release_train": true,
+    "not_bundle_embedder_host_proof": true
+  }
+}

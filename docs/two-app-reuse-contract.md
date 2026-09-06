@@ -100,7 +100,36 @@ Host CLI execute via public `BundleEmbedder` (`meeting-notes-cli` / `loop-cli`) 
 | `#286` `two-app-reuse-execute` | Align meeting-notes pin; execute both apps; publish digest-equal evidence (Done) |
 | `#287` `two-app-reuse-execute-ci` | Fixture-only CI evidence (Done) |
 | `two-app-reuse-host-execute` | Public BundleEmbedder CLI execute — Blocked on Traverse #1240 |
-| `#283` `two-app-reuse-lifecycle` | **Ready** — fixture pin-flip + documented deprecation for the same pair (not BundleEmbedder; not production release-train). See `docs/decision-log.md` 2026-09-05 |
+| `#283` `two-app-reuse-lifecycle` | Fixture pin-flip + documented deprecation for the same pair (Done — fixture-only; **not** production release-train; **not** BundleEmbedder). See below and `docs/decision-log.md` 2026-09-05 |
+
+## Lifecycle (fixture-only) — `two-app-reuse-lifecycle`
+
+**Scope:** consumer upgrade/deprecation **outcomes** for the shared pin pair using checked-in fixtures under `scripts/ci/fixtures/two-app-reuse/lifecycle/`.
+
+**Non-claims (mandatory):**
+
+- This is **not** a production registry release-train proof (no new public `meeting-notes.process` publish required).
+- This is **not** a BundleEmbedder / `meeting-notes-cli` / `loop-cli` host proof (`two-app-reuse-host-execute` / Traverse #1240).
+- App-References does **not** author WASM or invent registry deprecation policy.
+
+### Fixture procedure
+
+1. Both apps start on shared pin `meeting-notes.process` **1.3.2** (digest `sha256:ec192a0c2104b08bee76418c5c6d44358036568d655d8465e506858d1aaadbf2` — same as `scripts/ci/fixtures/two-app-reuse/pin.json`).
+2. Fixture catalog introduces stand-in next exact pin `1.4.0-fixture` with the **same** published digest (registry `1.1.0`–`1.3.2` already share that artifact; the stand-in avoids inventing WASM).
+3. Per-app pin-flip choices (recorded in `lifecycle/scenario.json` + evidence):
+   - `meeting-notes` → **advance** to `1.4.0-fixture` (digest-compatible).
+   - `loop` → **remain** on `1.3.2` until a real next publish + host proof exist.
+4. Deprecation step marks fixture baseline `1.3.2` as deprecated. Supported consumer responses (no invented policy): **migrate** / **continue_pinning** / **fail_closed**.
+   - `meeting-notes` → **migrate** to `1.4.0-fixture`.
+   - `loop` → **continue_pinning** `1.3.2` (immutable digest; explicit awareness).
+
+```bash
+bash scripts/ci/two_app_reuse_lifecycle.sh
+# negative: unsupported deprecated-only resolution must fail closed
+bash scripts/ci/two_app_reuse_lifecycle.sh --case unsupported-deprecated-only  # exit non-zero
+```
+
+Evidence artifact: [`scripts/ci/fixtures/two-app-reuse/lifecycle/evidence.json`](../scripts/ci/fixtures/two-app-reuse/lifecycle/evidence.json).
 
 ## Re-verification
 

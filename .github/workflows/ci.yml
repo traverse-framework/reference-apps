@@ -23,6 +23,17 @@ jobs:
       - name: Two-app reuse contract
         run: bash scripts/ci/two_app_reuse_contract_check.sh
 
+      - name: Two-app reuse lifecycle (happy)
+        run: bash scripts/ci/two_app_reuse_lifecycle.sh
+
+      - name: Two-app reuse lifecycle (unsupported must fail)
+        run: |
+          if bash scripts/ci/two_app_reuse_lifecycle.sh --case unsupported-deprecated-only; then
+            echo "FAIL: unsupported-deprecated-only must exit non-zero" >&2
+            exit 1
+          fi
+          echo "OK: unsupported-deprecated-only failed closed"
+
   quality:
     runs-on: ubuntu-latest
 

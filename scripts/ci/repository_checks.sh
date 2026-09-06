@@ -37,9 +37,13 @@ check "docs/two-app-reuse-contract.md"         "Two-app reuse contract"
 check "docs/adr/0006-two-app-reuse-contract.md" "ADR 0006 two-app reuse contract"
 check "scripts/ci/two_app_reuse_contract_check.sh" "Two-app reuse contract check"
 check "scripts/ci/two_app_reuse_execute.sh"        "Two-app reuse execute evidence"
+check "scripts/ci/two_app_reuse_lifecycle.sh"      "Two-app reuse lifecycle check"
 check "scripts/ci/fixtures/two-app-reuse/pin.json" "Two-app reuse pin fixture"
 check "scripts/ci/fixtures/two-app-reuse/meeting-notes.process-1.3.2.wasm" "Two-app reuse published wasm"
 check "scripts/ci/fixtures/two-app-reuse/meeting-notes.process-1.3.2.contract.json" "Two-app reuse published contract"
+check "scripts/ci/fixtures/two-app-reuse/lifecycle/catalog.json" "Two-app reuse lifecycle catalog"
+check "scripts/ci/fixtures/two-app-reuse/lifecycle/scenario.json" "Two-app reuse lifecycle scenario"
+check "scripts/ci/fixtures/two-app-reuse/lifecycle/evidence.json" "Two-app reuse lifecycle evidence"
 
 # Platform clients
 check "apps/traverse-starter/ios-swift/TraverseStarter.xcodeproj" "ios-swift Xcode project"
