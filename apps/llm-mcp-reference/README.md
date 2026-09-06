@@ -51,7 +51,7 @@ Stronger isolation path: prepare registry deps into a **host-owned verified cach
 
 See [`mode-b/README.md`](mode-b/README.md), [`mode-b/mcp.json.example`](mode-b/mcp.json.example), and fail-closed [`mode-b/serve.sh`](mode-b/serve.sh).
 
-**Honest status:** Spec 520 library APIs shipped in Traverse (#860). The Mode B MCP host CLI is **not** shipped (Traverse [#1242](https://github.com/traverse-framework/Traverse/issues/1242)). Expedition Mode A remains the only runnable LLM path on v0.10.0; Mode B launcher exits non-zero until that host exists.
+**Honest status:** Spec 520 library APIs shipped in Traverse (#860). The Mode B MCP host CLI is **not** shipped (Traverse [#1242](https://github.com/traverse-framework/Traverse/issues/1242)). App-Refs ticket `llm-mcp-embedded-host` is **Future** (Mode A kit path is the active unlock). Expedition Mode A remains the only runnable LLM path on v0.10.0; Mode B launcher exits non-zero until that host exists.
 
 Optional bearer token (execution commands):
 

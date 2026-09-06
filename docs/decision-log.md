@@ -384,3 +384,127 @@ Append-only record of design decisions for App-References. Newest sessions at th
 **Decision:** Exact pin `1.3.2` / digest `sha256:ec192a0c…` for both apps. Record in [`two-app-reuse-contract.md`](two-app-reuse-contract.md) and ADR [`0006`](adr/0006-two-app-reuse-contract.md). No manifest alignment in this ticket.
 
 **Why:** Same capability already sits on two `app_id` boundaries with different user-facing purposes. Floating `^` ranges are exactly what #1168 forbids.
+
+---
+
+## 2026-09-05 — Blocked tickets ownership walk
+
+**Context:** Brainstorm over Project 2 Blocked tickets to classify ownership (on user vs Traverse vs defer) and decide board hygiene vs upstream push order. Live board query was intermittently rate-limited; inventory from `AGENTS.md` + open Traverse issues #1240/#1241/#1242.
+
+### Brainstorm goal
+
+**Question:** What should this brainstorm decide?
+
+**Options considered:**
+- Prioritize which Traverse blocker to push next — pros: focuses unlock; cons: skips hygiene
+- Decide App-Refs interim workarounds while Traverse is blocked — pros: keeps shipping; cons: fake-runtime risk
+- Board hygiene only (keep / Future / narrow DoD) — pros: cleans false urgency; cons: no upstream move
+- Walk every blocked ticket and classify ownership — pros: full map; collapses shared root causes; cons: longer
+
+**Recommendation:** Ownership walk first.
+
+**Decision:** Walk every blocked ticket and classify (on you / on Traverse / defer).
+
+**Why:** Three of five share two Traverse issues; a pass usually collapses the set before picking priority or workarounds.
+
+### LLM MCP cluster
+
+**Question:** How to classify `llm-mcp-traverse-starter-catalog`, `llm-mcp-embedded-host`, and `llm-mcp-0-10-live-cutover`?
+
+**Options considered:**
+- On Traverse only; leave all Blocked — pros: honest; cons: no prioritization signal
+- On user to prioritize/assign Traverse #1241/#1242 — pros: names unlock; cons: needs Traverse ownership
+- Defer whole cluster to Future — pros: less Blocked noise; cons: hides Approved Spec 119 wait
+- Split: Mode A (#1241) active Blocked; Mode B (#1242) → Future — pros: Mode A unblocks kit path first; cons: cutover umbrella spans both
+
+**Recommendation:** Split Mode A / Mode B.
+
+**Decision:** Mode A stays active Blocked on Traverse [#1241](https://github.com/traverse-framework/Traverse/issues/1241); Mode B (`llm-mcp-embedded-host`) → Future on [#1242](https://github.com/traverse-framework/Traverse/issues/1242).
+
+**Why:** Mode A is the Cursor/Claude kit path; Mode B is a separate host product.
+
+### Cutover umbrella
+
+**Question:** What happens to `llm-mcp-0-10-live-cutover` after the Mode A/B split?
+
+**Options considered:**
+- Narrow DoD to Mode A only; stay Blocked — pros: simple; cons: Mode B cutover needs a home
+- Split into Mode A + Mode B cutover tickets — pros: clean; cons: overlaps live tickets
+- Keep umbrella Blocked on both — pros: no rewrite; cons: Mode B blocks Mode A Done
+- Cancel/absorb into `llm-mcp-traverse-starter-catalog` + `llm-mcp-embedded-host` — pros: fewest tickets; cons: lose explicit post-pin checklist unless folded into those DoDs
+
+**Recommendation:** Absorb/cancel umbrella.
+
+**Decision:** Cancel/absorb `llm-mcp-0-10-live-cutover` into the Mode A catalog and Mode B embedded-host tickets (pin already Done via `pin-ci-traverse-0-10`).
+
+**Why:** After the pin, the umbrella duplicates the two live tickets.
+
+### Two-app host execute
+
+**Question:** How to classify `two-app-reuse-host-execute` (Traverse [#1240](https://github.com/traverse-framework/Traverse/issues/1240))?
+
+**Options considered:**
+- On Traverse only; leave Blocked — pros: no fake host path; cons: public BundleEmbedder proof incomplete
+- On user to prioritize #1240 — pros: names unlock; cons: needs Traverse triage ownership
+- Downgrade to Future with materialize-retire wave — pros: less noise; cons: understates open bug
+- Accept wasmtime-only as Done; Future/Cancel host-execute — pros: paper-unblocks reuse; cons: weakens public-host proof
+
+**Recommendation:** Stay honestly Blocked on #1240.
+
+**Decision:** Leave `two-app-reuse-host-execute` Blocked on Traverse #1240; do not redefine Done around wasmtime alone.
+
+**Why:** Ticket exists for public BundleEmbedder proof; App-Refs must not invent substitute WASM.
+
+### Lifecycle predecessor
+
+**Question:** What to do with `two-app-reuse-lifecycle` (board note still “After `#282`”)?
+
+**Options considered:**
+- Move toward Ready (execute Done is enough) — pros: clears false Blocked; cons: may need registry behaviors
+- Retarget Blocked to host-execute / #1240 — pros: if DoD needs BundleEmbedder; cons: couples unrelated concerns
+- Future until a real published upgrade/deprecation — pros: live release train; cons: long wait
+- Blocked on user for Spec/DoD rewrite first — pros: avoids wrong proof; cons: design beat before Ready
+
+**Recommendation:** Ready path if DoD is pin/upgrade semantics without BundleEmbedder.
+
+**Decision:** Not blocked on `#282` (execute already Done as #286) or on #1240; proceed to Ready after DoD is made checkable.
+
+**Why:** Written scope is upgrade/deprecation outcomes for the shared pin pair; no BundleEmbedder requirement in the contract table.
+
+### Lifecycle Spec/DoD shape
+
+**Question:** Before Ready, how to make lifecycle DoD claimable?
+
+**Options considered:**
+- Ready as-is; flesh DoD in implementing PR — pros: fastest; cons: weak claim gate
+- Full Spec/DoD rewrite brainstorm first — pros: strongest gate; cons: extra design pass
+- Future until registry publishes next `meeting-notes.process` — pros: real train; cons: App-Refs can’t drive calendar
+- Fixture-only pin flip + documented deprecation handling (no new registry release) — pros: claimable soon; honest; cons: weaker than production upgrade proof
+
+**Recommendation:** Fixture-level DoD, then Ready.
+
+**Decision:** Define DoD around fixture-only pin flip + documented deprecation handling (explicit non-claim of production release-train proof), then set status Ready.
+
+**Why:** Keeps the ticket honest and claimable without waiting on a registry publish or BundleEmbedder.
+
+### Next action order
+
+**Question:** With two honest Blocked tickets left, what to push first?
+
+**Options considered:**
+- Prioritize Traverse #1241 (Mode A kit MCP) — pros: live kit façades; cons: host-execute stays stuck
+- Prioritize Traverse #1240 (BundleEmbedder) — pros: completes #1168 host proof; cons: MCP stays expedition-only
+- App-Refs board hygiene first; Traverse priority later — pros: lifecycle becomes claimable now; cons: upstream idle briefly
+- Parallel triage of #1241 + #1240 plus hygiene — pros: no false sequencing; cons: split attention
+
+**Recommendation:** Hygiene first, then #1241.
+
+**Decision:** Apply App-Refs board hygiene first (Mode B → Future; cancel cutover umbrella; Ready lifecycle with fixture DoD; refresh `AGENTS.md` / README blockers). Then push Traverse [#1241](https://github.com/traverse-framework/Traverse/issues/1241) as the higher-leverage remaining Blocked unlock. Leave #1240 Blocked without redefining it.
+
+**Why:** Hygiene unlocks Ready work without waiting on Traverse; Mode A MCP is the stronger demo unlock of the two remaining upstream bugs.
+
+### What was explicitly deferred
+
+- Assigning/staffing Traverse #1240 vs #1241 beyond “#1241 after hygiene”
+- Any App-Refs interim workaround that fakes kit MCP or BundleEmbedder success
+- Production registry release-train proof for lifecycle (fixture-only by design)

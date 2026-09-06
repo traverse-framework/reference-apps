@@ -97,8 +97,10 @@ Host CLI execute via public `BundleEmbedder` (`meeting-notes-cli` / `loop-cli`) 
 
 | Ticket | Role |
 |---|---|
-| `#282` `two-app-reuse-execute` | Align meeting-notes pin; execute both apps; publish digest-equal evidence |
-| `#283` `two-app-reuse-lifecycle` | Compatible upgrade + deprecation outcomes for the same pair |
+| `#286` `two-app-reuse-execute` | Align meeting-notes pin; execute both apps; publish digest-equal evidence (Done) |
+| `#287` `two-app-reuse-execute-ci` | Fixture-only CI evidence (Done) |
+| `two-app-reuse-host-execute` | Public BundleEmbedder CLI execute — Blocked on Traverse #1240 |
+| `#283` `two-app-reuse-lifecycle` | **Ready** — fixture pin-flip + documented deprecation for the same pair (not BundleEmbedder; not production release-train). See `docs/decision-log.md` 2026-09-05 |
 
 ## Re-verification
 
