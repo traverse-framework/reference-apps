@@ -3,7 +3,7 @@
 # Ticket: two-app-reuse-execute / two-app-reuse-execute-ci (Traverse #1168).
 #
 # Prepare from the checked-in published fixture only — do not require TRAVERSE_REPO
-# example trees (CI native-linux checks out Traverse v0.8.2, which has no core-* WASM).
+# example trees (CI pins Traverse v0.10.0; evidence stays fixture-only for determinism).
 # Then execute both dest copies with wasmtime. Fails closed if the pin is missing
 # or the two consumers disagree.
 set -euo pipefail

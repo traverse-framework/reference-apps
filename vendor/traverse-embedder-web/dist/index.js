@@ -23,4 +23,7 @@ export { EmbedderTestDouble } from "./testDouble.js";
 export { BundleRejectedError, validateBundleCompatibility, verifyArtifactDigest, } from "./bundleValidation.js";
 export { BundleEmbedder } from "./bundleEmbedder.js";
 export { FetchBundleLoader, NodeFsBundleLoader } from "./bundleLoader.js";
+export { MemoryRegistryCacheStore, RegistryCacheError, evictAllRegistryCacheEntries, evictRegistryCacheEntry, prepareRegistryDependency, resolveRegistryDependencyOffline, } from "./registryCache.js";
+export { IndexedDbDataStore, IndexedDbDataStoreError } from "./indexedDbDataStore.js";
 export { HOST_ABI_V1_WHITELIST, SUPPORTED_HOST_ABI_VERSION, findUnauthorizedImport, } from "./hostAbi.js";
+export { executeVerifiedEntrypoint, VerifiedEntrypointError } from "./verifiedEntrypoint.js";
