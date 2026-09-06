@@ -86,7 +86,7 @@ Field/option IDs for board automation live in [AGENTS.md](AGENTS.md) — single 
 |---|---|
 | **Production target (Phase 3)** | Embedded in-app WASM runtime host in every platform client |
 | **CI / embedder pin** | **v0.10.0** — workflows, `traverse-embedder` git tag, vendored SDKs, `runtime/runtime.wasm` |
-| Dev sidecar (Phase 1/2 interim) | **v0.6.0** — `cargo run -p traverse-cli -- serve` @ `127.0.0.1:8787` |
+| Dev sidecar (Phase 1/2 interim) | **v0.10.0** — same pin as CI; `cargo run -p traverse-cli -- serve` @ `127.0.0.1:8787` |
 | Phase 1 minimum | v0.3.0 — HTTP/JSON API |
 | Phase 2 minimum | v0.5.0 — CLI app validate/register |
 | Default workspace | `local-default` |
@@ -96,7 +96,7 @@ Field/option IDs for board automation live in [AGENTS.md](AGENTS.md) — single 
 Dev sidecar setup (interim):
 ```bash
 git clone https://github.com/traverse-framework/Traverse.git /tmp/traverse
-cd /tmp/traverse && git checkout v0.6.0
+cd /tmp/traverse && git checkout v0.10.0
 cargo run -p traverse-cli -- serve
 # Reads .traverse/server.json for base_url and workspace_default
 ```
