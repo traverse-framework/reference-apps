@@ -1,12 +1,7 @@
-import type {
-  CapabilityProgressStep,
-  EmbedderEventLike,
-  PresentationState,
-} from 'event-ui-conformance'
+import type { EmbedderEventLike, PresentationState, SessionPresentation } from 'event-ui-conformance'
 import {
-  activeCapabilityId,
-  mapCapabilityProgress,
-  mapPresentationState,
+  mapSessionPresentation,
+  observeSessionPresentation as observeSessionPresentationFromPackage,
 } from 'event-ui-conformance'
 import type {
   EmbedderEvent,
@@ -42,27 +37,13 @@ export interface HostRunResult {
   /** Spec 001 error text from event payloads (never invented). */
   presentationError: string | null
   /** Spec 002 ordered capability invoke/result progress. */
-  capabilityProgress: CapabilityProgressStep[]
+  capabilityProgress: SessionPresentation['capabilityProgress']
   /** Spec 002 active capability id when an invoke is still open. */
   activeCapabilityId: string | null
 }
 
-export type { TraverseEmbedderApi, EmbedderEvent, PresentationState, CapabilityProgressStep }
-
-/** Spec 001/002 fields derived from an ordered public embedder event stream. */
-export type SessionPresentation = {
-  presentationState: PresentationState
-  presentationError: string | null
-  capabilityProgress: CapabilityProgressStep[]
-  activeCapabilityId: string | null
-}
-
-const IDLE_PRESENTATION: SessionPresentation = {
-  presentationState: 'idle',
-  presentationError: null,
-  capabilityProgress: [],
-  activeCapabilityId: null,
-}
+export type { TraverseEmbedderApi, EmbedderEvent, PresentationState, SessionPresentation }
+export type { CapabilityProgressStep } from 'event-ui-conformance'
 
 /** Builds a deterministic test double for Vitest (spec 068 FR-006). */
 export function createTestEmbedder(output: TraverseStarterOutput): TraverseEmbedderApi {
@@ -101,51 +82,45 @@ function errorMessageFromData(data: JsonValue): string | null {
   return null
 }
 
-function toEventLikes(events: readonly EmbedderEvent[]): EmbedderEventLike[] {
-  return events.map((event) => ({
+function toEventLike(event: EmbedderEvent): EmbedderEventLike {
+  return {
     event_type: event.event_type,
     sequence: event.sequence,
     session_id: event.session_id,
     data: event.data,
-  }))
+  }
 }
 
-/** Map an ordered public embedder event stream to Spec 001/002 UI fields. */
-export function mapSessionPresentation(
+function toEventLikes(events: readonly EmbedderEvent[]): EmbedderEventLike[] {
+  return events.map(toEventLike)
+}
+
+/** Map public embedder events to Spec 001/002 UI fields (shared package). */
+export function mapEmbedderSessionPresentation(
   events: readonly EmbedderEvent[],
   options?: { fallbackError?: string | null },
 ): SessionPresentation {
-  if (events.length === 0 && !options?.fallbackError) {
-    return IDLE_PRESENTATION
-  }
-  const likes = toEventLikes(events)
-  const snap = mapPresentationState(likes)
-  const fallback = options?.fallbackError ?? null
-  const presentationState: PresentationState =
-    fallback && snap.state === 'idle' ? 'error' : snap.state
-  return {
-    presentationState,
-    presentationError: snap.errorMessage ?? (fallback && snap.state === 'idle' ? fallback : null),
-    capabilityProgress: mapCapabilityProgress(likes),
-    activeCapabilityId: activeCapabilityId(likes),
-  }
+  return mapSessionPresentation(toEventLikes(events), options)
 }
 
 /**
- * Subscribe to the public embedder event stream and invoke `onChange` after each
- * event (including an initial empty → `idle` snapshot). The embedder API has no
- * unsubscribe; drop the host when tearing down.
+ * Subscribe via the public embedder API and map each event with the shared
+ * Spec 001/002 helpers. Prefer a fresh subscribe per run.
  */
 export function observeSessionPresentation(
   host: TraverseEmbedderApi,
   onChange: (presentation: SessionPresentation) => void,
 ): void {
-  const collected: EmbedderEvent[] = []
-  host.subscribe((event) => {
-    collected.push(event)
-    onChange(mapSessionPresentation(collected))
-  })
-  onChange(mapSessionPresentation(collected))
+  observeSessionPresentationFromPackage(
+    {
+      subscribe(listener) {
+        host.subscribe((event) => {
+          listener(toEventLike(event))
+        })
+      },
+    },
+    onChange,
+  )
 }
 
 function withPresentation(
@@ -157,7 +132,7 @@ function withPresentation(
 ): HostRunResult {
   return {
     ...base,
-    ...mapSessionPresentation(collected, { fallbackError: base.error }),
+    ...mapEmbedderSessionPresentation(collected, { fallbackError: base.error }),
   }
 }
 
@@ -170,7 +145,7 @@ export function submitNote(
   const collected: EmbedderEvent[] = []
   embedder.subscribe((event) => {
     collected.push(event)
-    onPresentation?.(mapSessionPresentation(collected))
+    onPresentation?.(mapEmbedderSessionPresentation(collected))
   })
 
   const outcome = embedder.submit(DEFAULT_WORKFLOW_ID, { note })

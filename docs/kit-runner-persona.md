@@ -17,6 +17,8 @@ For **each** primary OS target, a persona can:
 | **Configuration** | `config_schema` / `default_config` / `workspace_defaults`; OS settings where present | Health/settings show `workspace_id` (default `local-default`) |
 | **Workflow** | `workflows[]` (starter: `traverse-starter.pipeline`) | One submit runs the chained capabilities; UI does not call each cap itself |
 
+**Web authors (Specs 001/002):** use `mapSessionPresentation` / `observeSessionPresentation` from [`event-ui-conformance`](../packages/event-ui-conformance/) (starter web wraps them in `embeddedHost`). Do not confuse **host** status (`starting` / `ready` / `unavailable` from embedder init) with **session** presentation (`idle` / `loading` / `loaded` / `blocked` / `ended` / `error`). Prefer a **fresh subscribe per run** (no unsubscribe API). Sync `submit` may batch React paints — mid-stream `loading` is asserted in unit tests; a visible flash is not guaranteed. For local digest-pinned E2E, use `bash scripts/ci/prepare_embedded_smoke_bundle.sh` (plain sync alone can leave stub WASM / digest mismatch → Unavailable).
+
 Primary apps on all seven OS: `traverse-starter`, `doc-approval`, `meeting-notes`, `loop`. Trace Explorer is web-only (debugger). LLM MCP is a **separate** façade.
 
 ## CI vs human
@@ -69,6 +71,7 @@ Local npm gates always. Manifest / `registry_ref` / runbook probes always. `TRAV
 | Registry MCP is not an OS-shell path | `llm-mcp-mode-a-spec119-scaffold` Done (fail-closed); live kit execute `llm-mcp-traverse-starter-catalog` Blocked |
 | Creating a **new** app id from CLI + this kit | [`new-app-author.md`](new-app-author.md) (`new-app-author-e2e`) |
 | `onboarding_check.sh` is not a merge-blocking CI gate | By design (slow `npm install`); `embedded_smoke` is the PR gate |
+| Live Spec 001 subscribe on non-starter primary webs | `web-session-presentation-port-primary` (Blocked on shared helper) |
 
 ## File bugs
 

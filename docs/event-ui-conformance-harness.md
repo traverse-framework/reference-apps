@@ -32,11 +32,20 @@ import {
   loadFixtureCase,
   mapCapabilityProgress,
   mapPresentationState,
+  mapSessionPresentation,
+  observeSessionPresentation,
 } from 'event-ui-conformance'
 
 const fixture = loadFixtureCase('happy-path.json')
 const ui = mapPresentationState(fixture.events)
 // ui.state === 'loaded'; ui.output from capability_result only
+
+const session = mapSessionPresentation(fixture.events)
+// session.presentationState === 'loaded' (+ capabilityProgress / activeCapabilityId)
+
+// Live subscribe (fresh per run; host has no unsubscribe):
+// observeSessionPresentation(host, (presentation) => { ... })
+```
 
 const progress = mapCapabilityProgress(fixture.events)
 ```
