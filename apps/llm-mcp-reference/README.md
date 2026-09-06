@@ -43,7 +43,7 @@ Registry-MCP path for the same capabilities OS shells load via `registry_ref`. O
 
 See [`mode-a/README.md`](mode-a/README.md), [`mode-a/mcp.json.example`](mode-a/mcp.json.example), and fail-closed [`mode-a/serve.sh`](mode-a/serve.sh).
 
-**Honest status:** Spec 119 is Approved. The Mode A host is **not** upstream yet. `mode-a/serve.sh` exits non-zero until `traverse-mcp` exposes public-only discovery + inline `RuntimeRequest` + digest-verified WASM (no expedition fallback, no kit content groups in v1).
+**Honest status:** Spec 119 is Approved. Traverse **v0.10.0** `traverse-mcp` is still **expedition-only** (no `traverse-starter.*` / `meeting-notes.process` kit path). Mode A host implement: Traverse [#1241](https://github.com/traverse-framework/Traverse/issues/1241). `mode-a/serve.sh` exits non-zero until public-only discovery + inline `RuntimeRequest` + digest-verified WASM land (no expedition fallback; no kit content groups in v1 per FR-007).
 
 ## Mode B (scaffold — Spec 520 prepare / verified cache)
 
@@ -51,7 +51,7 @@ Stronger isolation path: prepare registry deps into a **host-owned verified cach
 
 See [`mode-b/README.md`](mode-b/README.md), [`mode-b/mcp.json.example`](mode-b/mcp.json.example), and fail-closed [`mode-b/serve.sh`](mode-b/serve.sh).
 
-**Honest status:** Spec 520 library APIs shipped in Traverse (#860). The Mode B MCP host process is **not** upstream yet (Traverse #865). Mode A remains the only runnable LLM path; Mode B launcher exits non-zero until that host exists.
+**Honest status:** Spec 520 library APIs shipped in Traverse (#860). The Mode B MCP host CLI is **not** shipped (Traverse [#1242](https://github.com/traverse-framework/Traverse/issues/1242)). Expedition Mode A remains the only runnable LLM path on v0.10.0; Mode B launcher exits non-zero until that host exists.
 
 Optional bearer token (execution commands):
 
