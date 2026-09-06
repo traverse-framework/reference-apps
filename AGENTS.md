@@ -42,9 +42,9 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `two-app-reuse-contract` | **Done** (#285) | Pin `meeting-notes.process` 1.3.2 for meeting-notes + loop |
 | `two-app-reuse-execute` | **Done** (#286) | Align pins + wasmtime evidence |
 | `two-app-reuse-execute-ci` | **Done** (#287) | Fixture-only evidence (no Traverse core examples) |
-| `pin-ci-traverse-0-10` | **In Progress** | CI / embedder / runtime.wasm → Traverse v0.10.0 |
+| `pin-ci-traverse-0-10` | **Done** (#292) | CI / embedder / runtime.wasm → Traverse v0.10.0 |
 | `llm-mcp-0-10-live-cutover` | **Blocked** | After `pin-ci-traverse-0-10` |
-| `two-app-reuse-host-execute` | **Blocked** | After `pin-ci-traverse-0-10` + BundleEmbedder host path |
+| `two-app-reuse-host-execute` | **Ready** | Pin landed (#292); prove BundleEmbedder CLI host execute |
 | `two-app-reuse-lifecycle` | **Blocked** | After `#282` — upgrade/deprecation outcomes |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
