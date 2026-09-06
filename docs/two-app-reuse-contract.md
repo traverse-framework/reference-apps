@@ -89,7 +89,9 @@ bash scripts/ci/two_app_reuse_contract_check.sh
 bash scripts/ci/two_app_reuse_execute.sh
 ```
 
-`two_app_reuse_execute.sh` prepares both dest trees from the published 1.3.2 fixture only (no `$TRAVERSE_REPO` example trees — CI pins Traverse v0.10.0; evidence stays fixture-only). It then executes those bytes with wasmtime. Host CLI execute via BundleEmbedder is ticket `two-app-reuse-host-execute` (after the v0.10.0 pin).
+`two_app_reuse_execute.sh` prepares both dest trees from the published 1.3.2 fixture only (no `$TRAVERSE_REPO` example trees — CI pins Traverse v0.10.0; evidence stays fixture-only). It then executes those bytes with wasmtime.
+
+Host CLI execute via public `BundleEmbedder` (`meeting-notes-cli` / `loop-cli`) is ticket `two-app-reuse-host-execute`. Verified against Traverse **v0.10.0**: wasmtime succeeds on the same 1.3.2 bytes, but BundleEmbedder still returns `registered artifact execution failed` for this WASI `proc_exit(0)` agent — tracked upstream as [Traverse #1240](https://github.com/traverse-framework/traverse/issues/1240). Do not wrap the agent or invent substitute WASM in App-Refs.
 
 ## Downstream
 
