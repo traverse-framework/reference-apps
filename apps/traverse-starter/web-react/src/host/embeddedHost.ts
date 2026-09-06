@@ -49,6 +49,21 @@ export interface HostRunResult {
 
 export type { TraverseEmbedderApi, EmbedderEvent, PresentationState, CapabilityProgressStep }
 
+/** Spec 001/002 fields derived from an ordered public embedder event stream. */
+export type SessionPresentation = {
+  presentationState: PresentationState
+  presentationError: string | null
+  capabilityProgress: CapabilityProgressStep[]
+  activeCapabilityId: string | null
+}
+
+const IDLE_PRESENTATION: SessionPresentation = {
+  presentationState: 'idle',
+  presentationError: null,
+  capabilityProgress: [],
+  activeCapabilityId: null,
+}
+
 /** Builds a deterministic test double for Vitest (spec 068 FR-006). */
 export function createTestEmbedder(output: TraverseStarterOutput): TraverseEmbedderApi {
   return new EmbedderTestDouble({
@@ -95,6 +110,44 @@ function toEventLikes(events: readonly EmbedderEvent[]): EmbedderEventLike[] {
   }))
 }
 
+/** Map an ordered public embedder event stream to Spec 001/002 UI fields. */
+export function mapSessionPresentation(
+  events: readonly EmbedderEvent[],
+  options?: { fallbackError?: string | null },
+): SessionPresentation {
+  if (events.length === 0 && !options?.fallbackError) {
+    return IDLE_PRESENTATION
+  }
+  const likes = toEventLikes(events)
+  const snap = mapPresentationState(likes)
+  const fallback = options?.fallbackError ?? null
+  const presentationState: PresentationState =
+    fallback && snap.state === 'idle' ? 'error' : snap.state
+  return {
+    presentationState,
+    presentationError: snap.errorMessage ?? (fallback && snap.state === 'idle' ? fallback : null),
+    capabilityProgress: mapCapabilityProgress(likes),
+    activeCapabilityId: activeCapabilityId(likes),
+  }
+}
+
+/**
+ * Subscribe to the public embedder event stream and invoke `onChange` after each
+ * event (including an initial empty → `idle` snapshot). The embedder API has no
+ * unsubscribe; drop the host when tearing down.
+ */
+export function observeSessionPresentation(
+  host: TraverseEmbedderApi,
+  onChange: (presentation: SessionPresentation) => void,
+): void {
+  const collected: EmbedderEvent[] = []
+  host.subscribe((event) => {
+    collected.push(event)
+    onChange(mapSessionPresentation(collected))
+  })
+  onChange(mapSessionPresentation(collected))
+}
+
 function withPresentation(
   base: Omit<
     HostRunResult,
@@ -102,30 +155,27 @@ function withPresentation(
   >,
   collected: readonly EmbedderEvent[],
 ): HostRunResult {
-  const likes = toEventLikes(collected)
-  const snap = mapPresentationState(likes)
-  const presentationState: PresentationState =
-    base.error && snap.state === 'idle' ? 'error' : snap.state
   return {
     ...base,
-    presentationState,
-    presentationError:
-      snap.errorMessage ?? (base.error && snap.state === 'idle' ? base.error : null),
-    capabilityProgress: mapCapabilityProgress(likes),
-    activeCapabilityId: activeCapabilityId(likes),
+    ...mapSessionPresentation(collected, { fallbackError: base.error }),
   }
 }
 
 /** Submit `{ note }` to `traverse-starter.pipeline` and collect terminal output. */
-export function submitNote(embedder: TraverseEmbedderApi, note: string): HostRunResult {
+export function submitNote(
+  embedder: TraverseEmbedderApi,
+  note: string,
+  onPresentation?: (presentation: SessionPresentation) => void,
+): HostRunResult {
   const collected: EmbedderEvent[] = []
   embedder.subscribe((event) => {
     collected.push(event)
+    onPresentation?.(mapSessionPresentation(collected))
   })
 
   const outcome = embedder.submit(DEFAULT_WORKFLOW_ID, { note })
   if (outcome.status === 'rejected') {
-    return withPresentation(
+    const rejected = withPresentation(
       {
         sessionId: outcome.sessionId ?? 'sess-unknown',
         output: null,
@@ -137,6 +187,13 @@ export function submitNote(embedder: TraverseEmbedderApi, note: string): HostRun
       },
       [],
     )
+    onPresentation?.({
+      presentationState: rejected.presentationState,
+      presentationError: rejected.presentationError,
+      capabilityProgress: rejected.capabilityProgress,
+      activeCapabilityId: rejected.activeCapabilityId,
+    })
+    return rejected
   }
 
   const sessionId = outcome.sessionId ?? 'sess-unknown'

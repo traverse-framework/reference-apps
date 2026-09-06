@@ -508,3 +508,77 @@ Append-only record of design decisions for App-References. Newest sessions at th
 - Assigning/staffing Traverse #1240 vs #1241 beyond “#1241 after hygiene”
 - Any App-Refs interim workaround that fakes kit MCP or BundleEmbedder success
 - Production registry release-train proof for lifecycle (fixture-only by design)
+
+
+---
+
+## 2026-09-06 — Live Spec 001 subscribe in starter web
+
+**Context:** traverse-starter web derives Spec 001 presentation from subscribed embedder events, but only paints the terminal state after sync `submit`. Question: change runtime, change the web ref app, or proof-only?
+
+### Where to change
+
+**Question:** Where should a change land for proper subscribe-driven UI status?
+
+**Options considered:**
+- A — Web ref app only (live observe / per-event setState) — pros: UI-layer; proves Spec 001/002; no ABI change; cons: sync submit may still batch paints
+- B — Traverse runtime/embedder (async submit / yields) — pros: all hosts get mid-flight paints; cons: larger; belongs upstream
+- C — No product change; tests/docs only — pros: cheapest; cons: demo still jumps to loaded
+
+**Recommendation:** A (+ optional doc note from C).
+
+**Decision:** A — change the web ref app only.
+
+**Why:** Runtime event stream is already sufficient; gap is reference-app subscribe UX/proof.
+
+### Visible loading paint
+
+**Question:** How hard to push for a visible `loading` flash?
+
+**Options considered:**
+- A1 — Live subscribe + setState per event — pros: matches Trace Explorer; Spec intent; cons: React may batch sync submit
+- A2 — A1 + forced yield — pros: human-demoable flash; cons: artificial timing
+- A3 — A1 wiring + tests only for mid-stream loading — pros: honest; cons: weaker live demo
+
+**Recommendation:** A1.
+
+**Decision:** A1.
+
+**Why:** Correct subscribe-driven updates without demo hacks; do not require a guaranteed visible flash under sync submit.
+
+### Scope
+
+**Question:** How wide should A1 ship?
+
+**Options considered:**
+- S1 — traverse-starter web only — pros: smallest kit proof; cons: other shells still batch
+- S2 — all primary web shells — pros: consistency; cons: large PR
+- S3 — shared helper then starter — pros: less copy-paste later; cons: more upfront design
+
+**Recommendation:** S1.
+
+**Decision:** S1.
+
+**Why:** Prove the pattern on the kit flagship first.
+
+### Next action
+
+**Question:** Ticket + implement vs log-only vs implement without ticket?
+
+**Options considered:**
+- N1 — Project 2 ticket + implement on cursor branch — pros: governance; cons: setup time
+- N2 — Decision log only — pros: locks decision; cons: no code yet
+- N3 — Implement without ticket — pros: fast; cons: breaks ticket rule
+
+**Recommendation:** N1.
+
+**Decision:** N1.
+
+**Why:** Meaningful UI behavior change requires Spec + DoD on Project 2.
+
+### What was explicitly deferred
+
+- Traverse async/yield embedder changes (Option B)
+- Forced yield for visible loading flash (Option A2)
+- Rolling A1 to doc-approval / meeting-notes / loop web (Option S2)
+- Extracting a shared observe helper package (Option S3)

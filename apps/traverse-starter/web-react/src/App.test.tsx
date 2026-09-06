@@ -49,5 +49,7 @@ describe('App', () => {
     expect(screen.getByText('T')).toBeInTheDocument()
     expect(screen.getByText('Summary')).toBeInTheDocument()
     expect(screen.getByText('Short')).toBeInTheDocument()
+    expect(screen.getByText(/Session presentation:/i)).toBeInTheDocument()
+    expect(screen.getByText('loaded')).toBeInTheDocument()
   })
 })
