@@ -32,15 +32,19 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `new-app-author-e2e` | **Done** (#275) | CLI `app new` → App-Refs layout + Web host rewrite |
 | `fix-nightly-native-macos-windows` | **Done** (#277) | Swift 6 Sendable mappers + WinUI test compile of PresentationMapper |
 | `llm-mcp-mode-a-spec119-scaffold` | **Done** (#271) | Spec 119 consumer scaffold (fail-closed); live kit execute stays `llm-mcp-traverse-starter-catalog` |
-| `llm-mcp-traverse-starter-catalog` | **Blocked** | Spec 119 Approved; wait on Mode A `traverse-mcp` implement. No kit content groups in v1 (FR-007) |
+| `llm-mcp-traverse-starter-catalog` | **Blocked** | Live kit execute → `llm-mcp-0-10-live-cutover` after pin |
 | `loop-wf1-registry-deps` | **Done** (#263) | Digest inventory in `docs/loop-registry-deps.md` |
 | `loop-wf1-multi-os` | **Done** (#265) | `apps/loop/` WF1 × 7 OS; compose via `registry_ref` |
 | `retire-registry-ref-materialize` | **Done** (#267) | Phase A gate; host cutover → Future `retire-registry-ref-materialize-hosts` |
 | `retire-registry-ref-materialize-hosts` | **Future** | Full materialize delete after BundleEmbedder + Spec 107 |
 | `meeting-notes-remaining-natives` | **Done** (#236) | Shipped via `meeting-notes-wave2-os-ports` |
-| `llm-mcp-embedded-host` | **Blocked** | Scaffold Done (#268); live Mode B host → Traverse #865 |
+| `llm-mcp-embedded-host` | **Blocked** | Scaffold Done (#268); live Mode B → `llm-mcp-0-10-live-cutover` |
 | `two-app-reuse-contract` | **Done** (#285) | Pin `meeting-notes.process` 1.3.2 for meeting-notes + loop |
-| `two-app-reuse-execute` | **Done** (#286) | Align pins + wasmtime evidence; CI fixture-only follow-up `two-app-reuse-execute-ci` |
+| `two-app-reuse-execute` | **Done** (#286) | Align pins + wasmtime evidence |
+| `two-app-reuse-execute-ci` | **Done** (#287) | Fixture-only evidence (no Traverse core examples) |
+| `pin-ci-traverse-0-10` | **In Progress** | CI / embedder / runtime.wasm → Traverse v0.10.0 |
+| `llm-mcp-0-10-live-cutover` | **Ready** | After `pin-ci-traverse-0-10` |
+| `two-app-reuse-host-execute` | **Blocked** | After `pin-ci-traverse-0-10` + BundleEmbedder host path |
 | `two-app-reuse-lifecycle` | **Blocked** | After `#282` — upgrade/deprecation outcomes |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).

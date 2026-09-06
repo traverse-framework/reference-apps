@@ -1,3 +1,8 @@
 [workspace]
 resolver = "2"
 members = ["meeting-notes-core-rs", "linux-gtk", "cli-rust"]
+
+[patch.crates-io]
+# Unify crates.io traverse-contracts (via traverse-registry) with the v0.10.0 git tree
+# used by traverse-embedder / traverse-runtime — otherwise CapabilityContract types diverge.
+traverse-contracts = { git = "https://github.com/traverse-framework/Traverse.git", tag = "v0.10.0" }

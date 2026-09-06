@@ -22,8 +22,6 @@ let package = Package(
             dependencies: [
                 "TraverseSwiftHost",
                 .product(name: "WasmKit", package: "WasmKit"),
-                // Force exact swift-system 1.5.0 into the graph (WasmKit alone resolves newer).
-                .product(name: "SystemPackage", package: "swift-system"),
             ]
         ),
         .testTarget(

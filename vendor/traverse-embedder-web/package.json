@@ -19,14 +19,17 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node --test tests/embedder.test.mjs tests/bundleEmbedder.test.mjs"
+    "prepublishOnly": "npm run build",
+    "test": "npm run build && node --test tests/embedder.test.mjs tests/bundleEmbedder.test.mjs tests/crossHostFixture.test.mjs tests/registryCache.test.mjs tests/indexedDbDataStore.test.mjs tests/verifiedEntrypoint.test.mjs tests/governedProposal.test.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.20.1",
+    "fake-indexeddb": "^6.2.5",
     "typescript": "^5.6.0",
     "wabt": "^1.0.39"
   }
