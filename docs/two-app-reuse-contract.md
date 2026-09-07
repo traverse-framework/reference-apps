@@ -91,7 +91,7 @@ bash scripts/ci/two_app_reuse_execute.sh
 
 `two_app_reuse_execute.sh` prepares both dest trees from the published 1.3.2 fixture only (no `$TRAVERSE_REPO` example trees — CI pins Traverse v0.10.0; evidence stays fixture-only). It then executes those bytes with wasmtime.
 
-Host CLI execute via public `BundleEmbedder` (`meeting-notes-cli` / `loop-cli`) is ticket `two-app-reuse-host-execute`. Verified against Traverse **v0.10.0**: wasmtime succeeds on the same 1.3.2 bytes, but BundleEmbedder still returns `registered artifact execution failed` for this WASI `proc_exit(0)` agent — tracked upstream as [Traverse #1240](https://github.com/traverse-framework/traverse/issues/1240). Do not wrap the agent or invent substitute WASM in App-Refs.
+Host CLI execute via public `BundleEmbedder` (`meeting-notes-cli` / `loop-cli`) is ticket `two-app-reuse-host-execute`. Verified against Traverse **v0.10.0**: wasmtime succeeds on the same 1.3.2 bytes, but BundleEmbedder still returns `registered artifact execution failed` for this WASI `proc_exit(0)` agent — tracked upstream as Traverse Project 1 ticket-id `bundle-embedder-wasi-proc-exit-success` (issue [#1240](https://github.com/traverse-framework/traverse/issues/1240) on [Project 1](https://github.com/orgs/traverse-framework/projects/1)). Do not wrap the agent or invent substitute WASM in App-Refs.
 
 ## Downstream
 
@@ -99,7 +99,7 @@ Host CLI execute via public `BundleEmbedder` (`meeting-notes-cli` / `loop-cli`) 
 |---|---|
 | `#286` `two-app-reuse-execute` | Align meeting-notes pin; execute both apps; publish digest-equal evidence (Done) |
 | `#287` `two-app-reuse-execute-ci` | Fixture-only CI evidence (Done) |
-| `two-app-reuse-host-execute` | Public BundleEmbedder CLI execute — Blocked on Traverse #1240 |
+| `two-app-reuse-host-execute` | Public BundleEmbedder CLI execute — Blocked on Traverse Project 1 ticket-id `bundle-embedder-wasi-proc-exit-success` |
 | `#283` `two-app-reuse-lifecycle` | Fixture pin-flip + documented deprecation for the same pair (Done — fixture-only; **not** production release-train; **not** BundleEmbedder). See below and `docs/decision-log.md` 2026-09-05 |
 
 ## Lifecycle (fixture-only) — `two-app-reuse-lifecycle`
@@ -109,7 +109,7 @@ Host CLI execute via public `BundleEmbedder` (`meeting-notes-cli` / `loop-cli`) 
 **Non-claims (mandatory):**
 
 - This is **not** a production registry release-train proof (no new public `meeting-notes.process` publish required).
-- This is **not** a BundleEmbedder / `meeting-notes-cli` / `loop-cli` host proof (`two-app-reuse-host-execute` / Traverse #1240).
+- This is **not** a BundleEmbedder / `meeting-notes-cli` / `loop-cli` host proof (`two-app-reuse-host-execute` / Traverse ticket-id `bundle-embedder-wasi-proc-exit-success`).
 - App-References does **not** author WASM or invent registry deprecation policy.
 
 ### Fixture procedure
