@@ -49,6 +49,21 @@ describe('embeddedHost', () => {
     expect(result.capabilityProgress.length).toBeGreaterThan(0)
   })
 
+  it('submitTranscript notifies presentation after each subscribed event', () => {
+    const embedder = createTestEmbedder(sampleOutput)
+    const states: string[] = []
+    const result = submitTranscript(
+      embedder,
+      'Alex will send the follow-up email.',
+      (presentation) => {
+        states.push(presentation.presentationState)
+      },
+    )
+    expect(states).toContain('loading')
+    expect(states.at(-1)).toBe('loaded')
+    expect(result.presentationState).toBe('loaded')
+  })
+
   it('submitTranscript surfaces scripted execution errors', () => {
     const embedder = new EmbedderTestDouble({
       appId: 'loop',

@@ -57,6 +57,17 @@ describe('embeddedHost', () => {
     expect(result.capabilityProgress.length).toBeGreaterThan(0)
   })
 
+  it('submitDocument notifies presentation after each subscribed event', () => {
+    const embedder = createTestEmbedder(sampleOutput)
+    const states: string[] = []
+    const result = submitDocument(embedder, 'Invoice for Acme Corp', (presentation) => {
+      states.push(presentation.presentationState)
+    })
+    expect(states).toContain('loading')
+    expect(states.at(-1)).toBe('loaded')
+    expect(result.presentationState).toBe('loaded')
+  })
+
   it('submitDocument surfaces scripted execution errors', () => {
     const embedder = new EmbedderTestDouble({
       appId: 'doc-approval',

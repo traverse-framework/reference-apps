@@ -42,6 +42,7 @@ describe('observeSessionPresentation', () => {
     })
     expect(states.at(-1)).toBe('idle')
     host.submit('fixture.process', { note: 'n' })
+    expect(states).toContain('loading')
     expect(states.at(-1)).toBe('loaded')
   })
 })
