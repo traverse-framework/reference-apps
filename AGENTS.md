@@ -44,7 +44,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `two-app-reuse-execute-ci` | **Done** (#287) | Fixture-only evidence (no Traverse core examples) |
 | `pin-ci-traverse-0-10` | **Done** (#292) | CI / embedder / runtime.wasm → Traverse v0.10.0 |
 | `llm-mcp-0-10-live-cutover` | **Done** (absorbed) | Mode A → `llm-mcp-traverse-starter-catalog`; Mode B → `llm-mcp-embedded-host` Future; pin already #292 |
-| `two-app-reuse-host-execute` | **Blocked** | Traverse Project 1 ticket `bundle-embedder-wasi-proc-exit-success` (issue #1240) — BundleEmbedder still fails WASI `proc_exit(0)` on 1.3.2 |
+| `two-app-reuse-host-execute` | **Blocked** | #1240/#1255 fixed on Traverse **main** (`ff50bbc`); App-Refs pin **v0.10.0** still fails (`registered artifact execution failed`). Need a Traverse release tag containing #1255, then pin bump |
 | `two-app-reuse-lifecycle` | **Done** (#283) | Fixture pin-flip + documented deprecation for meeting-notes + loop (not BundleEmbedder; not production release-train) |
 
 Full gap table + wave notes: [`docs/production-reference-plan.md`](docs/production-reference-plan.md).
