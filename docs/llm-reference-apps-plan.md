@@ -76,7 +76,7 @@ Shared:
 | Mode | When | Notes |
 |---|---|---|
 | **A. MCP stdio → local Traverse** (v1 default) | Developer laptop / agent IDE | Spec 119 Mode A **live** under `apps/llm-mcp-reference/mode-a/` (`TRAVERSE_MCP_REGISTRY_CACHE` + `serve.sh`). Host shipped on Traverse main ([#1241](https://github.com/traverse-framework/Traverse/issues/1241)/[#1252](https://github.com/traverse-framework/Traverse/pull/1252)); tagged **v0.10.0** is still expedition-only without that merge. Bare `traverse-mcp stdio` without the cache env remains expedition bootstrap only. |
-| **B. MCP → embedded host in a sidecar process** | Stronger product isolation | **Scaffolded** under `apps/llm-mcp-reference/mode-b/` (Spec 520 prepare/cache docs + fail-closed launcher). Mode B host CLI **not shipped** — Traverse [#1242](https://github.com/traverse-framework/Traverse/issues/1242). App-Refs ticket `llm-mcp-embedded-host` is **Future** |
+| **B. MCP → embedded host in a sidecar process** | Stronger product isolation | **Scaffolded** under `apps/llm-mcp-reference/mode-b/` (Spec 520 prepare/cache docs + fail-closed launcher). Mode B host CLI **not shipped** — Traverse Project 1 ticket-id `implement-mode-b-embedded-mcp-host` (issue [#1242](https://github.com/traverse-framework/Traverse/issues/1242)). App-Refs ticket `llm-mcp-embedded-host` is **Future** |
 | **C. Remote MCP gateway** | Multi-tenant SaaS | Future; needs auth/tenancy — not this slice |
 
 v1 documents **Mode A** only. Do not revive HTTP `traverse-cli serve` as the production architecture for primary OS shells; MCP stdio is a **separate agent façade**, not a replacement for embedded Web/iOS/Android clients.
@@ -93,7 +93,7 @@ v1 documents **Mode A** only. Do not revive HTTP `traverse-cli serve` as the pro
 | `llm-mcp-grok-adapter` | Grok tool-calling mapping | Future / Ready when API stable |
 | `llm-mcp-mode-a-spec119-scaffold` | Spec 119 Mode A consumer (fail-closed serve + prepare + MCP example) | Done (#271) |
 | `llm-mcp-traverse-starter-catalog` | Discover/execute kit capabilities via Mode A public registry discovery | **Done** — Mode A host on Traverse main (#1241/#1252); App-Refs prepare/serve wired; live evidence for `core.normalize-participants` (Loop WF1). FR-007: no kit content groups. Additional pins (`meeting-notes.process`, `traverse-starter.process`) join when hosts prepare those digests into the same cache. |
-| `llm-mcp-embedded-host` | Mode B embedded prepare/cache for MCP host | Scaffold Done (#268); **Future** until Traverse [#1242](https://github.com/traverse-framework/Traverse/issues/1242) (Spec 520 host CLI). Absorbed Mode B slice of cancelled umbrella `llm-mcp-0-10-live-cutover` |
+| `llm-mcp-embedded-host` | Mode B embedded prepare/cache for MCP host | Scaffold Done (#268); **Future** until Traverse Project 1 ticket-id `implement-mode-b-embedded-mcp-host` (issue [#1242](https://github.com/traverse-framework/Traverse/issues/1242), Spec 520 host CLI). Absorbed Mode B slice of cancelled umbrella `llm-mcp-0-10-live-cutover` |
 | `llm-mcp-0-10-live-cutover` | Re-verify Mode A kit execute + Mode B host after Traverse v0.10.0 pin | **Done (absorbed)** — Mode A live proof stays on `llm-mcp-traverse-starter-catalog` (#1241); Mode B on `llm-mcp-embedded-host` Future (#1242); pin Done (#292) |
 
 ## Success criteria (plan slice)

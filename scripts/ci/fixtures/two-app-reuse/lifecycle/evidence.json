@@ -4,7 +4,7 @@
   "scope": "fixture-only",
   "non_claims": [
     "Not a production registry release-train proof.",
-    "Not a BundleEmbedder / host-CLI execute proof (see two-app-reuse-host-execute / Traverse #1240).",
+    "Not a BundleEmbedder / host-CLI execute proof (see two-app-reuse-host-execute / Traverse ticket-id bundle-embedder-wasi-proc-exit-success).",
     "App-References does not author meeting-notes.process WASM or invent registry deprecation policy."
   ],
   "shared_capability_id": "meeting-notes.process",
