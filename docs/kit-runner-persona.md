@@ -71,7 +71,7 @@ Local npm gates always. Manifest / `registry_ref` / runbook probes always. `TRAV
 | Registry MCP is not an OS-shell path | `llm-mcp-mode-a-spec119-scaffold` Done (fail-closed); live kit execute `llm-mcp-traverse-starter-catalog` Blocked |
 | Creating a **new** app id from CLI + this kit | [`new-app-author.md`](new-app-author.md) (`new-app-author-e2e`) |
 | `onboarding_check.sh` is not a merge-blocking CI gate | By design (slow `npm install`); `embedded_smoke` is the PR gate |
-| Live Spec 001 subscribe on non-starter primary webs | `web-session-presentation-port-primary` (Blocked on shared helper) |
+| Live Spec 001 subscribe on non-starter primary webs | Done via `web-session-presentation-port-primary` |
 
 ## File bugs
 

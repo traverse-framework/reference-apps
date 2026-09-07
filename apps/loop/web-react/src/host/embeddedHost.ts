@@ -1,12 +1,7 @@
-import type {
-  CapabilityProgressStep,
-  EmbedderEventLike,
-  PresentationState,
-} from 'event-ui-conformance'
+import type { EmbedderEventLike, PresentationState, SessionPresentation } from 'event-ui-conformance'
 import {
-  activeCapabilityId,
-  mapCapabilityProgress,
-  mapPresentationState,
+  mapSessionPresentation,
+  observeSessionPresentation as observeSessionPresentationFromPackage,
 } from 'event-ui-conformance'
 import type {
   EmbedderEvent,
@@ -41,12 +36,13 @@ export interface HostRunResult {
   /** Spec 001 error text from event payloads (never invented). */
   presentationError: string | null
   /** Spec 002 ordered capability invoke/result progress. */
-  capabilityProgress: CapabilityProgressStep[]
+  capabilityProgress: SessionPresentation['capabilityProgress']
   /** Spec 002 active capability id when an invoke is still open. */
   activeCapabilityId: string | null
 }
 
-export type { TraverseEmbedderApi, EmbedderEvent, PresentationState, CapabilityProgressStep }
+export type { TraverseEmbedderApi, EmbedderEvent, PresentationState, SessionPresentation }
+export type { CapabilityProgressStep } from 'event-ui-conformance'
 
 export function createTestEmbedder(output: LoopOutput): TraverseEmbedderApi {
   return new EmbedderTestDouble({
@@ -84,13 +80,45 @@ function errorMessageFromData(data: JsonValue): string | null {
   return null
 }
 
-function toEventLikes(events: readonly EmbedderEvent[]): EmbedderEventLike[] {
-  return events.map((event) => ({
+function toEventLike(event: EmbedderEvent): EmbedderEventLike {
+  return {
     event_type: event.event_type,
     sequence: event.sequence,
     session_id: event.session_id,
     data: event.data,
-  }))
+  }
+}
+
+function toEventLikes(events: readonly EmbedderEvent[]): EmbedderEventLike[] {
+  return events.map(toEventLike)
+}
+
+/** Map public embedder events to Spec 001/002 UI fields (shared package). */
+export function mapEmbedderSessionPresentation(
+  events: readonly EmbedderEvent[],
+  options?: { fallbackError?: string | null },
+): SessionPresentation {
+  return mapSessionPresentation(toEventLikes(events), options)
+}
+
+/**
+ * Subscribe via the public embedder API and map each event with the shared
+ * Spec 001/002 helpers. Prefer a fresh subscribe per run.
+ */
+export function observeSessionPresentation(
+  host: TraverseEmbedderApi,
+  onChange: (presentation: SessionPresentation) => void,
+): void {
+  observeSessionPresentationFromPackage(
+    {
+      subscribe(listener) {
+        host.subscribe((event) => {
+          listener(toEventLike(event))
+        })
+      },
+    },
+    onChange,
+  )
 }
 
 function withPresentation(
@@ -100,29 +128,27 @@ function withPresentation(
   >,
   collected: readonly EmbedderEvent[],
 ): HostRunResult {
-  const likes = toEventLikes(collected)
-  const snap = mapPresentationState(likes)
-  const presentationState: PresentationState =
-    base.error && snap.state === 'idle' ? 'error' : snap.state
   return {
     ...base,
-    presentationState,
-    presentationError:
-      snap.errorMessage ?? (base.error && snap.state === 'idle' ? base.error : null),
-    capabilityProgress: mapCapabilityProgress(likes),
-    activeCapabilityId: activeCapabilityId(likes),
+    ...mapEmbedderSessionPresentation(collected, { fallbackError: base.error }),
   }
 }
 
-export function submitTranscript(embedder: TraverseEmbedderApi, transcript: string): HostRunResult {
+/** Submit `{ transcript }` to `loop.wf1` and collect terminal output. */
+export function submitTranscript(
+  embedder: TraverseEmbedderApi,
+  transcript: string,
+  onPresentation?: (presentation: SessionPresentation) => void,
+): HostRunResult {
   const collected: EmbedderEvent[] = []
   embedder.subscribe((event) => {
     collected.push(event)
+    onPresentation?.(mapEmbedderSessionPresentation(collected))
   })
 
   const outcome = embedder.submit(DEFAULT_WORKFLOW_ID, { transcript })
   if (outcome.status === 'rejected') {
-    return withPresentation(
+    const rejected = withPresentation(
       {
         sessionId: outcome.sessionId ?? 'sess-unknown',
         output: null,
@@ -134,6 +160,13 @@ export function submitTranscript(embedder: TraverseEmbedderApi, transcript: stri
       },
       [],
     )
+    onPresentation?.({
+      presentationState: rejected.presentationState,
+      presentationError: rejected.presentationError,
+      capabilityProgress: rejected.capabilityProgress,
+      activeCapabilityId: rejected.activeCapabilityId,
+    })
+    return rejected
   }
 
   const sessionId = outcome.sessionId ?? 'sess-unknown'

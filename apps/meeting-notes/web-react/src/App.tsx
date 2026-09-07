@@ -9,10 +9,18 @@ import {
   submitTranscript,
   type HostRunResult,
   type RuntimeStatus,
+  type SessionPresentation,
   type TraverseEmbedderApi,
 } from './host/embeddedHost'
 
 const TRANSCRIPT_MAX_LENGTH = 5000
+
+const IDLE_PRESENTATION: SessionPresentation = {
+  presentationState: 'idle',
+  presentationError: null,
+  capabilityProgress: [],
+  activeCapabilityId: null,
+}
 
 export interface AppProps {
   embedder?: TraverseEmbedderApi | null
@@ -25,6 +33,7 @@ function App({ embedder: injectedEmbedder }: AppProps = {}) {
   const [prodEmbedder, setProdEmbedder] = useState<TraverseEmbedderApi | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<HostRunResult | null>(null)
+  const [livePresentation, setLivePresentation] = useState<SessionPresentation | null>(null)
 
   const embedder = injected ? injectedEmbedder : prodEmbedder
   const runtimeStatus: RuntimeStatus = injected
@@ -55,8 +64,13 @@ function App({ embedder: injectedEmbedder }: AppProps = {}) {
       if (!canSubmit || !embedder) return
       setSubmitting(true)
       setResult(null)
+      setLivePresentation(IDLE_PRESENTATION)
       try {
-        setResult(submitTranscript(embedder, transcript))
+        setResult(
+          submitTranscript(embedder, transcript, (presentation) => {
+            setLivePresentation(presentation)
+          }),
+        )
       } finally {
         setSubmitting(false)
       }
@@ -66,8 +80,16 @@ function App({ embedder: injectedEmbedder }: AppProps = {}) {
 
   const handleReset = useCallback(() => {
     setResult(null)
+    setLivePresentation(null)
     setTranscript('')
   }, [])
+
+  const presentationState =
+    livePresentation?.presentationState ?? result?.presentationState ?? null
+  const activeCapabilityId =
+    livePresentation?.activeCapabilityId ?? result?.activeCapabilityId ?? null
+  const capabilityProgress =
+    livePresentation?.capabilityProgress ?? result?.capabilityProgress ?? []
 
   return (
     <div style={{ maxWidth: '800px', margin: '40px auto', padding: '0 20px' }}>
@@ -95,9 +117,9 @@ function App({ embedder: injectedEmbedder }: AppProps = {}) {
           workspace={DEFAULT_WORKSPACE}
           workflowId={DEFAULT_WORKFLOW_ID}
           status={runtimeStatus}
-          presentationState={result?.presentationState ?? null}
-          activeCapabilityId={result?.activeCapabilityId ?? null}
-          capabilityProgress={result?.capabilityProgress ?? []}
+          presentationState={presentationState}
+          activeCapabilityId={activeCapabilityId}
+          capabilityProgress={capabilityProgress}
         />
 
         <TranscriptInput
