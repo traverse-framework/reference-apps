@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Mode A MCP launcher — fail closed until Traverse ships Spec 119 public-registry host.
+# Mode A MCP launcher — Spec 119 verified public-registry host.
 # Do NOT silently fall back to expedition stdio (would mislabel kit catalog).
 set -euo pipefail
 
@@ -7,28 +7,27 @@ if [ -z "${TRAVERSE_REPO:-}" ]; then
   echo "FAIL: set TRAVERSE_REPO" >&2
   exit 1
 fi
-if [ -z "${TRAVERSE_MCP_CACHE_ROOT:-}" ]; then
-  echo "FAIL: set TRAVERSE_MCP_CACHE_ROOT (Spec 119 host-supplied verified state)" >&2
+
+# Canonical Traverse env is TRAVERSE_MCP_REGISTRY_CACHE (Spec 119).
+# TRAVERSE_MCP_CACHE_ROOT remains accepted as an App-Refs alias.
+CACHE_ROOT="${TRAVERSE_MCP_REGISTRY_CACHE:-${TRAVERSE_MCP_CACHE_ROOT:-}}"
+if [ -z "$CACHE_ROOT" ]; then
+  echo "FAIL: set TRAVERSE_MCP_REGISTRY_CACHE (or TRAVERSE_MCP_CACHE_ROOT alias)" >&2
   exit 1
 fi
-
-cd "$TRAVERSE_REPO"
-
-# Probe for a future Mode A entrypoint without inventing one.
-if cargo run -p traverse-mcp -- --help 2>/dev/null | grep -Eqi 'mode-a|verified-registry|public-registry'; then
-  echo "OK: Mode A-looking traverse-mcp help found — wire serve.sh to the shipped flags and re-run."
-  echo "HINT: Spec 119 wants a versioned traverse-mcp binary + prepared verified state (FR-006)."
-  echo "HINT: cache root configured: $TRAVERSE_MCP_CACHE_ROOT"
+if [ ! -f "$CACHE_ROOT/public-metadata/current.json" ]; then
+  cat <<EOF >&2
+FAIL: Mode A cache is not prepared verified public state.
+  Missing: $CACHE_ROOT/public-metadata/current.json
+  Run: bash prepare.sh
+  Unprepared/malformed state must fail closed (Spec 119 FR-003) — never expedition fallback.
+EOF
   exit 2
 fi
 
-cat <<EOF >&2
-FAIL: Spec 119 Mode A host not yet shipped in Traverse.
-  Public-only discovery + inline RuntimeRequest + digest-verified WASM are not
-  the default \`traverse-mcp -- stdio\` expedition catalog.
-  Governing spec: https://github.com/traverse-framework/Traverse/blob/main/specs/119-verified-registry-mcp-mode-a/spec.md
-  App-Refs live kit execute stays on ticket llm-mcp-traverse-starter-catalog.
-  Expedition bootstrap (not Spec 119): cargo run -p traverse-mcp -- stdio
-  Cache root configured: $TRAVERSE_MCP_CACHE_ROOT
-EOF
-exit 2
+cd "$TRAVERSE_REPO"
+export TRAVERSE_MCP_REGISTRY_CACHE="$CACHE_ROOT"
+
+# Contributor source-run (FR-006 prefers a versioned binary when published).
+# Expedition stdio without TRAVERSE_MCP_REGISTRY_CACHE is intentionally not used here.
+exec cargo run -q -p traverse-mcp -- stdio "$@"

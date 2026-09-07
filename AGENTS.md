@@ -32,7 +32,7 @@ gh project item-list 2 --owner traverse-framework --format json --limit 300 \
 | `new-app-author-e2e` | **Done** (#275) | CLI `app new` → App-Refs layout + Web host rewrite |
 | `fix-nightly-native-macos-windows` | **Done** (#277) | Swift 6 Sendable mappers + WinUI test compile of PresentationMapper |
 | `llm-mcp-mode-a-spec119-scaffold` | **Done** (#271) | Spec 119 consumer scaffold (fail-closed); live kit execute stays `llm-mcp-traverse-starter-catalog` |
-| `llm-mcp-traverse-starter-catalog` | **Blocked** | Live kit execute blocked on Traverse [#1241](https://github.com/traverse-framework/Traverse/issues/1241) (Spec 119 Mode A); absorbed Mode A cutover from `llm-mcp-0-10-live-cutover` |
+| `llm-mcp-traverse-starter-catalog` | **Done** | Mode A live cutover after Traverse [#1241](https://github.com/traverse-framework/Traverse/issues/1241)/[#1252](https://github.com/traverse-framework/Traverse/pull/1252); evidence under `apps/llm-mcp-reference/` |
 | `loop-wf1-registry-deps` | **Done** (#263) | Digest inventory in `docs/loop-registry-deps.md` |
 | `loop-wf1-multi-os` | **Done** (#265) | `apps/loop/` WF1 × 7 OS; compose via `registry_ref` |
 | `retire-registry-ref-materialize` | **Done** (#267) | Phase A gate; host cutover → Future `retire-registry-ref-materialize-hosts` |

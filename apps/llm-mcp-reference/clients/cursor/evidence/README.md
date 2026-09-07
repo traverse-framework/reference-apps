@@ -1,58 +1,54 @@
-# Cursor MCP live evidence (`llm-mcp-cursor-live-smoke`)
+# Cursor MCP Mode A evidence (`llm-mcp-traverse-starter-catalog`)
 
-Captured **2026-07-29** against Traverse **v0.8.2** (`TRAVERSE_REPO=/tmp/Traverse`).
+Captured **2026-09-07** against Traverse **main** (post [#1252](https://github.com/traverse-framework/Traverse/pull/1252) Spec 119 Mode A; after tagged `v0.10.0`).
 
 ## What was proven
 
-The Cursor façade config in [`../mcp.json.example`](../mcp.json.example) launches:
+Mode A host path via `TRAVERSE_MCP_REGISTRY_CACHE` pointing at the Traverse committed verified kit fixture (`crates/traverse-mcp/tests/fixtures/mode-a-cache`), equivalent to:
 
 ```bash
-cargo run -p traverse-mcp -- stdio
+export TRAVERSE_REPO=/absolute/path/to/Traverse
+export TRAVERSE_MCP_REGISTRY_CACHE="$TRAVERSE_REPO/crates/traverse-mcp/tests/fixtures/mode-a-cache"
+# or: bash apps/llm-mcp-reference/mode-a/prepare.sh && bash apps/llm-mcp-reference/mode-a/serve.sh
+printf '%s\n' … | TRAVERSE_MCP_REGISTRY_CACHE=… cargo run -q -p traverse-mcp -- stdio
 ```
 
-with `cwd` / `TRAVERSE_REPO` pointing at a Traverse checkout. That exact command was exercised here (stdio JSONL envelopes, local_trust Mode A).
-
-### Transcript A — discovery
+### transcript A — discovery
 
 File: [`cursor-mcp-stdio-transcript.jsonl`](cursor-mcp-stdio-transcript.jsonl)
 
 Commands: `describe_server` → `list_entrypoints` → `list_content_groups` → `shutdown`
 
-Observed kinds: `mcp_stdio_server_startup` (ready), `mcp_stdio_server_description`, `mcp_stdio_server_entrypoint_list`, `mcp_stdio_server_content_group_list`, `mcp_stdio_server_shutdown`.
+Observed: `"mode":"verified_public"`, governing spec `119-verified-registry-mcp-mode-a`, discovery source `host_verified_public_registry`, capability id `core.normalize-participants` (Loop WF1 kit used by App-Refs). Content groups empty (FR-007). No expedition catalog.
 
-### transcript B — validate / execute / render
+### transcript B — execute / render
 
 File: [`cursor-mcp-execute-transcript.jsonl`](cursor-mcp-execute-transcript.jsonl)
 
-Commands follow the upstream `mcp_stdio_server_execution_report_smoke.sh` path against the **current** MCP catalog workflow `expedition.planning.plan-expedition` (request_path `examples/expedition/runtime-requests/plan-expedition.json`).
+Commands: `describe_server` → `list_entrypoints` → inline `execute_entrypoint` → inline `render_execution_report` → `shutdown` against `core.normalize-participants` @ `1.1.0`.
 
-Observed: validation `valid` → execution `completed` → report `rendered` → shutdown `complete`. stderr empty.
+Observed: `"status":"completed"`, `"request_source":"inline"`, `"digest_matches_public_state":true`, artifact digest `sha256:6bb5c6300710de6090c4b5f25d611a6a6af7d2dd9e1bacb3bdb01b166110b5ad`.
+
+### Fail closed
+
+Empty `TRAVERSE_MCP_REGISTRY_CACHE` → startup failure with `"code":"registry_sync_missing"` and empty stdout (no expedition fallback).
 
 ## Runtime fields only
 
-Execution/report envelopes come from Traverse MCP — this façade does **not** invent structured business fields. Agents must present only fields returned by `render_execution_report` / execution envelopes.
+Execution/report envelopes come from Traverse MCP — this façade does **not** invent structured business fields.
 
-## Catalog note (honest)
+## Catalog note
 
-As of Traverse v0.8.2, `traverse-mcp stdio`’s default governed catalog is the **expedition** registry bundle (plus `core-runtime-example` content group). **`traverse-starter.*` / `meeting-notes.process` entrypoints are not listed yet** in that default catalog.
-
-Implication for App-Refs:
-
-- Cursor MCP config is correct for Mode A (stdio → `traverse-mcp`).
-- Live product smoke against starter/meeting-notes **IDs** lands when those capabilities are published into the MCP catalog (or a documented catalog override ships upstream). Until then, this evidence proves the Cursor→MCP host path end-to-end on the catalog the server actually serves.
-
-Tracked on App-Refs Project 2 as `llm-mcp-traverse-starter-catalog` (Blocked), mirroring Traverse [#865](https://github.com/traverse-framework/Traverse/issues/865) and registry [#99](https://github.com/traverse-framework/registry/issues/99).
+Mode A discovery is the host-prepared verified public metadata generation. The committed fixture seeds `core.normalize-participants`. Additional App-Refs pins (`meeting-notes.process`, `traverse-starter.process`) appear when the host prepares those digests into the same `HostRegistryCache` (library prepare APIs) — not via expedition fallback or App-Refs materialize rewrite.
 
 ## Reproduce
 
 ```bash
-export TRAVERSE_REPO=/absolute/path/to/Traverse
-cd "$TRAVERSE_REPO"
-printf '%s\n' \
-  '{"command":"describe_server"}' \
-  '{"command":"list_entrypoints"}' \
-  '{"command":"shutdown"}' \
-  | cargo run -q -p traverse-mcp -- stdio
+export TRAVERSE_REPO=/absolute/path/to/Traverse   # main with Mode A
+export TRAVERSE_MCP_REGISTRY_CACHE="${HOME}/.cache/traverse-mcp-mode-a"
+cd /absolute/path/to/App-References/apps/llm-mcp-reference/mode-a
+bash prepare.sh
+bash serve.sh   # or pipe JSONL commands into serve.sh
 ```
 
-Optional full execute path: see Traverse `scripts/ci/mcp_stdio_server_execution_report_smoke.sh`.
+Upstream smoke: `bash "$TRAVERSE_REPO/scripts/ci/mcp_stdio_server_mode_a_smoke.sh"`.
