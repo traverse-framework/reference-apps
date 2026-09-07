@@ -582,3 +582,78 @@ Append-only record of design decisions for App-References. Newest sessions at th
 - Forced yield for visible loading flash (Option A2)
 - Rolling A1 to doc-approval / meeting-notes / loop web (Option S2)
 - Extracting a shared observe helper package (Option S3)
+
+
+---
+
+## 2026-09-06 — Shared web session-presentation helper
+
+**Context:** After starter A1 (#298), authors still lack a shared subscribe→Spec 001 map path; other primary webs batch after sync submit.
+
+### Next move
+
+**Question:** Highest-leverage next step?
+
+**Options considered:**
+- 1 — Shared helper + roll other primary webs — pros: closes starter-only gap; cons: multi-app work
+- 2 — Kit docs only — pros: cheap; cons: shells stay batch-mapping
+- 3 — Traverse async/yielding submit — pros: visible mid-flight; cons: upstream
+- 4 — Demo blocked/ended on Loop web — pros: non-happy SM; cons: narrow
+
+**Recommendation:** 1 + thin 2.
+
+**Decision:** 1+2.
+
+**Why:** Authors need a copy-paste API and vocabulary/bundle caveats documented.
+
+### Shared helper home
+
+**Question:** Where should the helper live?
+
+**Options considered:**
+- W1 — `packages/event-ui-conformance` — pros: all primary webs already depend; cons: careful API
+- W2 — new package — pros: isolation; cons: extra package
+- W3 — docs-only first — pros: fast; cons: still copy-paste
+
+**Recommendation:** W1.
+
+**Decision:** W1.
+
+**Why:** Natural home next to Spec 001/002 mappers.
+
+### Ticket shape
+
+**Question:** How to ticket W1?
+
+**Options considered:**
+- T1 — One ticket extract+docs+all ports — pros: one DoD; cons: large PR
+- T2 — (a) extract+docs+starter adopt, (b) port remaining webs — pros: safer; cons: gap until (b)
+- T3 — per-app after tiny extract — pros: parallel; cons: board noise
+
+**Recommendation:** T2.
+
+**Decision:** T2.
+
+**Why:** Land author-facing API first without boiling the ocean.
+
+### Next action
+
+**Question:** File/claim/implement now?
+
+**Options considered:**
+- N1 — File (a)+(b), claim (a), implement — pros: momentum
+- N2 — Decision log only
+- N3 — File Ready, don’t claim
+
+**Recommendation:** N1.
+
+**Decision:** N1.
+
+**Why:** Keep momentum while the gap is fresh.
+
+### What was explicitly deferred
+
+- Ticket (b) ports for doc-approval / meeting-notes / loop web (and Trace Explorer if not in (a))
+- Traverse async/yielding submit (Option 3)
+- Forced yield for visible loading flash
+- Loop blocked/ended product demo as the next wave priority
