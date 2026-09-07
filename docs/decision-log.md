@@ -708,3 +708,25 @@ Append-only record of design decisions for App-References. Newest sessions at th
 **Decision:** Move ticket Ready → claim → wire `mode-a/prepare.sh` + `serve.sh` to `TRAVERSE_MCP_REGISTRY_CACHE`; capture evidence for `core.normalize-participants` (App-Refs Loop WF1 kit).
 
 **Why:** Spec 119 host is merged; App-Refs DoD is consumer evidence + docs, not waiting on the next Traverse tag. Expedition without the cache env remains non-happy-path.
+
+
+---
+
+## 2026-09-07 — `two-app-reuse-host-execute` premature Ready → re-Blocked
+
+**Context:** Board hygiene moved `two-app-reuse-host-execute` Ready because Traverse #1240 closed. Ops claimed it; App-Refs still pins `traverse-embedder` / CI at tag **v0.10.0**.
+
+### Is #1240 closed enough to implement?
+
+**Question:** Can host-execute DoD be satisfied on the current App-Refs pin?
+
+**Options considered:**
+- Implement against v0.10.0 — pros: no pin churn; cons: empirically still `registered artifact execution failed` on `meeting-notes-cli`
+- Pin App-Refs to Traverse main / `ff50bbc` (#1255) now — pros: unblocks host proof today; cons: breaks single-tag pin discipline from `pin-ci-traverse-0-10`
+- Re-Block until a Traverse release tag contains #1255, then pin bump — pros: honest pin + ticket DoD ("if v0.10.0 still fails, stay Blocked"); cons: Ready empty until release
+
+**Recommendation:** Re-Block until a tagged Traverse release includes #1255 (or Enrico explicitly authorizes a commit/main pin).
+
+**Decision:** Re-Block on Project 2; do not ship host-execute evidence against v0.10.0; ask Enrico release-vs-commit-pin.
+
+**Why:** Ticket Blocked-by text forbids wrapping WASM; fix is on main only (`ff50bbc` / PR #1255), not in tagged v0.10.0.
