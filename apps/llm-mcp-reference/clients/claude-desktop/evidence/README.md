@@ -1,28 +1,15 @@
-# Claude Desktop MCP live evidence (`llm-mcp-claude-live-smoke`)
+# Claude Desktop MCP Mode A evidence (`llm-mcp-traverse-starter-catalog`)
 
-Captured **2026-07-29** against Traverse **v0.8.2**.
+Captured **2026-09-07** against Traverse **main** (Spec 119 Mode A via [#1252](https://github.com/traverse-framework/Traverse/pull/1252)).
 
-## What was proven
+Same Mode A verified-public catalog path as Cursor evidence (stdio JSONL envelopes). Claude Desktop GUI was not required; DoD allows a **command transcript**.
 
-[`../mcp.json.example`](../mcp.json.example) launches:
+### transcript A — discovery
 
-```bash
-cargo run -p traverse-mcp -- stdio
-```
+[`claude-desktop-mcp-stdio-transcript.jsonl`](claude-desktop-mcp-stdio-transcript.jsonl) — `verified_public` + `core.normalize-participants`.
 
-That exact Mode A command was exercised (JSONL stdio envelopes). Claude Desktop GUI was **not** available in this Linux cloud-agent environment; DoD allows a **command transcript** in lieu of screenshots.
+### transcript B — execute / render
 
-### Files
+[`claude-desktop-mcp-execute-transcript.jsonl`](claude-desktop-mcp-execute-transcript.jsonl) — inline execute + render, `digest_matches_public_state:true`.
 
-| File | Contents |
-|---|---|
-| [`claude-desktop-mcp-stdio-transcript.jsonl`](claude-desktop-mcp-stdio-transcript.jsonl) | `describe_server` → `list_entrypoints` → `list_content_groups` → `shutdown` |
-| [`claude-desktop-mcp-execute-transcript.jsonl`](claude-desktop-mcp-execute-transcript.jsonl) | validate → execute → `render_execution_report` on `expedition.planning.plan-expedition` (status valid / completed / rendered) |
-
-## Runtime fields only
-
-Present only fields returned by MCP envelopes / `render_execution_report`. Do not invent title/tags or meeting-notes rows.
-
-## Catalog note
-
-Default `traverse-mcp` catalog on v0.8.2 is the **expedition** bundle. `traverse-starter.*` IDs are not listed yet; the Claude Desktop config still correctly binds to Mode A stdio. See Cursor evidence for the same catalog honesty note.
+See [`../../cursor/evidence/README.md`](../../cursor/evidence/README.md) for env/reproduce details and fail-closed notes.

@@ -2,16 +2,16 @@
 
 ## Setup
 
-1. Traverse checkout with working `traverse-mcp` (tested with **v0.8.2+**).
-2. Copy [`mcp.json.example`](mcp.json.example) into Cursor MCP settings (Cursor Settings → MCP, or project MCP config as applicable).
-3. Replace `/ABS/PATH/TO/Traverse` with your **absolute** Traverse checkout in both `cwd` and `env.TRAVERSE_REPO`.
-4. Apply [`../../shared/prompts/system-boundary.md`](../../shared/prompts/system-boundary.md) in rules/instructions.
-5. Exercise [`../../shared/workflows/traverse-starter.md`](../../shared/workflows/traverse-starter.md) when starter entrypoints are available in the MCP catalog; until then use discovery (`list_entrypoints`) and only render runtime fields.
-6. For meeting transcripts, follow [`../../shared/workflows/meeting-notes.md`](../../shared/workflows/meeting-notes.md) (tool sequence + sample transcript) once `meeting-notes.process` is catalogued.
+1. Traverse checkout that includes Spec 119 Mode A (post [#1252](https://github.com/traverse-framework/Traverse/pull/1252), or the next release after `v0.10.0`).
+2. Prepare a verified cache: `cd ../../mode-a && bash prepare.sh` (sets `TRAVERSE_MCP_REGISTRY_CACHE`).
+3. Copy [`mcp.json.example`](mcp.json.example) into Cursor MCP settings (or use [`../../mode-a/mcp.json.example`](../../mode-a/mcp.json.example)).
+4. Replace absolute paths for `TRAVERSE_REPO` and `TRAVERSE_MCP_REGISTRY_CACHE`.
+5. Apply [`../../shared/prompts/system-boundary.md`](../../shared/prompts/system-boundary.md) in rules/instructions.
+6. Discover via `list_entrypoints` and only render runtime fields. Seeded fixture includes `core.normalize-participants` (Loop WF1). Extend the cache for `meeting-notes.process` / `traverse-starter.process` when needed.
 
 ## Live evidence
 
-See [`evidence/`](evidence/) — Cursor cloud agent ran the **same** `cargo run -p traverse-mcp -- stdio` command as `mcp.json.example` and captured discovery + execute/render transcripts (`llm-mcp-cursor-live-smoke`).
+See [`evidence/`](evidence/) — Mode A verified-public discovery + inline execute/render (`llm-mcp-traverse-starter-catalog`).
 
 ## Boundary
 

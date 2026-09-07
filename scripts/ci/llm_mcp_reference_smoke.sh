@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Scaffold integrity smoke for LLM MCP reference façades (secondary tier).
+# Scaffold + Mode A integrity smoke for LLM MCP reference façades (secondary tier).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 fail=0
@@ -33,25 +33,51 @@ need apps/llm-mcp-reference/clients/cursor/evidence/cursor-mcp-stdio-transcript.
 need apps/llm-mcp-reference/clients/cursor/evidence/cursor-mcp-execute-transcript.jsonl
 need apps/llm-mcp-reference/clients/chatgpt/README.md
 need apps/llm-mcp-reference/clients/grok/README.md
-# Mode A scaffold (Spec 119 public-registry host — fail-closed until Traverse ships it)
+# Mode A consumer (Spec 119 public-registry host — wired after Traverse #1252)
 need apps/llm-mcp-reference/mode-a/README.md
 need apps/llm-mcp-reference/mode-a/mcp.json.example
 need apps/llm-mcp-reference/mode-a/prepare.sh
 need apps/llm-mcp-reference/mode-a/serve.sh
-if ! rg -q 'TRAVERSE_MCP_CACHE_ROOT' "$ROOT/apps/llm-mcp-reference/mode-a/mcp.json.example"; then
-  echo "FAIL: mode-a mcp example must set TRAVERSE_MCP_CACHE_ROOT"
+need apps/llm-mcp-reference/mode-a/evidence/mode-a-stdio-transcript.jsonl
+need apps/llm-mcp-reference/mode-a/evidence/mode-a-execute-transcript.jsonl
+if ! rg -q 'TRAVERSE_MCP_REGISTRY_CACHE|TRAVERSE_MCP_CACHE_ROOT' "$ROOT/apps/llm-mcp-reference/mode-a/mcp.json.example"; then
+  echo "FAIL: mode-a mcp example must set TRAVERSE_MCP_REGISTRY_CACHE (or CACHE_ROOT alias)"
   fail=1
 fi
 if ! rg -q '119-verified-registry-mcp-mode-a|Spec 119' "$ROOT/apps/llm-mcp-reference/mode-a/README.md"; then
   echo "FAIL: mode-a README must cite Spec 119"
   fail=1
 fi
-if ! rg -qi 'not yet shipped|Mode A host not yet|fail' "$ROOT/apps/llm-mcp-reference/mode-a/serve.sh"; then
-  echo "FAIL: mode-a serve.sh must fail closed until Traverse Mode A host ships"
+if ! rg -q 'TRAVERSE_MCP_REGISTRY_CACHE' "$ROOT/apps/llm-mcp-reference/mode-a/serve.sh"; then
+  echo "FAIL: mode-a serve.sh must use TRAVERSE_MCP_REGISTRY_CACHE"
   fail=1
 fi
-if rg -qi 'stdio' "$ROOT/apps/llm-mcp-reference/mode-a/serve.sh" && ! rg -q 'Do NOT silently fall back to expedition stdio' "$ROOT/apps/llm-mcp-reference/mode-a/serve.sh"; then
+if ! rg -q 'Do NOT silently fall back to expedition stdio' "$ROOT/apps/llm-mcp-reference/mode-a/serve.sh"; then
   echo "FAIL: mode-a serve.sh must not silently fall back to expedition stdio"
+  fail=1
+fi
+if ! rg -q 'cargo run .*traverse-mcp.*stdio|exec cargo run' "$ROOT/apps/llm-mcp-reference/mode-a/serve.sh"; then
+  echo "FAIL: mode-a serve.sh must launch traverse-mcp stdio under Mode A cache"
+  fail=1
+fi
+if ! rg -q 'verified_public|119-verified-registry-mcp-mode-a' "$ROOT/apps/llm-mcp-reference/mode-a/evidence/mode-a-stdio-transcript.jsonl"; then
+  echo "FAIL: mode-a stdio evidence must show verified_public / Spec 119"
+  fail=1
+fi
+if ! rg -q 'core\.normalize-participants' "$ROOT/apps/llm-mcp-reference/mode-a/evidence/mode-a-stdio-transcript.jsonl"; then
+  echo "FAIL: mode-a stdio evidence must list an App-Refs kit capability"
+  fail=1
+fi
+if ! rg -q 'digest_matches_public_state.:true|"digest_matches_public_state":true' "$ROOT/apps/llm-mcp-reference/mode-a/evidence/mode-a-execute-transcript.jsonl"; then
+  echo "FAIL: mode-a execute evidence must show digest_matches_public_state"
+  fail=1
+fi
+if ! rg -q 'request_source.:inline|"request_source":"inline"' "$ROOT/apps/llm-mcp-reference/mode-a/evidence/mode-a-execute-transcript.jsonl"; then
+  echo "FAIL: mode-a execute evidence must use inline RuntimeRequest"
+  fail=1
+fi
+if rg -qi 'expedition' "$ROOT/apps/llm-mcp-reference/mode-a/evidence/mode-a-stdio-transcript.jsonl"; then
+  echo "FAIL: mode-a evidence must not be expedition catalog"
   fail=1
 fi
 if rg -q 'APP_REFS_MATERIALIZE_REGISTRY_REFS|sync_bundle_materialize_registry_refs' "$ROOT/apps/llm-mcp-reference/mode-a"; then
@@ -79,13 +105,10 @@ if rg -q 'APP_REFS_MATERIALIZE_REGISTRY_REFS|sync_bundle_materialize_registry_re
   echo "FAIL: mode-b must not depend on App-Refs materialize rewrite"
   fail=1
 fi
-# Configs must mention traverse-mcp, not invent business fields
-if ! rg -q 'traverse-mcp' "$ROOT/apps/llm-mcp-reference/clients/claude-desktop/mcp.json.example"; then
-  echo "FAIL: claude-desktop mcp example must reference traverse-mcp"
+# Configs must launch Mode A (serve.sh) or traverse-mcp — not invent business fields
+if ! rg -q 'mode-a/serve\.sh|traverse-mcp' "$ROOT/apps/llm-mcp-reference/clients/claude-desktop/mcp.json.example"; then
+  echo "FAIL: claude-desktop mcp example must launch mode-a/serve.sh or traverse-mcp"
   fail=1
-fi
-if rg -n -i 'invent (title|tags)|compute business' "$ROOT/apps/llm-mcp-reference/shared/prompts/system-boundary.md" >/dev/null; then
-  : # optional; boundary doc forbids inventing — ensure forbid language exists
 fi
 if ! rg -q 'do not invent' "$ROOT/apps/llm-mcp-reference/shared/prompts/system-boundary.md"; then
   echo "FAIL: system-boundary.md must forbid inventing fields"

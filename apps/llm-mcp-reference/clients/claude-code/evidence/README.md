@@ -1,26 +1,15 @@
-# Claude Code MCP live evidence (`llm-mcp-claude-live-smoke`)
+# Claude Code MCP Mode A evidence (`llm-mcp-traverse-starter-catalog`)
 
-Captured **2026-07-29** against Traverse **v0.8.2**.
+Captured **2026-09-07** against Traverse **main** (Spec 119 Mode A via [#1252](https://github.com/traverse-framework/Traverse/pull/1252)).
 
-## What was proven
+[`.mcp.json.example`](../.mcp.json.example) should point at `mode-a/serve.sh` (or the same `TRAVERSE_MCP_REGISTRY_CACHE` + `traverse-mcp stdio` env).
 
-[`.mcp.json.example`](../.mcp.json.example) launches the same Mode A command as Claude Desktop:
+### transcript A — discovery
 
-```bash
-cargo run -p traverse-mcp -- stdio
-```
+[`claude-code-mcp-stdio-transcript.jsonl`](claude-code-mcp-stdio-transcript.jsonl)
 
-Command transcripts (Claude Code CLI GUI not required for this evidence):
+### transcript B — execute / render
 
-| File | Contents |
-|---|---|
-| [`claude-code-mcp-stdio-transcript.jsonl`](claude-code-mcp-stdio-transcript.jsonl) | discovery + shutdown |
-| [`claude-code-mcp-execute-transcript.jsonl`](claude-code-mcp-execute-transcript.jsonl) | validate → execute → render on `expedition.planning.plan-expedition` |
+[`claude-code-mcp-execute-transcript.jsonl`](claude-code-mcp-execute-transcript.jsonl)
 
-## Runtime fields only
-
-Do not invent business fields; render MCP/runtime output only.
-
-## Catalog note
-
-Same as Desktop: default catalog is expedition until starter/meeting-notes entrypoints are published to MCP.
+See [`../../cursor/evidence/README.md`](../../cursor/evidence/README.md) for reproduce steps.

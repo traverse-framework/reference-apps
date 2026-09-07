@@ -1,27 +1,27 @@
-# Mode A — Spec 119 verified public-registry MCP host (scaffold)
+# Mode A — Spec 119 verified public-registry MCP host
 
-LLM façade path that must use the **same public registry capabilities** as OS shells (`registry_ref` / published WASM), not the expedition demo catalog.
+LLM façade path that uses the **same public registry capabilities** as OS shells (`registry_ref` / published WASM), not the expedition demo catalog.
 
 OS product shells stay **embedded**. This tree is Claude/Cursor-style MCP only.
 
 | Layer | Status |
 |---|---|
-| Spec 119 (`119-verified-registry-mcp-mode-a`) | **Approved** (Traverse PR #1146) |
-| Mode A `traverse-mcp` host (public-only discovery, inline `RuntimeRequest`, digest-verified WASM, versioned binary) | **Not shipped** — implement still missing after umbrella #865 closed |
-| This tree | **Scaffold** — docs + fail-closed launcher + example MCP config |
+| Spec 119 (`119-verified-registry-mcp-mode-a`) | **Approved** |
+| Mode A `traverse-mcp` host | **Shipped on Traverse main** via [#1241](https://github.com/traverse-framework/Traverse/issues/1241) / [#1252](https://github.com/traverse-framework/Traverse/pull/1252) (post-`v0.10.0`; pin a checkout that includes that merge, or the next release once tagged) |
+| This tree | **Live consumer** — prepare → serve → Cursor/Claude evidence under `evidence/` and `clients/*/evidence/` |
 
-Today’s `cargo run -p traverse-mcp -- stdio` path under `clients/` is the **expedition bootstrap**. Do not label it Spec 119 kit catalog.
+Bare `cargo run -p traverse-mcp -- stdio` **without** `TRAVERSE_MCP_REGISTRY_CACHE` is still the **expedition bootstrap**. Do not label it Spec 119.
 
 ## Contract (prepare → verified state → serve)
 
 ```text
-LLM client  --MCP stdio-->  mode-a/serve.sh  -->  Traverse Mode A host (when shipped)
+LLM client  --MCP stdio-->  mode-a/serve.sh  -->  traverse-mcp stdio (Mode A)
                                   ^
                                   |
-                     host-supplied digest-verified public registry state
+                     TRAVERSE_MCP_REGISTRY_CACHE (digest-verified public state)
                                   ^
                                   |
-                     mode-a/prepare.sh  (index sync + Spec 119 prepare docs)
+                     mode-a/prepare.sh  (seeds HostRegistryCache; optional registry sync)
 ```
 
 Consumer rules (Spec 119):
@@ -38,31 +38,45 @@ Consumer rules (Spec 119):
 
 | Variable | Meaning |
 |---|---|
-| `TRAVERSE_REPO` | Absolute path to Traverse checkout (contributor source-run) |
-| `TRAVERSE_MCP_CACHE_ROOT` | Host-owned verified-state directory (you create/own it) |
+| `TRAVERSE_REPO` | Absolute path to Traverse checkout (contributor source-run; must include Mode A) |
+| `TRAVERSE_MCP_REGISTRY_CACHE` | Host-owned verified-state directory (canonical Spec 119 name) |
+| `TRAVERSE_MCP_CACHE_ROOT` | App-Refs alias for `TRAVERSE_MCP_REGISTRY_CACHE` |
 | `TRAVERSE_WORKSPACE` | Registry workspace id (default `local-default`) |
+| `TRAVERSE_MCP_PREPARE_SYNC` | Set `1` during prepare to also run `registry sync` |
 
 ## Prepare
 
 ```bash
 export TRAVERSE_REPO="$(cd ../../../../Traverse && pwd)"   # adjust
-export TRAVERSE_MCP_CACHE_ROOT="${HOME}/.cache/traverse-mcp-mode-a"
+export TRAVERSE_MCP_REGISTRY_CACHE="${HOME}/.cache/traverse-mcp-mode-a"
 export TRAVERSE_WORKSPACE=local-default
 bash prepare.sh
 ```
 
-## Serve (fail-closed until upstream Mode A host)
+`prepare.sh` seeds the Traverse committed Mode A fixture (includes
+`core.normalize-participants` @ 1.1.0 — a Loop WF1 dependency used by App-Refs).
+Hosts may extend the same cache shape with additional published `registry_ref`s
+via `traverse_embedder::prepare_registry_dependency` + `publish_public_metadata`
+(no App-Refs materialize rewrite).
+
+## Serve
 
 ```bash
 bash serve.sh
 ```
 
-Today `serve.sh` exits non-zero. Point LLM clients at expedition `clients/*/mcp.json.example` only if you accept that catalog. Point Spec 119 clients at [`mcp.json.example`](mcp.json.example) in this folder.
+Point Spec 119 clients at [`mcp.json.example`](mcp.json.example).
 
-When Traverse ships Mode A flags, wire them here — do not invent a private CLI.
+## Evidence
+
+Live Mode A transcripts (verified_public, inline execute, digest match):
+
+- [`evidence/mode-a-stdio-transcript.jsonl`](evidence/mode-a-stdio-transcript.jsonl)
+- [`evidence/mode-a-execute-transcript.jsonl`](evidence/mode-a-execute-transcript.jsonl)
+- Mirrored under `clients/cursor|claude-desktop|claude-code/evidence/`
 
 ## Upstream
 
 - Spec [`119-verified-registry-mcp-mode-a`](https://github.com/traverse-framework/Traverse/blob/main/specs/119-verified-registry-mcp-mode-a/spec.md)
-- App-Refs catalog ticket `llm-mcp-traverse-starter-catalog` (Blocked until implement)
-- Expedition bootstrap: [`../README.md`](../README.md)
+- Docs: [mcp-stdio-server.md](https://github.com/traverse-framework/Traverse/blob/main/docs/mcp-stdio-server.md), [mcp-mode-a-release-evidence.md](https://github.com/traverse-framework/Traverse/blob/main/docs/mcp-mode-a-release-evidence.md)
+- App-Refs ticket `llm-mcp-traverse-starter-catalog`

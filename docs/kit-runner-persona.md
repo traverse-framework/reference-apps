@@ -2,7 +2,7 @@
 
 **Audience:** someone using App-References as the copy-paste kit — run the **existing** `traverse-starter` (and siblings) on an OS they care about.
 
-This is the first end-to-end bar. It is **not** “create a brand-new app from scratch” ([`new-app-author.md`](new-app-author.md)) and **not** registry MCP on OS shells (LLM façades only; Mode A host still unimplemented).
+This is the first end-to-end bar. It is **not** “create a brand-new app from scratch” ([`new-app-author.md`](new-app-author.md)) and **not** registry MCP on OS shells (LLM façades use Mode A MCP separately — see `apps/llm-mcp-reference/mode-a/`).
 
 Related: [`getting-started-embedded.md`](getting-started-embedded.md) · [`production-playbook.md`](production-playbook.md) · [`add-platform-client.md`](add-platform-client.md) · [`new-app-author.md`](new-app-author.md) · root [`README.md`](../README.md)
 
@@ -68,7 +68,7 @@ Local npm gates always. Manifest / `registry_ref` / runbook probes always. `TRAV
 | Gap | Ticket / note |
 |---|---|
 | Sync still **materializes** `registry_ref` → local wasm for many hosts | `retire-registry-ref-materialize-hosts` (Future) |
-| Registry MCP is not an OS-shell path | `llm-mcp-mode-a-spec119-scaffold` Done (fail-closed); live kit execute `llm-mcp-traverse-starter-catalog` Blocked |
+| Registry MCP is not an OS-shell path | `llm-mcp-mode-a-spec119-scaffold` Done; live Mode A kit execute `llm-mcp-traverse-starter-catalog` Done |
 | Creating a **new** app id from CLI + this kit | [`new-app-author.md`](new-app-author.md) (`new-app-author-e2e`) |
 | `onboarding_check.sh` is not a merge-blocking CI gate | By design (slow `npm install`); `embedded_smoke` is the PR gate |
 | Live Spec 001 subscribe on non-starter primary webs | Done via `web-session-presentation-port-primary` |

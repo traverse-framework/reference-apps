@@ -106,25 +106,25 @@ Secondary tier beside OS UI shells: **LLM product façades** that invoke Travers
 | Clients | Claude Desktop · Claude Code · Cursor · ChatGPT · Grok |
 | Scaffold smoke | `bash scripts/ci/llm_mcp_reference_smoke.sh` |
 
-**Mode A (local MCP stdio) — quick start:**
+**Mode A (Spec 119 verified public registry) — quick start:**
 
 ```bash
-export TRAVERSE_REPO="$(cd ../Traverse && pwd)"   # adjust path
-cd "$TRAVERSE_REPO"
-cargo run -p traverse-mcp -- stdio
+export TRAVERSE_REPO="$(cd ../Traverse && pwd)"   # main with Mode A (#1252+), or next release
+export TRAVERSE_MCP_REGISTRY_CACHE="${HOME}/.cache/traverse-mcp-mode-a"
+cd apps/llm-mcp-reference/mode-a && bash prepare.sh && bash serve.sh
 ```
 
-Point your LLM client at that command using the example under `apps/llm-mcp-reference/clients/<product>/`, paste `shared/prompts/system-boundary.md` into system instructions, and follow `shared/workflows/traverse-starter.md`. Display **only** runtime JSON fields — do not invent title/tags/recommendations in the prompt.
+Point your LLM client at [`apps/llm-mcp-reference/mode-a/mcp.json.example`](apps/llm-mcp-reference/mode-a/mcp.json.example) (or `clients/<product>/`), paste `shared/prompts/system-boundary.md` into system instructions, and follow `shared/workflows/`. Display **only** runtime JSON fields — do not invent title/tags/recommendations in the prompt.
 
-### Upstream gaps (blocking full kit live path)
+### Mode A status
 
 OS shells do **not** speak MCP (they embed WASM). Registry MCP is the LLM façade path.
 
 | Path | Status |
 |---|---|
-| Expedition `traverse-mcp -- stdio` | Runnable bootstrap — **not** kit catalog |
-| Spec 119 Mode A consumer scaffold | [`apps/llm-mcp-reference/mode-a/`](apps/llm-mcp-reference/mode-a/) — fail-closed until the host ships |
-| Live `traverse-starter.*` / `meeting-notes.process` via MCP | Project 2 `llm-mcp-traverse-starter-catalog` (**Blocked**) — needs Traverse Mode A **implement** (spec is Approved) |
+| Expedition `traverse-mcp -- stdio` (no cache env) | Bootstrap only — **not** Spec 119 |
+| Spec 119 Mode A consumer | [`apps/llm-mcp-reference/mode-a/`](apps/llm-mcp-reference/mode-a/) — prepare + serve against `TRAVERSE_MCP_REGISTRY_CACHE` |
+| Live kit discover/execute via Mode A | Project 2 `llm-mcp-traverse-starter-catalog` (**Done**) — evidence uses verified-public `core.normalize-participants`; post-#1252 Traverse checkout (or next release) |
 
 Spec 119 v1 has **no kit content groups**. Discovery is public registry entries. Registry umbrella [#99](https://github.com/traverse-framework/registry/issues/99) is closed.
 

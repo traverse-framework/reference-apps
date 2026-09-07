@@ -686,3 +686,25 @@ Append-only record of design decisions for App-References. Newest sessions at th
 - C2 visible loading flash (A2 or Traverse async/yielding submit)
 - C3 live `blocked`/`ended` product-shell demo beyond fixtures
 - C4 native OS A1 presentation parity
+
+
+---
+
+## 2026-09-07 — Mode A catalog cutover (`llm-mcp-traverse-starter-catalog`)
+
+**Context:** Ops loop found Project 2 Ready empty; Traverse [#1241](https://github.com/traverse-framework/Traverse/issues/1241) closed via [#1252](https://github.com/traverse-framework/Traverse/pull/1252) on main (post tagged `v0.10.0`).
+
+### Unblock
+
+**Question:** Is `llm-mcp-traverse-starter-catalog` still Blocked?
+
+**Options considered:**
+- Stay Blocked until a Traverse release tag ships Mode A — pros: pin-aligned binaries; cons: stalls honest consumer cutover on main
+- Promote to Ready and cut over against `TRAVERSE_REPO@main` — pros: matches prior live-smoke posture; cons: contributors need post-#1252 checkout
+- Wait without board change — pros: zero churn; cons: Ready stays empty while unlock exists
+
+**Recommendation:** Promote and cut over against main.
+
+**Decision:** Move ticket Ready → claim → wire `mode-a/prepare.sh` + `serve.sh` to `TRAVERSE_MCP_REGISTRY_CACHE`; capture evidence for `core.normalize-participants` (App-Refs Loop WF1 kit).
+
+**Why:** Spec 119 host is merged; App-Refs DoD is consumer evidence + docs, not waiting on the next Traverse tag. Expedition without the cache env remains non-happy-path.

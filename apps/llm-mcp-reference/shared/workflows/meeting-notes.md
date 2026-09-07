@@ -19,20 +19,17 @@ Presentation chrome (Specs 001/002): keep the session at `loading` while tools r
 
 ## Prerequisites (Mode A)
 
-1. Traverse checkout with working `traverse-mcp` (see [MCP stdio server](https://github.com/traverse-framework/Traverse/blob/main/docs/mcp-stdio-server.md)).
-2. Client MCP config from `clients/<product>/` pointing at:
-
-```bash
-cargo run -p traverse-mcp -- stdio
-```
-
+1. Traverse checkout that includes Spec 119 Mode A (post [#1252](https://github.com/traverse-framework/Traverse/pull/1252); see [MCP stdio server](https://github.com/traverse-framework/Traverse/blob/main/docs/mcp-stdio-server.md)).
+2. Client MCP config from `clients/<product>/` or [`../../mode-a/mcp.json.example`](../../mode-a/mcp.json.example) pointing at `mode-a/serve.sh` with a prepared `TRAVERSE_MCP_REGISTRY_CACHE` that includes `meeting-notes.process` (hosts extend the seeded Mode A cache via `prepare_registry_dependency`; the committed fixture seeds `core.normalize-participants` for Loop smoke).
 3. System instructions include [`../prompts/system-boundary.md`](../prompts/system-boundary.md).
+
+Do **not** use bare expedition `cargo run -p traverse-mcp -- stdio` as the Spec 119 happy path.
 
 Optional bearer token for execution commands:
 
 ```bash
 TRAVERSE_MCP_STDIO_BEARER_TOKEN="local-dev-secret" \
-  cargo run -p traverse-mcp -- stdio
+  TRAVERSE_MCP_REGISTRY_CACHE=… bash ../../mode-a/serve.sh
 ```
 
 Pass the same token on `execute_entrypoint` / `render_execution_report` as `auth.bearer` or `bearer_token` when required.
