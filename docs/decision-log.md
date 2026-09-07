@@ -657,3 +657,32 @@ Append-only record of design decisions for App-References. Newest sessions at th
 - Traverse async/yielding submit (Option 3)
 - Forced yield for visible loading flash
 - Loop blocked/ended product demo as the next wave priority
+
+
+---
+
+## 2026-09-06 — State machine “tested and completed” bar
+
+**Context:** After #298–#300 (starter live subscribe, shared helpers, primary web ports), user asked what remains to finally have the Traverse state machine tested and completed.
+
+### Definition of done
+
+**Question:** What does “state machine tested and completed” mean?
+
+**Options considered:**
+- C1 — Web kit author proof bar (shared helpers + all primary webs + unit/fixture coverage + docs) — pros: matches Spec 001/002 and UI-only scope; already shipped; cons: no guaranteed visible flash; natives may lag
+- C2 — Human-demoable mid-flight transitions (forced yield / async submit) — pros: visible SM; cons: artificial or upstream
+- C3 — Full Spec 001 surface in a product shell (`blocked`/`ended` live) — pros: non-happy states; cons: Loop-specific
+- C4 — Cross-platform A1 parity on natives — pros: multi-OS kit bar; cons: large wave
+
+**Recommendation:** C1 is Done today; stretch only if needed.
+
+**Decision:** C1 — treat the web kit author proof bar as complete.
+
+**Why:** Subscribe → map → represent Spec 001/002 is proven on primary webs with shared helpers and tests; remaining options are stretch goals, not blockers for the original question.
+
+### What was explicitly deferred
+
+- C2 visible loading flash (A2 or Traverse async/yielding submit)
+- C3 live `blocked`/`ended` product-shell demo beyond fixtures
+- C4 native OS A1 presentation parity
