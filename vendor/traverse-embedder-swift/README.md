@@ -8,15 +8,10 @@ the ordered runtime-shaped events recorded by the harness. Compatible-capability
 start, stop, and kill operations return stable instance identifiers and lifecycle
 results. It never starts `traverse-cli serve` or uses server-discovery files.
 
-`WasmKitRuntimeBridge` is the production runtime loader. It resolves only the
-core WasmKit product, verifies `runtime/runtime.wasm` against its declared
-SHA-256 digest and a 32 MiB default artifact limit before parsing, rejects all
-ambient imports, and validates the memory, function signatures, and ABI version
-required by `runtime-wasm-bridge/1.1.0`, including compatible lifecycle exports.
-It never links WasmKitWASI. JSON
-marshalling is provided by `WasmKitBridgeClient`, which serializes calls,
-copies runtime-owned output before the next mutation, bounds descriptors, and
-releases every caller allocation exactly once.
+Production execution uses `WasmiHostBridgeClient` backed by the vendored
+`TraverseSwiftHost` XCFramework. The client verifies `runtime/runtime.wasm`
+against its declared SHA-256 digest and size limits, then invokes the governed
+host bridge without linking WasmKit.
 
 `RuntimeTraverseEmbedder` maps that boundary into stable public Swift
 submission, event, and compatible-lifecycle result types without synthesizing
@@ -37,10 +32,10 @@ defaults to the package's `TraverseEmbedder.apiVersion`. Initialization rejects
 a bundle declaring a different version with `incompatibleBundle`; it does not
 start a sidecar or attempt a network fallback.
 
-The package pins WasmKit 0.2.2 and swift-system 1.5.0 exactly. The accompanying
-`dependency-review.json` records why this is the newest reviewed combination
-compatible with the package's Swift 6.0 toolchain and discloses the engine's
-remaining resource-control limitations.
+This package no longer depends on WasmKit or swift-system. Nightly macOS builds
+previously failed when SPM resolved a newer swift-system into WasmKit's
+`SystemExtras` layer (`Stat` vs `stat`); Wasmi-only keeps the shipping graph
+free of that conflict.
 
 The package follows semantic versioning. Additive, backward-compatible API
 changes use minor releases; breaking public API or error-semantic changes use a
