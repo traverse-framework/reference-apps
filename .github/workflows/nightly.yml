@@ -187,6 +187,11 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
+        with:
+          # Default packages include obsolete `tools`, which sdkmanager no longer
+          # publishes (`Failed to find package 'tools'`). Unit tests only need
+          # platform-tools; AGP resolves platforms/build-tools as needed.
+          packages: platform-tools
 
       - name: Gradle test traverse-starter
         working-directory: apps/traverse-starter/android-compose
