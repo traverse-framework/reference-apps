@@ -766,3 +766,39 @@ Append-only record of design decisions for App-References. Newest sessions at th
 **Decision:** The proof passes with a local-model MCP client (documented default) and with one hosted client.
 
 **Why:** D1 made local the default; a proof that only runs hosted would not show the default works, and the hosted run is where the egress and redaction obligations get exercised.
+
+---
+
+## 2026-11-17 — Progressive workflow-to-app authoring prototype (#291)
+
+**Context:** Owner brainstorm for [#291](https://github.com/traverse-framework/reference-apps/issues/291). The September decision inventory (input, automation boundary, retention) is settled as Traverse **Decision 137** ([Traverse #1898](https://github.com/traverse-framework/traverse/pull/1898)): structured input with plain English as an optional draft, drafts may run locally but publication stays governed, the journey hosts no model, and nothing is kept unless the user saves it. This entry records the app-level choices.
+
+### Prototype shape
+
+**Question:** What does the #291 prototype build?
+
+**Options considered:**
+- Join existing pieces — `traverse-workflow-planner` (extended to emit the structured description and open decisions) → `traverse-cli workflow plan` → a `traverse-starter` shell consuming an existing capability first → `traverse-capability-author` drafting gaps with a local run; plus novice and expert walkthroughs — pros: little new code, tests the tools people use; cons: the journey spans a skill, a CLI and an app, so the walkthroughs carry the progressive feel
+- New guided wizard app — pros: one guided surface, controlled disclosure; cons: new app duplicating the skills, plain-English step still needs the user's AI tool
+- Docs walkthrough only — pros: fastest; cons: the planner skill does not emit the structured description or open decisions, so DoD item 1 fails
+
+**Recommendation:** Join existing pieces.
+
+**Decision:** Join existing pieces. The skill change is [claude-skills#9](https://github.com/traverse-framework/claude-skills/issues/9).
+
+**Why:** The front half already exists as `traverse-workflow-planner`; the gap is joining the steps and making disclosure progressive, not new tooling.
+
+### Usability evidence
+
+**Question:** What counts as the usability evidence the DoD requires?
+
+**Options considered:**
+- About five recorded, moderated sessions with developers new to Traverse — pros: real evidence as the DoD asks; cons: the owner recruits and runs sessions, so the ticket waits on that time
+- AI-agent runs plus two human sessions — pros: cheaper, agent runs double as regression tests; cons: agents are not the median developer, thin human sample
+- Defer to a follow-up — pros: unblocks building; cons: the progressive claim stays unproven
+
+**Recommendation:** About five recorded human sessions.
+
+**Decision:** About five moderated, recorded sessions (with consent) with developers new to Traverse, each trying the novice walkthrough once; report completion rate, confusion points and unrepresented groups, with conclusions bounded to that sample.
+
+**Why:** The ticket's claim is that the journey works for a median developer; only people in that position can show it.
