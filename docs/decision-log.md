@@ -730,3 +730,39 @@ Append-only record of design decisions for App-References. Newest sessions at th
 **Decision:** Re-Block on Project 2; do not ship host-execute evidence against v0.10.0; ask Enrico release-vs-commit-pin.
 
 **Why:** Ticket Blocked-by text forbids wrapping WASM; fix is on main only (`ff50bbc` / PR #1255), not in tagged v0.10.0.
+
+---
+
+## 2026-11-17 — Agent workflow composition proof (#288)
+
+**Context:** Owner brainstorm for [#288](https://github.com/traverse-framework/reference-apps/issues/288). The runtime-wide rules (agent produces a Spec 113 structured target, human reviewer, out-of-band approval token, remainder replan) are Traverse **Decision 136** ([Traverse #1897](https://github.com/traverse-framework/traverse/pull/1897)); the runtime prerequisites are [Traverse #1896](https://github.com/traverse-framework/traverse/issues/1896). D1 (both proposer modes, local default) and D2 (always explicit review) from the #288 thread stand. This entry records the app-level choices.
+
+### Where the proof lives
+
+**Question:** Which surface hosts the agent-workflow proof?
+
+**Options considered:**
+- Extend `apps/llm-mcp-reference` — pros: already has model clients and the governed MCP path, and stays a reference app; cons: plans through runtime/MCP, not the browser Spec 1277 path
+- Add to traverseweb `/discover` — pros: reuses the shipped browser planner and executor, publicly visible; cons: public site, truthfulness-gated copy, puts external-model egress on the public site
+- New `apps/agent-workflow` app — pros: clean scope; cons: re-does model, MCP and UI wiring that already exists
+
+**Recommendation:** Extend `llm-mcp-reference`.
+
+**Decision:** Extend `apps/llm-mcp-reference`.
+
+**Why:** It already connects LLM clients to Traverse over MCP; what it lacks is planning, proposal and out-of-band approval over MCP, which Traverse #1896 adds.
+
+### Model mode for the first proof
+
+**Question:** Which model mode must the first #288 proof cover?
+
+**Options considered:**
+- Both, local first — pros: honors D1's local default in the proof and exercises the egress declaration and redaction on the hosted run; cons: two client setups to document and test, local model may produce weaker targets
+- Hosted first, local as a follow-up — pros: fastest, uses clients the app already supports; cons: first proof contradicts D1's local default
+- Local only first — pros: no egress at all; cons: leaves D1's external mode unproven
+
+**Recommendation:** Both, local first.
+
+**Decision:** The proof passes with a local-model MCP client (documented default) and with one hosted client.
+
+**Why:** D1 made local the default; a proof that only runs hosted would not show the default works, and the hosted run is where the egress and redaction obligations get exercised.
