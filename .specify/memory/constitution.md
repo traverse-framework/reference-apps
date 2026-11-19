@@ -24,7 +24,7 @@ Phase 2 (app validation and registration via Traverse CLI) is available when the
 Phase 3 (embedded in-app WASM runtime) is the **production target** for all platform clients. Shipped apps must bundle the Traverse host and WASM artifacts; they must not require a separate `traverse-cli serve` process for end users. Phase 1 HTTP sidecar integration is a dev/CI path only until Phase 3 migration completes. See `docs/embedded-runtime-plan.md`.
 
 ### VI. Traceability
-Every meaningful change must be tracked through a **Project 2 ticket** (Draft item with Spec + Definition of Done) and a pull request. Project 2 is the only backlog — do not open GitHub Issues to track App-Refs work. See `docs/ticket-standard.md`.
+Every meaningful change must be tracked through a **GitHub Issue on Project 2** (Spec + Definition of Done in the issue body) and a pull request. See `docs/ticket-standard.md`.
 
 ### VII. Quality Gates Block Merge
 A change must not merge when any of the following are true:
@@ -36,7 +36,7 @@ A change must not merge when any of the following are true:
 - The change lacks the required traceability artifacts
 
 ### VIII. Agent Coordination
-When multiple agents work in parallel, claim before you code. Check Project 2 Agent ≠ Unassigned and any remote `*/ticket-<ticket-id>-*` branch before starting a ticket. If either exists, stop and pick a different ticket. See `AGENTS.md` for the full pre-flight and claim sequence.
+When multiple agents work in parallel, claim before you code with the shared `scripts/agent/claim.sh` (org governance v1.4.0). It refuses unless the issue is Ready and carries no `agent:*` label, and no `*/issue-<N>-*` branch or open PR from any tool exists. See `AGENTS.md`.
 
 ## Non-Functional Requirements
 
@@ -67,4 +67,5 @@ All reviews must check for:
 
 Amendments require documenting the rule being changed, the reason, and the migration impact.
 
-**Version**: 1.2.0 | **Ratified**: 2026-06-27 | **Amended**: 2026-07-21 — Traceability is Project 2 ticket + PR only (no GitHub Issues backlog); agent claim uses Agent field + `ticket-<id>` branches
+**Version**: 1.3.0 | **Ratified**: 2026-06-27 | **Amended**: 2026-11-19. Tickets are GitHub Issues on Project 2, and claims use the org's shared `claim.sh` with `agent:*` labels and `<tool>/issue-<N>-*` branches (traverse-framework/.github#57). This replaces Project 2 draft items and the Agent field. Migration: existing draft items stay as history; new work is opened as issues.
+Previously amended 2026-07-21: Traceability is Project 2 ticket + PR only; agent claim used the Agent field and `ticket-<id>` branches.

@@ -4,7 +4,7 @@
 
 Phase 3 delivered **embedded Traverse runtime** on the primary UI shells (Web, Linux/CLI, Windows, Apple, Android). This repo’s next job is to become the **production reference kit**: the copy-paste pattern for shipping real multi-OS Traverse apps — not only demos.
 
-Status of individual tickets lives on [Project 2](https://github.com/orgs/traverse-framework/projects/2) only (Draft tickets with Spec + DoD). This document is the narrative and decision log; do not treat ticket lists here as live status. See [`ticket-standard.md`](ticket-standard.md).
+Status of individual tickets lives on [Project 2](https://github.com/orgs/traverse-framework/projects/2) (GitHub Issues with Spec + DoD). This document is the narrative and decision log; do not treat ticket lists here as live status. See [`ticket-standard.md`](ticket-standard.md).
 
 Related:
 

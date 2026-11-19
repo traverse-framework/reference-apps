@@ -8,11 +8,11 @@ One dev thread is one active worker. For true parallel work, run multiple dev th
 
 Multiple coding agents (Codex, Claude Code, Cursor, Antigravity, Continue, and others) can work in parallel on separate tickets. To prevent conflicts:
 
-- **Project board**: the Agent field is the claim lock
-- **Branches**: `<agent>/ticket-<ticket-id>-*` naming makes branch ownership explicit
-- **Backlog**: Project 2 Draft tickets only — no GitHub Issues for tracking
+- **Claim lock**: the `agent:*` label, set by `scripts/agent/claim.sh`
+- **Branches**: `<tool>/issue-<N>-*` naming makes branch ownership explicit
+- **Backlog**: GitHub Issues in this repo, tracked on Project 2
 
-**Rule**: claim before you code. Every agent checks Project 2 Agent ≠ Unassigned and any remote `*/ticket-<ticket-id>-*` branch before starting work. See `AGENTS.md` for the full pre-flight sequence.
+**Rule**: claim before you code with `scripts/agent/claim.sh <N> <tool>`. It refuses if the issue isn't Ready, is already labelled, or has any tool's `*/issue-<N>-*` branch or open PR. See `AGENTS.md`.
 
 ## Thread Roles
 
@@ -20,7 +20,7 @@ Multiple coding agents (Codex, Claude Code, Cursor, Antigravity, Continue, and o
 
 The PM thread:
 
-- keeps the Project 2 backlog, blockers, and Notes current (Draft tickets with Spec + DoD)
+- keeps the Project 2 backlog, blockers, and Notes current (issues with Spec + DoD)
 - talks with Enrico about product and architecture decisions
 - decides when work is `Ready`, `Blocked`, `In Progress`, or `Future`
 - does not mark a ticket `In Progress` unless a real worker has started
@@ -92,27 +92,22 @@ Run lean: filtered Project 2 queries, bounded command output, focused diffs, sum
 
 ```text
 Act as the App-References PM thread.
-Keep Project 2 tickets (Draft Spec + DoD), blockers, notes, and PR flow accurate.
-Do not open GitHub Issues for backlog tracking.
+Keep Project 2 issues (Spec + DoD), blockers, notes, and PR flow accurate.
 Do not mark a ticket In Progress unless a real dev thread has started it.
 When a problem is must-fix for the active slice, it must be fixed in the active PR.
-When a problem is non-blocking, create a Future Project 2 draft ticket.
+When a problem is non-blocking, open an issue and set it to Future on Project 2.
 Keep all work within the UI-only architecture boundary.
 ```
 
 ### Dev Thread
 
 ```text
-Act as an App-References dev thread for Project 2 ticket <TICKET_ID>.
+Act as an App-References dev thread for issue #<N>.
 
-Pre-flight (run before any work) — see AGENTS.md:
-1. Agent field must be Unassigned
-2. No remote */ticket-<TICKET_ID>-* branch
-3. Status must be Ready
-
-Claim via Project 2 Agent + Status → In Progress only.
-Use branch <agent>/ticket-<TICKET_ID>-* and open a dedicated PR.
-Cite Ticket ID under ## Project Item.
+Claim first: scripts/agent/claim.sh <N> <tool> (it runs every pre-flight check).
+Use the branch it prints (<tool>/issue-<N>-*) and open a dedicated PR.
+Cite the issue under ## Project Item (Closes #<N>).
+After merge: scripts/agent/release.sh <N> Done.
 Keep implementation within the UI-only architecture boundary.
 ```
 

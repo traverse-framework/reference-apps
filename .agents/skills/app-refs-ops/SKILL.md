@@ -31,8 +31,8 @@ Read `docs/embedded-runtime-plan.md`, `docs/traverse-starter-plan.md`, and `.spe
 Repeat until a stop condition (below):
 
 1. **PR finisher** — inspect open PRs owned by this agent or blocking Ready work; fix CI/review issues; queue `gh pr merge <N> --squash --auto` once fixes are pushed; rebase if behind `main`. Dependabot PRs: `@dependabot rebase` + queue auto-merge, never hand-write their bodies.
-2. **Release** — after merge: set Agent → Unassigned, Status → Done (see Release sequence in `AGENTS.md`). Do not open/close GitHub Issues for ticket lifecycle.
-3. **Ready-ticket worker** — query Ready items; run pre-flight on the next unclaimed ticket; claim; implement; open PR.
+2. **Release**: after merge, run `scripts/agent/release.sh <N> Done`. The PR's `Closes #N` closes the issue.
+3. **Ready-ticket worker**: query Ready issues, run `scripts/agent/claim.sh <N> <tool>` on the next one (it runs the pre-flight checks), implement, and open a PR.
 4. **Validate** — run applicable local gates; queue `gh pr merge <N> --squash --auto`; do **not** poll CI — continue to the next Ready ticket and run the release step on a later pass once it has merged.
 
 One ticket at a time per agent thread, but **many tickets per ops invocation** — keep cycling.
@@ -59,7 +59,7 @@ Everything else — claim, implement, PR, CI fix, merge, release — proceed aut
 
 ### Release sequence (after merge)
 
-Run the release command sequence from `AGENTS.md` (single copy: Agent → Unassigned, Status → Done).
+Run `scripts/agent/release.sh <N> Done`.
 
 ## Workflow
 
@@ -67,21 +67,16 @@ Run the release command sequence from `AGENTS.md` (single copy: Agent → Unassi
 2. Read the constitution (via `traverse-framework/.github`, pinned in `.governance-version`) only when the ticket touches architecture or contracts — lazy-read map in the org's `docs/ai-agent-hardening.md`.
 3. Inspect current GitHub and Project 2 state.
 4. Enter the **ops loop** above — do not exit after step 10 once; loop until idle.
-5. Before work on a ticket, run the pre-flight checks from `AGENTS.md`:
-   - Project 2 Agent must be Unassigned
-   - no remote `*/ticket-<TICKET_ID>-*` branch may exist
-   - Project 2 status must be `Ready`
-6. If pre-flight passes, claim the ticket:
-   - set Project 2 `Agent` to your tool
-   - set Project 2 `Status` to `In Progress`
-7. Use a dedicated `<agent>/ticket-<TICKET_ID>-*` branch (see Agent Registry in `AGENTS.md`).
+5. Before work on an issue, run `scripts/agent/claim.sh <N> <tool> --dry-run`. It checks that the issue is Ready and unlabelled and that no `*/issue-<N>-*` branch or open PR exists.
+6. If it passes, claim with `scripts/agent/claim.sh <N> <tool>`. That sets the `agent:*` label and Status In Progress.
+7. Use the branch it prints (`<tool>/issue-<N>-*`).
 8. Keep work scoped to the claimed ticket and the UI-only architecture boundary.
 9. Open a dedicated PR using the org body superset (`## Summary`, `## Governing Spec`, `## Project Item`, `## Definition of Done`, `## Validation`).
 10. Queue auto-merge, then **return to step 4** for the next Ready ticket; release merged work on the next loop pass.
 
 ## Project 2 IDs, Pre-flight & Claim
 
-Field/option IDs, the three pre-flight checks, and the claim/release command sequences live in `AGENTS.md` — the single copy. Never duplicate them here.
+Project 2 ids live in `.agent-claim.json`. The pre-flight checks and the claim and release steps are in `scripts/agent/claim.sh` and `release.sh`. Never duplicate them here.
 
 ## Gates & Failure Playbook
 
@@ -149,7 +144,7 @@ All lanes run inside the **continuous ops loop** — none of them end the sessio
 - Do not use labels as status; Project 2 status is the actionability source of truth.
 - Do not claim work already owned by another agent.
 - Do not broaden scope beyond the ticket and the UI-only architecture boundary.
-- Create follow-up Project 2 draft tickets for non-blocking improvements instead of expanding an active slice.
+- Open follow-up issues (Future on Project 2) for non-blocking improvements instead of expanding an active slice.
 - **Do not stop the ops loop after one ticket** — run until Ready queue is empty or a stop condition applies.
 - **Do not ask the user to continue** between tickets during `/app-refs-ops`; that breaks autonomous end-to-end execution.
 

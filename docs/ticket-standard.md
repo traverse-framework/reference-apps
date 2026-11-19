@@ -4,7 +4,7 @@ This document defines the minimum quality bar for App-References **tickets**.
 
 ## Core Rule
 
-**Project 2 is the only backlog.** Tickets are [Project 2](https://github.com/orgs/traverse-framework/projects/2) items (prefer **Draft** items). Do **not** open GitHub Issues to track App-Refs work. Closed issues may remain as historical archive for shipped work; they are not tickets.
+**Tickets are GitHub Issues in this repo, tracked on [Project 2](https://github.com/orgs/traverse-framework/projects/2).** Open one issue per ticket and add it to Project 2. Older Project 2 draft items remain as history; don't create new ones (traverse-framework/.github#57).
 
 Every meaningful ticket must be explicit enough that a developer can tell:
 
@@ -16,33 +16,33 @@ Every meaningful ticket must be explicit enough that a developer can tell:
 
 ## Ticket identity
 
-Each active ticket must include a stable **Ticket ID** slug in the draft body:
+Each ticket is identified by its **issue number**. A short **Ticket ID** slug in the body is still useful for prose and cross-links:
 
 ```markdown
 ## Ticket ID
 `meeting-notes-multi-os`
 ```
 
-Use that slug in branch names (`<agent>/ticket-<ticket-id>-*`) and in PR `## Project Item` sections. Do not invent GitHub issue numbers for new work.
+Branches use the issue number (`<tool>/issue-<N>-*`, as printed by `scripts/agent/claim.sh`). PR `## Project Item` sections cite the issue (`Refs #N` / `Closes #N`).
 
 ## Where Spec and DoD live
 
 | Field | Purpose |
 |---|---|
-| **Draft body** | Full Spec + Summary / Why / Depends on / Blocked by / Definition of Done / Validation |
+| **Issue body** | Full Spec + Summary / Why / Depends on / Blocked by / Definition of Done / Validation |
 | **Project 2 Note** | One-line board summary + `ticket-id: …` |
 | **Status** | Availability (`Ready`, `In Progress`, `Blocked`, `Future`, `Done`) |
-| **Agent** | Claim lock (`Unassigned` or a registered tool) |
+| **`agent:*` label** | Claim lock, set and cleared by `scripts/agent/claim.sh` / `release.sh` |
 
 ## Project 2 status
 
 - `Ready` — approved and not started yet
-- `In Progress` — currently being worked on (Agent must be set)
-- `Blocked` — cannot continue; blocker visible in draft body **and** Project 2 Note
+- `In Progress` — currently being worked on (an `agent:*` label must be set)
+- `Blocked` — cannot continue; blocker visible in the issue body **and** Project 2 Note
 - `Future` — valid work tracked but intentionally not active now
 - `Done` — merged and verified
 
-Do not move work to `In Progress` unless a real worker has claimed it via the Agent field.
+Do not move work to `In Progress` unless a real worker has claimed it with `claim.sh`.
 
 ## Required Ticket Sections
 
@@ -134,7 +134,7 @@ Every ticket that touches runtime integration must state in **Spec**:
 When a problem is found during active work:
 
 - if it is required for correctness, governance, or mergeability — fix it in the same PR
-- if it is not required — create a Project 2 **Future** draft ticket (Spec + DoD) instead of silently dropping it or opening a GitHub issue
+- if it is not required, open a GitHub issue (Spec + DoD) and set it to **Future** on Project 2, rather than dropping it silently
 
 ## Merge Candidate Rule
 
