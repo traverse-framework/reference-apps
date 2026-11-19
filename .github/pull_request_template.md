@@ -8,7 +8,7 @@
 
 ## Project Item
 
-<!-- Project 2 ticket: Ticket ID + item link/title + Status. Do not open GitHub Issues for tracking. -->
+<!-- The issue this PR works on (Closes #N or Refs #N), tracked on Project 2. -->
 
 ## Definition of Done
 
