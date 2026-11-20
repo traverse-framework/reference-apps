@@ -55,7 +55,7 @@ Upstream flip conditions are met (Traverse #750/#751/#647 closed). Embeds are **
 
 ## Multi-Agent Coordination
 
-Several coding tools work here in parallel. **Claim before you code: one issue = one agent.** Claim and release with the shared scripts, vendored from `traverse-framework/.github` v1.4.0. The Project 2 ids live in `.agent-claim.json`.
+Several coding tools work here in parallel. **Claim before you code: one issue = one agent.** Claim and release with the shared scripts, vendored from `traverse-framework/.github` at the version in `.governance-version`. The Project 2 ids live in `.agent-claim.json`.
 
 ```bash
 scripts/agent/claim.sh <issue> <claude|codex|cursor> --dry-run   # check only

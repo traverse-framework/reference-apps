@@ -36,7 +36,7 @@ A change must not merge when any of the following are true:
 - The change lacks the required traceability artifacts
 
 ### VIII. Agent Coordination
-When multiple agents work in parallel, claim before you code with the shared `scripts/agent/claim.sh` (org governance v1.4.0). It refuses unless the issue is Ready and carries no `agent:*` label, and no `*/issue-<N>-*` branch or open PR from any tool exists. See `AGENTS.md`.
+When multiple agents work in parallel, claim before you code with the shared `scripts/agent/claim.sh` (vendored from the org governance; see `.governance-version`). It refuses unless the issue is Ready and carries no `agent:*` label, and no `*/issue-<N>-*` branch or open PR from any tool exists. See `AGENTS.md`.
 
 ## Non-Functional Requirements
 
